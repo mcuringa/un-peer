@@ -1,21 +1,31 @@
 import React, { Component } from 'react';
-import { Router, Route, Switch } from 'react-router'
 import './App.css';
-import challenges from './challenges.json';
 
-import ChallengeList from './Challenges.js';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
+
+import ChallengeListScreen from './Challenges.js';
+import ChallengeDetailScreen from './ChallengeDetail.js';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">United Nations Peer Foo</h1>
-        </header>
-        <section id="main">
-          <ChallengeList challenges={challenges} />
-        </section>
-      </div>
+      <Router>
+        <div>
+          <div className="App">
+            <header className="App-header">
+              <h1 className="App-title">United Nations Peer Challenges</h1>
+            </header>
+          </div>
+          <section id="main">
+            <Route exact path="/" component={ChallengeListScreen}/>
+            <Route path="/challenge/:id" component={ChallengeDetailScreen} />
+          </section>
+        </div>
+    </Router>
     );
   }
 }
