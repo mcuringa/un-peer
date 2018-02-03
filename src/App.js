@@ -7,8 +7,8 @@ import {
   Link
 } from 'react-router-dom'
 
-import ChallengeListScreen from './Challenges.js';
-import ChallengeDetailScreen from './ChallengeDetail.js';
+import ChallengeListScreen from './challenges/Challenges.js';
+import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 
 class App extends Component {
   render() {

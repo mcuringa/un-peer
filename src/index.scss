@@ -1,5 +1,21 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
+
+html
+{
+  background-color: black;
+}
+
+body
+{
+	border: thin solid black;
+	max-width: 640px;
+	height: 800px;
+	max-height: 920px;
+	overflow: scroll;
+	margin: 0 auto !important;
+}
+
 img {
   @extend .img-fluid;
 }

@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "node-sass": "^4.7.2",
-    "postcss-loader": "^2.0.10",
+    "postcss-loader": "^2.1.0",
     "sass-loader": "^6.0.6",
     "webpack": "^3.10.0"
   }

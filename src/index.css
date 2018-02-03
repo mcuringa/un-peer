@@ -6025,3 +6025,14 @@ a.text-dark:hover, a.text-dark:focus {
   .table-bordered th,
   .table-bordered td {
     border: 1px solid #ddd !important; } }
+
+html {
+  background-color: black; }
+
+body {
+  border: thin solid black;
+  max-width: 640px;
+  height: 800px;
+  max-height: 920px;
+  overflow: scroll;
+  margin: 0 auto !important; }
