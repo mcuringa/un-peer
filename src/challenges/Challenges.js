@@ -1,34 +1,59 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
-import "./Challenges.css";
-import ChallengeDB from "./ChallengeDB";
+import { Link } from 'react-router-dom';
+import {CalendarIcon} from 'react-octicons';
+import dateFormat from 'dateformat';
+import _ from "lodash";
+
+import FBUtil from "../FBUtil";
+
+
+class ChallengeListItem extends React.Component {
+  constructor(props) {
+  super(props);
+
+  }
+
+  render() {
+    const challenge = this.props.challenge;
+    const start = dateFormat(challenge.start, "dd mmm yyyy");
+
+    return (
+      <Link to={`/challenge/${challenge.id}`}
+        key={challenge.id} className="ChallengeItem">
+        <div className="StartDate"><CalendarIcon/> {start}</div>
+        <p className="ChallengeListTitle">{challenge.title}</p>
+        <p>Submitted by: {challenge.owner.first} {challenge.owner.last}</p>
+      </Link>
+    );
+  }
+}
+
 
 class ChallengeListScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {challenges: ChallengeDB.findAll()};
+    this.state = {challenges: []};
+
+    let db = FBUtil.connect();
+    db.collection("challenges").get().then((querySnapshot) => {
+      let challenges = [];
+      querySnapshot.forEach((doc) => {
+        let c = {id: doc.id};
+        c = _.merge(c, doc.data());
+        // console.log(c);
+        challenges.push(c);
+        console.log(challenges.length);
+      });
+      this.setState({"challenges": challenges});
+    });    
   }
 
   render() {
-    const t = this.state.challenges.map((challenge) => 
+    const t = this.state.challenges.map((challenge) => {
+      return (<ChallengeListItem challenge={challenge} />);
+    });
 
-      <div className="ChallengeItem" key={challenge.id.toString()}>
-        <Link to={`/challenge/${challenge.id}`} className="list-group-item list-group-item-action flex-column align-items-start">
-          <div className="d-flex w-100 justify-content-between">
-            <h5 className="mb-1">{challenge.title}</h5>
-            <small>{challenge.start}-{challenge.end}</small>
-          </div>
-          <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-          <small>Donec id elit non mi porta.</small>
-        </Link>
-      </div>
-    );
-    return (
-      <div className="ChallengeList">
-        <h4 className="sticky-top navbar-light bg-light">challenges</h4>
-        <div className="list-group">{t}</div>
-      </div>
-    );
+    return (<div className="ChallengeList">{t}</div>);
   }
 }
 

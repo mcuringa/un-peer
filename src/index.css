@@ -469,7 +469,7 @@ pre {
     .container {
       max-width: 1140px; } }
 
-.container-fluid {
+.container-fluid, .App {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
@@ -1320,11 +1320,15 @@ select.form-control:focus::-ms-value {
   .input-group-sm > .input-group-prepend > .form-control-plaintext.input-group-text,
   .input-group-sm > .input-group-append > .form-control-plaintext.input-group-text,
   .input-group-sm > .input-group-prepend > .form-control-plaintext.btn,
-  .input-group-sm > .input-group-append > .form-control-plaintext.btn, .form-control-plaintext.form-control-lg, .input-group-lg > .form-control-plaintext.form-control,
+  .input-group-sm > .input-group-prepend > .form-control-plaintext.ChallengeItem,
+  .input-group-sm > .input-group-append > .form-control-plaintext.btn,
+  .input-group-sm > .input-group-append > .form-control-plaintext.ChallengeItem, .form-control-plaintext.form-control-lg, .input-group-lg > .form-control-plaintext.form-control,
   .input-group-lg > .input-group-prepend > .form-control-plaintext.input-group-text,
   .input-group-lg > .input-group-append > .form-control-plaintext.input-group-text,
   .input-group-lg > .input-group-prepend > .form-control-plaintext.btn,
-  .input-group-lg > .input-group-append > .form-control-plaintext.btn {
+  .input-group-lg > .input-group-prepend > .form-control-plaintext.ChallengeItem,
+  .input-group-lg > .input-group-append > .form-control-plaintext.btn,
+  .input-group-lg > .input-group-append > .form-control-plaintext.ChallengeItem {
     padding-right: 0;
     padding-left: 0; }
 
@@ -1332,7 +1336,9 @@ select.form-control:focus::-ms-value {
 .input-group-sm > .input-group-prepend > .input-group-text,
 .input-group-sm > .input-group-append > .input-group-text,
 .input-group-sm > .input-group-prepend > .btn,
-.input-group-sm > .input-group-append > .btn {
+.input-group-sm > .input-group-prepend > .ChallengeItem,
+.input-group-sm > .input-group-append > .btn,
+.input-group-sm > .input-group-append > .ChallengeItem {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -1342,14 +1348,18 @@ select.form-control-sm:not([size]):not([multiple]), .input-group-sm > select.for
 .input-group-sm > .input-group-prepend > select.input-group-text:not([size]):not([multiple]),
 .input-group-sm > .input-group-append > select.input-group-text:not([size]):not([multiple]),
 .input-group-sm > .input-group-prepend > select.btn:not([size]):not([multiple]),
-.input-group-sm > .input-group-append > select.btn:not([size]):not([multiple]) {
+.input-group-sm > .input-group-prepend > select.ChallengeItem:not([size]):not([multiple]),
+.input-group-sm > .input-group-append > select.btn:not([size]):not([multiple]),
+.input-group-sm > .input-group-append > select.ChallengeItem:not([size]):not([multiple]) {
   height: calc(1.8125rem + 2px); }
 
 .form-control-lg, .input-group-lg > .form-control,
 .input-group-lg > .input-group-prepend > .input-group-text,
 .input-group-lg > .input-group-append > .input-group-text,
 .input-group-lg > .input-group-prepend > .btn,
-.input-group-lg > .input-group-append > .btn {
+.input-group-lg > .input-group-prepend > .ChallengeItem,
+.input-group-lg > .input-group-append > .btn,
+.input-group-lg > .input-group-append > .ChallengeItem {
   padding: 0.5rem 1rem;
   font-size: 1.25rem;
   line-height: 1.5;
@@ -1359,7 +1369,9 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 .input-group-lg > .input-group-prepend > select.input-group-text:not([size]):not([multiple]),
 .input-group-lg > .input-group-append > select.input-group-text:not([size]):not([multiple]),
 .input-group-lg > .input-group-prepend > select.btn:not([size]):not([multiple]),
-.input-group-lg > .input-group-append > select.btn:not([size]):not([multiple]) {
+.input-group-lg > .input-group-prepend > select.ChallengeItem:not([size]):not([multiple]),
+.input-group-lg > .input-group-append > select.btn:not([size]):not([multiple]),
+.input-group-lg > .input-group-append > select.ChallengeItem:not([size]):not([multiple]) {
   height: calc(2.875rem + 2px); }
 
 .form-group {
@@ -1602,7 +1614,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
     .form-inline .custom-control-label {
       margin-bottom: 0; } }
 
-.btn {
+.btn, .ChallengeItem {
   display: inline-block;
   font-weight: 400;
   text-align: center;
@@ -1615,20 +1627,21 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
   line-height: 1.5;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
-  .btn:hover, .btn:focus {
+  .btn:hover, .ChallengeItem:hover, .btn:focus, .ChallengeItem:focus {
     text-decoration: none; }
-  .btn:focus, .btn.focus {
+  .btn:focus, .ChallengeItem:focus, .btn.focus, .focus.ChallengeItem {
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
-  .btn.disabled, .btn:disabled {
+  .btn.disabled, .disabled.ChallengeItem, .btn:disabled, .ChallengeItem:disabled {
     opacity: 0.65; }
-  .btn:not(:disabled):not(.disabled) {
+  .btn:not(:disabled):not(.disabled), .ChallengeItem:not(:disabled):not(.disabled) {
     cursor: pointer; }
-  .btn:not(:disabled):not(.disabled):active, .btn:not(:disabled):not(.disabled).active {
+  .btn:not(:disabled):not(.disabled):active, .ChallengeItem:not(:disabled):not(.disabled):active, .btn:not(:disabled):not(.disabled).active, .ChallengeItem:not(:disabled):not(.disabled).active {
     background-image: none; }
 
-a.btn.disabled,
-fieldset:disabled a.btn {
+a.btn.disabled, a.disabled.ChallengeItem,
+fieldset:disabled a.btn,
+fieldset:disabled a.ChallengeItem {
   pointer-events: none; }
 
 .btn-primary {
@@ -2015,27 +2028,29 @@ fieldset:disabled a.btn {
   .btn-link:disabled, .btn-link.disabled {
     color: #6c757d; }
 
-.btn-lg, .btn-group-lg > .btn {
+.btn-lg, .btn-group-lg > .btn, .btn-group-lg > .ChallengeItem {
   padding: 0.5rem 1rem;
   font-size: 1.25rem;
   line-height: 1.5;
   border-radius: 0.3rem; }
 
-.btn-sm, .btn-group-sm > .btn {
+.btn-sm, .btn-group-sm > .btn, .btn-group-sm > .ChallengeItem {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
   line-height: 1.5;
   border-radius: 0.2rem; }
 
-.btn-block {
+.btn-block, .ChallengeItem {
   display: block;
   width: 100%; }
-  .btn-block + .btn-block {
+  .btn-block + .btn-block, .ChallengeItem + .btn-block, .btn-block + .ChallengeItem, .ChallengeItem + .ChallengeItem {
     margin-top: 0.5rem; }
 
-input[type="submit"].btn-block,
+input[type="submit"].btn-block, input[type="submit"].ChallengeItem,
 input[type="reset"].btn-block,
-input[type="button"].btn-block {
+input[type="reset"].ChallengeItem,
+input[type="button"].btn-block,
+input[type="button"].ChallengeItem {
   width: 100%; }
 
 .fade {
@@ -2216,25 +2231,37 @@ tbody.collapse.show {
   position: relative;
   display: inline-flex;
   vertical-align: middle; }
-  .btn-group > .btn,
-  .btn-group-vertical > .btn {
+  .btn-group > .btn, .btn-group > .ChallengeItem,
+  .btn-group-vertical > .btn,
+  .btn-group-vertical > .ChallengeItem {
     position: relative;
     flex: 0 1 auto; }
-    .btn-group > .btn:hover,
-    .btn-group-vertical > .btn:hover {
+    .btn-group > .btn:hover, .btn-group > .ChallengeItem:hover,
+    .btn-group-vertical > .btn:hover,
+    .btn-group-vertical > .ChallengeItem:hover {
       z-index: 1; }
-    .btn-group > .btn:focus, .btn-group > .btn:active, .btn-group > .btn.active,
+    .btn-group > .btn:focus, .btn-group > .ChallengeItem:focus, .btn-group > .btn:active, .btn-group > .ChallengeItem:active, .btn-group > .btn.active, .btn-group > .active.ChallengeItem,
     .btn-group-vertical > .btn:focus,
+    .btn-group-vertical > .ChallengeItem:focus,
     .btn-group-vertical > .btn:active,
-    .btn-group-vertical > .btn.active {
+    .btn-group-vertical > .ChallengeItem:active,
+    .btn-group-vertical > .btn.active,
+    .btn-group-vertical > .active.ChallengeItem {
       z-index: 1; }
-  .btn-group .btn + .btn,
+  .btn-group .btn + .btn, .btn-group .ChallengeItem + .btn, .btn-group .btn + .ChallengeItem, .btn-group .ChallengeItem + .ChallengeItem,
   .btn-group .btn + .btn-group,
+  .btn-group .ChallengeItem + .btn-group,
   .btn-group .btn-group + .btn,
+  .btn-group .btn-group + .ChallengeItem,
   .btn-group .btn-group + .btn-group,
   .btn-group-vertical .btn + .btn,
+  .btn-group-vertical .ChallengeItem + .btn,
+  .btn-group-vertical .btn + .ChallengeItem,
+  .btn-group-vertical .ChallengeItem + .ChallengeItem,
   .btn-group-vertical .btn + .btn-group,
+  .btn-group-vertical .ChallengeItem + .btn-group,
   .btn-group-vertical .btn-group + .btn,
+  .btn-group-vertical .btn-group + .ChallengeItem,
   .btn-group-vertical .btn-group + .btn-group {
     margin-left: -1px; }
 
@@ -2245,16 +2272,18 @@ tbody.collapse.show {
   .btn-toolbar .input-group {
     width: auto; }
 
-.btn-group > .btn:first-child {
+.btn-group > .btn:first-child, .btn-group > .ChallengeItem:first-child {
   margin-left: 0; }
 
-.btn-group > .btn:not(:last-child):not(.dropdown-toggle),
-.btn-group > .btn-group:not(:last-child) > .btn {
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle), .btn-group > .ChallengeItem:not(:last-child):not(.dropdown-toggle),
+.btn-group > .btn-group:not(:last-child) > .btn,
+.btn-group > .btn-group:not(:last-child) > .ChallengeItem {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0; }
 
-.btn-group > .btn:not(:first-child),
-.btn-group > .btn-group:not(:first-child) > .btn {
+.btn-group > .btn:not(:first-child), .btn-group > .ChallengeItem:not(:first-child),
+.btn-group > .btn-group:not(:first-child) > .btn,
+.btn-group > .btn-group:not(:first-child) > .ChallengeItem {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0; }
 
@@ -2264,11 +2293,11 @@ tbody.collapse.show {
   .dropdown-toggle-split::after {
     margin-left: 0; }
 
-.btn-sm + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split {
+.btn-sm + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split, .btn-group-sm > .ChallengeItem + .dropdown-toggle-split {
   padding-right: 0.375rem;
   padding-left: 0.375rem; }
 
-.btn-lg + .dropdown-toggle-split, .btn-group-lg > .btn + .dropdown-toggle-split {
+.btn-lg + .dropdown-toggle-split, .btn-group-lg > .btn + .dropdown-toggle-split, .btn-group-lg > .ChallengeItem + .dropdown-toggle-split {
   padding-right: 0.75rem;
   padding-left: 0.75rem; }
 
@@ -2276,31 +2305,39 @@ tbody.collapse.show {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center; }
-  .btn-group-vertical .btn,
+  .btn-group-vertical .btn, .btn-group-vertical .ChallengeItem,
   .btn-group-vertical .btn-group {
     width: 100%; }
-  .btn-group-vertical > .btn + .btn,
+  .btn-group-vertical > .btn + .btn, .btn-group-vertical > .ChallengeItem + .btn, .btn-group-vertical > .btn + .ChallengeItem, .btn-group-vertical > .ChallengeItem + .ChallengeItem,
   .btn-group-vertical > .btn + .btn-group,
+  .btn-group-vertical > .ChallengeItem + .btn-group,
   .btn-group-vertical > .btn-group + .btn,
+  .btn-group-vertical > .btn-group + .ChallengeItem,
   .btn-group-vertical > .btn-group + .btn-group {
     margin-top: -1px;
     margin-left: 0; }
-  .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle),
-  .btn-group-vertical > .btn-group:not(:last-child) > .btn {
+  .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle), .btn-group-vertical > .ChallengeItem:not(:last-child):not(.dropdown-toggle),
+  .btn-group-vertical > .btn-group:not(:last-child) > .btn,
+  .btn-group-vertical > .btn-group:not(:last-child) > .ChallengeItem {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0; }
-  .btn-group-vertical > .btn:not(:first-child),
-  .btn-group-vertical > .btn-group:not(:first-child) > .btn {
+  .btn-group-vertical > .btn:not(:first-child), .btn-group-vertical > .ChallengeItem:not(:first-child),
+  .btn-group-vertical > .btn-group:not(:first-child) > .btn,
+  .btn-group-vertical > .btn-group:not(:first-child) > .ChallengeItem {
     border-top-left-radius: 0;
     border-top-right-radius: 0; }
 
-.btn-group-toggle > .btn,
-.btn-group-toggle > .btn-group > .btn {
+.btn-group-toggle > .btn, .btn-group-toggle > .ChallengeItem,
+.btn-group-toggle > .btn-group > .btn,
+.btn-group-toggle > .btn-group > .ChallengeItem {
   margin-bottom: 0; }
-  .btn-group-toggle > .btn input[type="radio"],
+  .btn-group-toggle > .btn input[type="radio"], .btn-group-toggle > .ChallengeItem input[type="radio"],
   .btn-group-toggle > .btn input[type="checkbox"],
+  .btn-group-toggle > .ChallengeItem input[type="checkbox"],
   .btn-group-toggle > .btn-group > .btn input[type="radio"],
-  .btn-group-toggle > .btn-group > .btn input[type="checkbox"] {
+  .btn-group-toggle > .btn-group > .ChallengeItem input[type="radio"],
+  .btn-group-toggle > .btn-group > .btn input[type="checkbox"],
+  .btn-group-toggle > .btn-group > .ChallengeItem input[type="checkbox"] {
     position: absolute;
     clip: rect(0, 0, 0, 0);
     pointer-events: none; }
@@ -2355,18 +2392,26 @@ tbody.collapse.show {
 .input-group-prepend,
 .input-group-append {
   display: flex; }
-  .input-group-prepend .btn,
-  .input-group-append .btn {
+  .input-group-prepend .btn, .input-group-prepend .ChallengeItem,
+  .input-group-append .btn,
+  .input-group-append .ChallengeItem {
     position: relative;
     z-index: 2; }
-  .input-group-prepend .btn + .btn,
+  .input-group-prepend .btn + .btn, .input-group-prepend .ChallengeItem + .btn, .input-group-prepend .btn + .ChallengeItem, .input-group-prepend .ChallengeItem + .ChallengeItem,
   .input-group-prepend .btn + .input-group-text,
+  .input-group-prepend .ChallengeItem + .input-group-text,
   .input-group-prepend .input-group-text + .input-group-text,
   .input-group-prepend .input-group-text + .btn,
+  .input-group-prepend .input-group-text + .ChallengeItem,
   .input-group-append .btn + .btn,
+  .input-group-append .ChallengeItem + .btn,
+  .input-group-append .btn + .ChallengeItem,
+  .input-group-append .ChallengeItem + .ChallengeItem,
   .input-group-append .btn + .input-group-text,
+  .input-group-append .ChallengeItem + .input-group-text,
   .input-group-append .input-group-text + .input-group-text,
-  .input-group-append .input-group-text + .btn {
+  .input-group-append .input-group-text + .btn,
+  .input-group-append .input-group-text + .ChallengeItem {
     margin-left: -1px; }
 
 .input-group-prepend {
@@ -2393,20 +2438,24 @@ tbody.collapse.show {
   .input-group-text input[type="checkbox"] {
     margin-top: 0; }
 
-.input-group > .input-group-prepend > .btn,
+.input-group > .input-group-prepend > .btn, .input-group > .input-group-prepend > .ChallengeItem,
 .input-group > .input-group-prepend > .input-group-text,
 .input-group > .input-group-append:not(:last-child) > .btn,
+.input-group > .input-group-append:not(:last-child) > .ChallengeItem,
 .input-group > .input-group-append:not(:last-child) > .input-group-text,
 .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+.input-group > .input-group-append:last-child > .ChallengeItem:not(:last-child):not(.dropdown-toggle),
 .input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0; }
 
-.input-group > .input-group-append > .btn,
+.input-group > .input-group-append > .btn, .input-group > .input-group-append > .ChallengeItem,
 .input-group > .input-group-append > .input-group-text,
 .input-group > .input-group-prepend:not(:first-child) > .btn,
+.input-group > .input-group-prepend:not(:first-child) > .ChallengeItem,
 .input-group > .input-group-prepend:not(:first-child) > .input-group-text,
 .input-group > .input-group-prepend:first-child > .btn:not(:first-child),
+.input-group > .input-group-prepend:first-child > .ChallengeItem:not(:first-child),
 .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0; }
@@ -2659,7 +2708,8 @@ tbody.collapse.show {
   justify-content: space-between;
   padding: 0.5rem 1rem; }
   .navbar > .container,
-  .navbar > .container-fluid {
+  .navbar > .container-fluid,
+  .navbar > .App {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -2722,7 +2772,8 @@ tbody.collapse.show {
 
 @media (max-width: 575.98px) {
   .navbar-expand-sm > .container,
-  .navbar-expand-sm > .container-fluid {
+  .navbar-expand-sm > .container-fluid,
+  .navbar-expand-sm > .App {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2741,7 +2792,8 @@ tbody.collapse.show {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
     .navbar-expand-sm > .container,
-    .navbar-expand-sm > .container-fluid {
+    .navbar-expand-sm > .container-fluid,
+    .navbar-expand-sm > .App {
       flex-wrap: nowrap; }
     .navbar-expand-sm .navbar-collapse {
       display: flex !important;
@@ -2754,7 +2806,8 @@ tbody.collapse.show {
 
 @media (max-width: 767.98px) {
   .navbar-expand-md > .container,
-  .navbar-expand-md > .container-fluid {
+  .navbar-expand-md > .container-fluid,
+  .navbar-expand-md > .App {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2773,7 +2826,8 @@ tbody.collapse.show {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
     .navbar-expand-md > .container,
-    .navbar-expand-md > .container-fluid {
+    .navbar-expand-md > .container-fluid,
+    .navbar-expand-md > .App {
       flex-wrap: nowrap; }
     .navbar-expand-md .navbar-collapse {
       display: flex !important;
@@ -2786,7 +2840,8 @@ tbody.collapse.show {
 
 @media (max-width: 991.98px) {
   .navbar-expand-lg > .container,
-  .navbar-expand-lg > .container-fluid {
+  .navbar-expand-lg > .container-fluid,
+  .navbar-expand-lg > .App {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2805,7 +2860,8 @@ tbody.collapse.show {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
     .navbar-expand-lg > .container,
-    .navbar-expand-lg > .container-fluid {
+    .navbar-expand-lg > .container-fluid,
+    .navbar-expand-lg > .App {
       flex-wrap: nowrap; }
     .navbar-expand-lg .navbar-collapse {
       display: flex !important;
@@ -2818,7 +2874,8 @@ tbody.collapse.show {
 
 @media (max-width: 1199.98px) {
   .navbar-expand-xl > .container,
-  .navbar-expand-xl > .container-fluid {
+  .navbar-expand-xl > .container-fluid,
+  .navbar-expand-xl > .App {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2837,7 +2894,8 @@ tbody.collapse.show {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
     .navbar-expand-xl > .container,
-    .navbar-expand-xl > .container-fluid {
+    .navbar-expand-xl > .container-fluid,
+    .navbar-expand-xl > .App {
       flex-wrap: nowrap; }
     .navbar-expand-xl .navbar-collapse {
       display: flex !important;
@@ -2852,7 +2910,8 @@ tbody.collapse.show {
   flex-flow: row nowrap;
   justify-content: flex-start; }
   .navbar-expand > .container,
-  .navbar-expand > .container-fluid {
+  .navbar-expand > .container-fluid,
+  .navbar-expand > .App {
     padding-right: 0;
     padding-left: 0; }
   .navbar-expand .navbar-nav {
@@ -2866,7 +2925,8 @@ tbody.collapse.show {
       padding-right: 0.5rem;
       padding-left: 0.5rem; }
   .navbar-expand > .container,
-  .navbar-expand > .container-fluid {
+  .navbar-expand > .container-fluid,
+  .navbar-expand > .App {
     flex-wrap: nowrap; }
   .navbar-expand .navbar-collapse {
     display: flex !important;
@@ -3222,7 +3282,7 @@ tbody.collapse.show {
   .badge:empty {
     display: none; }
 
-.btn .badge {
+.btn .badge, .ChallengeItem .badge {
   position: relative;
   top: -1px; }
 
@@ -4163,7 +4223,7 @@ button.bg-dark:focus {
 .border-right {
   border-right: 1px solid #dee2e6 !important; }
 
-.border-bottom {
+.border-bottom, .App-header {
   border-bottom: 1px solid #dee2e6 !important; }
 
 .border-left {
@@ -4202,7 +4262,7 @@ button.bg-dark:focus {
 .border-danger {
   border-color: #dc3545 !important; }
 
-.border-light {
+.border-light, .App-header {
   border-color: #f8f9fa !important; }
 
 .border-dark {
@@ -5911,7 +5971,7 @@ button.bg-dark:focus {
 .font-italic {
   font-style: italic !important; }
 
-.text-white {
+.text-white, .ChallengeItem, .ChallengeDetail .card {
   color: #fff !important; }
 
 .text-primary {
@@ -5956,10 +6016,10 @@ a.text-danger:hover, a.text-danger:focus {
 a.text-light:hover, a.text-light:focus {
   color: #dae0e5 !important; }
 
-.text-dark {
+.text-dark, .App-header, h1.App-title {
   color: #343a40 !important; }
 
-a.text-dark:hover, a.text-dark:focus {
+a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   color: #1d2124 !important; }
 
 .text-muted {
@@ -5984,7 +6044,7 @@ a.text-dark:hover, a.text-dark:focus {
   *::after {
     text-shadow: none !important;
     box-shadow: none !important; }
-  a:not(.btn) {
+  a:not(.btn):not(.ChallengeItem) {
     text-decoration: underline; }
   abbr[title]::after {
     content: " (" attr(title) ")"; }
@@ -6026,13 +6086,55 @@ a.text-dark:hover, a.text-dark:focus {
   .table-bordered td {
     border: 1px solid #ddd !important; } }
 
+.text-white, .ChallengeItem, .ChallengeDetail .card {
+  fill: white; }
+
 html {
-  background-color: black; }
+  /*background-color: gray;*/ }
 
 body {
-  border: thin solid black;
-  max-width: 640px;
-  height: 800px;
-  max-height: 920px;
+  background: url("/iphone6.png") top center no-repeat white;
+  background-color: white;
+  max-width: 380px;
+  height: 672px;
+  max-height: 672px;
   overflow: scroll;
-  margin: 0 auto !important; }
+  margin: 82px auto 0 auto !important;
+  padding: 2px; }
+
+/*============================ App.js styles*/
+.App {
+  margin: 0;
+  padding: 0; }
+
+.App-header {
+  padding: 15px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px; }
+
+h1.App-title {
+  font-size: 1.1rem;
+  text-align: center; }
+
+/*===================================== challenge styles */
+.ChallengeItem {
+  background-color: #6A82AD;
+  margin-bottom: 6px;
+  text-align: left; }
+
+.ChallengeListTitle {
+  font-size: 1.8rem;
+  font-weight: 300;
+  margin-bottom: 0;
+  padding-bottom: 0; }
+
+.ChallengeItem .StartDate {
+  padding-bottom: 6px; }
+
+.ChallengeDetail .card {
+  padding: 1em;
+  background-color: #6A82AD; }
+
+.ChallengeDescription {
+  margin-top: 1em;
+  padding: 1em; }

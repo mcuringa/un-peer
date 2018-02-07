@@ -1,21 +1,96 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
+$bg-blue: #6A82AD;
+
+
+.text-white {
+  fill: white;
+}
 
 html
 {
-  background-color: black;
+  /*background-color: gray;*/
 }
 
 body
 {
-	border: thin solid black;
-	max-width: 640px;
-	height: 800px;
-	max-height: 920px;
+  background: url('/iphone6.png') top center no-repeat white;
+  background-color: white;
+	max-width: 380px;
+	height: 672px;
+	max-height: 672px;
 	overflow: scroll;
-	margin: 0 auto !important;
+	margin: 82px auto 0 auto !important;
+  padding: 2px;
 }
+
 
 img {
   @extend .img-fluid;
 }
+
+
+
+/*============================ App.js styles*/
+.App {
+  @extend .container-fluid;
+  margin: 0;
+  padding: 0;
+}
+
+.App-header {
+  // @extend .bg-dark;
+  @extend .text-dark;
+  padding: 15px;
+  border-top-left-radius:3px;
+  border-top-right-radius:3px;
+  @extend .border-light;
+  @extend .border-bottom;
+}
+
+h1.App-title
+{
+  font-size: 1.1rem;
+  text-align: center;
+  @extend .text-dark;
+}
+
+
+/*===================================== challenge styles */
+
+.ChallengeItem
+{
+  @extend .btn;
+  @extend .btn-block;
+  @extend .text-white;
+  background-color: $bg-blue;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.ChallengeListTitle
+{
+  font-size: 1.8rem;
+  font-weight: 300;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+
+.ChallengeItem .StartDate
+{
+  padding-bottom: 6px;
+}
+
+.ChallengeDetail .card
+{
+  padding: 1em;
+  @extend .text-white;
+  background-color: $bg-blue;
+}
+
+.ChallengeDescription {
+  margin-top: 1em;
+  padding: 1em;
+}
+

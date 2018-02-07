@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 
 import {
   BrowserRouter as Router,
@@ -17,7 +16,7 @@ class App extends Component {
         <div>
           <div className="App">
             <header className="App-header">
-              <h1 className="App-title">United Nations Peer Challenges</h1>
+              <h1 className="App-title">UN Peer Challenges</h1>
             </header>
           </div>
           <section id="main">
