@@ -5,6 +5,8 @@ import dateFormat from 'dateformat';
 
 import FBUtil from "../FBUtil";
 
+const df = (d)=> dateFormat(d, "dd mmm yyyy");
+
 class ChallengeDetailScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -16,8 +18,7 @@ class ChallengeDetailScreen extends React.Component {
       challenge.id = id;
       challenge = doc.data();
       this.setState({"challenge": challenge});
-      console.log("loading challenge...");
-      console.log(challenge);
+
     });
     
 
@@ -26,13 +27,12 @@ class ChallengeDetailScreen extends React.Component {
 
 
   render() {
-    // const start = dateFormat(challenge.start, "dd mmm yyyy");
-    const start = "foo";
+
     return (
         <div className="ChallengeDetail" key={this.state.challenge.id}>
         
           <div className="card">
-            <div className="StartDate"><CalendarIcon/> {start}</div>
+            <div className="StartDate"><CalendarIcon/> {df(this.state.challenge.start)}</div>
             <h4>{this.state.challenge.title}</h4>
             
             <div className="row">
@@ -43,8 +43,8 @@ class ChallengeDetailScreen extends React.Component {
             <div className="row">
               <div className="col-5 text-right">Submitted by:</div>
             </div>
+            <ChallengeButtons />  
           </div>
-          
           <div className="ChallengeDescription">
             <h6>Description</h6>
             <p>{this.state.challenge.prompt}</p>
@@ -52,10 +52,22 @@ class ChallengeDetailScreen extends React.Component {
 
         </div>
 
+
       );
   }
 }
-
+const ChallengeButtons = (props) => {
+  return (
+    <div className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+      <div className="btn-group mr-2" role="group" aria-label="First group">
+        <button type="button" className="btn btn-primary">Info</button>  
+        <button type="button" className="btn btn-primary">Media</button>
+        <button type="button" className="btn btn-primary">Respond</button>
+        <button type="button" className="btn btn-primary">Rate</button>
+        <button type="button" className="btn btn-primary" disabled="disabled">Edit</button>
+      </div>
+    </div>);
+}
 
 
 export default ChallengeDetailScreen;

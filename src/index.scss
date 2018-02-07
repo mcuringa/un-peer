@@ -14,7 +14,7 @@ html
 
 body
 {
-  background: url('/iphone6.png') top center no-repeat white;
+/*  background: url('/iphone6.png') top center no-repeat white;
   background-color: white;
 	max-width: 380px;
 	height: 672px;
@@ -22,7 +22,7 @@ body
 	overflow: scroll;
 	margin: 82px auto 0 auto !important;
   padding: 2px;
-}
+*/}
 
 
 img {
@@ -33,25 +33,36 @@ img {
 
 /*============================ App.js styles*/
 .App {
-  @extend .container-fluid;
+  @extend .container;
   margin: 0;
   padding: 0;
+  max-width: 400px;
+  padding-top: 54px;
 }
 
 .App-header {
-  // @extend .bg-dark;
+  @extend .bg-light;
   @extend .text-dark;
-  padding: 15px;
-  border-top-left-radius:3px;
-  border-top-right-radius:3px;
   @extend .border-light;
   @extend .border-bottom;
+
 }
 
-h1.App-title
+.App-header-nav
 {
-  font-size: 1.1rem;
-  text-align: center;
+  @extend .navbar;
+  @extend .fixed-top;
+  @extend .navbar-light;
+  @extend .bg-light;
+  padding: 4px;
+  /*border-bottom: 1px solid gray;*/
+  box-shadow: 1px 1px 2px black;
+
+}
+
+.App-title
+{
+  font-size: 16px;
   @extend .text-dark;
 }
 
@@ -84,7 +95,7 @@ h1.App-title
 
 .ChallengeDetail .card
 {
-  padding: 1em;
+  /*padding: 1em;*/
   @extend .text-white;
   background-color: $bg-blue;
 }

@@ -450,26 +450,26 @@ pre {
   max-height: 340px;
   overflow-y: scroll; }
 
-.container {
+.container, .App {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto; }
   @media (min-width: 576px) {
-    .container {
+    .container, .App {
       max-width: 540px; } }
   @media (min-width: 768px) {
-    .container {
+    .container, .App {
       max-width: 720px; } }
   @media (min-width: 992px) {
-    .container {
+    .container, .App {
       max-width: 960px; } }
   @media (min-width: 1200px) {
-    .container {
+    .container, .App {
       max-width: 1140px; } }
 
-.container-fluid, .App {
+.container-fluid {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
@@ -2700,16 +2700,15 @@ tbody.collapse.show {
 .tab-content > .active {
   display: block; }
 
-.navbar {
+.navbar, .App-header-nav {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 1rem; }
-  .navbar > .container,
-  .navbar > .container-fluid,
-  .navbar > .App {
+  .navbar > .container, .App-header-nav > .container, .navbar > .App, .App-header-nav > .App,
+  .navbar > .container-fluid, .App-header-nav > .container-fluid {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -2771,9 +2770,8 @@ tbody.collapse.show {
   background-size: 100% 100%; }
 
 @media (max-width: 575.98px) {
-  .navbar-expand-sm > .container,
-  .navbar-expand-sm > .container-fluid,
-  .navbar-expand-sm > .App {
+  .navbar-expand-sm > .container, .navbar-expand-sm > .App,
+  .navbar-expand-sm > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2791,9 +2789,8 @@ tbody.collapse.show {
       .navbar-expand-sm .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-sm > .container,
-    .navbar-expand-sm > .container-fluid,
-    .navbar-expand-sm > .App {
+    .navbar-expand-sm > .container, .navbar-expand-sm > .App,
+    .navbar-expand-sm > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-sm .navbar-collapse {
       display: flex !important;
@@ -2805,9 +2802,8 @@ tbody.collapse.show {
       bottom: 100%; } }
 
 @media (max-width: 767.98px) {
-  .navbar-expand-md > .container,
-  .navbar-expand-md > .container-fluid,
-  .navbar-expand-md > .App {
+  .navbar-expand-md > .container, .navbar-expand-md > .App,
+  .navbar-expand-md > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2825,9 +2821,8 @@ tbody.collapse.show {
       .navbar-expand-md .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-md > .container,
-    .navbar-expand-md > .container-fluid,
-    .navbar-expand-md > .App {
+    .navbar-expand-md > .container, .navbar-expand-md > .App,
+    .navbar-expand-md > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-md .navbar-collapse {
       display: flex !important;
@@ -2839,9 +2834,8 @@ tbody.collapse.show {
       bottom: 100%; } }
 
 @media (max-width: 991.98px) {
-  .navbar-expand-lg > .container,
-  .navbar-expand-lg > .container-fluid,
-  .navbar-expand-lg > .App {
+  .navbar-expand-lg > .container, .navbar-expand-lg > .App,
+  .navbar-expand-lg > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2859,9 +2853,8 @@ tbody.collapse.show {
       .navbar-expand-lg .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-lg > .container,
-    .navbar-expand-lg > .container-fluid,
-    .navbar-expand-lg > .App {
+    .navbar-expand-lg > .container, .navbar-expand-lg > .App,
+    .navbar-expand-lg > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-lg .navbar-collapse {
       display: flex !important;
@@ -2873,9 +2866,8 @@ tbody.collapse.show {
       bottom: 100%; } }
 
 @media (max-width: 1199.98px) {
-  .navbar-expand-xl > .container,
-  .navbar-expand-xl > .container-fluid,
-  .navbar-expand-xl > .App {
+  .navbar-expand-xl > .container, .navbar-expand-xl > .App,
+  .navbar-expand-xl > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
 
@@ -2893,9 +2885,8 @@ tbody.collapse.show {
       .navbar-expand-xl .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-xl > .container,
-    .navbar-expand-xl > .container-fluid,
-    .navbar-expand-xl > .App {
+    .navbar-expand-xl > .container, .navbar-expand-xl > .App,
+    .navbar-expand-xl > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-xl .navbar-collapse {
       display: flex !important;
@@ -2909,9 +2900,8 @@ tbody.collapse.show {
 .navbar-expand {
   flex-flow: row nowrap;
   justify-content: flex-start; }
-  .navbar-expand > .container,
-  .navbar-expand > .container-fluid,
-  .navbar-expand > .App {
+  .navbar-expand > .container, .navbar-expand > .App,
+  .navbar-expand > .container-fluid {
     padding-right: 0;
     padding-left: 0; }
   .navbar-expand .navbar-nav {
@@ -2924,9 +2914,8 @@ tbody.collapse.show {
     .navbar-expand .navbar-nav .nav-link {
       padding-right: 0.5rem;
       padding-left: 0.5rem; }
-  .navbar-expand > .container,
-  .navbar-expand > .container-fluid,
-  .navbar-expand > .App {
+  .navbar-expand > .container, .navbar-expand > .App,
+  .navbar-expand > .container-fluid {
     flex-wrap: nowrap; }
   .navbar-expand .navbar-collapse {
     display: flex !important;
@@ -2937,36 +2926,36 @@ tbody.collapse.show {
     top: auto;
     bottom: 100%; }
 
-.navbar-light .navbar-brand {
+.navbar-light .navbar-brand, .App-header-nav .navbar-brand {
   color: rgba(0, 0, 0, 0.9); }
-  .navbar-light .navbar-brand:hover, .navbar-light .navbar-brand:focus {
+  .navbar-light .navbar-brand:hover, .App-header-nav .navbar-brand:hover, .navbar-light .navbar-brand:focus, .App-header-nav .navbar-brand:focus {
     color: rgba(0, 0, 0, 0.9); }
 
-.navbar-light .navbar-nav .nav-link {
+.navbar-light .navbar-nav .nav-link, .App-header-nav .navbar-nav .nav-link {
   color: rgba(0, 0, 0, 0.5); }
-  .navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus {
+  .navbar-light .navbar-nav .nav-link:hover, .App-header-nav .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus, .App-header-nav .navbar-nav .nav-link:focus {
     color: rgba(0, 0, 0, 0.7); }
-  .navbar-light .navbar-nav .nav-link.disabled {
+  .navbar-light .navbar-nav .nav-link.disabled, .App-header-nav .navbar-nav .nav-link.disabled {
     color: rgba(0, 0, 0, 0.3); }
 
-.navbar-light .navbar-nav .show > .nav-link,
-.navbar-light .navbar-nav .active > .nav-link,
-.navbar-light .navbar-nav .nav-link.show,
-.navbar-light .navbar-nav .nav-link.active {
+.navbar-light .navbar-nav .show > .nav-link, .App-header-nav .navbar-nav .show > .nav-link,
+.navbar-light .navbar-nav .active > .nav-link, .App-header-nav .navbar-nav .active > .nav-link,
+.navbar-light .navbar-nav .nav-link.show, .App-header-nav .navbar-nav .nav-link.show,
+.navbar-light .navbar-nav .nav-link.active, .App-header-nav .navbar-nav .nav-link.active {
   color: rgba(0, 0, 0, 0.9); }
 
-.navbar-light .navbar-toggler {
+.navbar-light .navbar-toggler, .App-header-nav .navbar-toggler {
   color: rgba(0, 0, 0, 0.5);
   border-color: rgba(0, 0, 0, 0.1); }
 
-.navbar-light .navbar-toggler-icon {
+.navbar-light .navbar-toggler-icon, .App-header-nav .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); }
 
-.navbar-light .navbar-text {
+.navbar-light .navbar-text, .App-header-nav .navbar-text {
   color: rgba(0, 0, 0, 0.5); }
-  .navbar-light .navbar-text a {
+  .navbar-light .navbar-text a, .App-header-nav .navbar-text a {
     color: rgba(0, 0, 0, 0.9); }
-    .navbar-light .navbar-text a:hover, .navbar-light .navbar-text a:focus {
+    .navbar-light .navbar-text a:hover, .App-header-nav .navbar-text a:hover, .navbar-light .navbar-text a:focus, .App-header-nav .navbar-text a:focus {
       color: rgba(0, 0, 0, 0.9); }
 
 .navbar-dark .navbar-brand {
@@ -4192,12 +4181,16 @@ button.bg-danger:hover,
 button.bg-danger:focus {
   background-color: #bd2130 !important; }
 
-.bg-light {
+.bg-light, .App-header, .App-header-nav {
   background-color: #f8f9fa !important; }
 
-a.bg-light:hover, a.bg-light:focus,
+a.bg-light:hover, a.App-header:hover, a.App-header-nav:hover, a.bg-light:focus, a.App-header:focus, a.App-header-nav:focus,
 button.bg-light:hover,
-button.bg-light:focus {
+button.App-header:hover,
+button.App-header-nav:hover,
+button.bg-light:focus,
+button.App-header:focus,
+button.App-header-nav:focus {
   background-color: #dae0e5 !important; }
 
 .bg-dark {
@@ -4845,7 +4838,7 @@ button.bg-dark:focus {
 .position-sticky {
   position: sticky !important; }
 
-.fixed-top {
+.fixed-top, .App-header-nav {
   position: fixed;
   top: 0;
   right: 0;
@@ -6016,10 +6009,10 @@ a.text-danger:hover, a.text-danger:focus {
 a.text-light:hover, a.text-light:focus {
   color: #dae0e5 !important; }
 
-.text-dark, .App-header, h1.App-title {
+.text-dark, .App-header, .App-title {
   color: #343a40 !important; }
 
-a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
+a.text-dark:hover, a.App-header:hover, a.App-title:hover, a.text-dark:focus, a.App-header:focus, a.App-title:focus {
   color: #1d2124 !important; }
 
 .text-muted {
@@ -6071,9 +6064,9 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
     size: a3; }
   body {
     min-width: 992px !important; }
-  .container {
+  .container, .App {
     min-width: 992px !important; }
-  .navbar {
+  .navbar, .App-header-nav {
     display: none; }
   .badge {
     border: 1px solid #000; }
@@ -6093,28 +6086,30 @@ html {
   /*background-color: gray;*/ }
 
 body {
-  background: url("/iphone6.png") top center no-repeat white;
+  /*  background: url('/iphone6.png') top center no-repeat white;
   background-color: white;
-  max-width: 380px;
-  height: 672px;
-  max-height: 672px;
-  overflow: scroll;
-  margin: 82px auto 0 auto !important;
-  padding: 2px; }
+	max-width: 380px;
+	height: 672px;
+	max-height: 672px;
+	overflow: scroll;
+	margin: 82px auto 0 auto !important;
+  padding: 2px;
+*/ }
 
 /*============================ App.js styles*/
 .App {
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  max-width: 400px;
+  padding-top: 54px; }
 
-.App-header {
-  padding: 15px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px; }
+.App-header-nav {
+  padding: 4px;
+  /*border-bottom: 1px solid gray;*/
+  box-shadow: 1px 1px 2px black; }
 
-h1.App-title {
-  font-size: 1.1rem;
-  text-align: center; }
+.App-title {
+  font-size: 16px; }
 
 /*===================================== challenge styles */
 .ChallengeItem {
@@ -6132,7 +6127,7 @@ h1.App-title {
   padding-bottom: 6px; }
 
 .ChallengeDetail .card {
-  padding: 1em;
+  /*padding: 1em;*/
   background-color: #6A82AD; }
 
 .ChallengeDescription {

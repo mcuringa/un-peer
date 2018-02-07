@@ -2,6 +2,7 @@
 const FBUtil =
 {
   db: null,
+  testMode: false,
   connect: ()=> {
     // console.log("connecting");
     // console.log("db: " + db);
@@ -20,6 +21,7 @@ const FBUtil =
     };
     firebase.initializeApp(firebaseConfig);
     FBUtil.db = firebase.firestore();
+
     return FBUtil.db;
 
   }
