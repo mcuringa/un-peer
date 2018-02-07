@@ -14,8 +14,10 @@ class ChallengeDetailScreen extends React.Component {
     let challenge = {};
     db.collection("challenges").doc(id).get().then((doc) => {
       challenge.id = id;
-      challenge = doc.data;
+      challenge = doc.data();
       this.setState({"challenge": challenge});
+      console.log("loading challenge...");
+      console.log(challenge);
     });
     
 
