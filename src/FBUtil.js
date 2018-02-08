@@ -37,7 +37,8 @@ const FBUtil =
     //     }
     //   });
 
-      throw("shouldn't get here");
+    // throw("shouldn't get here");
+    return FBUtil.db;
 
   }
 
