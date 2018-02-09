@@ -5,6 +5,8 @@ import dateFormat from 'dateformat';
 import _ from "lodash";
 
 import FBUtil from "../FBUtil";
+import {User, Challenge, ChallengeDB} from "./Challenge.js"
+
 
 
 class ChallengeListItem extends React.Component {
@@ -19,7 +21,7 @@ class ChallengeListItem extends React.Component {
 
     return (
       <Link to={`/challenge/${challenge.id}`}
-        key={challenge.id} className="ChallengeItem">
+         className="ChallengeItem">
         <div className="StartDate"><CalendarIcon/> {start}</div>
         <p className="ChallengeListTitle">{challenge.title}</p>
         <p>Submitted by: {challenge.owner.first} {challenge.owner.last}</p>
@@ -33,30 +35,18 @@ class ChallengeListScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {challenges: []};
-
-    let db = FBUtil.connect();
-    db.collection("challenges").get().then((querySnapshot) => {
-      let challenges = [];
-      querySnapshot.forEach((doc) => {
-        let c = {id: doc.id};
-        c = _.merge(c, doc.data());
-        challenges.push(c);
-      });
-      this.setState({"challenges": challenges});
-    });
+    ChallengeDB.findAll((challenges)=>{this.setState({challenges: challenges})});
   
   }
 
   render() {
     const t = this.state.challenges.map((challenge) => {
-      return (<ChallengeListItem challenge={challenge} />);
+      return (<ChallengeListItem key={challenge.id} challenge={challenge} />);
     });
 
     return (<div className="ChallengeList">{t}</div>);
   }
 }
-
-
 
 
 export default ChallengeListScreen;

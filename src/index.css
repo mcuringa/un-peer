@@ -450,23 +450,23 @@ pre {
   max-height: 340px;
   overflow-y: scroll; }
 
-.container, .App {
+.container {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto; }
   @media (min-width: 576px) {
-    .container, .App {
+    .container {
       max-width: 540px; } }
   @media (min-width: 768px) {
-    .container, .App {
+    .container {
       max-width: 720px; } }
   @media (min-width: 992px) {
-    .container, .App {
+    .container {
       max-width: 960px; } }
   @media (min-width: 1200px) {
-    .container, .App {
+    .container {
       max-width: 1140px; } }
 
 .container-fluid {
@@ -2700,15 +2700,15 @@ tbody.collapse.show {
 .tab-content > .active {
   display: block; }
 
-.navbar, .App-header-nav {
+.navbar {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 1rem; }
-  .navbar > .container, .App-header-nav > .container, .navbar > .App, .App-header-nav > .App,
-  .navbar > .container-fluid, .App-header-nav > .container-fluid {
+  .navbar > .container,
+  .navbar > .container-fluid {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -2770,7 +2770,7 @@ tbody.collapse.show {
   background-size: 100% 100%; }
 
 @media (max-width: 575.98px) {
-  .navbar-expand-sm > .container, .navbar-expand-sm > .App,
+  .navbar-expand-sm > .container,
   .navbar-expand-sm > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
@@ -2789,7 +2789,7 @@ tbody.collapse.show {
       .navbar-expand-sm .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-sm > .container, .navbar-expand-sm > .App,
+    .navbar-expand-sm > .container,
     .navbar-expand-sm > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-sm .navbar-collapse {
@@ -2802,7 +2802,7 @@ tbody.collapse.show {
       bottom: 100%; } }
 
 @media (max-width: 767.98px) {
-  .navbar-expand-md > .container, .navbar-expand-md > .App,
+  .navbar-expand-md > .container,
   .navbar-expand-md > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
@@ -2821,7 +2821,7 @@ tbody.collapse.show {
       .navbar-expand-md .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-md > .container, .navbar-expand-md > .App,
+    .navbar-expand-md > .container,
     .navbar-expand-md > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-md .navbar-collapse {
@@ -2834,7 +2834,7 @@ tbody.collapse.show {
       bottom: 100%; } }
 
 @media (max-width: 991.98px) {
-  .navbar-expand-lg > .container, .navbar-expand-lg > .App,
+  .navbar-expand-lg > .container,
   .navbar-expand-lg > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
@@ -2853,7 +2853,7 @@ tbody.collapse.show {
       .navbar-expand-lg .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-lg > .container, .navbar-expand-lg > .App,
+    .navbar-expand-lg > .container,
     .navbar-expand-lg > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-lg .navbar-collapse {
@@ -2866,7 +2866,7 @@ tbody.collapse.show {
       bottom: 100%; } }
 
 @media (max-width: 1199.98px) {
-  .navbar-expand-xl > .container, .navbar-expand-xl > .App,
+  .navbar-expand-xl > .container,
   .navbar-expand-xl > .container-fluid {
     padding-right: 0;
     padding-left: 0; } }
@@ -2885,7 +2885,7 @@ tbody.collapse.show {
       .navbar-expand-xl .navbar-nav .nav-link {
         padding-right: 0.5rem;
         padding-left: 0.5rem; }
-    .navbar-expand-xl > .container, .navbar-expand-xl > .App,
+    .navbar-expand-xl > .container,
     .navbar-expand-xl > .container-fluid {
       flex-wrap: nowrap; }
     .navbar-expand-xl .navbar-collapse {
@@ -2900,7 +2900,7 @@ tbody.collapse.show {
 .navbar-expand {
   flex-flow: row nowrap;
   justify-content: flex-start; }
-  .navbar-expand > .container, .navbar-expand > .App,
+  .navbar-expand > .container,
   .navbar-expand > .container-fluid {
     padding-right: 0;
     padding-left: 0; }
@@ -2914,7 +2914,7 @@ tbody.collapse.show {
     .navbar-expand .navbar-nav .nav-link {
       padding-right: 0.5rem;
       padding-left: 0.5rem; }
-  .navbar-expand > .container, .navbar-expand > .App,
+  .navbar-expand > .container,
   .navbar-expand > .container-fluid {
     flex-wrap: nowrap; }
   .navbar-expand .navbar-collapse {
@@ -2926,36 +2926,36 @@ tbody.collapse.show {
     top: auto;
     bottom: 100%; }
 
-.navbar-light .navbar-brand, .App-header-nav .navbar-brand {
+.navbar-light .navbar-brand {
   color: rgba(0, 0, 0, 0.9); }
-  .navbar-light .navbar-brand:hover, .App-header-nav .navbar-brand:hover, .navbar-light .navbar-brand:focus, .App-header-nav .navbar-brand:focus {
+  .navbar-light .navbar-brand:hover, .navbar-light .navbar-brand:focus {
     color: rgba(0, 0, 0, 0.9); }
 
-.navbar-light .navbar-nav .nav-link, .App-header-nav .navbar-nav .nav-link {
+.navbar-light .navbar-nav .nav-link {
   color: rgba(0, 0, 0, 0.5); }
-  .navbar-light .navbar-nav .nav-link:hover, .App-header-nav .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus, .App-header-nav .navbar-nav .nav-link:focus {
+  .navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus {
     color: rgba(0, 0, 0, 0.7); }
-  .navbar-light .navbar-nav .nav-link.disabled, .App-header-nav .navbar-nav .nav-link.disabled {
+  .navbar-light .navbar-nav .nav-link.disabled {
     color: rgba(0, 0, 0, 0.3); }
 
-.navbar-light .navbar-nav .show > .nav-link, .App-header-nav .navbar-nav .show > .nav-link,
-.navbar-light .navbar-nav .active > .nav-link, .App-header-nav .navbar-nav .active > .nav-link,
-.navbar-light .navbar-nav .nav-link.show, .App-header-nav .navbar-nav .nav-link.show,
-.navbar-light .navbar-nav .nav-link.active, .App-header-nav .navbar-nav .nav-link.active {
+.navbar-light .navbar-nav .show > .nav-link,
+.navbar-light .navbar-nav .active > .nav-link,
+.navbar-light .navbar-nav .nav-link.show,
+.navbar-light .navbar-nav .nav-link.active {
   color: rgba(0, 0, 0, 0.9); }
 
-.navbar-light .navbar-toggler, .App-header-nav .navbar-toggler {
+.navbar-light .navbar-toggler {
   color: rgba(0, 0, 0, 0.5);
   border-color: rgba(0, 0, 0, 0.1); }
 
-.navbar-light .navbar-toggler-icon, .App-header-nav .navbar-toggler-icon {
+.navbar-light .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); }
 
-.navbar-light .navbar-text, .App-header-nav .navbar-text {
+.navbar-light .navbar-text {
   color: rgba(0, 0, 0, 0.5); }
-  .navbar-light .navbar-text a, .App-header-nav .navbar-text a {
+  .navbar-light .navbar-text a {
     color: rgba(0, 0, 0, 0.9); }
-    .navbar-light .navbar-text a:hover, .App-header-nav .navbar-text a:hover, .navbar-light .navbar-text a:focus, .App-header-nav .navbar-text a:focus {
+    .navbar-light .navbar-text a:hover, .navbar-light .navbar-text a:focus {
       color: rgba(0, 0, 0, 0.9); }
 
 .navbar-dark .navbar-brand {
@@ -4181,16 +4181,14 @@ button.bg-danger:hover,
 button.bg-danger:focus {
   background-color: #bd2130 !important; }
 
-.bg-light, .App-header, .App-header-nav {
+.bg-light, .App-header {
   background-color: #f8f9fa !important; }
 
-a.bg-light:hover, a.App-header:hover, a.App-header-nav:hover, a.bg-light:focus, a.App-header:focus, a.App-header-nav:focus,
+a.bg-light:hover, a.App-header:hover, a.bg-light:focus, a.App-header:focus,
 button.bg-light:hover,
 button.App-header:hover,
-button.App-header-nav:hover,
 button.bg-light:focus,
-button.App-header:focus,
-button.App-header-nav:focus {
+button.App-header:focus {
   background-color: #dae0e5 !important; }
 
 .bg-dark {
@@ -4838,7 +4836,7 @@ button.bg-dark:focus {
 .position-sticky {
   position: sticky !important; }
 
-.fixed-top, .App-header-nav {
+.fixed-top {
   position: fixed;
   top: 0;
   right: 0;
@@ -6009,10 +6007,10 @@ a.text-danger:hover, a.text-danger:focus {
 a.text-light:hover, a.text-light:focus {
   color: #dae0e5 !important; }
 
-.text-dark, .App-header, .App-title {
+.text-dark, .App-header {
   color: #343a40 !important; }
 
-a.text-dark:hover, a.App-header:hover, a.App-title:hover, a.text-dark:focus, a.App-header:focus, a.App-title:focus {
+a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   color: #1d2124 !important; }
 
 .text-muted {
@@ -6064,9 +6062,9 @@ a.text-dark:hover, a.App-header:hover, a.App-title:hover, a.text-dark:focus, a.A
     size: a3; }
   body {
     min-width: 992px !important; }
-  .container, .App {
+  .container {
     min-width: 992px !important; }
-  .navbar, .App-header-nav {
+  .navbar {
     display: none; }
   .badge {
     border: 1px solid #000; }
@@ -6082,34 +6080,47 @@ a.text-dark:hover, a.App-header:hover, a.App-title:hover, a.text-dark:focus, a.A
 .text-white, .ChallengeItem, .ChallengeDetail .card {
   fill: white; }
 
-html {
-  /*background-color: gray;*/ }
-
-body {
-  /*  background: url('/iphone6.png') top center no-repeat white;
-  background-color: white;
-	max-width: 380px;
-	height: 672px;
-	max-height: 672px;
-	overflow: scroll;
-	margin: 82px auto 0 auto !important;
-  padding: 2px;
-*/ }
-
 /*============================ App.js styles*/
+.container {
+  max-width: 512px;
+  margin: 0 auto; }
+
 .App {
-  margin: 0;
   padding: 0;
-  max-width: 400px;
-  padding-top: 54px; }
+  padding-top: 36px;
+  padding-bottom: 56px; }
 
-.App-header-nav {
-  padding: 4px;
-  /*border-bottom: 1px solid gray;*/
-  box-shadow: 1px 1px 2px black; }
+.App-header {
+  height: 30px;
+  box-shadow: 0px 2px 2px black;
+  text-align: center;
+  line-height: 30px;
+  font-size: 18px; }
 
-.App-title {
-  font-size: 16px; }
+.App-footer-toolbar, .App-footer-toolbar .btn-group {
+  max-width: 512px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #e9ecef; }
+
+.App-footer-toolbar .btn, .App-footer-toolbar .ChallengeItem {
+  margin: 0;
+  color: #6c757d;
+  font-size: 10px;
+  border-right: 1px solid #ced4da; }
+
+.App-footer-toolbar .btn:last-child, .App-footer-toolbar .ChallengeItem:last-child {
+  border-right-style: none; }
+
+.App-footer {
+  padding: 0;
+  height: 54px; }
+
+.App-footer-toolbar svg {
+  fill: #6c757d;
+  height: 20.8px;
+  width: 18.2px; }
 
 /*===================================== challenge styles */
 .ChallengeItem {

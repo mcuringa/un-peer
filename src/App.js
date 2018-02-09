@@ -5,50 +5,83 @@ import {
   Route,
   Link
 } from 'react-router-dom'
+import {
+  HomeIcon, 
+  BellIcon,
+  CalendarIcon,
+  PersonIcon,
+  BriefcaseIcon,
+  BookmarkIcon,
+  FileTextIcon
 
-import ChallengeListScreen from './challenges/Challenges.js';
+} from 'react-octicons';
+
+import ChallengeListScreen from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 
 class App extends Component {
   render() {
     return (
       <Router>
-        <div className="App">
-          <header className="App-header container">
-            <nav className="App-header-nav">
-              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-              </button>
-               <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
-                <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-                  <li className="nav-item active">
-                    <Link className="nav-link" to="/">Dashboard</Link>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#">Current Challenge</a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#">Review Challenge</a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#">Suggest a Challenge</a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#">Archives</a>
-                  </li>
-                </ul>
-              </div>
-              <div className="App-title navbar-brand">UN Peer Challenges</div>
-            </nav>
-          </header>
+        <div className="App container">
+          <Header />
           <section id="main">
             <Route exact path="/" component={ChallengeListScreen}/>
             <Route path="/challenge/:id" component={ChallengeDetailScreen} />
           </section>
+          <Footer />
         </div>
     </Router>
     );
   }
+}
+
+const Header = (props)=>{
+  return (
+    <header className="App-header container fixed-top">
+      <div className="row">
+        <div className="App-home col-2">
+          <Link to="/"><HomeIcon /></Link>
+        </div>
+        <div className="App-title col-8">UN Peer Challenges</div>
+        <div className="App-alert col-2 text-right"><BellIcon /></div>
+      </div>
+    </header>
+    );
+}
+
+const Footer = (props)=>{
+  return (
+    <footer className="App-footer container fixed-bottom">
+      <div className="App-footer-toolbar btn-toolbar" role="toolbar" aria-label="Bottom navigation">
+        <div className="btn-group btn-group-justified mr-2" role="group" aria-label="Bottom navigation">
+          
+          <Link to="/" className="btn btn-btn-light btn-block">
+            <CalendarIcon /><br/>
+            Calendar
+          </Link>
+          <Link to="/" className="btn btn-btn-light btn-block">
+            <FileTextIcon /><br/>
+            Submit
+          </Link>
+          <Link to="/" className="btn btn-btn-light btn-block">
+            <BriefcaseIcon /><br/>
+            Archives
+          </Link>
+          <Link to="/" className="btn btn-btn-light btn-block">
+            <BookmarkIcon /><br/>
+            Bookmarks
+          </Link>
+          <Link to="/" className="btn btn-btn-light btn-block">
+            <PersonIcon /><br/>
+            Profile
+          </Link>
+        </div>
+      </div>
+
+    </footer>
+  );
+
 }
 
 export default App;

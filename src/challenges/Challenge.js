@@ -1,4 +1,6 @@
 import FBUtil from "../FBUtil";
+import _ from "lodash";
+
 
 const User = {first:"",last:"",email:""};
 const Challenge = {
@@ -12,18 +14,46 @@ const Challenge = {
 };
 
 const ChallengeDB = {
+  loaded: false,
+  cache: {},
 
-  loadChallenge(id, exec) {
+  findAll(onload) {
     let db = FBUtil.connect();
-    let challenge = {};
-    let owner = {};
+    let challenges = [];
+    db.collection("challenges").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        let c = {id: doc.id};
+        c = _.merge(c, doc.data());
+        ChallengeDB.cache[c.id] = c;
+        challenges.push(c);
+      });
+
+      onload(challenges);
+    });
+  },
+
+
+  loadChallenge(id, onload) {
+    
+    let challenge = ChallengeDB.cache[id];
+    if(challenge)
+    {
+      console.log("challenge in cache");
+      console.log(challenge);
+      onload(challenge);
+      return;
+    }
+    challenge = {};
+
+    let db = FBUtil.connect();
     db.collection("challenges").doc(id)
       .get()
       .then( async (doc)=>{
         challenge.id = id;
-        challenge = await doc.data();
-        const owner = challenge.owner;
-        exec(challenge);
+        challenge = doc.data();
+        ChallengeDB.cache[id] = challenge;
+        onload(challenge);
+
       });
   }
 };
