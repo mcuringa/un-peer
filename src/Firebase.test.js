@@ -27,9 +27,28 @@ import FBUtil from "./FBUtil";
 
 
 
-// it("connects to firebase", ()=> {
-//   let db = connect();
-// });
+it("load full challenge", ()=> {
+  let db = FBUtil.connect();
+  const id = "V5aUlDz4D4ZksPC577h1";
+  console.log("start get one");
+  db.collection("challenges").doc(id)
+    .get()
+    .then(async (doc)=>{
+      challenge.id = id;
+      console.log("start title");
+      challenge = await doc.data();
+      console.log(challenge.title);
+      console.log("end title");
+      owner = await challenge.owner;
+      console.log(owner);
+
+    });
+
+  console.log("end get one");
+
+
+
+});
 
 it("loads data", ()=> {
   let db = FBUtil.connect();

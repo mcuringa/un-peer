@@ -6,8 +6,10 @@ const FBUtil =
   connect: ()=> {
     // console.log("connecting");
     // console.log("db: " + db);
-    if(FBUtil.db)
+    if(FBUtil.db) {
       return FBUtil.db;
+    }
+
     const firebase = require("firebase");
     require("firebase/firestore");
 
@@ -21,23 +23,6 @@ const FBUtil =
     };
     firebase.initializeApp(firebaseConfig);
     FBUtil.db = firebase.firestore();
-
-
-    // firebase.firestore().enablePersistence()
-    //   .then(function() {
-    //     FBUtil.db = firebase.firestore();
-    //     console.log("db initialized");
-    //     return FBUtil.db;
-    //   })
-    //   .catch(function(err) {
-    //     if (err.code == 'failed-precondition') {
-    //       console.log("oops...multiple windows, can't store data locally.");
-    //     } else if (err.code == 'unimplemented') {
-    //       console.log("browser doesn't support local storage.");
-    //     }
-    //   });
-
-    // throw("shouldn't get here");
     return FBUtil.db;
 
   }

@@ -40,12 +40,11 @@ class ChallengeListScreen extends React.Component {
       querySnapshot.forEach((doc) => {
         let c = {id: doc.id};
         c = _.merge(c, doc.data());
-        // console.log(c);
         challenges.push(c);
-        console.log(challenges.length);
       });
       this.setState({"challenges": challenges});
-    });    
+    });
+  
   }
 
   render() {
