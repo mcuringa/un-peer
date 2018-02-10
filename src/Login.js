@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./Login.css";
+import data from './Users.json';
 
 export default class Login extends Component {
 
@@ -24,7 +25,22 @@ export default class Login extends Component {
     }
 
     handleSubmit = event => {
-        alert ("Hi");
+        let loggedIn = false;
+
+        let usernameInput = this.state.email.trim();
+        let passwordInput = this.state.password.trim();
+
+        data.map(function(item){
+            if ((item.username.trim() === usernameInput) && (item.password.trim() === passwordInput)) {
+                loggedIn = true;
+            }
+        });
+        if (loggedIn === true) {
+            alert("OK");
+        }
+        else {
+            alert("ERROR");
+        }
         event.preventDefault();
     }
 
