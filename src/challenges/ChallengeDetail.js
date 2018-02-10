@@ -21,7 +21,7 @@ class ChallengeDetailScreen extends React.Component {
 
   componentWillMount() {
     const id = this.props.match.params.id;
-    ChallengeDB.loadChallenge(id,(c)=>{
+    ChallengeDB.get(id,(c)=>{
       this.setState({"owner": c.owner});
       this.setState({challenge: c});
     });

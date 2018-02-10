@@ -1,13 +1,15 @@
 // ChallengeDB.test.js
-import ChallengeDB from "./ChallengeDB";
+import {ChallengeDB} from "./Challenge";
 
 it("foo",()=>{console.log("foo")});
 
-// it("findAll test", ()=>{
-//   ChallengeDB.findAll((c)=> {
-//     console.log(c.title);
-//     });
-// });
+it("findAll test", ()=>{
+  ChallengeDB.findAll((c)=> {
+    console.log("found");
+    console.log(c[0].title);
+    console.log("end found");
+    });
+});
 
 // it("test addChallenge", ()=>{
 //   let c =     {

@@ -1,5 +1,6 @@
 import FBUtil from "../FBUtil";
 import _ from "lodash";
+const firebase = require("firebase");
 
 
 const User = {first:"",last:"",email:""};
@@ -14,8 +15,15 @@ const Challenge = {
 };
 
 const ChallengeDB = {
+  cacheDate: null,
   loaded: false,
   cache: {},
+
+  slug(title) {
+    return title.toLowerCase()
+        .replace(/[^\w ]+/g,'')
+        .replace(/ +/g,'-');
+  },
 
   findAll(onload) {
     let db = FBUtil.connect();
@@ -26,20 +34,50 @@ const ChallengeDB = {
         c = _.merge(c, doc.data());
         ChallengeDB.cache[c.id] = c;
         challenges.push(c);
+        ChallengeDB.cacheDate = new Date();
       });
 
       onload(challenges);
     });
   },
 
+  save: (c)=> {
 
-  loadChallenge(id, onload) {
+    if(_.isNil(c.id) || _.isEmpty(c.id))
+      ChallengeDB.add(c);
+    else
+      ChallengeDB.set(c);
+
+  },
+  set(c) {
+    let db = FBUtil.connect();
+    c.modified = firebase.firestore.FieldValue.serverTimestamp();
+    db.collection("challenges").doc(c.id).set(c);
+  },
+
+  add(c) {
+    c.id = ChallengeDB.slug(c.title);
+    c.created = firebase.firestore.FieldValue.serverTimestamp();
+
+    let count = 0;
+    const saveNoConflict = (conflict)=> {
+      if(_.isNull(conflict))
+        ChallengeDB.set(c);
+      else {
+        count++;
+        c.id = c.id + count;
+        ChallengeDB.get(c.id, saveNoConflict);
+      }
+    }
+
+    ChallengeDB.get(c.id, saveNoConflict);
+  },
+
+  get(id, onload) {
     
     let challenge = ChallengeDB.cache[id];
     if(challenge)
     {
-      console.log("challenge in cache");
-      console.log(challenge);
       onload(challenge);
       return;
     }
@@ -51,7 +89,8 @@ const ChallengeDB = {
       .then( async (doc)=>{
         challenge.id = id;
         challenge = doc.data();
-        ChallengeDB.cache[id] = challenge;
+        if(challenge) //don't cache nulls
+          ChallengeDB.cache[id] = challenge;
         onload(challenge);
 
       });

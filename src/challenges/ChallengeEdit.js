@@ -20,22 +20,11 @@ class ChallengeFormScreen extends React.Component {
     let db = FBUtil.connect();
     let challenge = {};
     let owner = {};
-    db.collection("challenges").doc(id)
-      .get()
-      .then( (doc)=>{
-        challenge.id = id;
-        challenge = doc.data();
-        const owner = challenge.owner;
-        this.setState({"challenge": challenge});
-        this.setState({"owner": owner});
-
-      });
   }
 
   render() {
     return (
       <div className="ChallengeDetail" key={this.state.challenge.id}>
-        <ChallengeTitle challenge={this.state.challenge} owner={this.state.owner} />
       </div>);
   }
 }
