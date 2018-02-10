@@ -22,6 +22,7 @@ const ChallengeDB = {
   slug(title) {
     return title.toLowerCase()
         .replace(/[^\w ]+/g,'')
+        .trim()
         .replace(/ +/g,'-');
   },
 
@@ -42,6 +43,7 @@ const ChallengeDB = {
   },
 
   save: (c)=> {
+    console.log("save called");
 
     if(_.isNil(c.id) || _.isEmpty(c.id))
       ChallengeDB.add(c);
@@ -50,6 +52,7 @@ const ChallengeDB = {
 
   },
   set(c) {
+    console.log("set called");
     let db = FBUtil.connect();
     c.modified = firebase.firestore.FieldValue.serverTimestamp();
     db.collection("challenges").doc(c.id).set(c);
@@ -57,20 +60,26 @@ const ChallengeDB = {
 
   add(c) {
     c.id = ChallengeDB.slug(c.title);
-    c.created = firebase.firestore.FieldValue.serverTimestamp();
+    // console.log("firebase: " + firebase);
+    // console.log("firebase.firestore: " + firebase.firestore);
+    // console.log("firebase.firestore.FieldValue: " + firebase.firestore.FieldValue);
+    c.created = new Date();
+    // c.created = firebase.firestore.FieldValue.serverTimestamp();
+    ChallengeDB.set(c);
+    // let count = 0;
+    // const saveNoConflict = (conflict)=> {
+    //   console.log("saveNoConflict called");
+    //   console.log("conflict": conflict);
+    //   if(_.isNull(conflict))
+    //     ChallengeDB.set(c);
+    //   else {
+    //     count++;
+    //     c.id = c.id + count;
+    //     ChallengeDB.get(c.id, saveNoConflict);
+    //   }
+    // }
 
-    let count = 0;
-    const saveNoConflict = (conflict)=> {
-      if(_.isNull(conflict))
-        ChallengeDB.set(c);
-      else {
-        count++;
-        c.id = c.id + count;
-        ChallengeDB.get(c.id, saveNoConflict);
-      }
-    }
-
-    ChallengeDB.get(c.id, saveNoConflict);
+    // ChallengeDB.get(c.id, saveNoConflict);
   },
 
   get(id, onload) {
