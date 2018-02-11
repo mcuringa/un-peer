@@ -2,7 +2,11 @@ import React from 'react';
 import _ from "lodash";
 import {CalendarIcon} from 'react-octicons';
 import dateFormat from 'dateformat';
-import { Link } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
 
 import FBUtil from "../FBUtil";
 import {User, Challenge, ChallengeDB} from "./Challenge.js"
@@ -17,6 +21,10 @@ class ChallengeDetailScreen extends React.Component {
       challenge: {id: id}, 
       owner: User
     };
+    // ChallengeDB.get(id,(c)=>{
+    //   this.setState({"owner": c.owner});
+    //   this.setState({challenge: c});
+    // });
   }
 
   componentWillMount() {
@@ -62,7 +70,7 @@ const ChallengeButtons = (props) => {
         <button type="button" className="btn btn-primary">Media</button>
         <button type="button" className="btn btn-primary">Respond</button>
         <button type="button" className="btn btn-primary">Rate</button>
-        <Link className="btn btn-primary" to="/challenge/{props.id}/edit">Edit</Link>
+        <Link className="btn btn-primary" to="/challenge/{props.id}/edit" edit="true">Edit</Link>
       </div>
     </div>);
 }

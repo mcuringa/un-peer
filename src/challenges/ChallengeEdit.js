@@ -8,7 +8,7 @@ import {User, Challenge} from "./Challenge.js"
 import FBUtil from "../FBUtil";
 
 
-class ChallengeFormScreen extends React.Component {
+class ChallengeEditScreen extends React.Component {
   constructor(props) {
     super(props);
     const id = this.props.match.params.id || "";
@@ -16,15 +16,20 @@ class ChallengeFormScreen extends React.Component {
       challenge: {id: id}, 
       owner: User
     };
-
-    let db = FBUtil.connect();
-    let challenge = {};
-    let owner = {};
   }
+
+  // componentWillMount() {
+  //   const id = this.props.match.params.id;
+  //   ChallengeDB.get(id,(c)=>{
+  //     this.setState({"owner": c.owner});
+  //     this.setState({challenge: c});
+  //   });
 
   render() {
     return (
-      <div className="ChallengeDetail" key={this.state.challenge.id}>
+      <div>Edit Challenge
       </div>);
   }
 }
+
+export default ChallengeEditScreen;
