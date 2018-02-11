@@ -29,6 +29,7 @@ const ChallengeDB = {
   findAll(onload) {
     let db = FBUtil.connect();
     let challenges = [];
+    
     db.collection("challenges").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         let c = {id: doc.id};
@@ -36,10 +37,10 @@ const ChallengeDB = {
         ChallengeDB.cache[c.id] = c;
         challenges.push(c);
         ChallengeDB.cacheDate = new Date();
-      });
-
+      });    
       onload(challenges);
     });
+    
   },
 
   save: (c)=> {
@@ -58,28 +59,36 @@ const ChallengeDB = {
     db.collection("challenges").doc(c.id).set(c);
   },
 
+  uniqueId: async (id)=> {
+    let db = FBUtil.connect();
+    let count = 0;
+    let doc = await db.collection("challenges").doc(id).get();
+    let exists = await doc.exists;
+
+    while(exists) {
+      count++;
+      doc = await db.collection("challenges").doc(`${id}_${count}`).get();
+      exists = await doc.exists;
+    }
+    if(count > 0)
+      id = `${id}_${count}`;
+    return id;
+  },
+
   add(c) {
     c.id = ChallengeDB.slug(c.title);
-    // console.log("firebase: " + firebase);
-    // console.log("firebase.firestore: " + firebase.firestore);
-    // console.log("firebase.firestore.FieldValue: " + firebase.firestore.FieldValue);
-    c.created = new Date();
-    // c.created = firebase.firestore.FieldValue.serverTimestamp();
-    ChallengeDB.set(c);
-    // let count = 0;
-    // const saveNoConflict = (conflict)=> {
-    //   console.log("saveNoConflict called");
-    //   console.log("conflict": conflict);
-    //   if(_.isNull(conflict))
-    //     ChallengeDB.set(c);
-    //   else {
-    //     count++;
-    //     c.id = c.id + count;
-    //     ChallengeDB.get(c.id, saveNoConflict);
-    //   }
-    // }
+    ChallengeDB.uniqueId(c.id).then((id)=> {
+      c.id = id;
+      console.log("saving..." + c.id);
+      c.created = new Date();
+      // c.created = firebase.firestore.FieldValue.serverTimestamp();
+      ChallengeDB.set(c);
+    });
 
-    // ChallengeDB.get(c.id, saveNoConflict);
+  },
+  delete(id) {
+    let db = FBUtil.connect();
+    db.collection("challenges").doc(id).delete();
   },
 
   get(id, onload) {
