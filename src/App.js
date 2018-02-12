@@ -32,7 +32,7 @@ export default class App extends Component {
         <div className="App container">
           <Header/>
           <section id="main">
-            <Route exact path="/" component={ChallengeListScreen}/>
+            <Route exact path="/" component={Home}/>
             <Route path="/challenge/:id" component={ChallengeDetailScreen}/>
             <Route path="/challenge/:id/edit" component={ChallengeEditScreen} edit="true"/>
             <Route path="/challenge/new" component={ChallengeEditScreen} edit="false"/>
