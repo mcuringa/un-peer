@@ -23,7 +23,7 @@ import ChallengeEditScreen from './challenges/ChallengeEdit.js';
 
 import Login from './Login.js';
 
-let loggedIn = false;
+let loggedIn = true;
 
 export default class Home extends Component {
   render() {

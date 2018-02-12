@@ -21,10 +21,6 @@ class ChallengeDetailScreen extends React.Component {
       challenge: {id: id}, 
       owner: User
     };
-    // ChallengeDB.get(id,(c)=>{
-    //   this.setState({"owner": c.owner});
-    //   this.setState({challenge: c});
-    // });
   }
 
   componentWillMount() {
@@ -39,7 +35,7 @@ class ChallengeDetailScreen extends React.Component {
   render() {
     return (
       <div className="ChallengeDetail">
-        <ChallengeTitle challenge={this.state.challenge} owner={this.state.owner} />
+        <ChallengeTitle id={this.state.challenge.id} challenge={this.state.challenge} owner={this.state.owner} />
       </div>);
   }
 }
@@ -52,7 +48,7 @@ const ChallengeTitle = (props) => {
         <div className="StartDate"><CalendarIcon/> {df(props.challenge.start)}</div>
         <h4>title: {props.challenge.title}</h4>
         <div>By {props.owner.first} {props.owner.last}</div>
-        <ChallengeButtons />
+        <ChallengeButtons id={props.id} />
       </div>
       <div className="ChallengeDescription">
         <h6>Description</h6>
@@ -70,7 +66,7 @@ const ChallengeButtons = (props) => {
         <button type="button" className="btn btn-primary">Media</button>
         <button type="button" className="btn btn-primary">Respond</button>
         <button type="button" className="btn btn-primary">Rate</button>
-        <Link className="btn btn-primary" to="/challenge/{props.id}/edit" edit="true">Edit</Link>
+        <Link className="btn btn-primary" to={`/challenge/${props.id}/edit`} edit="true">Edit</Link>
       </div>
     </div>);
 }

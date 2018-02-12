@@ -42,6 +42,28 @@ const ChallengeDB = {
     });
     
   },
+  get(id, onload) {
+    
+    let challenge = ChallengeDB.cache[id];
+    if(challenge)
+    {
+      onload(challenge);
+      return;
+    }
+    challenge = {};
+
+    let db = FBUtil.connect();
+    db.collection("challenges").doc(id)
+      .get()
+      .then( async (doc)=>{
+        challenge = doc.data();
+        challenge.id = id;
+        if(challenge) //don't cache nulls
+          ChallengeDB.cache[id] = challenge;
+        onload(challenge);
+
+      });
+  },
 
   save: (c)=> {
     console.log("save called");
@@ -89,30 +111,8 @@ const ChallengeDB = {
   delete(id) {
     let db = FBUtil.connect();
     db.collection("challenges").doc(id).delete();
-  },
-
-  get(id, onload) {
-    
-    let challenge = ChallengeDB.cache[id];
-    if(challenge)
-    {
-      onload(challenge);
-      return;
-    }
-    challenge = {};
-
-    let db = FBUtil.connect();
-    db.collection("challenges").doc(id)
-      .get()
-      .then( async (doc)=>{
-        challenge.id = id;
-        challenge = doc.data();
-        if(challenge) //don't cache nulls
-          ChallengeDB.cache[id] = challenge;
-        onload(challenge);
-
-      });
   }
+
 };
 
 export {User};
