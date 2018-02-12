@@ -90,11 +90,12 @@ class ChallengeEditScreen extends React.Component {
           
           <fieldset>
             <legend>Schedule</legend>
+            
             <DatePicker id="start"
               value={c.start}
               label="challenge start"
               onChange={this.handleDateChange} />
-           
+
             <DatePicker id="responseDue"
               value={c.responseDue}
               label="response due"
@@ -104,6 +105,7 @@ class ChallengeEditScreen extends React.Component {
               value={c.ratingDue}
               label="rating due"
               onChange={this.handleDateChange} />
+
 
             <DatePicker id="end"
               value={c.end}
@@ -170,38 +172,27 @@ const TextInput = (props)=> {
 
 const DatePicker = (props)=> {
   // 📅 -- emoji?
-  const dFmt = (d)=> {
-    
-    // if(!d.getTime) { //duck-type checking
-    //   let x = new Date(d);
-    //   x.setMinutes(x.getMinutes() + new Date().getTimezoneOffset());
-    //   return dateFormat(x, "ddd mmm dd");
-    // } 
-      
-    return dateFormat(d, "ddd mmm dd");
-  }
-  const cFmt = (d)=> {
-    // if(!d.getTime)
-
-    return dateFormat(d, "yyyy-mm-dd");
-  }
+  const dFmt = (d)=> dateFormat(d, "ddd mmm dd");
+  const cFmt = (d)=> dateFormat(d, "yyyy-mm-dd");
 
   // console.log(props.label + "::" + props.value + "::" + new Date(props.value)) ;
 
   return (
-    <div className="input-group mb-3">
-     <label>{props.label}</label>
-      <div className="input-group-prepend">
-        <span className="input-group-text">{dFmt(props.value)}</span>
+    <div className="DatePicker form-group">
+      <label htmlFor={props.id}>{props.label}</label>
+      <div className="input-group mb-3">
+        <div className="input-group-prepend">
+          <span className="input-group-text">{dFmt(props.value)}</span>
+        </div>
+        <TextInput
+          id={props.id}
+          type="date"
+          value={cFmt(props.value)}
+          placeholder={props.placeholder}
+          onChange={props.onChange} 
+          readOnly={props.readonly} 
+          required={props.required}/>
       </div>
-      <TextInput
-        id={props.id}
-        type="date"
-        value={cFmt(props.value)}
-        placeholder={props.placeholder}
-        onChange={props.onChange} 
-        readOnly={props.readonly} 
-        required={props.required}/>
     </div>
 
   );

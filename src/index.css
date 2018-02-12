@@ -6180,3 +6180,12 @@ svg.hidden {
 .ChallengeDescription {
   margin-top: 1em;
   padding: 1em; }
+
+/*Form Styles */
+label {
+  font-weight: bold; }
+
+.DatePicker .input-group-text,
+.DatePicker input {
+  font-size: 12px;
+  line-height: auto; }

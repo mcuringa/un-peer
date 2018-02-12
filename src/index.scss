@@ -150,3 +150,16 @@ svg.hidden {
   padding: 1em;
 }
 
+/*Form Styles */
+
+label
+{
+  font-weight: bold;
+}
+
+.DatePicker .input-group-text,
+.DatePicker input
+{
+  font-size: 12px;
+  line-height: auto;
+}
