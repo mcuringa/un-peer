@@ -38,10 +38,10 @@ const ChallengeDB = {
         let c = {id: doc.id};
         c = _.merge(c, doc.data());
 
-        c.start = new Date(c.start);
-        c.end = new Date(c.end);
-        c.responseDue = new Date(c.responseDue);
-        c.ratingDue = new Date(c.ratingDue);
+        // c.start = new Date(c.start);
+        // c.end = new Date(c.end);
+        // c.responseDue = new Date(c.responseDue);
+        // c.ratingDue = new Date(c.ratingDue);
 
         ChallengeDB.cache[c.id] = c;
         challenges.push(c);
@@ -74,7 +74,7 @@ const ChallengeDB = {
       });
   },
 
-  save: (c)=> {
+  save(c){
     console.log("save called");
 
     if(_.isNil(c.id) || _.isEmpty(c.id))
@@ -83,16 +83,26 @@ const ChallengeDB = {
       return ChallengeDB.set(c);
 
   },
+  
+  parseDateControlToUTC(d) {
+   if(d.getTime)
+      return d;
+    console.log(d);
+    const t = _.split(d, "-");
+    console.log(t);
+    return new Date(Date.UTC(t[0], t[1]-1, t[2], new Date().getTimezoneOffset()/60, 0, 0));
+  },
 
   set(c) {
     console.log("set called");
 
+
     let db = FBUtil.connect();
     c.modified = firebase.firestore.FieldValue.serverTimestamp();
-    c.start = new Date(c.start).getTime();
-    c.end = new Date(c.end).getTime();
-    c.responseDue = new Date(c.responseDue).getTime();
-    c.ratingDue = new Date(c.ratingDue).getTime();
+    c.start = ChallengeDB.parseDateControlToUTC(c.start);
+    c.end = ChallengeDB.parseDateControlToUTC(c.end);
+    c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
+    c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
 
 
     return db.collection("challenges").doc(c.id).set(c);

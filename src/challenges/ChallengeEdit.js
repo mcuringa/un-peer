@@ -23,7 +23,7 @@ class ChallengeEditScreen extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleChange.bind(this);
-    this.handleStartChange = this.handleStartChange.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
     this.save = this.save.bind(this);
     this.save = _.debounce(this.save, 5000);
   }
@@ -55,17 +55,16 @@ class ChallengeEditScreen extends React.Component {
     this.save();
   }
 
-  handleStartChange(e) {
+  handleDateChange(e) {
     let c = this.state.challenge;
-    const start = new Date(e.target.value).toJSON();
-    // console.log("start changed");
-    // console.log(start);
-    c.start = start;
+    const date = ChallengeDB.parseDateControlToUTC(e.target.value);
+    console.log("date changed");
+    console.log(date);
+    c[e.target.id] = date;
 
     this.setState({ challenge: c, dirty: true });
-    console.log(dateFormat(this.state.challenge.start, "ddd mmm dd"));
 
-    // this.save();
+    this.save();
   }
 
 
@@ -94,22 +93,22 @@ class ChallengeEditScreen extends React.Component {
             <DatePicker id="start"
               value={c.start}
               label="challenge start"
-              onChange={this.handleChange} />
+              onChange={this.handleDateChange} />
            
             <DatePicker id="responseDue"
               value={c.responseDue}
               label="response due"
-              onChange={this.handleChange} />
+              onChange={this.handleDateChange} />
 
             <DatePicker id="ratingDue"
               value={c.ratingDue}
               label="rating due"
-              onChange={this.handleChange} />
+              onChange={this.handleDateChange} />
 
             <DatePicker id="end"
               value={c.end}
               label="challenge end"
-              onChange={this.handleChange} />
+              onChange={this.handleDateChange} />
 
           </fieldset>
         
@@ -171,19 +170,34 @@ const TextInput = (props)=> {
 
 const DatePicker = (props)=> {
   // 📅 -- emoji?
-  const displayFmt = (d)=> dateFormat(new Date(d), "ddd mmm dd"); 
+  const dFmt = (d)=> {
+    
+    // if(!d.getTime) { //duck-type checking
+    //   let x = new Date(d);
+    //   x.setMinutes(x.getMinutes() + new Date().getTimezoneOffset());
+    //   return dateFormat(x, "ddd mmm dd");
+    // } 
+      
+    return dateFormat(d, "ddd mmm dd");
+  }
+  const cFmt = (d)=> {
+    // if(!d.getTime)
+
+    return dateFormat(d, "yyyy-mm-dd");
+  }
+
   // console.log(props.label + "::" + props.value + "::" + new Date(props.value)) ;
 
   return (
     <div className="input-group mb-3">
      <label>{props.label}</label>
       <div className="input-group-prepend">
-        <span className="input-group-text">{displayFmt(props.value)}</span>
+        <span className="input-group-text">{dFmt(props.value)}</span>
       </div>
-      <TextInput  
+      <TextInput
         id={props.id}
         type="date"
-        value={props.value}
+        value={cFmt(props.value)}
         placeholder={props.placeholder}
         onChange={props.onChange} 
         readOnly={props.readonly} 
