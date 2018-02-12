@@ -4,12 +4,15 @@ const firebase = require("firebase");
 
 
 const User = {first:"",last:"",email:""};
+const day = 1000 * 60 * 60 * 24;
 const Challenge = {
   id:"",
   title:"",
   prompt:"",
-  start: "",
-  end: "",
+  start: new Date(),
+  responseDue: new Date(_.now() + day * 3),
+  ratingDue: new Date(_.now() + day * 5),
+  end: new Date(_.now() + day * 7),
   created: "",
   modified: ""
 };
@@ -34,6 +37,12 @@ const ChallengeDB = {
       querySnapshot.forEach((doc) => {
         let c = {id: doc.id};
         c = _.merge(c, doc.data());
+
+        c.start = new Date(c.start);
+        c.end = new Date(c.end);
+        c.responseDue = new Date(c.responseDue);
+        c.ratingDue = new Date(c.ratingDue);
+
         ChallengeDB.cache[c.id] = c;
         challenges.push(c);
         ChallengeDB.cacheDate = new Date();
@@ -69,16 +78,24 @@ const ChallengeDB = {
     console.log("save called");
 
     if(_.isNil(c.id) || _.isEmpty(c.id))
-      ChallengeDB.add(c);
+      return ChallengeDB.add(c);
     else
-      ChallengeDB.set(c);
+      return ChallengeDB.set(c);
 
   },
+
   set(c) {
     console.log("set called");
+
     let db = FBUtil.connect();
     c.modified = firebase.firestore.FieldValue.serverTimestamp();
-    db.collection("challenges").doc(c.id).set(c);
+    c.start = new Date(c.start).getTime();
+    c.end = new Date(c.end).getTime();
+    c.responseDue = new Date(c.responseDue).getTime();
+    c.ratingDue = new Date(c.ratingDue).getTime();
+
+
+    return db.collection("challenges").doc(c.id).set(c);
   },
 
   uniqueId: async (id)=> {
@@ -104,7 +121,7 @@ const ChallengeDB = {
       console.log("saving..." + c.id);
       c.created = new Date();
       // c.created = firebase.firestore.FieldValue.serverTimestamp();
-      ChallengeDB.set(c);
+      return ChallengeDB.set(c);
     });
 
   },

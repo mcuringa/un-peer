@@ -14,6 +14,43 @@ img {
 }
 
 
+.icon-primary {
+  color: theme-color("primary");
+  fill: theme-color("primary");;
+}
+.icon-secondary {
+  color: theme-color("secondary");
+  fill: theme-color("secondary");
+}
+.icon-success {
+  color: theme-color("success");
+  fill: theme-color("success");
+}
+.icon-danger {
+  color: theme-color("danger");
+  fill: theme-color("danger");
+}
+.icon-warning {
+  color: theme-color("warning");
+  fill: theme-color("warning");
+}
+.icon-info {
+  color: theme-color("info");
+  fill: theme-color("info");
+}
+.icon-light {
+  color: theme-color("light");
+  fill: theme-color("light");
+}
+.icon-dark {
+  color: theme-color("dark");
+  fill: theme-color("dark");
+}
+
+svg.hidden {
+  display: none;
+  visibility: hidden;
+}
 
 /*============================ App.js styles*/
 .container

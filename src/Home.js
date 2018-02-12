@@ -18,8 +18,6 @@ import {
 } from 'react-octicons';
 
 import ChallengeListScreen from './challenges/ChallengeList.js';
-import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
-import ChallengeEditScreen from './challenges/ChallengeEdit.js';
 
 import Login from './Login.js';
 
@@ -28,7 +26,7 @@ let loggedIn = true;
 export default class Home extends Component {
   render() {
     if(loggedIn)
-      return <ChallengeListScreen />
+      return <ChallengeListScreen home="true" />
 
     return <Login />
 

@@ -35,7 +35,13 @@ class ChallengeListScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {challenges: []};
-    ChallengeDB.findAll((challenges)=>{this.setState({challenges: challenges})});
+
+    ChallengeDB.findAll((challenges)=>{
+      if(props.home)
+        this.setState({challenges: challenges.slice(0,1)});
+      else
+        this.setState({challenges: challenges.slice(1)});
+    });
   
   }
 

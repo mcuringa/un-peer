@@ -34,6 +34,7 @@ export default class App extends Component {
           <section id="main">
             <Switch>        
               <Route exact path="/" component={Home}/>
+              <Route exact path="/archive" component={ChallengeListScreen} archive={true} />
               <Route path="/challenge/:id/edit" component={ChallengeEditScreen} edit="true"/>
               <Route path="/challenge/:id" component={ChallengeDetailScreen}/>
               <Route path="/challenge/new" component={ChallengeEditScreen} edit="false"/>
@@ -74,7 +75,7 @@ const Footer = (props)=>{
             <FileTextIcon /><br/>
             Submit
           </Link>
-          <Link to="/" className="btn btn-btn-light btn-block">
+          <Link to="/archive" className="btn btn-btn-light btn-block">
             <BriefcaseIcon /><br/>
             Archives
           </Link>

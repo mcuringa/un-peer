@@ -6080,6 +6080,42 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
 .text-white, .ChallengeItem, .ChallengeDetail .card {
   fill: white; }
 
+.icon-primary {
+  color: #007bff;
+  fill: #007bff; }
+
+.icon-secondary {
+  color: #6c757d;
+  fill: #6c757d; }
+
+.icon-success {
+  color: #28a745;
+  fill: #28a745; }
+
+.icon-danger {
+  color: #dc3545;
+  fill: #dc3545; }
+
+.icon-warning {
+  color: #ffc107;
+  fill: #ffc107; }
+
+.icon-info {
+  color: #17a2b8;
+  fill: #17a2b8; }
+
+.icon-light {
+  color: #f8f9fa;
+  fill: #f8f9fa; }
+
+.icon-dark {
+  color: #343a40;
+  fill: #343a40; }
+
+svg.hidden {
+  display: none;
+  visibility: hidden; }
+
 /*============================ App.js styles*/
 .container {
   max-width: 512px;
