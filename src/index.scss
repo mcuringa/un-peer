@@ -60,7 +60,8 @@ svg.hidden {
 }
 
 .App {
-  padding: 0;
+  padding-left: 16px;
+  padding-right: 16px;
   padding-top: $top-header-height + 6;
   padding-bottom: $bottom-footer-height + 2;
 }
@@ -124,19 +125,40 @@ svg.hidden {
   text-align: left;
 }
 
+.ChallengeItemp p2
+{
+  display: inline-box;
+}
+
 .ChallengeListTitle
 {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 300;
   margin-bottom: 0;
   padding-bottom: 0;
+  white-space: normal;
+  line-height: 1.1em;
+  text-align: center;
 }
 
+.ChallengeItem.home
+{
+  margin-top: 2em;
+  min-height: 200px;
+
+}
 
 .ChallengeItem .StartDate
 {
   padding-bottom: 6px;
 }
+
+
+.ChallengeContainer
+{
+  display: inline-block;
+}
+
 
 .ChallengeDetail .card
 {

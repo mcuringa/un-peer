@@ -4,12 +4,17 @@ import dateFormat from 'dateformat';
 import { Link } from 'react-router-dom'
 import {User, Challenge, ChallengeDB} from "./Challenge.js"
 import { CalendarIcon, PrimitiveDotIcon } from 'react-octicons';
-// import DateRangePicker from 'react-bootstrap-daterangepicker';
-// import 'bootstrap-daterangepicker/daterangepicker.css';
+
 import FBUtil from "../FBUtil";
 
-
-
+import {
+  TextGroup,
+  TextInput,
+  DatePicker,
+  TextAreaGroup,
+  StatusIndicator,
+  LoadingSpinner
+} from "../FormUtil";
 
 class ChallengeEditScreen extends React.Component {
   constructor(props) {
@@ -25,7 +30,7 @@ class ChallengeEditScreen extends React.Component {
     this.handleSubmit = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.save = this.save.bind(this);
-    this.save = _.debounce(this.save, 5000);
+    this.save = _.debounce(this.save, 2000);
   }
 
   componentWillMount() {
@@ -118,102 +123,5 @@ class ChallengeEditScreen extends React.Component {
       </div>);
   }
 }
-
-const LoadingSpinner = (props)=> {
-  return (
-    <img className={(props.loading)?"":"d-none"} style={{height: "32px"}} src="/img/spinner.gif" />
-    );
-}
-
-const StatusIndicator = (props)=> {
-  let clazz = (props.dirty)?"icon-warning":"icon-success";
-  if(props.loading)
-    clazz += " hidden";
-
-  return (
-    <div className="float-right">
-      <PrimitiveDotIcon className={clazz} />
-      <LoadingSpinner loading={props.loading} />
-    </div>
-  );
-}
-
-const TextGroup = (props)=> {
-  return (
-  <div className="form-group">
-    <label htmlFor={props.id}>{props.label}</label>
-    <TextInput type={props.type||'text'} 
-           value={props.value} 
-           className="form-control" 
-           id={props.id} 
-           placeholder={props.placeholder}
-           onChange={props.onChange} 
-           readOnly={props.readonly} 
-           required={props.required}/>
-    <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
-  </div>
-  );
-};
-
-const TextInput = (props)=> {
-
-  return (
-
-    <input type={props.type||'text'} 
-           value={props.value} 
-           className="form-control" 
-           id={props.id} 
-           placeholder={props.placeholder}
-           onChange={props.onChange} 
-           readOnly={props.readonly} 
-           required={props.required}/>
-  );
-};
-
-const DatePicker = (props)=> {
-  // 📅 -- emoji?
-  const dFmt = (d)=> dateFormat(d, "ddd mmm dd");
-  const cFmt = (d)=> dateFormat(d, "yyyy-mm-dd");
-
-  // console.log(props.label + "::" + props.value + "::" + new Date(props.value)) ;
-
-  return (
-    <div className="DatePicker form-group">
-      <label htmlFor={props.id}>{props.label}</label>
-      <div className="input-group mb-3">
-        <div className="input-group-prepend">
-          <span className="input-group-text">{dFmt(props.value)}</span>
-        </div>
-        <TextInput
-          id={props.id}
-          type="date"
-          value={cFmt(props.value)}
-          placeholder={props.placeholder}
-          onChange={props.onChange} 
-          readOnly={props.readonly} 
-          required={props.required}/>
-      </div>
-    </div>
-
-  );
-};
-
-const TextAreaGroup = (props)=> {
-
-  return (
-  <div className="form-group">
-    <label htmlFor={props.id}>{props.label}</label>
-    <textarea id="{props.id}"
-      className="form-control"
-      onChange={props.onChange}
-      rows={props.rows || 4}
-      placeholder={props.placeholder}
-      value={props.value} 
-      readOnly={props.readonly} 
-      required={props.required} />
-    <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
-  </div>
-  );
-};
 
 export default ChallengeEditScreen;

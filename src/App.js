@@ -24,6 +24,7 @@ import Login from './Login.js';
 import ChallengeListScreen from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 import ChallengeEditScreen from './challenges/ChallengeEdit.js';
+import NewChallengeScreen from './challenges/NewChallenge.js';
 
 export default class App extends Component {
   render() {
@@ -35,9 +36,9 @@ export default class App extends Component {
             <Switch>        
               <Route exact path="/" component={Home}/>
               <Route exact path="/archive" component={ChallengeListScreen} archive={true} />
-              <Route path="/challenge/:id/edit" component={ChallengeEditScreen} edit="true"/>
+              <Route path="/challenge/:id/edit" component={ChallengeEditScreen} />
+              <Route exact path="/challenge/new" component={NewChallengeScreen} />
               <Route path="/challenge/:id" component={ChallengeDetailScreen}/>
-              <Route path="/challenge/new" component={ChallengeEditScreen} edit="false"/>
             </Switch>
           </section>
           <Footer/>
@@ -83,10 +84,6 @@ const Footer = (props)=>{
             <BookmarkIcon /><br/>
             Bookmarks
           </Link>
-          <Link to="/" className="btn btn-btn-light btn-block">
-            <PersonIcon /><br/>
-            Profile
-          </Link>
         </div>
       </div>
 
@@ -94,3 +91,8 @@ const Footer = (props)=>{
   );
 
 }
+
+// <Link to="/" className="btn btn-btn-light btn-block">
+//   <PersonIcon /><br/>
+//   Profile
+// </Link>

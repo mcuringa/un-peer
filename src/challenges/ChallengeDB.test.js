@@ -1,6 +1,6 @@
 import FBUtil from "../FBUtil";
 import _ from "lodash";
-import {ChallengeDB} from "./Challenge";
+import {ChallengeDB, Challenge} from "./Challenge";
 
 it("findAll test", ()=>{
   ChallengeDB.findAll(async (t)=> {
@@ -20,34 +20,60 @@ it("test slug", ()=> {
   const ex = "this-is-foo-bar_22";
 });
 
-it("test unique key", async ()=>{
-    let db = FBUtil.connect();
-    let count = 1;
-    let doc = await db.collection("challenges")
-      .doc("jest-unit-test-challenge").get();
-    let exists = await doc.exists;
-    expect(exists).toBeTruthy();
+test("test unique key", ()=>{
+    // expect.assertions(1);
+    const id = "jest-unit-test-challenge";
+    return ChallengeDB.uniqueId(id).then(
+      (newId)=> {
+        console.log("newId: " + newId);
+        expect(newId).toBeTruthy();
+        expect(id == newId).toBeFalsy();
+      });
 });
 
-it("test add challenge", ()=>{
-  let c =     {
-    "start": new Date("2018-02-12T00:00:11.891Z"),
-    "end": new Date("2018-02-19T23:59:11.891Z"),
-    "owner": {
-      "email": "mcuringa@adelphi.edu",
-      "first": "Antonio",
-      "last": "Gramsci"
-    },    
-    "title": "Jest Unit Test Challenge",
-    "prompt": "Created as a unit test..."
-  }
-  ChallengeDB.add(c);
+it("test set challenge", ()=>{
+  let c = Challenge;
+  c.id = "test-id-foo";
+  c.owner = {
+    "email": "mcuringa@adelphi.edu",
+    "first": "Antonio",
+    "last": "Gramsci"
+  };
+  c.title = "Jest Unit Test Challenge";
+  c.prmpt = "Created as a unit test...";
+
+  
+  return ChallengeDB.set(c).then((c)=>{
+    expect(c).toBeDefined();
+    console.log("Challenge set with id: " + c.id);
+  });
 });
+
+test("test add challenge", ()=>{
+  let c = Challenge;
+  c.id = null;
+  c.owner = {
+    "email": "mcuringa@adelphi.edu",
+    "first": "Antonio",
+    "last": "Gramsci"
+  };
+  c.title = "Jest Unit Test Add Challenge";
+  c.prmpt = "Created as a unit test...";
+
+  
+  return ChallengeDB.add(c).then((c)=>{
+    console.log("Challenge added with id: " + c.id);
+    expect(c).toBeDefined();
+  });
+});
+
+
+
 
 it("test delete", ()=>{
   ChallengeDB.findAll((t)=> {
     t.forEach((c)=>{
-      if(_.startsWith(c.id, "jest-unit-test-challenge"))
+      if(_.startsWith(c.id, "jest-unit-test"))
         ChallengeDB.delete(c.id);
     });
   });

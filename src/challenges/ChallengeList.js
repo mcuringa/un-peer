@@ -7,28 +7,7 @@ import _ from "lodash";
 import FBUtil from "../FBUtil";
 import {User, Challenge, ChallengeDB} from "./Challenge.js"
 
-
-
-class ChallengeListItem extends React.Component {
-  constructor(props) {
-  super(props);
-
-  }
-
-  render() {
-    const challenge = this.props.challenge;
-    const start = dateFormat(challenge.start, "dd mmm yyyy");
-
-    return (
-      <Link to={`/challenge/${challenge.id}`}
-         className="ChallengeItem">
-        <div className="StartDate"><CalendarIcon/> {start}</div>
-        <p className="ChallengeListTitle">{challenge.title}</p>
-        <p>Submitted by: {challenge.owner.first} {challenge.owner.last}</p>
-      </Link>
-    );
-  }
-}
+const df = (d)=> dateFormat(d, "ddd mmm dd");
 
 
 class ChallengeListScreen extends React.Component {
@@ -47,12 +26,53 @@ class ChallengeListScreen extends React.Component {
 
   render() {
     const t = this.state.challenges.map((challenge) => {
-      return (<ChallengeListItem key={challenge.id} challenge={challenge} />);
+      return (
+        <ChallengeListItem 
+          key={challenge.id} 
+          home={this.props.home} 
+          challenge={challenge} />
+      );
     });
-
-    return (<div className="ChallengeList">{t}</div>);
+    return (
+      <div>
+        <div className="ChallengeList">{t}</div>
+        <ChallengeButton home={this.props.home} />
+      </div>
+    );
   }
 }
+
+const ChallengeButton = (props)=> {
+  if(!props.home)
+    return null;
+
+  return (
+    <Link to="/challenge/new" className="NewChallengeButton">
+      Submit a Challenge
+    </Link>
+  );
+}
+
+const ChallengeListItem = (props) => {
+  const challenge = props.challenge;
+  const start = df(challenge.start);
+  const end = df(challenge.end);
+  let clazz = "ChallengeItem d-flex align-items-center";
+  if(props.home)
+    clazz = clazz + " home";
+
+  return (
+    <Link to={`/challenge/${challenge.id}`} className={clazz}>
+    <div className="p2">
+      <div className="StartDate text-right">{start} - {end}</div>
+      <p className="ChallengeListTitle">{challenge.title}</p>
+      <p>Submitted by: {challenge.owner.first} {challenge.owner.last}</p>
+    </div>
+    </Link>
+  );
+}
+
+
 
 
 export default ChallengeListScreen;

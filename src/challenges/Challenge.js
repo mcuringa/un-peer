@@ -3,7 +3,12 @@ import _ from "lodash";
 const firebase = require("firebase");
 
 
-const User = {first:"",last:"",email:""};
+const User = {
+  first:"Test",
+  last:"User",
+  email:"test@example.com"
+};
+
 const day = 1000 * 60 * 60 * 24;
 const Challenge = {
   id:"",
@@ -16,6 +21,14 @@ const Challenge = {
   created: "",
   modified: ""
 };
+
+const ChallengeStatus = {
+  DRAFT: 1,
+  REVIEW: 2,
+  PUBLISHED: 3,
+  ARCHIVED: 4
+}
+
 
 const ChallengeDB = {
   cacheDate: null,
@@ -37,11 +50,6 @@ const ChallengeDB = {
       querySnapshot.forEach((doc) => {
         let c = {id: doc.id};
         c = _.merge(c, doc.data());
-
-        // c.start = new Date(c.start);
-        // c.end = new Date(c.end);
-        // c.responseDue = new Date(c.responseDue);
-        // c.ratingDue = new Date(c.ratingDue);
 
         ChallengeDB.cache[c.id] = c;
         challenges.push(c);
@@ -87,52 +95,73 @@ const ChallengeDB = {
   parseDateControlToUTC(d) {
    if(d.getTime)
       return d;
-    console.log(d);
     const t = _.split(d, "-");
-    console.log(t);
     return new Date(Date.UTC(t[0], t[1]-1, t[2], new Date().getTimezoneOffset()/60, 0, 0));
   },
 
   set(c) {
     console.log("set called");
-
-
-    let db = FBUtil.connect();
     c.modified = firebase.firestore.FieldValue.serverTimestamp();
     c.start = ChallengeDB.parseDateControlToUTC(c.start);
     c.end = ChallengeDB.parseDateControlToUTC(c.end);
     c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
     c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
 
+    let db = FBUtil.connect();
+    let ref = db.collection("challenges").doc(c.id);
+    
 
-    return db.collection("challenges").doc(c.id).set(c);
+    return new Promise((resolve, reject) => {
+      ref.set(c).then(()=>{
+        c.id = ref.id;
+        ChallengeDB.cache[c.id] = c;
+
+        resolve(c);
+      });
+    });
   },
 
-  uniqueId: async (id)=> {
+  uniqueId: (testId)=> {
     let db = FBUtil.connect();
     let count = 0;
-    let doc = await db.collection("challenges").doc(id).get();
-    let exists = await doc.exists;
+    const incId = (id, count)=> {
+      return `${testId}_${count}`;
+    };
 
-    while(exists) {
-      count++;
-      doc = await db.collection("challenges").doc(`${id}_${count}`).get();
-      exists = await doc.exists;
-    }
-    if(count > 0)
-      id = `${id}_${count}`;
-    return id;
+    return new Promise((resolve, reject) => {
+      const checkExists = (id)=> {
+        db.collection("challenges").doc(id).get().then((ref)=> {
+          if(!ref.exists) {
+            resolve(id);
+          }
+          else {
+            count++;
+            const x = incId(id,count);
+            console.log("incId: " + x);
+            checkExists(x);
+          }
+        });
+      }
+
+
+      checkExists(testId);
+    });
   },
 
   add(c) {
     c.id = ChallengeDB.slug(c.title);
-    ChallengeDB.uniqueId(c.id).then((id)=> {
-      c.id = id;
-      console.log("saving..." + c.id);
-      c.created = new Date();
-      // c.created = firebase.firestore.FieldValue.serverTimestamp();
-      return ChallengeDB.set(c);
+
+    return new Promise((resolve, reject)=>{
+      ChallengeDB.uniqueId(c.id).then((id)=> {
+        c.id = id;
+        console.log("found a unique ID to add..." + c.id);
+        c.created = new Date();
+        // c.created = firebase.firestore.FieldValue.serverTimestamp();
+        ChallengeDB.set(c).then(resolve);
+      });
     });
+
+
 
   },
   delete(id) {
