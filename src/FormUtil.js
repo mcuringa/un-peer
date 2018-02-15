@@ -1,11 +1,11 @@
 import React from 'react';
-// import _ from "lodash";
+import _ from "lodash";
 import dateFormat from 'dateformat';
 import { CalendarIcon, PrimitiveDotIcon } from 'react-octicons';
 
 const LoadingSpinner = (props)=> {
   return (
-    <img className={(props.loading)?"":"d-none"} style={{height: "32px"}} src="/img/spinner.gif" />
+    <img className={(props.loading)?"":"d-none"} src="/img/spinner.gif" />
     );
 }
 
@@ -15,7 +15,7 @@ const StatusIndicator = (props)=> {
     clazz += " hidden";
 
   return (
-    <div className="float-right">
+    <div className="">
       <PrimitiveDotIcon className={clazz} />
       <LoadingSpinner loading={props.loading} />
     </div>
@@ -88,7 +88,7 @@ const TextAreaGroup = (props)=> {
   return (
   <div className="form-group">
     <label htmlFor={props.id}>{props.label}</label>
-    <textarea id="{props.id}"
+    <textarea id={props.id}
       className="form-control"
       onChange={props.onChange}
       rows={props.rows || 4}
@@ -101,4 +101,57 @@ const TextAreaGroup = (props)=> {
   );
 };
 
-export {TextGroup, TextInput, DatePicker, TextAreaGroup, StatusIndicator, LoadingSpinner};
+const RadioButtonGroup = (props)=>
+{
+  let radios = _.map(props.options, (v,k)=>{
+    return (
+      <RadioButton 
+        key={`${props.id}.${k}`}
+        id={`${props.id}.${k}`}
+        name={props.id}
+        checked={props.value == k}
+        value={k}
+        label={v}
+        onChange={props.onChange} 
+      />
+      );
+  });
+
+  return(
+    <div className="form-group">
+      <label htmlFor={props.id}>{props.label}</label>
+      <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
+        {radios}
+    </div>
+    );
+}
+
+const RadioButton = (props)=>
+{
+  return(
+    <div className="input-group">
+      <div className="input-group-prepend">
+        <div className="input-group-text">
+          <input id={props.id}
+            className="form-control radio"
+            type="radio"
+            checked={props.checked} 
+            name={props.name}
+            value={props.value} 
+            autoComplete="off" 
+            onChange={props.onChange}
+            onClick={()=>{console.log("clicked");}} /> 
+          </div>
+      </div>
+        <TextInput
+          value={props.label}
+          readOnly={true} 
+          plaintext={true} />
+    </div>
+
+
+    );
+}
+
+
+export {RadioButtonGroup, TextGroup, TextInput, DatePicker, TextAreaGroup, StatusIndicator, LoadingSpinner};

@@ -32,13 +32,14 @@ export default class App extends Component {
       <Router>
         <div className="App container">
           <Header/>
-          <section id="main">
+          <section id="main" className="">
             <Switch>        
               <Route exact path="/" component={Home}/>
               <Route exact path="/archive" component={ChallengeListScreen} archive={true} />
               <Route path="/challenge/:id/edit" component={ChallengeEditScreen} />
               <Route exact path="/challenge/new" component={NewChallengeScreen} />
-              <Route path="/challenge/:id" component={ChallengeDetailScreen}/>
+              <Route path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
+              <Route path="/challenge/:id/" component={ChallengeDetailScreen}/>
             </Switch>
           </section>
           <Footer/>
@@ -72,10 +73,6 @@ const Footer = (props)=>{
             <CalendarIcon /><br/>
             Calendar
           </Link>
-          <Link to="/challenge/new" className="btn btn-btn-light btn-block">
-            <FileTextIcon /><br/>
-            Submit
-          </Link>
           <Link to="/archive" className="btn btn-btn-light btn-block">
             <BriefcaseIcon /><br/>
             Archives
@@ -83,6 +80,10 @@ const Footer = (props)=>{
           <Link to="/" className="btn btn-btn-light btn-block">
             <BookmarkIcon /><br/>
             Bookmarks
+          </Link>
+          <Link to="/" className="btn btn-btn-light btn-block">
+            <PersonIcon /><br/>
+            Profile
           </Link>
         </div>
       </div>
@@ -92,7 +93,4 @@ const Footer = (props)=>{
 
 }
 
-// <Link to="/" className="btn btn-btn-light btn-block">
-//   <PersonIcon /><br/>
-//   Profile
-// </Link>
+

@@ -52,6 +52,10 @@ svg.hidden {
   visibility: hidden;
 }
 
+small tt {
+  font-size: .65rem;
+}
+
 /*============================ App.js styles*/
 .container
 {
@@ -59,12 +63,28 @@ svg.hidden {
 	margin: 0 auto;
 }
 
+
 .App {
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: $top-header-height + 6;
-  padding-bottom: $bottom-footer-height + 2;
+  padding-top: $top-header-height;
+  padding-bottom: $bottom-footer-height;
+  padding-left: 0;
+  padding-right: 0;
 }
+
+.App .screen
+{
+  padding: 4px 8px 2px 8px;
+  min-height: 100vh;
+}
+
+.App .screen.home
+{
+  background-image: url('/img/hands.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
 
 .App-header {
   @extend .bg-light;
@@ -113,16 +133,36 @@ svg.hidden {
 	width: 14px * 1.3;
 }
 
+
+
 /*===================================== challenge styles */
+
 
 .ChallengeItem
 {
   @extend .btn;
   @extend .btn-block;
-  @extend .text-white;
-  background-color: $bg-blue;
-  margin-bottom: 6px;
+  color: $gray-600;
+  background-color: white;
+
+  width: 85%;
+  margin: 0 auto;
   text-align: left;
+}
+
+.NewChallengeButton
+{
+  @extend .btn;
+  @extend .btn-block;
+  color: $gray-600;
+  background-color: white;
+
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 48px;
+  text-center: left;
+  font-size: 24px;
+  line-height: 2em;
 }
 
 .ChallengeItemp p2
@@ -154,17 +194,11 @@ svg.hidden {
 }
 
 
-.ChallengeContainer
-{
-  display: inline-block;
-}
 
-
-.ChallengeDetail .card
+.ChallengeDetailHeader
 {
-  /*padding: 1em;*/
-  @extend .text-white;
-  background-color: $bg-blue;
+  padding: 1em;
+  color: $gray-600;
 }
 
 .ChallengeDescription {

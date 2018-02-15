@@ -14,16 +14,17 @@ class ChallengeListScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {challenges: []};
-
+  }
+  componentWillMount() {
+    
     ChallengeDB.findAll((challenges)=>{
-      if(props.home)
+      if(this.props.home)
         this.setState({challenges: challenges.slice(0,1)});
       else
         this.setState({challenges: challenges.slice(1)});
     });
-  
-  }
 
+  }
   render() {
     const t = this.state.challenges.map((challenge) => {
       return (
@@ -34,7 +35,7 @@ class ChallengeListScreen extends React.Component {
       );
     });
     return (
-      <div>
+      <div className="screen home">
         <div className="ChallengeList">{t}</div>
         <ChallengeButton home={this.props.home} />
       </div>
