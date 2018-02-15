@@ -9,25 +9,42 @@ const User = {
   email:"test@example.com"
 };
 
-const day = 1000 * 60 * 60 * 24;
-const Challenge = {
-  id:"",
-  title:"",
-  prompt:"",
-  start: new Date(),
-  responseDue: new Date(_.now() + day * 3),
-  ratingDue: new Date(_.now() + day * 5),
-  end: new Date(_.now() + day * 7),
-  created: "",
-  modified: ""
-};
 
-const ChallengeStatus = {
+const ChallengeStatus = Object.freeze({
   DRAFT: 1,
   REVIEW: 2,
   PUBLISHED: 3,
   ARCHIVED: 4
-}
+});
+
+
+const dayInMillis = 1000 * 60 * 60 * 24;
+const Challenge = {
+  id:"",
+  title:"",
+  prompt:"",
+  status: ChallengeStatus.DRAFT,
+  start: new Date(),
+  responseDue: new Date(_.now() + dayInMillis * 3),
+  ratingDue: new Date(_.now() + dayInMillis * 5),
+  end: new Date(_.now() + dayInMillis * 7),
+  created: new Date(),
+  modified: new Date()
+};
+
+const Response = {
+  id:"",
+  challengeId:"",
+  text:"",
+  video:"",
+  audio:"",
+  img:"",
+  created: new Date(),
+  modified: new Date()
+};
+
+
+
 
 
 const ChallengeDB = {
@@ -42,23 +59,69 @@ const ChallengeDB = {
         .replace(/ +/g,'-');
   },
 
+  isCacheStale() {
+    if(!ChallengeDB.cacheDate)
+      return true;
+
+    const cacheTimeout = 1000 * 60 * 5; //5 min 
+    const lastUpdate = ChallengeDB.cacheDate.getTime();
+    const now = _.now();
+    const delta = now - lastUpdate;
+
+    return delta > cacheTimeout;
+  },
+
+  isCacheLoaded() {
+    // return !_.isEmpty(ChallengeDB.cache);
+    return !_.isEmpty(ChallengeDB.cache) && !ChallengeDB.isCacheStale();
+  },
+
+  purgeCache(fresh) {
+    const keys = _.keys(ChallengeDB.cache);
+    const del = _.filter(keys,(k)=>{return !_.includes(fresh, k)});
+    _.each(del, (k)=>{_.remove(ChallengeDB.cache,k);});
+  },
+
   findAll(onload) {
     let db = FBUtil.connect();
     let challenges = [];
+    let ids = [];
     
-    db.collection("challenges").get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        let c = {id: doc.id};
-        c = _.merge(c, doc.data());
+    if(ChallengeDB.isCacheLoaded()) {
+      challenges = _.values(ChallengeDB.cache);
+      // challenges = _.sort(challenges,(c)=>);
+      console.log("challenges from cache");
+    }
 
-        ChallengeDB.cache[c.id] = c;
-        challenges.push(c);
-        ChallengeDB.cacheDate = new Date();
-      });    
-      onload(challenges);
+    return new Promise(
+      (resolve, reject)=>{
+        console.log("challenges from DB");
+        if(challenges.length > 0)
+        {
+          if(onload)
+            onload(challenges);
+          resolve(challenges);
+          return;
+        }
+        db.collection("challenges").get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            let c = {id: doc.id};
+            c = _.merge(c, doc.data());
+
+            ChallengeDB.cache[c.id] = c;
+            challenges.push(c);
+            ids.push(c.id);
+          });
+          ChallengeDB.cacheDate = new Date();
+          if(onload)
+            onload(challenges);
+          resolve(challenges);
+          // purge the cache later, no need to make caller wait
+          ChallengeDB.purgeCache(ids);
+        });
     });
-    
   },
+
   get(id, onload) {
     
     let challenge = ChallengeDB.cache[id];
@@ -70,16 +133,23 @@ const ChallengeDB = {
     challenge = {};
 
     let db = FBUtil.connect();
-    db.collection("challenges").doc(id)
-      .get()
-      .then( async (doc)=>{
-        challenge = doc.data();
-        challenge.id = id;
-        if(challenge) //don't cache nulls
-          ChallengeDB.cache[id] = challenge;
-        onload(challenge);
+    return new Promise(
+      (resolve, reject)=>{
+        db.collection("challenges").doc(id)
+          .get()
+          .then( (doc)=>{
+            challenge = doc.data();
+            challenge.id = id;
+            if(challenge) //don't cache nulls
+              ChallengeDB.cache[id] = challenge;
+            if(onload)
+              onload(challenge);
 
+            resolve(challenge);
+
+          });
       });
+
   },
 
   save(c){
@@ -101,7 +171,7 @@ const ChallengeDB = {
 
   set(c) {
     console.log("set called");
-    c.modified = firebase.firestore.FieldValue.serverTimestamp();
+    c.modified = ChallengeDB.parseDateControlToUTC(new Date());
     c.start = ChallengeDB.parseDateControlToUTC(c.start);
     c.end = ChallengeDB.parseDateControlToUTC(c.end);
     c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
@@ -109,7 +179,6 @@ const ChallengeDB = {
 
     let db = FBUtil.connect();
     let ref = db.collection("challenges").doc(c.id);
-    
 
     return new Promise((resolve, reject) => {
       ref.set(c).then(()=>{
@@ -117,6 +186,24 @@ const ChallengeDB = {
         ChallengeDB.cache[c.id] = c;
 
         resolve(c);
+      });
+    });
+  },
+
+  addResponse(challengeId, response) {
+    response.created = ChallengeDB.parseDateControlToUTC(response.created);
+    response.modified = ChallengeDB.parseDateControlToUTC(new Date());
+    
+    let db = FBUtil.connect();
+    let ref = db.collection("challenges").doc(challengeId).collection("responses");
+    console.log("adding response");
+    return new Promise((resolve, reject)=>{
+      ref.add(response).then(()=>{
+        response.id = ref.id;
+        let c = ChallengeDB.get()
+        ChallengeDB.cache[c.id] = c;
+
+        resolve(response);
       });
     });
   },
@@ -137,13 +224,10 @@ const ChallengeDB = {
           else {
             count++;
             const x = incId(id,count);
-            console.log("incId: " + x);
             checkExists(x);
           }
         });
       }
-
-
       checkExists(testId);
     });
   },
@@ -154,14 +238,9 @@ const ChallengeDB = {
     return new Promise((resolve, reject)=>{
       ChallengeDB.uniqueId(c.id).then((id)=> {
         c.id = id;
-        console.log("found a unique ID to add..." + c.id);
-        c.created = new Date();
-        // c.created = firebase.firestore.FieldValue.serverTimestamp();
         ChallengeDB.set(c).then(resolve);
       });
     });
-
-
 
   },
   delete(id) {
@@ -171,6 +250,9 @@ const ChallengeDB = {
 
 };
 
-export {User};
-export {Challenge};
-export {ChallengeDB};
+export {User,
+ Challenge,
+ Response,
+ ChallengeDB,
+ ChallengeStatus
+};
