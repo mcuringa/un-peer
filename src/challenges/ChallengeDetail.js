@@ -1,16 +1,11 @@
 import React from 'react';
-import _ from "lodash";
 import {CalendarIcon} from 'react-octicons';
 import dateFormat from 'dateformat';
 import {
-  BrowserRouter as Router,
-  Route,
   NavLink,
-  Link
 } from 'react-router-dom';
 
-import FBUtil from "../FBUtil";
-import {User, Challenge, ChallengeDB} from "./Challenge.js"
+import {User, ChallengeDB} from "./Challenge.js"
 import ChallengeResponseForm from "./ChallengeResponseForm.js"
 
 const df = (d)=> dateFormat(d, "dd mmm yyyy");
@@ -27,7 +22,7 @@ class ChallengeDetailScreen extends React.Component {
 
   componentWillMount() {
     const id = this.props.match.params.id;
-    ChallengeDB.get(id,(c)=>{
+    ChallengeDB.get(id).then((c)=>{
       this.setState({"owner": c.owner});
       this.setState({challenge: c});
     });
@@ -39,7 +34,7 @@ class ChallengeDetailScreen extends React.Component {
     let ActiveElement;
     switch(action) {
       case "r":
-        ActiveElement = (<ChallengeResponseForm />);
+        ActiveElement = (<ChallengeResponseForm challengeId={this.state.challenge.id} />);
         break;
       default:
        ActiveElement = (<ChallengeInfo id={this.state.challenge.id} 

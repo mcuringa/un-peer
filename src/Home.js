@@ -1,25 +1,9 @@
 import React, { Component } from "react";
 
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom';
-
-import {
-  HomeIcon,
-  BellIcon,
-  CalendarIcon,
-  PersonIcon,
-  BriefcaseIcon,
-  BookmarkIcon,
-  FileTextIcon
-
-} from 'react-octicons';
 
 import ChallengeListScreen from './challenges/ChallengeList.js';
 
-import Login from './Login.js';
+import Login from './users/Login.js';
 
 let loggedIn = true;
 

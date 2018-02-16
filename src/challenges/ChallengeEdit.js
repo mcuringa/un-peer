@@ -1,9 +1,8 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import { Link } from 'react-router-dom'
 import {User, Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
-import { CalendarIcon, PrimitiveDotIcon } from 'react-octicons';
+import { PrimitiveDotIcon } from 'react-octicons';
 
 import FBUtil from "../FBUtil";
 
@@ -36,7 +35,7 @@ class ChallengeEditScreen extends React.Component {
 
   componentWillMount() {
     const id = this.props.match.params.id;
-    ChallengeDB.get(id,(c)=>{
+    ChallengeDB.get(id).then((c)=>{
       this.setState({"owner": c.owner});
       this.setState({challenge: c});
       this.setState({loading: false});

@@ -17,7 +17,7 @@ class ChallengeListScreen extends React.Component {
   }
   componentWillMount() {
     
-    ChallengeDB.findAll((challenges)=>{
+    ChallengeDB.findAll().then((challenges)=>{
       if(this.props.home)
         this.setState({challenges: challenges.slice(0,1)});
       else

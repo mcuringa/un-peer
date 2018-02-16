@@ -20,7 +20,6 @@ import {
 } from 'react-octicons';
 
 import Home from './Home.js';
-import Login from './Login.js';
 import ChallengeListScreen from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 import ChallengeEditScreen from './challenges/ChallengeEdit.js';

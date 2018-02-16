@@ -1,12 +1,12 @@
 [
   {
     "id": 1,
-    "username": "saravanos@gmail.com",
+    "email": "saravanos@gmail.com",
     "password": "123"
   },
   {
     "id": 2,
-    "username": "aps221@nyu.edu",
+    "email": "aps221@nyu.edu",
     "password": "qwe"
   }
 ]

@@ -3,16 +3,12 @@ const FBUtil =
 {
   db: null,
   testMode: false,
-  connect: ()=> {
-    // console.log("connecting");
-    // console.log("db: " + db);
-    if(FBUtil.db) {
-      return FBUtil.db;
-    }
+  _firebase: null,
 
-    const firebase = require("firebase");
-    require("firebase/firestore");
-
+    init: ()=> {
+    if(FBUtil._firebase)
+      return;
+    FBUtil._firebase = require("firebase");
     const firebaseConfig = {
       apiKey: "AIzaSyBvgDJ2EyxDaZervfY7yImDrvXE8R8Vzpo",
       authDomain: "un-peer-challenges.firebaseapp.com",
@@ -21,8 +17,20 @@ const FBUtil =
       storageBucket: "un-peer-challenges.appspot.com",
       messagingSenderId: "789085021989"
     };
-    firebase.initializeApp(firebaseConfig);
-    FBUtil.db = firebase.firestore();
+    FBUtil._firebase.initializeApp(firebaseConfig);
+  },
+
+  connect: ()=> {
+    // console.log("connecting");
+    // console.log("db: " + db);
+    if(FBUtil.db) {
+      return FBUtil.db;
+    }
+
+    require("firebase/firestore");
+    FBUtil.init();
+
+    FBUtil.db = FBUtil._firebase.firestore();
     return FBUtil.db;
 
   }

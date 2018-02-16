@@ -34,7 +34,6 @@ const Challenge = {
 
 const Response = {
   id:"",
-  challengeId:"",
   text:"",
   video:"",
   audio:"",
@@ -79,7 +78,7 @@ const ChallengeDB = {
     _.each(del, (k)=>{_.remove(ChallengeDB.cache,k);});
   },
 
-  findAll(onload) {
+  findAll() {
     let db = FBUtil.connect();
     let challenges = [];
     let ids = [];
@@ -95,8 +94,6 @@ const ChallengeDB = {
         console.log("challenges from DB");
         if(challenges.length > 0)
         {
-          if(onload)
-            onload(challenges);
           resolve(challenges);
           return;
         }
@@ -110,8 +107,6 @@ const ChallengeDB = {
             ids.push(c.id);
           });
           ChallengeDB.cacheDate = new Date();
-          if(onload)
-            onload(challenges);
           resolve(challenges);
           // purge the cache later, no need to make caller wait
           ChallengeDB.purgeCache(ids);
@@ -119,13 +114,16 @@ const ChallengeDB = {
     });
   },
 
-  get(id, onload) {
+  get(id) {
     
     let challenge = ChallengeDB.cache[id];
     if(challenge)
     {
-      onload(challenge);
-      return;
+    return new Promise(
+      (resolve, reject)=>{
+        resolve(challenge);
+      });
+
     }
     challenge = {};
 
@@ -139,9 +137,6 @@ const ChallengeDB = {
             challenge.id = id;
             if(challenge) //don't cache nulls
               ChallengeDB.cache[id] = challenge;
-            if(onload)
-              onload(challenge);
-
             resolve(challenge);
 
           });
@@ -181,7 +176,6 @@ const ChallengeDB = {
       ref.set(c).then(()=>{
         c.id = ref.id;
         ChallengeDB.cache[c.id] = c;
-
         resolve(c);
       });
     });
@@ -200,7 +194,6 @@ const ChallengeDB = {
         let c = ChallengeDB.get(challengeId).then(()=>{
           ChallengeDB.cache[c.id] = c;  
         });
-        
 
         resolve(response);
       });
@@ -216,6 +209,7 @@ const ChallengeDB = {
 
     return new Promise((resolve, reject) => {
       const checkExists = (id)=> {
+        console.log("checking" + count);
         db.collection("challenges").doc(id).get().then((ref)=> {
           if(!ref.exists) {
             resolve(id);
@@ -237,7 +231,7 @@ const ChallengeDB = {
     return new Promise((resolve, reject)=>{
       ChallengeDB.uniqueId(c.id).then((id)=> {
         c.id = id;
-        ChallengeDB.set(c).then(resolve);
+        ChallengeDB.set(c).then(()=>{resolve(c)});
       });
     });
 

@@ -46,7 +46,8 @@ it("should find a new unique id", ()=>{
       });
 });
 
-it("should add a new challenge challenge", ()=>{
+const longTimeout = 1000 * 12;
+it("should add a new challenge", ()=>{
   ChallengeDB.cache = {};
 
   let c = Challenge;
@@ -62,7 +63,7 @@ it("should add a new challenge challenge", ()=>{
   return ChallengeDB.add(c).then((c)=>{
     expect(c).toBeDefined();
   });
-});
+}, longTimeout);
 
 it("should update a challenge", ()=>{
   let c = Challenge;
@@ -81,7 +82,7 @@ it("should update a challenge", ()=>{
   });
 });
 
-it.only("should add a response to test-id-foo",()=>{
+it("should add a response to test-id-foo",()=>{
   const cId = "test-id-foo";
   let r = Response;
   r.text = "I think...";
@@ -93,7 +94,7 @@ it.only("should add a response to test-id-foo",()=>{
 
 
 it("should delete all pf the records starting iwth jest-unit-test", ()=>{
-  ChallengeDB.findAll((t)=> {
+  ChallengeDB.findAll().then((t)=> {
     t.forEach((c)=>{
       if(_.startsWith(c.id, "jest-unit-test"))
         ChallengeDB.delete(c.id);
