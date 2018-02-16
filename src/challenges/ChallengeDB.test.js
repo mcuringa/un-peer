@@ -1,6 +1,6 @@
 import FBUtil from "../FBUtil";
 import _ from "lodash";
-import {ChallengeDB, Challenge} from "./Challenge";
+import {ChallengeDB, Challenge, Response, User} from "./Challenge";
 
 
 it("should load all of the Challenges from firebase", ()=>{
@@ -58,7 +58,6 @@ it("should add a new challenge challenge", ()=>{
   };
   c.title = "Jest Unit Test";
   c.prmpt = "Created as a unit test...";
-
   
   return ChallengeDB.add(c).then((c)=>{
     expect(c).toBeDefined();
@@ -79,11 +78,21 @@ it("should update a challenge", ()=>{
   
   return ChallengeDB.set(c).then((c)=>{
     expect(c).toBeDefined();
-    console.log("Challenge set with id: " + c.id);
   });
 });
 
-it("test delete", ()=>{
+it.only("should add a response to test-id-foo",()=>{
+  const cId = "test-id-foo";
+  let r = Response;
+  r.text = "I think...";
+  r.user = User;
+  return ChallengeDB.addResponse(cId, r).then(()=>{
+    console.log("response added");
+  });
+});
+
+
+it("should delete all pf the records starting iwth jest-unit-test", ()=>{
   ChallengeDB.findAll((t)=> {
     t.forEach((c)=>{
       if(_.startsWith(c.id, "jest-unit-test"))

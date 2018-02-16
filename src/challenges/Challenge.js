@@ -44,9 +44,6 @@ const Response = {
 };
 
 
-
-
-
 const ChallengeDB = {
   cacheDate: null,
   loaded: false,
@@ -200,8 +197,10 @@ const ChallengeDB = {
     return new Promise((resolve, reject)=>{
       ref.add(response).then(()=>{
         response.id = ref.id;
-        let c = ChallengeDB.get()
-        ChallengeDB.cache[c.id] = c;
+        let c = ChallengeDB.get(challengeId).then(()=>{
+          ChallengeDB.cache[c.id] = c;  
+        });
+        
 
         resolve(response);
       });
