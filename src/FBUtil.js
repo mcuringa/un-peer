@@ -5,10 +5,15 @@ const FBUtil =
   testMode: false,
   _firebase: null,
 
-    init: ()=> {
+  init: ()=> {
     if(FBUtil._firebase)
-      return;
+      return FBUtil._firebase;
+    
     FBUtil._firebase = require("firebase");
+    require("firebase/auth");
+    require("firebase/firestore");
+    require("firebase/storage");
+
     const firebaseConfig = {
       apiKey: "AIzaSyBvgDJ2EyxDaZervfY7yImDrvXE8R8Vzpo",
       authDomain: "un-peer-challenges.firebaseapp.com",
@@ -18,6 +23,12 @@ const FBUtil =
       messagingSenderId: "789085021989"
     };
     FBUtil._firebase.initializeApp(firebaseConfig);
+    return FBUtil._firebase;
+  },
+
+  getFB: ()=> {
+    FBUtil.init();
+    return 
   },
 
   connect: ()=> {
@@ -27,7 +38,6 @@ const FBUtil =
       return FBUtil.db;
     }
 
-    require("firebase/firestore");
     FBUtil.init();
 
     FBUtil.db = FBUtil._firebase.firestore();

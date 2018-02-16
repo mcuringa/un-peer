@@ -1,18 +1,10 @@
-import React, { Component } from "react";
-
-
+import React from "react";
 import ChallengeListScreen from './challenges/ChallengeList.js';
 
-import Login from './users/Login.js';
+const Home = (props)=>{
 
-let loggedIn = true;
+  return <ChallengeListScreen home="true" />
 
-export default class Home extends Component {
-  render() {
-    if(loggedIn)
-      return <ChallengeListScreen home="true" />
-
-    return <Login />
-
-  }
 }
+
+export default Home;

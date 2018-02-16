@@ -93,7 +93,7 @@ it("should add a response to test-id-foo",()=>{
 });
 
 
-it("should delete all pf the records starting iwth jest-unit-test", ()=>{
+it.only("should delete all pf the records starting iwth jest-unit-test", ()=>{
   ChallengeDB.findAll().then((t)=> {
     t.forEach((c)=>{
       if(_.startsWith(c.id, "jest-unit-test"))

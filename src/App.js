@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 
 import {
-    BrowserRouter as Router,
-    Route,
-    Redirect,
-    Link,
-    Switch
-} from 'react-router-dom';
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect,
+  withRouter
+} from "react-router-dom";
+
 
 import {
   HomeIcon,
@@ -14,39 +16,60 @@ import {
   CalendarIcon,
   PersonIcon,
   BriefcaseIcon,
-  BookmarkIcon,
-  FileTextIcon
+  BookmarkIcon
 
 } from 'react-octicons';
 
+import FBUtil from './FBUtil.js';
 import Home from './Home.js';
 import ChallengeListScreen from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 import ChallengeEditScreen from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
+import Login from './users/Login.js';
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+
+
+    this.state = {user: {} };
+  }
+
+  componentWillMount() {
+    const firebase = FBUtil.init();
+    firebase.auth().onAuthStateChanged((user)=> {
+      if (user) {
+        this.setState({user: user});
+      } else {
+        this.setState({user: {}});
+      }
+    });
+  }
+
+
   render() {
+    let Main;
+    console.log(this.state.user.email);
+    if(!this.state.user.email)
+      Main = (<Login user={this.state.user} />);
+    else
+      Main = (<SecureScreens user={this.state.user} />);
+
+    // Main = (<Login user={this.state.user} />);
+
     return (
       <Router>
         <div className="App container">
-          <Header/>
-          <section id="main" className="">
-            <Switch>        
-              <Route exact path="/" component={Home}/>
-              <Route exact path="/archive" component={ChallengeListScreen} archive={true} />
-              <Route path="/challenge/:id/edit" component={ChallengeEditScreen} />
-              <Route exact path="/challenge/new" component={NewChallengeScreen} />
-              <Route path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
-              <Route path="/challenge/:id/" component={ChallengeDetailScreen}/>
-            </Switch>
-          </section>
-          <Footer/>
+          <Header user={this.state.user} />
+          <section id="main" className="">{Main}</section>
+          <Footer user={this.state.user} />
         </div>
       </Router>
     );
   }
 }
+
 
 const Header = (props)=>{
   return (
@@ -61,6 +84,24 @@ const Header = (props)=>{
     </header>
   );
 }
+
+
+const SecureScreens = (props)=>{
+  return (
+    <div>
+      <Switch>        
+        <Route exact path="/" component={Home} />
+        <Route exact path="/archive" component={ChallengeListScreen} archive={true} />
+        <Route path="/challenge/:id/edit" component={ChallengeEditScreen} />
+        <Route exact path="/challenge/new" component={NewChallengeScreen} />
+        <Route path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
+        <Route path="/challenge/:id/" component={ChallengeDetailScreen}/>
+      </Switch>
+    </div>
+  );
+}
+
+
 
 const Footer = (props)=>{
   return (
@@ -82,7 +123,7 @@ const Footer = (props)=>{
           </Link>
           <Link to="/" className="btn btn-btn-light btn-block">
             <PersonIcon /><br/>
-            Profile
+            Profile: <tt>{props.user.email}</tt>
           </Link>
         </div>
       </div>
