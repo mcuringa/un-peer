@@ -26,11 +26,6 @@ const FBUtil =
     return FBUtil._firebase;
   },
 
-  getFB: ()=> {
-    FBUtil.init();
-    return 
-  },
-
   connect: ()=> {
     // console.log("connecting");
     // console.log("db: " + db);
