@@ -27,6 +27,7 @@ import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 import ChallengeEditScreen from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
 import Login from './users/Login.js';
+import ProfileScreen from './users/ProfileScreen.js';
 
 export default class App extends Component {
   constructor(props) {
@@ -90,12 +91,13 @@ const SecureScreens = (props)=>{
   return (
     <div>
       <Switch>        
-        <Route exact path="/" component={Home} />
-        <Route exact path="/archive" component={ChallengeListScreen} archive={true} />
-        <Route path="/challenge/:id/edit" component={ChallengeEditScreen} />
-        <Route exact path="/challenge/new" component={NewChallengeScreen} />
-        <Route path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
-        <Route path="/challenge/:id/" component={ChallengeDetailScreen}/>
+        <Route user={props.user} exact path="/" component={Home} />
+        <Route user={props.user} exact path="/archive" component={ChallengeListScreen} archive={true} />
+        <Route user={props.user} path="/challenge/:id/edit" component={ChallengeEditScreen} />
+        <Route user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
+        <Route user={props.user} path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
+        <Route user={props.user} path="/challenge/:id/" component={ChallengeDetailScreen}/>
+        <Route user={props.user} path="/profile" component={ProfileScreen} />
       </Switch>
     </div>
   );
@@ -121,9 +123,9 @@ const Footer = (props)=>{
             <BookmarkIcon /><br/>
             Bookmarks
           </Link>
-          <Link to="/" className="btn btn-btn-light btn-block">
+          <Link to="/profile" className="btn btn-btn-light btn-block">
             <PersonIcon /><br/>
-            Profile: <tt>{props.user.email}</tt>
+            Profile
           </Link>
         </div>
       </div>
