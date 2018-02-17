@@ -7,8 +7,7 @@ const ProfileScreen = (props)=>{
   const user = firebase.auth().currentUser;
   return (
     <div className="ProfileScreen screen">
-      <h2>{user.displayName}</h2>
-      <p>{user.email}</p>
+      <p>{props.user.email}</p>
     </div>
   );
 
