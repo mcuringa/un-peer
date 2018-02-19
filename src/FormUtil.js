@@ -23,6 +23,7 @@ const StatusIndicator = (props)=> {
 }
 
 const TextGroup = (props)=> {
+
   return (
   <div className="form-group">
     <label htmlFor={props.id}>{props.label}</label>
@@ -32,7 +33,7 @@ const TextGroup = (props)=> {
            id={props.id} 
            placeholder={props.placeholder}
            onChange={props.onChange} 
-           readOnly={props.readonly} 
+           readOnly={props.readOnly} 
            plaintext={props.plaintext}
            required={props.required}/>
     <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
@@ -42,7 +43,8 @@ const TextGroup = (props)=> {
 
 const TextInput = (props)=> {
 
-  const pt = (props.plaintext && props.readonly)?"-plaintext":"";
+  const pt = (props.plaintext && props.readOnly)?"-plaintext":"";
+
   return (
 
     <input type={props.type||'text'} 
@@ -51,7 +53,7 @@ const TextInput = (props)=> {
            id={props.id} 
            placeholder={props.placeholder}
            onChange={props.onChange} 
-           readOnly={props.readonly} 
+           readOnly={props.readOnly} 
            required={props.required}/>
   );
 };

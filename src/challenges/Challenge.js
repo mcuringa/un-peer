@@ -4,6 +4,7 @@ const firebase = require("firebase");
 
 
 const User = {
+  uid: "0",
   first:"Test",
   last:"User",
   email:"test@example.com"
@@ -33,7 +34,6 @@ const Challenge = {
 };
 
 const Response = {
-  id:"",
   text:"",
   video:"",
   audio:"",
@@ -181,15 +181,36 @@ const ChallengeDB = {
     });
   },
 
+
+  getResponses(challengeId) {
+    let db = FBUtil.connect();
+    let responses = [];
+    let ids = [];
+    
+    return new Promise(
+      (resolve, reject)=>{
+
+        db.collection("challenges").get(challengeId).get("responses").then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            let r = {id: doc.id};
+            r = _.merge(r, doc.data());
+
+            responses.push(r);
+            ids.push(r.id);
+          });
+          resolve(responses);
+        });
+    });
+  },
+
   addResponse(challengeId, response) {
     response.created = ChallengeDB.parseDateControlToUTC(response.created);
     response.modified = ChallengeDB.parseDateControlToUTC(new Date());
     
     let db = FBUtil.connect();
-    let ref = db.collection("challenges").doc(challengeId).collection("responses");
-    console.log("adding response");
+    let ref = db.collection("challenges").doc(challengeId).collection("responses").doc(response.user.uid);
     return new Promise((resolve, reject)=>{
-      ref.add(response).then(()=>{
+      ref.set(response).then(()=>{
         response.id = ref.id;
         let c = ChallengeDB.get(challengeId).then(()=>{
           ChallengeDB.cache[c.id] = c;  

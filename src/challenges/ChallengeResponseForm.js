@@ -17,11 +17,11 @@ class ChallengeResponseForm extends React.Component {
   constructor(props) {
     super(props);
     const challengeId = this.props.challengeId;
-    console.log(challengeId);
+    console.log(this.props.user);
+
     this.state = {
       "challengeId": challengeId,
       "response": Response, 
-      "user": User,
       "loading": true,
       "dirty": false
     };
@@ -36,9 +36,10 @@ class ChallengeResponseForm extends React.Component {
 
   publish(e) {
     e.preventDefault();
-    console.log("adding response to: " + this.state.challengeId);
-    console.log(this.state.response);
-    ChallengeDB.addResponse(this.state.challengeId, this.state.response);
+    const challengeId = this.props.challengeId;
+    let r = this.state.response;
+    r.user = {email: this.props.user.email, name:this.props.user.displayName, uid: this.props.user.uid};
+    ChallengeDB.addResponse(challengeId, r);
   }
 
   handleChange(e) {

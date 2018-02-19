@@ -1,6 +1,8 @@
 import React from 'react';
 import {CalendarIcon} from 'react-octicons';
 import dateFormat from 'dateformat';
+import _ from "lodash";
+
 import {
   NavLink,
 } from 'react-router-dom';
@@ -13,6 +15,7 @@ const df = (d)=> dateFormat(d, "dd mmm yyyy");
 class ChallengeDetailScreen extends React.Component {
   constructor(props) {
     super(props);
+
     const id = this.props.match.params.id;
     this.state = {
       challenge: {id: id}, 
@@ -34,7 +37,10 @@ class ChallengeDetailScreen extends React.Component {
     let ActiveElement;
     switch(action) {
       case "r":
-        ActiveElement = (<ChallengeResponseForm challengeId={this.state.challenge.id} />);
+        ActiveElement = (<ChallengeResponseForm user={this.props.user} challengeId={this.state.challenge.id} />);
+        break;
+      case "responses":
+        ActiveElement = (<ResponseList user={this.props.user} challengeId={this.state.challenge.id} />);
         break;
       default:
        ActiveElement = (<ChallengeInfo id={this.state.challenge.id} 
@@ -85,6 +91,31 @@ const ChallengeInfo = (props) => {
   );
 }
 
+const ResponseList = (props) => {
+  let responseItems = [];
+  ChallengeDB.getResponses(props.challengeId).then(
+    (responses)=>{
+      console.log(responses);
+      _.map(responses,(r)=>{
+          responseItems.push(
+            <div className="Reponse">
+              {r.text} {r.created}
+            </div>
+          );
+        });
+    }
+
+  );
+
+  return (
+    <div className="ResponseList">
+      {responseItems}
+    </div>
+  );
+
+}
+
+
 const ChallengeButtons = (props) => {
   return (
     <div className="btn-toolbar">
@@ -92,7 +123,7 @@ const ChallengeButtons = (props) => {
         <NavLink className="btn btn-outline-secondary" exact={true} activeClassName="active" to={`/challenge/${props.id}`}>Info</NavLink>
         <a className="btn btn-outline-secondary disabled">Media</a>
         <NavLink className="btn btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/r`}>Respond</NavLink>
-        <a className="btn btn-outline-secondary disabled" activeClassName="active">Responses</a>
+        <NavLink className="btn btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/responses`}>Responses</NavLink>
         <NavLink className="btn btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/edit`} edit="true">Edit</NavLink>
       </div>
     </div>);

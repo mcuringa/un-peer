@@ -82,8 +82,8 @@ it("should update a challenge", ()=>{
   });
 });
 
-it("should add a response to test-id-foo",()=>{
-  const cId = "test-id-foo";
+it.only("should add a response to test-id-foo",()=>{
+  const cId = "making-the-world-a-better-place";
   let r = Response;
   r.text = "I think...";
   r.user = User;
@@ -93,7 +93,7 @@ it("should add a response to test-id-foo",()=>{
 });
 
 
-it.only("should delete all pf the records starting iwth jest-unit-test", ()=>{
+it("should delete all pf the records starting iwth jest-unit-test", ()=>{
   ChallengeDB.findAll().then((t)=> {
     t.forEach((c)=>{
       if(_.startsWith(c.id, "jest-unit-test"))

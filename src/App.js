@@ -92,18 +92,31 @@ const SecureScreens = (props)=>{
     <div>
       <Switch>        
         <Route exact path="/" component={Home} />
-        <Route exact path="/archive" component={ChallengeListScreen} archive={true} />
-        <Route path="/challenge/:id/edit" component={ChallengeEditScreen} />
-        <Route exact path="/challenge/new" component={NewChallengeScreen} />
-        <Route path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
-        <Route path="/challenge/:id/" component={ChallengeDetailScreen}/>
-        <Route path="/profile" render={()=><ProfileScreen user={props.user} />} />
+        <Route exact path="/archive" component={ChallengeListScreen} />
+        <PropsRoute  user={props.user} path="/challenge/:id/edit" component={ChallengeEditScreen} />
+        <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
+        <PropsRoute  user={props.user} path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
+        <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>
+        <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
       </Switch>
     </div>
   );
 }
 
+const renderMergedProps = (component, ...rest) => {
+  const finalProps = Object.assign({}, ...rest);
+  return (
+    React.createElement(component, finalProps)
+  );
+}
 
+const PropsRoute = ({ component, ...rest }) => {
+  return (
+    <Route {...rest} render={routeProps => {
+      return renderMergedProps(component, routeProps, rest);
+    }}/>
+  );
+}
 
 const Footer = (props)=>{
   return (
