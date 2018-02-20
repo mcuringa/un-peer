@@ -9,23 +9,25 @@ import {
   LoadingSpinner,
 } from "../FormUtil";
 
-const ProfileScreen = (props)=>{
-  console.log("Profile Screen");
-  console.log(props.user.displayName);
-  const firebase = FBUtil.init();
-  const user = firebase.auth().currentUser;
-  return (
-    <div className="ProfileScreen screen">
-      <ProfileForm user={user} />
-    </div>
-  );
+// const ProfileScreen = (props)=>{
+//   console.log("Profile Screen");
+//   console.log(props.user.displayName);
+//   const firebase = FBUtil.init();
+//   const user = firebase.auth().currentUser;
+//   return (
+//     <div className="ProfileScreen screen">
+//       <ProfileForm user={user} />
+//     </div>
+//   );
 
-}
+// }
 
-class ProfileForm extends React.Component {
+class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
-    let user = _.merge({},props.user);
+    // const firebase = FBUtil.init();
+    // let fbu = firebase.auth().currentUser;
+    let user = {email: props.user.email, displayName: props.user.displayName, uid: props.user.uid};
 
     this.state = {
       "loading": false,
@@ -70,7 +72,7 @@ class ProfileForm extends React.Component {
   render() {
     const user = this.state.user;
     return (
-      <div className="ChallengeEdit screen card bg-light">
+      <div className="ProfileScreen screen card bg-light">
         <div className="card-header">
           <div className="row">
             <div className="col-11 text-strong">Update your profile</div>
