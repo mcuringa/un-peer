@@ -29,8 +29,6 @@ class NewChallengeScreen extends React.Component {
 
   handleChange(e) {
 
-    const k = new String(e.target.id);
-    const v = e.target.value;
     let st = {};
     st[e.target.id] = e.target.value;
     this.setState(st);
@@ -40,7 +38,7 @@ class NewChallengeScreen extends React.Component {
     e.preventDefault();
     this.setState({loading: true});
     let c = Challenge;
-    c.owner = User;
+    c.owner = this.state.owner;
     c.title = this.state.title;
     c.id = null;
     ChallengeDB.save(c).then((docRef)=> {
