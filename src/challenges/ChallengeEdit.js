@@ -23,12 +23,13 @@ class ChallengeEditScreen extends React.Component {
     const id = this.props.match.params.id || "";
     this.state = {
       challenge: Challenge, 
-      owner: User,
+      owner: {displayName: props.user.displayName, email: props.user.email, id: props.user.uid},
       loading: true,
       dirty: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleChange.bind(this);
+    this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.save = this.save.bind(this);
     this.save = _.debounce(this.save, 2000);
@@ -55,11 +56,6 @@ class ChallengeEditScreen extends React.Component {
   }
 
   handleChange(e) {
-    // console.log(e);
-    // console.log(e.target.id);
-    // console.log(e.target.name);
-    // console.log(e.target.type);
-    // console.log(e.target.value);
 
     let c = this.state.challenge;
     c[e.target.id] = e.target.value;
@@ -68,9 +64,27 @@ class ChallengeEditScreen extends React.Component {
   }
 
   handleDateChange(e) {
+    console.log("handleDateChange");
+
     let c = this.state.challenge;
     const date = ChallengeDB.parseDateControlToUTC(e.target.value);
     c[e.target.id] = date;
+
+    this.setState({ challenge: c, dirty: true });
+
+    this.save();
+  }
+
+
+  handleStartDateChange(e) {
+    console.log("changes to start date");
+    const dayInMillis = 1000 * 60 * 60 * 24;
+    let c = this.state.challenge;
+    const date = ChallengeDB.parseDateControlToUTC(e.target.value);
+    this.state.challenge.start = date;
+    this.state.challenge.responseDue = new Date(date.getTime() + dayInMillis * 5);
+    this.state.challenge.ratingDue = new Date(date.getTime() + dayInMillis * 7);
+    this.state.challenge.end = new Date(date.getTime() + dayInMillis * 7);
 
     this.setState({ challenge: c, dirty: true });
 
@@ -134,7 +148,7 @@ class ChallengeEditScreen extends React.Component {
             <DatePicker id="start"
               value={c.start}
               label="challenge start"
-              onChange={this.handleDateChange} />
+              onChange={this.handleStartDateChange} />
 
             <DatePicker id="responseDue"
               value={c.responseDue}
@@ -144,12 +158,6 @@ class ChallengeEditScreen extends React.Component {
             <DatePicker id="ratingDue"
               value={c.ratingDue}
               label="rating due"
-              onChange={this.handleDateChange} />
-
-
-            <DatePicker id="end"
-              value={c.end}
-              label="challenge end"
               onChange={this.handleDateChange} />
 
           </fieldset>
