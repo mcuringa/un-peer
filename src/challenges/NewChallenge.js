@@ -11,21 +11,21 @@ import {
 class NewChallengeScreen extends React.Component {
   constructor(props) {
     super(props);
+    const owner = {
+      id: props.user.uid,
+      name: props.user.displayName,
+      email: props.user.email
+    }
     this.state = {
       "id": "",
       "title": "", 
-      owner: User,
+      owner: owner,
       loading: false,
       step2: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
   }
-
-  componentWillMount() {
-
-  }
-
 
   handleChange(e) {
 
@@ -50,9 +50,9 @@ class NewChallengeScreen extends React.Component {
 
   
   render() {
-    let hide = (this.state.loading)?" hidden":"";
+    let hide = (this.state.loading)?" d-none":"";
     if(this.state.step2)
-      return <Redirect push to={`/challenge/$(this.state.id)/edit`}/>
+      return <Redirect push to={`/challenge/${this.state.id}/edit`}/>
 
     return (
       <form onSubmit={this.submit}>
@@ -73,7 +73,7 @@ class NewChallengeScreen extends React.Component {
           plaintext={true} />
 
         <button id="createChallengeButton"
-                className={"btn btn-block btn-primary" + hide}
+                className={"btn btn-block btn-primary mt-2" + hide}
                 type="button" onClick={this.submit}>
           Create Challenge
         </button>

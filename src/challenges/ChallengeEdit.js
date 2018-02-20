@@ -19,6 +19,7 @@ import {
 class ChallengeEditScreen extends React.Component {
   constructor(props) {
     super(props);
+
     const id = this.props.match.params.id || "";
     this.state = {
       challenge: Challenge, 
@@ -95,7 +96,7 @@ class ChallengeEditScreen extends React.Component {
               <StatusIndicator dirty={this.state.dirty} loading={this.state.loading} />
             </div>
           </div>
-          <div className="small text-muted">Owner: {this.state.owner.first} {this.state.owner.last}</div>
+          <div className="small text-muted">Owner: {this.state.owner.name}</div>
           <small className="text-muted"><tt>created: {ts(c.created)} | </tt></small>
           <small className="text-muted"><tt>modified: {ts(c.modified)}</tt></small>
         </div>
