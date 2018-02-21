@@ -67,7 +67,7 @@ const ChallengeListItem = (props) => {
     <div className="p2">
       <div className="StartDate text-right">{start} - {end}</div>
       <p className="ChallengeListTitle">{challenge.title}</p>
-      <p>Submitted by: {challenge.owner.first} {challenge.owner.last}</p>
+      <p>Submitted by: {challenge.owner.name}</p>
     </div>
     </Link>
   );

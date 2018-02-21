@@ -82,13 +82,32 @@ it("should update a challenge", ()=>{
   });
 });
 
-it.only("should add a response to test-id-foo",()=>{
+it("should add a response to test-id-foo",()=>{
   const cId = "making-the-world-a-better-place";
   let r = Response;
   r.text = "I think...";
   r.user = User;
   return ChallengeDB.addResponse(cId, r).then(()=>{
     console.log("response added");
+  });
+});
+
+it.only("should get a sub collection",()=>{
+  const id = "policy-changes-break-everything";
+  let db = FBUtil.connect();
+  return db.collection(`challenges/${id}/responses`).get()
+  .then((results)=>{
+        results.forEach((doc)=>{
+          console.log(doc.data());
+        });
+  });
+});
+
+it("should get all responses in a challenge",()=>{
+  const id = "policy-changes-break-everything";
+  return ChallengeDB.getResponses(id).then((t)=>{
+    console.log(t.length);
+    console.log(t[0]);
   });
 });
 

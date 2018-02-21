@@ -4,6 +4,8 @@ import dateFormat from 'dateformat';
 import {User, Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import { PrimitiveDotIcon } from 'react-octicons';
 
+import {ChallengeButtons} from "./ChallengeDetail.js";
+
 import FBUtil from "../FBUtil";
 
 import {
@@ -114,13 +116,22 @@ class ChallengeEditScreen extends React.Component {
           <small className="text-muted"><tt>created: {ts(c.created)} | </tt></small>
           <small className="text-muted"><tt>modified: {ts(c.modified)}</tt></small>
         </div>
-        <form>
+        <ChallengeButtons id={this.state.challenge.id} />
+        <form className="mt-2">
 
           <TextGroup id="title"
             value={c.title} 
             label="Challenge Title" 
             onChange={this.handleChange} 
             required={true} />
+          
+          <TextGroup id="tags"
+            value={c.tags} 
+            label="Tags" 
+            placeholder="#People #Tech #Policy #Etc"
+            onChange={this.handleChange}
+            help="Add tags to make your challenge easier to search and group with similar challenges."
+            required={false} />
           
           <div className="form-group">
             <div className="input-group mb-3">

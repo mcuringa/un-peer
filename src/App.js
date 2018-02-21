@@ -53,21 +53,25 @@ export default class App extends Component {
     let Main;
     console.log(this.state.user.email);
     if(!this.state.user.email)
-      Main = (<Login user={this.state.user} />);
+      Main = (
+        <div className="App container login">
+          <Login user={this.state.user} />
+        </div>
+      );
     else
-      Main = (<SecureScreens user={this.state.user} />);
+      Main = (
+        <Router>
+          <div className="App container">
+            <Header user={this.state.user} />
+            <section id="main" className=""><SecureScreens user={this.state.user} /></section>
+            <Footer user={this.state.user} />
+          </div>
+        </Router>
+      );
 
     // Main = (<Login user={this.state.user} />);
 
-    return (
-      <Router>
-        <div className="App container">
-          <Header user={this.state.user} />
-          <section id="main" className="">{Main}</section>
-          <Footer user={this.state.user} />
-        </div>
-      </Router>
-    );
+    return (Main);
   }
 }
 
@@ -122,7 +126,7 @@ const Footer = (props)=>{
   return (
     <footer className="App-footer container fixed-bottom">
       <div className="App-footer-toolbar btn-toolbar" role="toolbar" aria-label="Bottom navigation">
-        <div className="btn-group btn-group-justified mr-2" role="group" aria-label="Bottom navigation">
+        <div className="btn-group btn-group-justified" role="group" aria-label="Bottom navigation">
 
           <Link to="/" className="btn btn-btn-light btn-block">
             <CalendarIcon /><br/>

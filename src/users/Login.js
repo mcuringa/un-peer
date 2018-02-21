@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import "./Login.css";
+import { Button } from "react-bootstrap";
+import {TextGroup} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
 
 
@@ -48,17 +48,11 @@ export default class Login extends Component {
     let user = null;
     const success = (auth)=> {
       user = firebase.auth().currentUser;
-      console.log(user.email);
-
     };
     const err = (error)=> {
       let code = error.code;
       let msg = error.message;
 
-      //@todo: handle these codes
-      // auth/user-not-found
-      // auth/wrong-password
-      console.log(code);
       if(code === "auth/user-not-found")
         this.setState({nouser: true});
       else if(code === "auth/wrong-password")
@@ -88,8 +82,9 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div className="Login">
-  
+      <div className="Login screen">
+        <img className="LoginLogo d-block" src="/img/unpc-logo.png" />
+
         <div className={`ResetSent alert alert-success${(this.state.sent)?"":" d-none"}`}>
           Please check your email for a link to reset your password.
         </div>  
@@ -103,29 +98,28 @@ export default class Login extends Component {
         </div>
 
         <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email" bsSize="large">
-            <ControlLabel>Email</ControlLabel>
-            <FormControl
-              autoFocus
-              type="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
-            <ControlLabel>Password</ControlLabel>
-            <FormControl
-              value={this.state.password}
-              onChange={this.handleChange}
-              type="password"
-            />
-          </FormGroup>
+
+          <TextGroup id="email"
+            autoFocus
+            label="Email"
+            value={this.state.email}
+            onChange={this.handleChange} 
+            required={true} />
+
+          <TextGroup id="password"
+            autoFocus
+            type="password"
+            label="Password"
+            value={this.state.password}
+            onChange={this.handleChange} 
+            required={true} />
+
           <Button
             block
             bsSize="large"
             type="submit"
           >
-            Login
+            Start
           </Button>
         </form>
       </div>

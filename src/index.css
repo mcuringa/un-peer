@@ -6172,6 +6172,9 @@ svg.hidden {
 small tt {
   font-size: .65rem; }
 
+.btn-group > .btn:first-child, .btn-group > .ChallengeItem:first-child, .btn-group > .NewChallengeButton:first-child {
+  margin-top: 8px; }
+
 /*============================ App.js styles*/
 .container {
   max-width: 512px;
@@ -6233,6 +6236,9 @@ small tt {
   margin: 0 auto;
   text-align: left; }
 
+.ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group {
+  width: 100%; }
+
 .NewChallengeButton {
   color: #6c757d;
   background-color: white;
@@ -6278,3 +6284,29 @@ label {
 .DatePicker input {
   font-size: 12px;
   line-height: auto; }
+
+/*============================== Ratings */
+.Star svg {
+  fill: transparent;
+  stroke: gray;
+  stroke-width: 1.1px; }
+
+.Star.filled svg {
+  fill: gold;
+  stroke: gold; }
+
+/*============================== LOGIN */
+.App.login {
+  background-color: #6999C9;
+  padding: 0;
+  min-height: 100vh; }
+
+.Login.screen {
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 26px; }
+
+.LoginLogo {
+  margin-bottom: 64px;
+  margin-left: auto;
+  margin-right: auto; }

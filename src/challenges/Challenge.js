@@ -5,8 +5,7 @@ const firebase = require("firebase");
 
 const User = {
   uid: "0",
-  first:"Test",
-  last:"User",
+  name:"Test User",
   email:"test@example.com"
 };
 
@@ -23,6 +22,7 @@ const dayInMillis = 1000 * 60 * 60 * 24;
 const Challenge = {
   id:"",
   title:"",
+  tags:"",
   prompt:"",
   status: ChallengeStatus.DRAFT,
   start: new Date(),
@@ -38,6 +38,8 @@ const Response = {
   video:"",
   audio:"",
   img:"",
+  ratings: {},
+  avgRatin: 0,
   created: new Date(),
   modified: new Date()
 };
@@ -181,23 +183,35 @@ const ChallengeDB = {
     });
   },
 
+  calcAvgRating(r) {
+    console.log("calculating average");
+    if(!r.ratings || !_.keys(r).length) {
+      console.log("no ratings");
+      return 0;
+    }
+    const sum = _.reduce(r.ratings, (sum,i)=>sum+i );
+    const size = _.keys(r.ratings).length;
+    return sum / size;
+  },
 
   getResponses(challengeId) {
     let db = FBUtil.connect();
     let responses = [];
-    let ids = [];
     
     return new Promise(
       (resolve, reject)=>{
 
-        db.collection("challenges").get(challengeId).get("responses").then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            let r = {id: doc.id};
-            r = _.merge(r, doc.data());
+        const id = "policy-changes-break-everything";
+        let db = FBUtil.connect();
+        db.collection(`challenges/${challengeId}/responses`).get()
+          .then((results)=>{
+              results.forEach((doc)=>{
+                let r = {id: doc.id, ratings: {}};
+                r = _.merge(r, doc.data());
+                r.avgRating = ChallengeDB.calcAvgRating(r);
+                responses.push(r);
+              });
 
-            responses.push(r);
-            ids.push(r.id);
-          });
           resolve(responses);
         });
     });
@@ -215,6 +229,7 @@ const ChallengeDB = {
         let c = ChallengeDB.get(challengeId).then(()=>{
           ChallengeDB.cache[c.id] = c;  
         });
+        response.avgRating = ChallengeDB.calcAvgRating(response);
 
         resolve(response);
       });
@@ -230,7 +245,6 @@ const ChallengeDB = {
 
     return new Promise((resolve, reject) => {
       const checkExists = (id)=> {
-        console.log("checking" + count);
         db.collection("challenges").doc(id).get().then((ref)=> {
           if(!ref.exists) {
             resolve(id);

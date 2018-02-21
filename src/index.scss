@@ -56,6 +56,11 @@ small tt {
   font-size: .65rem;
 }
 
+.btn-group > .btn:first-child
+{
+  margin-top: 8px;
+}
+
 /*============================ App.js styles*/
 .container
 {
@@ -150,6 +155,12 @@ small tt {
   text-align: left;
 }
 
+.ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group
+{
+  width: 100%;
+}
+
+
 .NewChallengeButton
 {
   @extend .btn;
@@ -218,4 +229,41 @@ label
 {
   font-size: 12px;
   line-height: auto;
+}
+
+/*============================== Ratings */
+
+.Star svg
+{
+  fill: transparent;
+  stroke: gray;
+  stroke-width: 1.1px;
+}
+
+.Star.filled svg
+{
+  fill: gold;
+  stroke: gold;
+}
+
+/*============================== LOGIN */
+
+.App.login
+{
+  background-color: #6999C9;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.Login.screen
+{
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 26px;
+}
+.LoginLogo
+{
+  margin-bottom: 64px;
+  margin-left: auto;
+  margin-right: auto;
 }

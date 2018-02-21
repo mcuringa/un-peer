@@ -1,7 +1,7 @@
 import React from 'react';
+import _ from "lodash";
 import {CalendarIcon} from 'react-octicons';
 import dateFormat from 'dateformat';
-import _ from "lodash";
 
 import {
   NavLink,
@@ -9,6 +9,7 @@ import {
 
 import {User, ChallengeDB} from "./Challenge.js"
 import ChallengeResponseForm from "./ChallengeResponseForm.js"
+import ResponseList from "./ResponseList.js"
 
 const df = (d)=> dateFormat(d, "dd mmm yyyy");
 
@@ -37,10 +38,16 @@ class ChallengeDetailScreen extends React.Component {
     let ActiveElement;
     switch(action) {
       case "r":
-        ActiveElement = (<ChallengeResponseForm user={this.props.user} challengeId={this.state.challenge.id} />);
+        ActiveElement = (
+          <ChallengeResponseForm 
+            user={this.props.user} 
+            challengeId={this.state.challenge.id} />);
         break;
       case "responses":
-        ActiveElement = (<ResponseList user={this.props.user} challengeId={this.state.challenge.id} />);
+        ActiveElement = (
+          <ResponseList 
+            user={this.props.user} 
+            challengeId={this.state.challenge.id} />);
         break;
       default:
        ActiveElement = (<ChallengeInfo id={this.state.challenge.id} 
@@ -68,7 +75,7 @@ const ChallengeHeader = (props) => {
         {df(props.challenge.start)} - {df(props.challenge.end)}
       </div>
       <h4>{props.challenge.title}</h4>
-      <div>Challenge owner: {props.owner.first} {props.owner.last}</div>
+      <div>Challenge owner: {props.owner.name}</div>
       <ChallengeButtons id={props.id} />
     </div>
   );
@@ -91,43 +98,21 @@ const ChallengeInfo = (props) => {
   );
 }
 
-const ResponseList = (props) => {
-  let responseItems = [];
-  ChallengeDB.getResponses(props.challengeId).then(
-    (responses)=>{
-      console.log(responses);
-      _.map(responses,(r)=>{
-          responseItems.push(
-            <div className="Reponse">
-              {r.text} {r.created}
-            </div>
-          );
-        });
-    }
 
-  );
-
-  return (
-    <div className="ResponseList">
-      {responseItems}
-    </div>
-  );
-
-}
 
 
 const ChallengeButtons = (props) => {
   return (
-    <div className="btn-toolbar">
+    <div className="ChallengeButtons btn-toolbar">
       <div className="btn-group btn-group-justified" role="group">
-        <NavLink className="btn btn-outline-secondary" exact={true} activeClassName="active" to={`/challenge/${props.id}`}>Info</NavLink>
-        <a className="btn btn-outline-secondary disabled">Media</a>
-        <NavLink className="btn btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/r`}>Respond</NavLink>
-        <NavLink className="btn btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/responses`}>Responses</NavLink>
-        <NavLink className="btn btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/edit`} edit="true">Edit</NavLink>
+        <NavLink className="btn btn-block btn-outline-secondary" exact={true} activeClassName="active" to={`/challenge/${props.id}`}>Info</NavLink>
+        <NavLink className="btn btn-block btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/r`}>Respond</NavLink>
+        <NavLink className="btn btn-block btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/responses`}>Responses</NavLink>
+        <NavLink className="btn btn-block btn-outline-secondary" activeClassName="active" to={`/challenge/${props.id}/edit`} edit="true">Edit</NavLink>
       </div>
     </div>);
 }
 
 
 export default ChallengeDetailScreen;
+export {ChallengeButtons};
