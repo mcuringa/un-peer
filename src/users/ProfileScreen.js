@@ -35,8 +35,24 @@ class ProfileScreen extends React.Component {
       user: user
     };
     this.handleChange = this.handleChange.bind(this);
+    this.reset = this.handleChange.bind(this);
     this.save = this.save.bind(this);
     this.save = _.debounce(this.save, 2000);
+  }
+  
+  reset(e) {
+    e.preventDefault();
+    const firebase = FBUtil.init();
+
+    
+    firebase.auth().sendPasswordResetEmail(this.state.email)
+      .then(()=> {
+        this.setState({sent: true});
+        this.setState({reset: false});
+      })
+      .catch((error)=> {
+        console.log(error);
+      });
   }
 
   save() {
@@ -85,11 +101,16 @@ class ProfileScreen extends React.Component {
           </div>
         </div>
         <form>
-          <TextGroup id="displayName"
+          <TextGroup id="email"
             value={user.email} 
             label="Email" 
             readOnly={true}
             plaintext={true} />
+
+            <div className={`ResetSent alert alert-success${(this.state.sent)?"":" d-none"}`}>
+              Please check your email for a link to reset your password.
+            </div>  
+
 
           <TextGroup id="displayName"
             value={user.displayName} 
@@ -97,6 +118,9 @@ class ProfileScreen extends React.Component {
             onChange={this.handleChange} 
             required={true}
             help="Choose how your name will show for other users." />
+
+          <button onClick={this.reset} className="btn btn-secondary mr-2">Reset Password</button>
+          
           <button type="button" onClick={this.signout} className="btn btn-secondary">
             Sign Out
           </button>

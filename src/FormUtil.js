@@ -36,7 +36,7 @@ const TextGroup = (props)=> {
            readOnly={props.readOnly} 
            plaintext={props.plaintext}
            required={props.required}
-           autoFoucs={props.autoFocus} />
+           autoFocus={props.autoFocus} />
     <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
   </div>
   );
@@ -59,6 +59,35 @@ const TextInput = (props)=> {
            autoFoucs={props.autoFocus} />
   );
 };
+
+const Video = (props)=> {
+
+  const dclass = (props.video)?"":"d-none";
+
+  return (  
+    <div className={`${props.className} ${dclass} embed-responsive embed-responsive-16by9 mb-2`}>
+      <video controls="true" poster={props.poster}>
+        <source src={props.video} />
+      </video>
+    </div>
+  );
+
+}
+
+const VideoUpload = (props)=> {
+
+
+  return (
+    <div>
+      <Video video={props.video} />
+      <div className="custom-file">
+        <input type="file" className="custom-file-input" id={props.id} onChange={props.onChange} />
+        <label className="custom-file-label" htmlFor={props.id}>{props.label} </label>
+      </div>
+    </div>
+  );
+};
+
 
 const DatePicker = (props)=> {
   // 📅 -- emoji?
@@ -158,4 +187,14 @@ const RadioButton = (props)=>
 }
 
 
-export {RadioButtonGroup, TextGroup, TextInput, DatePicker, TextAreaGroup, StatusIndicator, LoadingSpinner};
+export {
+  RadioButtonGroup,
+  TextGroup,
+  TextInput,
+  DatePicker,
+  TextAreaGroup,
+  StatusIndicator,
+  LoadingSpinner,
+  Video,
+  VideoUpload
+};

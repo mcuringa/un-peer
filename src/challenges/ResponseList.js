@@ -3,6 +3,7 @@ import _ from "lodash";
 import df from "../DateUtil.js";
 import {ChallengeDB} from "./Challenge.js";
 import {StarIcon} from 'react-octicons';
+import { Video } from "../FormUtil";
 
 class ResponseList extends React.Component {
   constructor(props) {
@@ -45,7 +46,7 @@ class ResponseList extends React.Component {
           <div id={`body_${keyCount}`} className="collapse" data-parent="#ResponseList">
             <div className="card-body">
               <StarRatings challengeId={this.props.challengeId} user={this.props.user} response={r} />
-
+              <Video video={r.video} />
               {r.text}
             </div>
           </div>

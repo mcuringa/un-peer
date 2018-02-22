@@ -15,7 +15,8 @@ import {
   TextAreaGroup,
   StatusIndicator,
   LoadingSpinner,
-  RadioButtonGroup
+  RadioButtonGroup,
+  VideoUpload
 } from "../FormUtil";
 
 class ChallengeEditScreen extends React.Component {
@@ -62,34 +63,21 @@ class ChallengeEditScreen extends React.Component {
   handleUpload(e) {
 
     let c = this.state.challenge;
-
     let file = e.target.files[0];
+    const key = e.target.id;
+
+    this.setState({dirty: true, loading: true});
     console.log(file);
 
-    let firebase = FBUtil.init();
-    let storageRef = firebase.storage().ref();
-    const name = ChallengeDB.slug(file.name);
-    const path = `${c.id}/${name}`;
+    console.log("target.id:" + key);
 
-    console.log(path);
-    this.setState({dirty: true, loading: true});
-
-
-    // Create a reference to 'mountains.jpg'
-    let ref = storageRef.child(path);
-    ref.put(file).then((snapshot)=> {
-      console.log('Uploaded a blob or file!');
-      const filePath = snapshot.downloadURL;
-      console.log(filePath);
-
-      c.img = filePath;
-      // console.log(c);
-      // console.log(e.target.id);
-      // c[e.target.id] = filePath;
-      
+    FBUtil.uploadMedia(file, c.id).then((snapshot)=> {
+      c[key] = snapshot.downloadURL;
+      console.log("video before save: " + c.video);
       this.setState({challenge: c});
       console.log(this.state.challenge);
       this.save();
+      console.log("save complete");
 
     });
   }
@@ -186,26 +174,16 @@ class ChallengeEditScreen extends React.Component {
             </div>
           </div>
 
-          <img className="img img-thumbnail" src={c.img} />
+          <img className="img" src={c.img} />
           <div className="custom-file">
             
             <input type="file" className="custom-file-input" id="img" onChange={this.handleUpload} />
             <label className="custom-file-label" htmlFor="img">Upload image</label>
           </div>
 
-
-          <div className="ChallengeVideo embed-responsive embed-responsive-16by9 mb-2">
-            <video controls="true" 
-              poster="poster.jpg">
-                  <source src={c.video} />
-            </video>
-          </div>
-          <div className="custom-file">
-            
-            <input type="file" className="custom-file-input" id="video" onChange={this.handleUpload} />
-            <label className="custom-file-label" htmlFor="video">Upload challenge video</label>
-          </div>
-
+          <VideoUpload id="video" video={c.video} 
+            onChange={this.handleUpload}
+            label="Upload challenge video" />
 
           <TextAreaGroup id="prompt"
             value={c.prompt}

@@ -28,10 +28,11 @@ it("should get a challenge based on id",()=>{
   });
 });
 
-it("it should create a safe slug from unsafe text", ()=> {
-  const s = "  This is    Foo#@ Bar_22 🔥🔥  ";
+it.only("it should create a safe slug from unsafe text", ()=> {
+  const s = "this-is-a video_today11.12.2008.mpg";
   const slug = ChallengeDB.slug(s);
   const ex = "this-is-foo-bar_22";
+  console.log(slug);
 });
 
 it("should find a new unique id", ()=>{
@@ -92,7 +93,7 @@ it("should add a response to test-id-foo",()=>{
   });
 });
 
-it.only("should get a sub collection",()=>{
+it("should get a sub collection",()=>{
   const id = "policy-changes-break-everything";
   let db = FBUtil.connect();
   return db.collection(`challenges/${id}/responses`).get()

@@ -1,3 +1,4 @@
+import {ChallengeDB} from "./challenges/Challenge.js";
 
 const FBUtil =
 {
@@ -24,6 +25,24 @@ const FBUtil =
     };
     FBUtil._firebase.initializeApp(firebaseConfig);
     return FBUtil._firebase;
+  },
+
+  uploadMedia: (file, path)=> {
+    console.log("uploading media");
+    let firebase = FBUtil.init();
+    let storageRef = firebase.storage().ref();
+    const name = ChallengeDB.slug(file.name);
+    console.log("filename: " + name);
+    path = `${path}/${name}`;
+    console.log("uploading to: " + path);
+
+    let ref = storageRef.child(path);
+    return new Promise((resolve, reject) => {
+      ref.put(file).then((snapshot)=> {
+        console.log("upload complete");
+        resolve(snapshot);
+      });
+    });
   },
 
   connect: ()=> {

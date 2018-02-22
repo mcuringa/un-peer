@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from "lodash";
-import {CalendarIcon} from 'react-octicons';
+import {CalendarIcon, ArrowDownIcon} from 'react-octicons';
 import dateFormat from 'dateformat';
 
 import {
@@ -88,10 +88,12 @@ const ChallengeInfo = (props) => {
   return (
     <div className="ChallengeDescription">
       <div className="ChallengeVideo embed-responsive embed-responsive-16by9">
-        <video controls="true">
-          <source src={props.challenge.video} />
-        </video>
+        <video controls="true" src={props.challenge.video} />
       </div>
+      <a className="btn btn-primary btn-sm float-right" 
+        download href={props.challenge.video}>
+        <ArrowDownIcon /><br />
+        download</a>
       <p>{props.challenge.prompt}</p>
     </div>
   );
