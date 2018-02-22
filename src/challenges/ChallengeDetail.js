@@ -88,9 +88,8 @@ const ChallengeInfo = (props) => {
   return (
     <div className="ChallengeDescription">
       <div className="ChallengeVideo embed-responsive embed-responsive-16by9">
-        <video controls="true" 
-          poster="poster.jpg">
-              <source src="https://firebasestorage.googleapis.com/v0/b/un-peer-challenges.appspot.com/o/testing%2Fchallenge-trial-video.mp4?alt=media&token=ec0ede16-1fd8-48f9-bf30-695aa4b77c24" type='video/mp4'/>
+        <video controls="true">
+          <source src={props.challenge.video} />
         </video>
       </div>
       <p>{props.challenge.prompt}</p>
