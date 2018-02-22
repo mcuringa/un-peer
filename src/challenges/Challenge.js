@@ -52,7 +52,7 @@ const ChallengeDB = {
 
   slug(title) {
     return title.toLowerCase()
-        .replace(/[^\w ]+/g,'')
+        .replace(/[^\w\. ]+/g,'')
         .trim()
         .replace(/ +/g,'-');
   },
