@@ -6242,12 +6242,15 @@ small tt {
 .NewChallengeButton {
   color: #6c757d;
   background-color: white;
+  white-space: normal;
   width: 60%;
   margin: 0 auto;
   margin-top: 48px;
   text-center: left;
-  font-size: 24px;
-  line-height: 2em; }
+  font-size: 18px;
+  line-height: 1.1em;
+  padding-top: 1em;
+  padding-bottom: 1em; }
 
 .ChallengeItemp p2 {
   display: inline-box; }

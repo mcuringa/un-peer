@@ -7,6 +7,7 @@ import {
   NavLink,
 } from 'react-router-dom';
 
+import {Video} from "../FormUtil.js"
 import {User, ChallengeDB} from "./Challenge.js"
 import ChallengeResponseForm from "./ChallengeResponseForm.js"
 import ResponseList from "./ResponseList.js"
@@ -87,13 +88,9 @@ const ChallengeInfo = (props) => {
 
   return (
     <div className="ChallengeDescription">
-      <div className="ChallengeVideo embed-responsive embed-responsive-16by9">
-        <video controls="true" src={props.challenge.video} />
-      </div>
-      <a className="btn btn-primary btn-sm float-right" 
-        download href={props.challenge.video}>
-        <ArrowDownIcon /><br />
-        download</a>
+      <Video className="ChallengeVideo" video={props.challenge.video} />
+      <a className="btn btn-outline-primary btn-sm align-right" 
+        download href={props.challenge.video}>download</a>
       <p>{props.challenge.prompt}</p>
     </div>
   );

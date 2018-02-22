@@ -66,9 +66,7 @@ const Video = (props)=> {
 
   return (  
     <div className={`${props.className} ${dclass} embed-responsive embed-responsive-16by9 mb-2`}>
-      <video controls="true" poster={props.poster}>
-        <source src={props.video} />
-      </video>
+      <video controls="true" poster={props.poster} src={props.video} />
     </div>
   );
 

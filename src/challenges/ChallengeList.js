@@ -48,7 +48,7 @@ const ChallengeButton = (props)=> {
     return null;
 
   return (
-    <Link to="/challenge/new" className="NewChallengeButton">
+    <Link to="/challenge/new" className="NewChallengeButton btn">
       Submit a Challenge
     </Link>
   );

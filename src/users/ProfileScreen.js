@@ -111,7 +111,6 @@ class ProfileScreen extends React.Component {
               Please check your email for a link to reset your password.
             </div>  
 
-
           <TextGroup id="displayName"
             value={user.displayName} 
             label="Display name" 
