@@ -1,6 +1,8 @@
 import FBUtil from "../FBUtil";
 import _ from "lodash";
-import {ChallengeDB, Challenge, Response, User} from "./Challenge";
+import {ChallengeDB, Challenge, Response, User, ChallengeStatus} from "./Challenge";
+
+const longTimeout = 1000 * 12;
 
 
 it("should load all of the Challenges from firebase", ()=>{
@@ -18,6 +20,49 @@ it("should load all of the Challenges from firebase", ()=>{
   );
 });
 
+
+
+it.only("should get the user's response for a challenge", ()=>{
+
+  const cid = "what-about-the-careless-staff";
+  const uid = "qeNXoRsAlsVniTfGy1wHKMHpLIV2";
+  return ChallengeDB.getResponse(cid,uid).then(
+    (r)=> {
+      console.log(r);
+    },()=>{console.log("no response found for this challenge/user");}
+  );
+});
+
+
+
+it("should return the active challenge", ()=>{
+    
+  // make sure it's not coming from cache
+  ChallengeDB.cache = {};
+
+  return ChallengeDB.getActive().then(
+    (c)=> {
+      console.log(c);
+    },()=>{console.log("no active challenge found");}
+  );
+});
+
+
+it("should find all challenges with Published status", ()=>{
+    
+  // make sure it's not coming from cache
+  ChallengeDB.cache = {};
+
+  return ChallengeDB.findByStatus(ChallengeStatus.DRAFT).then(
+    (t)=> {
+      const len = t.length;
+      expect(len).toBeGreaterThan(0);
+      expect(_.every(t,c=>c.status==ChallengeStatus.DRAFT)).toBe(true);
+    }
+  );
+});
+
+
 it("should get a challenge based on id",()=>{
   // make sure it's not coming from cache
   ChallengeDB.cache = {};
@@ -28,7 +73,7 @@ it("should get a challenge based on id",()=>{
   });
 });
 
-it.only("it should create a safe slug from unsafe text", ()=> {
+it("it should create a safe slug from unsafe text", ()=> {
   const s = "this-is-a video_today11.12.2008.mpg";
   const slug = ChallengeDB.slug(s);
   const ex = "this-is-foo-bar_22";
@@ -45,9 +90,8 @@ it("should find a new unique id", ()=>{
         expect(newId).toBeTruthy();
         expect(id == newId).toBeFalsy();
       });
-});
+}, longTimeout);
 
-const longTimeout = 1000 * 12;
 it("should add a new challenge", ()=>{
   ChallengeDB.cache = {};
 

@@ -22,7 +22,7 @@ import {
 
 import FBUtil from './FBUtil.js';
 import Home from './Home.js';
-import ChallengeListScreen from './challenges/ChallengeList.js';
+import {ChallengeListScreen} from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 import ChallengeEditScreen from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
@@ -69,7 +69,7 @@ export default class App extends Component {
         </Router>
       );
 
-    // Main = (<Login user={this.state.user} />);
+    console.log(this.state.user.roles);
 
     return (Main);
   }
@@ -93,7 +93,6 @@ const Header = (props)=>{
 
 const SecureScreens = (props)=>{
   return (
-    <div>
       <Switch>        
         <Route exact path="/" component={Home} />
         <Route exact path="/archive" component={ChallengeListScreen} />
@@ -103,7 +102,6 @@ const SecureScreens = (props)=>{
         <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>
         <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
       </Switch>
-    </div>
   );
 }
 
@@ -123,24 +121,26 @@ const PropsRoute = ({ component, ...rest }) => {
 }
 
 const Footer = (props)=>{
+  
+  let disabled = (props.user.email)?"":" disabled";
   return (
     <footer className="App-footer container fixed-bottom">
       <div className="App-footer-toolbar btn-toolbar" role="toolbar" aria-label="Bottom navigation">
         <div className="btn-group btn-group-justified" role="group" aria-label="Bottom navigation">
 
-          <Link to="/" className="btn btn-btn-light btn-block">
+          <Link to="/" className={`btn btn-btn-light btn-block disabled`}>
             <CalendarIcon /><br/>
             Calendar
           </Link>
-          <Link to="/archive" className="btn btn-btn-light btn-block">
+          <Link to="/archive" className={`btn btn-btn-light btn-block${disabled}`}>
             <BriefcaseIcon /><br/>
             Archives
           </Link>
-          <Link to="/" className="btn btn-btn-light btn-block">
+          <Link to="/" className="btn btn-btn-light btn-block disabled">
             <BookmarkIcon /><br/>
             Bookmarks
           </Link>
-          <Link to="/profile" className="btn btn-btn-light btn-block">
+          <Link to="/profile" className={`btn btn-btn-light btn-block${disabled}`}>
             <PersonIcon /><br/>
             Profile
           </Link>

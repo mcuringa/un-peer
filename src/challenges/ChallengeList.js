@@ -9,7 +9,6 @@ import {User, Challenge, ChallengeDB} from "./Challenge.js"
 
 const df = (d)=> dateFormat(d, "ddd mmm dd");
 
-
 class ChallengeListScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -18,10 +17,7 @@ class ChallengeListScreen extends React.Component {
   componentWillMount() {
     
     ChallengeDB.findAll().then((challenges)=>{
-      if(this.props.home)
-        this.setState({challenges: challenges.slice(0,1)});
-      else
-        this.setState({challenges: challenges.slice(1)});
+      this.setState({challenges: challenges.slice(1)});
     });
 
   }
@@ -74,6 +70,4 @@ const ChallengeListItem = (props) => {
 }
 
 
-
-
-export default ChallengeListScreen;
+export {ChallengeListScreen, ChallengeListItem};

@@ -79,7 +79,6 @@ small tt {
 .App .screen
 {
   padding: 4px 8px 2px 8px;
-  min-height: 100vh;
 }
 
 .App .screen.home
@@ -87,7 +86,7 @@ small tt {
   background-image: url('/img/hands.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  min-height: 100vh;
+  min-height: 89vh;
 }
 
 
@@ -142,6 +141,34 @@ small tt {
 
 /*===================================== challenge styles */
 
+.ActiveChallenge
+{
+  @extend .btn;
+  @extend .btn-block;
+  @extend .mt-4;
+  border-radius: 8px;
+  margin: 0 auto;
+  margin-bottom: 40px;
+  color: $gray-600;
+  text-align: right;
+  background-color: white;
+  min-height: 200px;
+
+  width: 85%;
+
+}
+
+.ActiveChallenge h4, .ActiveChallenge h5
+{
+    font-size: 18px;
+    font-weight: bold;
+  white-space: normal;
+}
+
+.ActiveChallenge h5 {
+  font-weight: normal;
+  font-size: 16px;
+}
 
 .ChallengeItem
 {
@@ -165,6 +192,7 @@ small tt {
 {
   @extend .btn;
   @extend .btn-block;
+  border-radius: 8px;
   color: $gray-600;
   background-color: white;
   white-space: normal;
@@ -179,11 +207,6 @@ small tt {
   padding-bottom: 1em;
 }
 
-.ChallengeItemp p2
-{
-  display: inline-box;
-}
-
 .ChallengeListTitle
 {
   font-size: 1.6rem;
@@ -195,13 +218,6 @@ small tt {
   text-align: center;
 }
 
-.ChallengeItem.home
-{
-  margin-top: 2em;
-  min-height: 200px;
-
-}
-
 .ChallengeItem .StartDate
 {
   padding-bottom: 6px;
@@ -211,8 +227,13 @@ small tt {
 
 .ChallengeDetailHeader
 {
-  padding: 1em;
-  color: $gray-600;
+  padding: 0;
+  padding-top: 1.5em;
+  padding-bottom: .5em;
+  margin-bottom: 8px;
+  color: $gray-700;
+  border-bottom: 1px solid $gray-400;
+
 }
 
 .ChallengeDescription {
@@ -245,8 +266,7 @@ label
 
 .Star.filled svg
 {
-  fill: gold;
-  stroke: gold;
+  fill: gray;
 }
 
 /*============================== LOGIN */
@@ -264,6 +284,7 @@ label
   padding-right: 2em;
   padding-top: 26px;
 }
+
 .LoginLogo
 {
   margin-bottom: 64px;

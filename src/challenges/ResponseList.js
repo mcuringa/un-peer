@@ -34,18 +34,21 @@ class ResponseList extends React.Component {
     let keyCount = 0;
     let responseItems = this.state.responses.map((r)=>{
       keyCount++;
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
       return (
         <div className="card">
           <div className="card-header" id={`head_${keyCount}`} key={`resp_${keyCount}`}>
-              <button className="btn btn-link" data-toggle="collapse" 
+            <div className="d-flex">
+              <button className="btn btn-link text-dark" data-toggle="collapse" 
                 data-target={`#body_${keyCount}`}>
-                <em>Response posted</em> {df.ts(r.created)}
+                <em>Response {letters[keyCount-1]}</em>
               </button>
+              <StarRatings challengeId={this.props.challengeId} user={this.props.user} response={r} />
+            </div>
           </div>
           <div id={`body_${keyCount}`} className="collapse" data-parent="#ResponseList">
             <div className="card-body">
-              <StarRatings challengeId={this.props.challengeId} user={this.props.user} response={r} />
               <Video video={r.video} />
               {r.text}
             </div>

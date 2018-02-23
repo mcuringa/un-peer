@@ -1,9 +1,12 @@
 import React from 'react';
 import _ from "lodash";
+import { Redirect } from 'react-router-dom';
 import dateFormat from 'dateformat';
 import { ChallengeDB, User, Response } from "./Challenge.js"
 import { CalendarIcon, PrimitiveDotIcon } from 'react-octicons';
 import FBUtil from "../FBUtil.js";
+
+import UNModal from "../Modal";
 
 import {
   TextGroup,
@@ -21,7 +24,7 @@ class ChallengeResponseForm extends React.Component {
 
     this.state = {
       "challengeId": challengeId,
-      "response": Response, 
+      "response": this.props.response, 
       "loading": true,
       "dirty": false
     };
@@ -29,11 +32,6 @@ class ChallengeResponseForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
     this.publish = this.publish.bind(this);
-    // this.save = _.debounce(this.save, 2000);
-  }
-
-  componentWillMount() {
-    const challengeId = this.props.challengeId;
   }
 
   handleUpload(e) {
@@ -43,7 +41,6 @@ class ChallengeResponseForm extends React.Component {
 
     let file = e.target.files[0];
     const path = `${challengeId}/${this.props.user.uid}`;
-    console.log(path);
     this.setState({dirty: true, loading: true});
 
     FBUtil.uploadMedia(file, path)
@@ -62,7 +59,10 @@ class ChallengeResponseForm extends React.Component {
     const challengeId = this.props.challengeId;
     let r = this.state.response;
     r.user = {email: this.props.user.email, name:this.props.user.displayName, uid: this.props.user.uid};
-    ChallengeDB.addResponse(challengeId, r);
+    ChallengeDB.addResponse(challengeId, r).then(()=>{
+      this.setState({goToInfo: true});
+      // this.setState({showNextChoice: true});
+    });
   }
 
   handleChange(e) {
@@ -72,6 +72,10 @@ class ChallengeResponseForm extends React.Component {
   }
 
   render() {
+
+    if(this.state.goToInfo)
+      return <Redirect push to={`/challenge/${this.props.challengeId}`}/>
+    
     let r = this.state.response;
 
     return (
@@ -87,8 +91,8 @@ class ChallengeResponseForm extends React.Component {
           label="Upload your response" />
 
         <button type="button" onClick={this.publish} 
-        className="btn btn-block btn-success mt-2">
-          Publish my response
+        className="btn btn-block btn-secondary mt-2">
+          Submit my response
         </button>
       </form>);
   }

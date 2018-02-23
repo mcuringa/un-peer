@@ -106,14 +106,14 @@ class ChallengeEditScreen extends React.Component {
 
 
   handleStartDateChange(e) {
-    console.log("changes to start date");
-    const dayInMillis = 1000 * 60 * 60 * 24;
     let c = this.state.challenge;
+    const dayInMillis = 1000 * 60 * 60 * 24;
     const date = ChallengeDB.parseDateControlToUTC(e.target.value);
-    this.state.challenge.start = date;
-    this.state.challenge.responseDue = new Date(date.getTime() + dayInMillis * 5);
-    this.state.challenge.ratingDue = new Date(date.getTime() + dayInMillis * 7);
-    this.state.challenge.end = new Date(date.getTime() + dayInMillis * 7);
+
+    c.start = date;
+    c.responseDue = new Date(date.getTime() + dayInMillis * 5);
+    c.ratingDue = new Date(date.getTime() + dayInMillis * 7);
+    c.end = new Date(date.getTime() + dayInMillis * 7);
 
     this.setState({ challenge: c, dirty: true });
 

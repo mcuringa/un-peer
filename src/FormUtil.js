@@ -36,7 +36,7 @@ const TextGroup = (props)=> {
            readOnly={props.readOnly} 
            plaintext={props.plaintext}
            required={props.required}
-           autoFocus={props.autoFocus} />
+           autofocus={props.autoFocus} />
     <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
   </div>
   );
@@ -56,7 +56,7 @@ const TextInput = (props)=> {
            onChange={props.onChange} 
            readOnly={props.readOnly} 
            required={props.required}
-           autoFoucs={props.autoFocus} />
+           autofocus={props.autofocus} />
   );
 };
 

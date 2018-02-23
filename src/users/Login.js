@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Button } from "react-bootstrap";
+import _ from "lodash";
 import {TextGroup} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
-
+import UserDB from "./UserDB.js";
 
 export default class Login extends Component {
 
@@ -46,8 +47,29 @@ export default class Login extends Component {
     const firebase = FBUtil.init();
 
     let user = null;
+    const merge = (u)=>{ 
+      console.log("merging");
+      console.log(u);
+      user = _.merge(user, u);
+      this.setState({user: user});
+    };
+
+    const add = (u)=>{
+      const user = {
+        created: new Date(),
+        uid: u.uid,
+        email: u.email,
+        roles: ["user"],
+        student: true,
+        admin: false,
+        su: false
+      }
+      UserDB.save(user).then(merge);
+    };
+
     const success = (auth)=> {
       user = firebase.auth().currentUser;
+      UserDB.get(user.uid).then(merge, add);
     };
     const err = (error)=> {
       let code = error.code;

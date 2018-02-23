@@ -2,6 +2,25 @@ import FBUtil from "../FBUtil";
 import _ from "lodash";
 const firebase = require("firebase");
 
+const db = {
+  get(path, id) {
+
+    let db = FBUtil.connect();
+    let p = new Promise((resolve, reject)=>{
+          db.collection(path).doc(id).get()
+            .then( (doc)=>{
+              if(doc.exists)
+                resolve(doc.data());
+              else
+                reject();
+            });
+          });
+
+    return p;
+
+  },
+};
+
 
 const User = {
   uid: "0",
@@ -78,6 +97,33 @@ const ChallengeDB = {
     const keys = _.keys(ChallengeDB.cache);
     const del = _.filter(keys,(k)=>{return !_.includes(fresh, k)});
     _.each(del, (k)=>{_.remove(ChallengeDB.cache,k);});
+  },
+
+  getActive() {
+    return new Promise((resolve, reject)=>{
+      ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
+        .then((challenges)=>{
+          const now = new Date();
+          let active = _.filter(challenges, c=> c.start < now && c.end > now);
+          if(active.length == 0)
+            reject();
+          else
+            resolve(_.last(challenges));
+        });
+    });
+  },
+
+  findByStatus(status) {
+
+    return new Promise((resolve, reject)=>{
+
+      ChallengeDB.findAll().then((challenges)=>{
+
+        challenges = _.filter(challenges, c=>c.status == status);
+        challenges = _.sortBy(challenges,c=>c.start);
+        resolve(challenges);
+      });      
+    });
   },
 
   findAll() {
@@ -215,6 +261,10 @@ const ChallengeDB = {
           resolve(responses);
         });
     });
+  },
+
+  getResponse(challengeId, uuid) {
+    return db.get(`challenges/${challengeId}/responses`, uuid);
   },
 
   addResponse(challengeId, response) {
