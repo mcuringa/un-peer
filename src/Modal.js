@@ -1,19 +1,83 @@
 import React from 'react';
-import Modal from "react-bootstrap-modal";
+import $ from "jquery";
 
-const UNModal = (props)=> {
-  <Modal
-    show={props.show}
-    onHide={props.onClose}
-    aria-labelledby="ModalHeader"
-  >
-    <Modal.Header closeButton>
-      <Modal.Title>{props.title}</Modal.Title>
-    </Modal.Header>
+class Modal  extends React.Component {
 
-    <Modal.Body>{props.footer}</Modal.Body>
-    <Modal.Footer>{props.footer}</Modal.Footer>
-  </Modal>
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidUpdate() {
+    if(this.props.show)
+      $(`#${this.props.id}`).modal("show");
+    else
+      $(`#${this.props.id}`).modal("hide");
+
+  }
+
+  render() {
+    
+    // let hide = (this.props.show)?"":"d-none";
+    return (
+      <div className={`modal fade`} id={this.props.id} tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <ModalHeader title={this.props.title} />
+            <div className="modal-body">{this.props.body}</div>
+            <ConfirmFooter onConfirm={this.props.onConfirm} />
+            <ModalFooter footer={this.props.footer} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default UNModal;
+const ModalHeader = (props)=> {
+
+  if(!props.title)
+    return null;
+
+  return (
+    <div className="modal-header">
+      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+  );
+
+
+};
+
+const ModalFooter = (props)=> {
+
+  if(!props.footer)
+    return null;
+
+  return (
+    <div class="modal-footer">
+      {props.footer}
+    </div>
+  );
+};
+
+const ConfirmFooter = (props)=> {
+
+  if(!props.onConfirm)
+    return null;
+  const label = props.confirmLabel || "OK";
+
+  return (
+    <div class="modal-footer">
+      <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      <button type="button"
+        onClick={()=>{props.onConfirm()}}
+        className="btn btn-primary">{label}</button>
+    </div>
+  );
+};
+
+
+
+export default Modal;

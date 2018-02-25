@@ -8,7 +8,9 @@ $full-screen-width: 512px;
 .text-white {
   fill: white;
 }
-
+.text-dark {
+  color: #687077;
+}
 img {
   @extend .img-fluid;
 }
@@ -18,23 +20,23 @@ img {
   color: theme-color("primary");
   fill: theme-color("primary");;
 }
-.icon-secondary {
+.icon-secondary, .icon-archive {
   color: theme-color("secondary");
   fill: theme-color("secondary");
 }
-.icon-success {
+.icon-success, .icon-active {
   color: theme-color("success");
   fill: theme-color("success");
 }
-.icon-danger {
+.icon-danger, .icon-review {
   color: theme-color("danger");
   fill: theme-color("danger");
 }
-.icon-warning {
+.icon-warning, .icon-future {
   color: theme-color("warning");
   fill: theme-color("warning");
 }
-.icon-info {
+.icon-info, .icon-rating {
   color: theme-color("info");
   fill: theme-color("info");
 }

@@ -2,7 +2,7 @@ import FBUtil from "../FBUtil";
 import _ from "lodash";
 import {ChallengeDB, Challenge, Response, User, ChallengeStatus} from "./Challenge";
 
-const longTimeout = 1000 * 12;
+const longTimeout = 1000 * 20;
 
 
 it("should load all of the Challenges from firebase", ()=>{
@@ -22,7 +22,21 @@ it("should load all of the Challenges from firebase", ()=>{
 
 
 
-it.only("should get the user's response for a challenge", ()=>{
+it.skip("assigns responses to users for a challenge", async ()=>{
+  // const cid = "what-about-the-careless-staff";
+  const cid = "foo";
+  ChallengeDB.cache = {};
+  let challenge;
+  await ChallengeDB.get(cid).then((c)=>{challenge = c;});
+  console.log(challenge.title);
+
+  return ChallengeDB.assignRatings(challenge).then((c)=>{
+    console.log(c.assignments);
+  });
+}, longTimeout);
+
+
+it("should get the user's response for a challenge", ()=>{
 
   const cid = "what-about-the-careless-staff";
   const uid = "qeNXoRsAlsVniTfGy1wHKMHpLIV2";
@@ -119,8 +133,8 @@ it("should update a challenge", ()=>{
     "last": "Gramsci"
   };
   c.title = "Jest Unit Test Challenge";
-  c.prmpt = "Created as a unit test...";
-
+  c.prompt = "Created as a unit test...";
+  c.assignments = {"foo": ["bar","jar"], "bar": ["foor","baz"]};
   
   return ChallengeDB.set(c).then((c)=>{
     expect(c).toBeDefined();

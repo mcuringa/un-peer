@@ -1,15 +1,14 @@
 import React from 'react';
 import _ from "lodash";
-import {CalendarIcon, ArrowDownIcon} from 'react-octicons';
+import {CalendarIcon, PrimitiveDotIcon} from 'react-octicons';
 import df from "../DateUtil";
-import {
-  NavLink,
-} from 'react-router-dom';
+import {NavLink, Link} from 'react-router-dom';
 
 import {Video} from "../FormUtil.js"
 import {User, ChallengeDB} from "./Challenge.js"
 import ChallengeResponseForm from "./ChallengeResponseForm.js"
 import ResponseList from "./ResponseList.js"
+import ResponseRatings from "./ResponseRatings.js"
 
 
 class ChallengeDetailScreen extends React.Component {
@@ -30,6 +29,7 @@ class ChallengeDetailScreen extends React.Component {
       this.setState({"owner": c.owner});
       this.setState({challenge: c});
     });
+
     ChallengeDB.getResponse(id, this.props.user.uid)
       .then((r)=>{
         this.setState({response: r});
@@ -46,19 +46,21 @@ class ChallengeDetailScreen extends React.Component {
           <ChallengeResponseForm 
             user={this.props.user} 
             challengeId={this.state.challenge.id}
-            response={ this.state.response } />);
+            response={ this.state.response } 
+            responseHandler={(r)=>{this.setState({response: r})}}/>);
         break;
       case "responses":
         ActiveElement = (
-          <ResponseList 
+          <ResponseRatings 
             user={this.props.user} 
+            challenge={this.state.challenge}
             challengeId={this.state.challenge.id} />);
         break;
       default:
         ActiveElement = (<ChallengeInfo id={this.state.challenge.id} 
-              challenge={this.state.challenge} 
-              owner={this.state.owner} 
-              response={this.state.response} />);
+          challenge={this.state.challenge} 
+          owner={this.state.owner} 
+          response={this.state.response} />);
 
 
     }
@@ -75,32 +77,73 @@ class ChallengeDetailScreen extends React.Component {
 }
 
 const ChallengeHeader = (props) => {
+  const c = props.challenge;
+  let stageMsg = "Challenge starts: " + df.day(c.start);
+  if(c.stage == "active")
+    stageMsg = `Response time: ${df.range(c.start, c.ratingsDue)}`;
+  else if(c.stage == "archive")
+    stageMsg = `Archived: ${df.range(c.start, c.end)}`;
+  else if(c.stage == "rating")
+    stageMsg = `Rating time: ${df.range(c.start, c.end)}`;
+  else
+    stageMsg = `Review until: ${df.day(c.end)}`;
+
+
   return (
     <div className="ChallengeDetailHeader">
       <div className="StartDate">
         <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
-        Response due: {df.day(props.challenge.response)}
+        {stageMsg}
       </div>
-      <h4>{props.challenge.title}</h4>
+      <h4>{props.challenge.title}
+      <small><EditLink user={props.user} challenge={props.challenge} /></small></h4>
       <div>Challenge owner: {props.owner.name}</div>
     </div>
   );
 }
 
-const ChallengeButton = (props) => {
-  if(props.challenge.ratings > new Date())
+const EditLink = (props) => {
+  const c = props.challenge;
+  if(!props.user.admin)
     return null;
-
-  const label = (props.response.user)?"View/Edit Response":"Take the challenge";
-
-  return (
-    <NavLink 
-      className={`btn btn-block bt-lg btn-secondary`} 
-      activeClassName="active" 
-      to={`/challenge/${props.id}/r`}>{label}</NavLink>
- 
-  );
+  return <Link to={`/${c.id}/edit`}>[edit]</Link>
 }
+
+const ChallengeButton = (props) => {
+  const c = props.challenge;
+
+  if(c.stage == "active") {
+
+    const label = (props.response.user)?"View/Edit Response":"Take the challenge";
+
+    return (
+      <NavLink 
+        className={`btn btn-block bt-lg btn-secondary`} 
+        activeClassName="active" 
+        to={`/challenge/${props.id}/r`}>{label}</NavLink>
+      );
+  }
+  
+  if(c.stage == "archive" || c.stage == "rating") {
+    return (
+      <NavLink 
+        className={`btn btn-block btn-secondary`} 
+        activeClassName="active" to={`/challenge/${props.id}/responses`}>Rate Responses</NavLink>
+    );
+  }
+  
+  if(c.stage == "archive" || c.stage == "review") {
+    return (
+      <NavLink 
+        className={`btn btn-block btn-secondary`} 
+        activeClassName="active" to={`/challenge/${props.id}/responses`}>See All Responses</NavLink>
+    );
+  }
+
+  return null;
+
+}
+
 
 
 const ChallengeInfo = (props) => {
@@ -108,8 +151,6 @@ const ChallengeInfo = (props) => {
   return (
     <div className="ChallengeDescription">
       <Video className="ChallengeVideo" video={props.challenge.video} />
-      <a className="btn btn-outline-primary btn-sm align-right" 
-        download href={props.challenge.video}>download</a>
       <p>{props.challenge.prompt}</p>
       <ChallengeButton id={props.id} 
         challenge={props.challenge}

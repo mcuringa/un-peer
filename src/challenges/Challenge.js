@@ -17,8 +17,20 @@ const db = {
           });
 
     return p;
-
   },
+
+  save(path, id, data) {
+    let db = FBUtil.connect();
+    data.modified = new Date();
+    let ref = db.collection(path).doc(id);
+    return new Promise((resolve, reject)=>{
+      ref.set(data).then(()=>{
+        resolve(ref.id);
+      });
+    });
+  },
+
+
 };
 
 
@@ -33,7 +45,7 @@ const ChallengeStatus = Object.freeze({
   DRAFT: 1,
   REVIEW: 2,
   PUBLISHED: 3,
-  ARCHIVED: 4
+  DELETE: 4
 });
 
 
@@ -77,6 +89,7 @@ const ChallengeDB = {
   },
 
   isCacheStale() {
+
     if(!ChallengeDB.cacheDate)
       return true;
 
@@ -126,6 +139,20 @@ const ChallengeDB = {
     });
   },
 
+  getStage(c) {
+    const now = new Date();
+    if(now < c.start)
+      return "future";
+    if(now > c.end)
+      return "archive";
+    if(now < c.responseDue)
+      return "active"
+    if(now < c.ratingDue)
+      return "rating";
+
+    return "review";
+  },
+
   findAll() {
     let db = FBUtil.connect();
     let challenges = [];
@@ -149,6 +176,7 @@ const ChallengeDB = {
           querySnapshot.forEach((doc) => {
             let c = {id: doc.id};
             c = _.merge(c, doc.data());
+            c.stage = ChallengeDB.getStage(c);
 
             ChallengeDB.cache[c.id] = c;
             challenges.push(c);
@@ -167,10 +195,11 @@ const ChallengeDB = {
     let challenge = ChallengeDB.cache[id];
     if(challenge)
     {
-    return new Promise(
-      (resolve, reject)=>{
-        resolve(challenge);
-      });
+      return new Promise(
+        (resolve, reject)=>{
+          challenge.stage = ChallengeDB.getStage(challenge);
+          resolve(challenge);
+        });
 
     }
     challenge = {};
@@ -182,6 +211,7 @@ const ChallengeDB = {
           .get()
           .then( (doc)=>{
             challenge = doc.data();
+            challenge.stage = ChallengeDB.getStage(challenge);
             challenge.id = id;
             if(challenge) //don't cache nulls
               ChallengeDB.cache[id] = challenge;
@@ -194,6 +224,8 @@ const ChallengeDB = {
 
   save(c){
     console.log("save called");
+    console.log(c.id);
+    console.log(c.assignments);
 
     if(_.isNil(c.id) || _.isEmpty(c.id))
       return ChallengeDB.add(c);
@@ -210,12 +242,14 @@ const ChallengeDB = {
   },
 
   set(c) {
-    console.log("set called");
     c.modified = ChallengeDB.parseDateControlToUTC(new Date());
     c.start = ChallengeDB.parseDateControlToUTC(c.start);
     c.end = ChallengeDB.parseDateControlToUTC(c.end);
     c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
     c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
+
+    console.log("set challenge: " + c.id);
+    console.log(c.assignments);
 
     let db = FBUtil.connect();
     let ref = db.collection("challenges").doc(c.id);
@@ -230,7 +264,6 @@ const ChallengeDB = {
   },
 
   calcAvgRating(r) {
-    console.log("calculating average");
     if(!r.ratings || !_.keys(r).length) {
       console.log("no ratings");
       return 0;
@@ -240,6 +273,58 @@ const ChallengeDB = {
     return sum / size;
   },
 
+
+  assignRatings(c) {
+    const sampleSize = 3;
+    const sliceWrap = (t, start, n)=>{
+      let slice = _.slice(t,start, start + n);
+      let more = n - _.size(slice);
+      return  _.concat(slice, _.slice(t, 0, more));
+    }
+
+    const assign = (responses)=> {
+      let assignments = {};
+      const randResponses = _.shuffle(responses);
+      _.forEach(randResponses, (r, i)=>{
+        let toRate = sliceWrap(randResponses,i+1, sampleSize);
+        const t = _.map(toRate, r=>r.id);
+        let myAssignments = [];
+        _.forEach(t,(a)=>{
+          // console.log(a)
+          myAssignments.push(a);
+        });
+        
+        assignments[r.user.uid] = myAssignments;
+      });
+
+      console.log("returning assignments (keys): " + _.keys(assignments));
+      console.log("returning assignments (values): " + _.values(assignments));
+      return assignments;
+    };
+    
+    return new Promise(async (resolve, reject)=>{
+      let responses = [];
+      await ChallengeDB.getResponses(c.id).then((t)=>{responses = t;});
+      const t = assign(responses);
+
+      c.assignments = t;
+      console.log(c.assignments);
+
+      let db = FBUtil.connect();
+      let ref = db.collection("challenges").doc(c.id);
+      console.log("sending update");
+      await ref.update({assignments: t});
+      console.log("caching...");
+
+      ChallengeDB.cache[c.id] = c;
+      resolve(c);
+
+    });
+
+  },
+
+  
+
   getResponses(challengeId) {
     let db = FBUtil.connect();
     let responses = [];
@@ -247,7 +332,6 @@ const ChallengeDB = {
     return new Promise(
       (resolve, reject)=>{
 
-        const id = "policy-changes-break-everything";
         let db = FBUtil.connect();
         db.collection(`challenges/${challengeId}/responses`).get()
           .then((results)=>{
@@ -268,6 +352,8 @@ const ChallengeDB = {
   },
 
   addResponse(challengeId, response) {
+    if(!response.created)
+      response.created = new Date();
     response.created = ChallengeDB.parseDateControlToUTC(response.created);
     response.modified = ChallengeDB.parseDateControlToUTC(new Date());
     

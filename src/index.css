@@ -6190,27 +6190,30 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
 .text-white {
   fill: white; }
 
+.text-dark, .App-header {
+  color: #687077; }
+
 .icon-primary {
   color: #007bff;
   fill: #007bff; }
 
-.icon-secondary {
+.icon-secondary, .icon-archive {
   color: #6c757d;
   fill: #6c757d; }
 
-.icon-success {
+.icon-success, .icon-active {
   color: #28a745;
   fill: #28a745; }
 
-.icon-danger {
+.icon-danger, .icon-review {
   color: #dc3545;
   fill: #dc3545; }
 
-.icon-warning {
+.icon-warning, .icon-future {
   color: #ffc107;
   fill: #ffc107; }
 
-.icon-info {
+.icon-info, .icon-rating {
   color: #17a2b8;
   fill: #17a2b8; }
 

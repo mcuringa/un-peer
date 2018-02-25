@@ -9,18 +9,8 @@ import {
   LoadingSpinner,
 } from "../FormUtil";
 
-// const ProfileScreen = (props)=>{
-//   console.log("Profile Screen");
-//   console.log(props.user.displayName);
-//   const firebase = FBUtil.init();
-//   const user = firebase.auth().currentUser;
-//   return (
-//     <div className="ProfileScreen screen">
-//       <ProfileForm user={user} />
-//     </div>
-//   );
+import Modal from "../Modal";
 
-// }
 
 class ProfileScreen extends React.Component {
   constructor(props) {
@@ -32,23 +22,28 @@ class ProfileScreen extends React.Component {
     this.state = {
       "loading": false,
       "dirty": false,
-      user: user
+      user: user,
+      reset: false
     };
     this.handleChange = this.handleChange.bind(this);
-    this.reset = this.handleChange.bind(this);
+    this.sendPass = this.sendPass.bind(this);
     this.save = this.save.bind(this);
     this.save = _.debounce(this.save, 2000);
   }
   
-  reset(e) {
+  sendPass(e) {
     e.preventDefault();
     const firebase = FBUtil.init();
+    console.log("reset clicked");
+    console.log(this.props.user.email);
 
     
-    firebase.auth().sendPasswordResetEmail(this.state.email)
+    firebase.auth().sendPasswordResetEmail(this.props.user.email)
       .then(()=> {
+        console.log("reset succeeded");
+        // $('#resetModal').modal();
         this.setState({sent: true});
-        this.setState({reset: false});
+        this.setState({reset: true});
       })
       .catch((error)=> {
         console.log(error);
@@ -88,49 +83,33 @@ class ProfileScreen extends React.Component {
   render() {
     const user = this.state.user;
     return (
-      <div className="ProfileScreen screen card bg-light">
-        <div className="card-header">
-          <div className="row">
-            <div className="col-11 text-strong">Update your profile</div>
-            <div className="col-1">
-              <StatusIndicator dirty={this.state.dirty} loading={this.state.loading} />
-            </div>
-          </div>
-          <div className="row">
-            <div className="small text-muted col">user id: {user.uid}</div>
+      <div className="ProfileScreen screen">
+        <div className="row">
+          <div className="col-11 text-strong">Your profile</div>
+          <div className="col-1">
+            <StatusIndicator dirty={this.state.dirty} loading={this.state.loading} />
           </div>
         </div>
-        <form>
-          <TextGroup id="email"
-            value={user.email} 
-            label="Email" 
-            readOnly={true}
-            plaintext={true} />
-
-            <div className={`ResetSent alert alert-success${(this.state.sent)?"":" d-none"}`}>
-              Please check your email for a link to reset your password.
-            </div>  
-
-          <TextGroup id="displayName"
-            value={user.displayName} 
-            label="Display name" 
-            onChange={this.handleChange} 
-            required={true}
-            help="Choose how your name will show for other users." />
-
-          <button onClick={this.reset} className="btn btn-secondary mr-2">Reset Password</button>
-          
-          <button type="button" onClick={this.signout} className="btn btn-secondary">
+        <div className="row">
+          <div className="col-sm-4 text-strong">Name:</div>
+          <div className="col">{this.props.user.displayName}</div>
+        </div>
+        <div className="row">
+          <div className="col-sm-4 text-strong">Email:</div>
+          <div className="col">{this.props.user.email}</div>
+        </div>
+        <button type="button" onClick={this.sendPass} className="btn btn-secondary mr-2">Reset Password</button>
+        
+        <button type="button" onClick={this.signout} className="btn btn-secondary">
             Sign Out
-          </button>
-        </form>
-    </div>
+        </button>
+        <Modal id="ResetModal"
+          show={this.state.reset} 
+          body="Please check your email for instructions on resettign your password."/>
+      </div>
     );
   }
 }
-
-
-
 
 
 export default ProfileScreen;

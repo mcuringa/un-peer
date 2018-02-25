@@ -64,12 +64,6 @@ class NewChallengeScreen extends React.Component {
           required={true} 
           help="First, create a title that describes the challenge. You can change it later."/>
 
-        <TextInput id="id"
-          value={ChallengeDB.slug(this.state.title)} 
-          placeholder="ID is generated from the title" 
-          readonly={true}
-          plaintext={true} />
-
         <button id="createChallengeButton"
                 className={"btn btn-block btn-primary mt-2" + hide}
                 type="button" onClick={this.submit}>

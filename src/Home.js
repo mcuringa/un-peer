@@ -51,7 +51,8 @@ const ActiveChallenge = (props) => {
     <Link to={`/challenge/${challenge.id}`} 
           className="ActiveChallenge">
       <h4 className="text-right pt-4 pr-2">Challenge of the week</h4>
-      <h5 className="text-right pb-4 pr-2">Status: Active <span className="m-2 p-1 rounded bg-success"></span></h5>
+      <h5 className="text-right pb-4 pr-2 text-capitalize">Status: {challenge.stage}
+      <PrimitiveDotIcon className={`pt-1 ml-1 mr-1 icon-${challenge.stage}`} /></h5>
       <h5 className="text-center pt-4 mt-4">{challenge.title}</h5>
     </Link>
   );

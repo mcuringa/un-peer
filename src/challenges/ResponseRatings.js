@@ -5,17 +5,38 @@ import {ChallengeDB} from "./Challenge.js";
 import {StarIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 
-class ResponseList extends React.Component {
+class ResponseRatings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {responses: []};
     this.toggle = this.toggle.bind(this);
+
   }
   
   componentWillMount() {
+    console.log("assigning from RatingScreen: " + this.props.challenge.id);
+    const c = this.props.challenge;
+    if(!c.assignments) {
+      ChallengeDB.assignRatings(c).then((newC)=>{
+        console.log("got assignments back from call");
+        console.log(newC);
+      });
+    }
+
+
     ChallengeDB.getResponses(this.props.challenge.id).then(
       (responses)=>{
-        let t = _.map(responses,(r)=>{r.open = false; return r;});
+        const uid = this.props.user.uid;
+        const assignIds = c.assignments[uid];
+        console.log("found my assignments");
+        console.log(assignIds);
+
+        let t = _.filter(responses,r=>_.includes(assignIds,r.id));
+        console.log("found my responses");
+        console.log(t);
+        t =_.map(t,(r)=>{r.open = false; return r;});
+
+        
         this.setState({responses: t})
       }
     );
@@ -84,6 +105,10 @@ class StarRatings extends React.Component {
     this.setState({rating: val});
     let r = this.state.response;
     r.ratings[this.props.user.uid] = val;
+    console.log("updating rating");
+    console.log(this.props.challengeId);
+    console.log(this.state.response);
+    // console.log("updating rating");
     ChallengeDB.addResponse(this.props.challengeId, this.state.response)
     .then((r)=>{
       console.log("rating added");
@@ -118,4 +143,4 @@ const Star = (props)=> {
     );
 }
 
-export default ResponseList;
+export default ResponseRatings;

@@ -4,8 +4,6 @@ import dateFormat from 'dateformat';
 import {User, Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import { PrimitiveDotIcon } from 'react-octicons';
 
-import {ChallengeButtons} from "./ChallengeDetail.js";
-
 import FBUtil from "../FBUtil";
 
 import {
@@ -143,7 +141,6 @@ class ChallengeEditScreen extends React.Component {
           <small className="text-muted"><tt>created: {ts(c.created)} | </tt></small>
           <small className="text-muted"><tt>modified: {ts(c.modified)}</tt></small>
         </div>
-        <ChallengeButtons id={this.state.challenge.id} />
         <form className="mt-2">
 
           <TextGroup id="title"
@@ -172,13 +169,6 @@ class ChallengeEditScreen extends React.Component {
                 <option value={ChallengeStatus.ARCHIVED}>archive</option>
               </select>
             </div>
-          </div>
-
-          <img className="img" src={c.img} />
-          <div className="custom-file">
-            
-            <input type="file" className="custom-file-input" id="img" onChange={this.handleUpload} />
-            <label className="custom-file-label" htmlFor="img">Upload image</label>
           </div>
 
           <VideoUpload id="video" video={c.video} 

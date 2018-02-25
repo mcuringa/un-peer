@@ -79,8 +79,10 @@ const VideoUpload = (props)=> {
     <div>
       <Video video={props.video} />
       <div className="custom-file">
-        <input type="file" className="custom-file-input" id={props.id} onChange={props.onChange} />
-        <label className="custom-file-label" htmlFor={props.id}>{props.label} </label>
+        <input type="file" className="d-none" 
+        accept="video/*" id={props.id} onChange={props.onChange} />
+        <label className="" htmlFor={props.id}>{props.label}
+        <img src="/img/video-response_btn.png" /> </label>
       </div>
     </div>
   );
