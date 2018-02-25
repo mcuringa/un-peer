@@ -27,7 +27,7 @@ class ChallengeResponseForm extends React.Component {
       loading: true,
       dirty: false,
       choose: true,
-      showText: true,
+      showText: false,
       showConfirm: false,
       showVideo: false
     };
