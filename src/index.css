@@ -6247,13 +6247,14 @@ small tt {
   padding-right: 0; }
 
 .App .screen {
+  margin: 0;
   padding: 4px 8px 2px 8px; }
 
-.App .screen.home, .ChallengeListScreen {
+.Home, .ChallengeListScreen {
   background-image: url("/img/hands.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  min-height: 89vh; }
+  min-height: 100vh; }
 
 .App-header {
   height: 30px;
@@ -6261,6 +6262,11 @@ small tt {
   text-align: center;
   line-height: 30px;
   font-size: 18px; }
+
+.App-header svg {
+  color: #6c757d;
+  fill: #6c757d;
+  height: 100%; }
 
 .App-footer-toolbar, .App-footer-toolbar .btn-group {
   max-width: 512px;

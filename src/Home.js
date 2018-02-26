@@ -11,6 +11,7 @@ class Home  extends React.Component {
     super(props);
     this.state = {challenge: Challenge};
     this.active = false;
+    // this.props.setAppClass("Home");
   }
 
 
@@ -27,14 +28,14 @@ class Home  extends React.Component {
 
     if(!this.active) {
       return (
-        <div className="screen home">
+        <div className="Home screen">
           <ChallengeButton />
         </div>
       );
     }
 
     return (
-      <div className="screen home">
+      <div className="Home screen">
         <ActiveChallenge 
           challenge={this.state.challenge} />
         <ChallengeButton />

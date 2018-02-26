@@ -80,15 +80,16 @@ small tt {
 
 .App .screen
 {
+  margin: 0;
   padding: 4px 8px 2px 8px;
 }
 
-.App .screen.home, .ChallengeListScreen
+.Home, .ChallengeListScreen
 {
   background-image: url('/img/hands.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  min-height: 89vh;
+  min-height: 100vh;
 }
 
 
@@ -104,6 +105,12 @@ small tt {
   font-size: 18px;
 }
 
+.App-header svg
+{
+  color: $gray-600;
+  fill: $gray-600;
+  height: 100%
+}
 
 .App-footer-toolbar, .App-footer-toolbar .btn-group
 {

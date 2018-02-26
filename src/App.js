@@ -33,11 +33,14 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {user: {} };
+    this.setAppClass = this.setAppClass.bind(this);
 
   }
 
   componentWillMount() {
     const firebase = FBUtil.init();
+    this.setState( {appClass: ""});
+
     firebase.auth().onAuthStateChanged((user)=> {
       if (user) {
         this.setState({user: user});
@@ -47,23 +50,26 @@ export default class App extends Component {
     });
   }
 
+  setAppClass(clazz) {
+    this.setState({appClass: clazz});
+  }
+
   render() {
     let Main;
-    console.log(this.state.user.email);
+
     if(!this.state.user.email)
       Main = (
-        <div className="App container login">
-          <Login user={this.state.user} loadingHandler={this.loadingHandler} />
+        <div className={`App container login`}>
+          <Login user={this.state.user} setAppClass={this.setAppClass} loadingHandler={this.loadingHandler} />
         </div>
       );
     else
       Main = (
         <Router>
-          <div className="App container">
+          <div className={`App container`}>
             <Header user={this.state.user} />
             <section id="main" className="">
-              <SecureScreens 
-                user={this.state.user} />
+              <SecureScreens user={this.state.user} setAppClass={this.setAppClass} />
             </section>
             <Footer user={this.state.user} />
           </div>
@@ -79,10 +85,16 @@ const Header = (props)=>{
     <header className="App-header container fixed-top">
       <div className="row">
         <div className="App-home col-2">
-          <Link to="/"><HomeIcon /></Link>
+          <Link to="/">
+            <HomeIcon />
+          </Link>
         </div>
         <div className="App-title col-8">UN Peer Challenges</div>
-        <div className="App-alert col-2 text-right"><BellIcon /></div>
+        <div className="App-alert col-2 text-right">
+          <button type="button" className="btn btn-link">
+            <PersonIcon />
+          </button>
+        </div>
       </div>
     </header>
   );
@@ -92,7 +104,7 @@ const Header = (props)=>{
 const SecureScreens = (props)=>{
   return (
       <Switch>        
-        <Route exact path="/" component={Home} />
+        <PropsRoute exact path="/" setAppClass={props.setAppClass} component={Home} />
         <Route exact path="/archive" component={ChallengeListScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
@@ -121,6 +133,9 @@ const PropsRoute = ({ component, ...rest }) => {
 const Footer = (props)=>{
   
   let disabled = (props.user.email)?"":" disabled";
+
+  if(true) return null;
+
   return (
     <footer className="App-footer container fixed-bottom">
       <div className="App-footer-toolbar btn-toolbar" role="toolbar" aria-label="Bottom navigation">

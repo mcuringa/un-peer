@@ -58,13 +58,11 @@ class ChallengeResponseForm extends React.Component {
     this.setState({dirty: true, loading: true});
 
     const succ = (task)=> {
-      console.log("video uploaded");
       this.setState({
         uploadStatus: "Upload complete!"
       });
 
       const filePath = task.snapshot.downloadURL;
-      console.log("path: " + filePath);
 
       this.props.responseHandler({video: filePath});
       this.setState({
@@ -84,15 +82,6 @@ class ChallengeResponseForm extends React.Component {
         uploadPct: progress, 
         uploadStatus: `${xfer} of ${total}`
       });
-
-      switch (snapshot.state) {
-        case firebase.storage.TaskState.PAUSED: // or 'paused'
-          console.log('Upload is paused');
-          break;
-        case firebase.storage.TaskState.RUNNING: // or 'running'
-          console.log('Upload is running');
-          break;
-      }
     }
 
     const err = (e)=>{
@@ -106,13 +95,12 @@ class ChallengeResponseForm extends React.Component {
   }
 
   confirmUpload() {
+    console.log("confrm upload");
     this.setState({showConfirm: true});
   }
 
   publish() {
-    console.log("publish");
     this.setState({showConfirm: false, loading: true});
-
 
     const challengeId = this.props.challengeId;
     let r = this.props.response;
@@ -123,12 +111,9 @@ class ChallengeResponseForm extends React.Component {
   }
 
   handleChange(e) {
-
     this.setState({showConfirm: false}); 
 
-    let r = this.props.response;
-    r[e.target.id] = e.target.value;
-    this.props.responseHandler(r);
+    this.props.responseHandler({[e.target.id]: e.target.value});
   }
 
   render() {
@@ -136,39 +121,22 @@ class ChallengeResponseForm extends React.Component {
     if(this.state.goHome)
       return <Redirect push to="/" />
     
-    let el = (<MediaPicker show={!this.props.response.text && !this.props.response.video} 
-          chooseVideo={this.chooseVideo} chooseText={this.chooseText} />);
-    
-    if(this.props.response.text || this.state.showText) {
-      el = (
-        <TextAreaGroup id="text"
-          value={this.props.response.text}
-          placeholder="Write your response"
-          rows="6"
-          onChange={this.handleChange} />
-      );
-    }
-    else if(this.props.response.video || this.state.showVideo) {
-      el = (
-        <div>
-          <VideoUpload id="video" video={this.props.response.video} 
-            onChange={this.handleUpload} label="Upload a video" />
-          <UploadProgress 
-            pct={this.state.uploadPct} 
-            msg={this.state.uploadStatus} />
-        </div>
-      );
-    }
-
-
     const NextChoice = (
         <div>
-          <button type="button" className="btn btn-secondary mr-2" data-dismiss="modal">View Response</button>
+          <button type="button" className="btn btn-secondary mr-2"
+            onClick={()=>{this.setState({showNextChoice: false})}}
+            data-dismiss="modal">View Response</button>
+          
           <button type="button" data-dismiss="modal"
             onClick={()=>{this.setState({goHome: true, showNextChoice: false})}}
             className="btn btn-secondary">Home</button>
         </div>
       );
+
+    
+    const showVideo = this.props.response.video || this.state.showVideo;
+    const showText = !showVideo && (this.props.response.text || this.state.showText);
+    const showMediaPicker = !showVideo && !showText;
 
 
     return (
@@ -177,13 +145,23 @@ class ChallengeResponseForm extends React.Component {
           to={`/challenge/${this.props.challengeId}`}>
           <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
 
-        {el}
+        <MediaPicker show={showMediaPicker} 
+          chooseVideo={this.chooseVideo} chooseText={this.chooseText} />
+    
+        <TextResponse show={showText}
+          response={this.props.response}
+          onChange={this.handleChange} 
+          onSubmit={this.confirmUpload} />
 
-        <SubmitButton show={this.props.response.text || this.props.response.video} 
-          update={this.props.response.id}
-          onClick={this.confirmUpload} />
+        <VideoResponse show={showVideo}
+          response={this.props.response}
+          onChange={this.handleChange} 
+          handleUpload={this.handleUpload}
+          pct={this.state.uploadPct} 
+          msg={this.state.uploadStatus}
+          onSubmit={this.confirmUpload} />
 
-        <Modal id="ResetModal"
+        <Modal id="SubmitResponseModal"
           show={this.state.showConfirm} 
           body="Submit your response?"
           onConfirm={this.publish} />
@@ -197,15 +175,72 @@ class ChallengeResponseForm extends React.Component {
   }
 }
 
-const SubmitButton = (props) =>{
+
+const VideoResponse = (props) => {
 
   if(!props.show)
     return null;
 
+  return (
+    <div>
+      <TextGroup id="title"
+        value={props.response.title}
+        label="Response title"
+        onChange={props.onChange} />
+
+      <VideoUpload id="video" video={props.response.video} 
+        onChange={props.handleUpload} label="Upload a video" />
+      
+      <UploadProgress pct={props.pct} msg={props.msg} />
+
+        <small className="text-muted">Upload a short (~1 minute video).</small>
+
+        <TextAreaGroup id="text"
+          value={props.response.text}
+          placeholder="Write a short description of your video."
+          rows="3"
+          onChange={props.onChange} />
+        <SubmitButton
+          update={props.response.id}
+          onSubmit={props.onSubmit} />
+    </div>
+  );
+
+}
+
+
+const TextResponse = (props) => {
+  if(!props.show)
+    return null;
+
+  return (
+    <div>
+      <TextGroup id="title"
+        value={props.response.title}
+        label="Response title"
+        onChange={props.onChange} />
+
+      <TextAreaGroup id="text"
+        value={props.response.text}
+        label="Your written response"
+        rows="6"
+        onChange={props.onChange} />
+      
+      <SubmitButton
+        update={props.response.id}
+        onSubmit={props.onSubmit} 
+      />
+    </div>
+  );
+
+}
+
+const SubmitButton = (props) =>{
+
   const label = (props.update)?"Update my response":"Submit my response";
 
   return (
-    <button type="button" onClick={props.onClick} 
+    <button type="button" onClick={props.onSubmit} 
       className={`btn btn-block btn-secondary mt-2`}>
       {label}
     </button>
