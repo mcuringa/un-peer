@@ -85,7 +85,7 @@ const ChallengeHeader = (props) => {
     stageMsg = `Archived: ${df.range(c.start, c.end)}`;
   else if(c.stage == "rating")
     stageMsg = `Rating time: ${df.range(c.start, c.end)}`;
-  else
+  else if(c.stage == "review")
     stageMsg = `Review until: ${df.day(c.end)}`;
 
 
