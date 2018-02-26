@@ -1,4 +1,6 @@
 import {ChallengeDB} from "./challenges/Challenge.js";
+// import localforage from "localforage";
+
 
 const FBUtil =
 {
@@ -27,7 +29,7 @@ const FBUtil =
     return FBUtil._firebase;
   },
 
-  uploadMedia: (file, path)=> {
+  uploadMedia: (file, path, registerHandler)=> {
     console.log("uploading media");
     let firebase = FBUtil.init();
     let storageRef = firebase.storage().ref();
@@ -37,11 +39,20 @@ const FBUtil =
     console.log("uploading to: " + path);
 
     let ref = storageRef.child(path);
-    return new Promise((resolve, reject) => {
-      ref.put(file).then((snapshot)=> {
+
+
+    return new Promise(async (resolve, reject) => {
+      let uploadTask = ref.put(file).then((snapshot)=> {
         console.log("upload complete");
         resolve(snapshot);
       });
+      
+      if(registerHandler) {
+        console.log("registering handler");
+        registerHandler(uploadTask);
+      }
+
+
     });
   },
 

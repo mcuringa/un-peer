@@ -38,6 +38,8 @@ class ChallengeEditScreen extends React.Component {
   }
 
   componentWillMount() {
+    console.log("registerUpload:");
+    console.log(this.props.registerUpload);
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
       this.setState({"owner": c.owner});
@@ -69,7 +71,7 @@ class ChallengeEditScreen extends React.Component {
 
     console.log("target.id:" + key);
 
-    FBUtil.uploadMedia(file, c.id).then((snapshot)=> {
+    FBUtil.uploadMedia(file, c.id, this.props.registerUpload).then((snapshot)=> {
       c[key] = snapshot.downloadURL;
       console.log("video before save: " + c.video);
       this.setState({challenge: c});
