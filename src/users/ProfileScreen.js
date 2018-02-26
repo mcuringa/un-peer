@@ -105,7 +105,7 @@ class ProfileScreen extends React.Component {
         </button>
         <Modal id="ResetModal"
           show={this.state.reset} 
-          body="Please check your email for instructions on resettign your password."/>
+          body="Please check your email for instructions on resetting your password."/>
       </div>
     );
   }

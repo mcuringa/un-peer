@@ -177,6 +177,7 @@ class ChallengeResponseForm extends React.Component {
 
 
 const VideoResponse = (props) => {
+  const empty = (s)=> !s || !s.trim();
 
   if(!props.show)
     return null;
@@ -202,7 +203,9 @@ const VideoResponse = (props) => {
           onChange={props.onChange} />
         <SubmitButton
           update={props.response.id}
-          onSubmit={props.onSubmit} />
+          onSubmit={props.onSubmit}
+          disabled={empty(props.response.text) || empty(props.response.text) || empty(props.response.video)}
+          disabledMsg="Title & description are required. You can submit after your video uploads." />
     </div>
   );
 
@@ -210,6 +213,9 @@ const VideoResponse = (props) => {
 
 
 const TextResponse = (props) => {
+
+  const empty = (s)=> !s || !s.trim();
+
   if(!props.show)
     return null;
 
@@ -218,17 +224,21 @@ const TextResponse = (props) => {
       <TextGroup id="title"
         value={props.response.title}
         label="Response title"
-        onChange={props.onChange} />
+        onChange={props.onChange} 
+        requrired={true} />
 
       <TextAreaGroup id="text"
         value={props.response.text}
         label="Your written response"
         rows="6"
+        requrired={true}
         onChange={props.onChange} />
       
       <SubmitButton
         update={props.response.id}
         onSubmit={props.onSubmit} 
+        disabled={empty(props.response.text) || empty(props.response.title)}
+        disabledMsg="Please enter a title and response before submitting."
       />
     </div>
   );
@@ -238,12 +248,16 @@ const TextResponse = (props) => {
 const SubmitButton = (props) =>{
 
   const label = (props.update)?"Update my response":"Submit my response";
-
+  const disabled = (props.disabled)?"disabled":"";
+  const help = (props.disabled)?props.disabledMsg:"";
   return (
-    <button type="button" onClick={props.onSubmit} 
-      className={`btn btn-block btn-secondary mt-2`}>
-      {label}
-    </button>
+    <div>
+      <button type="button"  onClick={props.onSubmit} 
+        className={`btn btn-block btn-secondary mt-2 ${disabled}`}>
+        {label}
+      </button>
+      <small className="text-muted">{help}</small>
+    </div>
   );
 }
 
