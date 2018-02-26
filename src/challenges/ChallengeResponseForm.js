@@ -219,19 +219,23 @@ const MediaPicker = (props)=> {
 
   return (
     <div className="row mt-3">
-      <div className="card col-6">
-        <button type="button" className="btn btn-link mt-2"
-          onClick={props.chooseVideo}>
-          <img src="/img/video-response_btn.png" alt="text response icon" />
-          <h5 className="pt-2 text-dark text-center">video</h5>
-        </button>
+      <div className="col-6">
+        <div className="card pt-2 pb-2">
+          <button type="button" className="btn btn-link d-block mt-4 mb-4"
+            onClick={props.chooseVideo}>
+            <img src="/img/video-response_btn.png" alt="text response icon" />
+            <h5 className="pt-2 text-dark text-center">video</h5>
+          </button>
+        </div>
       </div>
-      <div className="card col-6">
-        <button type="button" className="btn btn-link mt-2"
-          onClick={props.chooseText}>
-          <img src="/img/text-response_btn.png" alt="text response icon" />
-          <h5 className="pt-2 text-dark text-center">text</h5>
-        </button>
+      <div className="col-4 offset-sm-1">
+        <div className="card">
+          <button type="button" className="btn btn-link"
+            onClick={props.chooseText}>
+            <img src="/img/text-response_btn.png" alt="text response icon" />
+            <h5 className="pt-2 text-dark text-center">text</h5>
+          </button>
+        </div>
       </div>
     </div>
   
