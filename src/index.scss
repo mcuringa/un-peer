@@ -392,3 +392,13 @@ label
   padding-left: 2em;
   padding-right: 2em;
 }
+
+
+/*======================================= upload progress */
+.UploadProgress {
+	position: fixed;
+	bottom: 0;
+	height: 40px;
+	width: 100%;
+	background-color: black;
+}
