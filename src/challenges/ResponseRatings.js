@@ -1,8 +1,9 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import _ from "lodash";
 import df from "../DateUtil.js";
 import {ChallengeDB} from "./Challenge.js";
-import {StarIcon} from 'react-octicons';
+import {StarIcon, ChevronLeftIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 
 class ResponseRatings extends React.Component {
@@ -14,7 +15,6 @@ class ResponseRatings extends React.Component {
   }
   
   componentWillMount() {
-    console.log("assigning from RatingScreen: " + this.props.challenge.id);
     const c = this.props.challenge;
     if(!c.assignments) {
       ChallengeDB.assignRatings(c).then((newC)=>{
@@ -60,16 +60,17 @@ class ResponseRatings extends React.Component {
       return (
         <div className="card">
           <div className="card-header" id={`head_${keyCount}`} key={`resp_${keyCount}`}>
-            <div className="d-flex">
-              <button className="btn btn-link text-dark" data-toggle="collapse" 
+            <div className="">
+              <button className="btn btn-link text-dark btn-block text-left" data-toggle="collapse" 
                 data-target={`#body_${keyCount}`}>
-                <em>Response {letters[keyCount-1]}</em>
+                <em>Response {letters[keyCount-1]}: {r.title}</em>
               </button>
               <StarRatings challengeId={this.props.challengeId} user={this.props.user} response={r} />
             </div>
           </div>
           <div id={`body_${keyCount}`} className="collapse" data-parent="#ResponseList">
             <div className="card-body">
+              {r.title}
               <Video video={r.video} />
               {r.text}
             </div>
@@ -81,6 +82,9 @@ class ResponseRatings extends React.Component {
 
     return (
       <div id="ResponseList" className="ResponseList">
+        <Link className="text-dark mb-2"
+          to={`/challenge/${this.props.challengeId}`}>
+          <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
         {responseItems}
       </div>
     );

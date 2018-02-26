@@ -90,11 +90,6 @@ const Header = (props)=>{
           </Link>
         </div>
         <div className="App-title col-8">UN Peer Challenges</div>
-        <div className="App-alert col-2 text-right">
-          <button type="button" className="btn btn-link">
-            <PersonIcon />
-          </button>
-        </div>
       </div>
     </header>
   );

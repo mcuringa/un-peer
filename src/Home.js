@@ -60,7 +60,8 @@ const ActiveChallenge = (props) => {
 }
 
 const ChallengeButton = (props)=> {
-
+  if(true)
+    return null;
   return (
     <Link to="/challenge/new" className="NewChallengeButton btn">
       Submit a Challenge
