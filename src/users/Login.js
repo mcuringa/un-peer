@@ -150,24 +150,20 @@ export default class Login extends Component {
 
         <form className="LoginForm" onSubmit={this.handleSubmit}>
           <div class="row">
-            <div className="label col-sm-4"><label for="email">email</label></div>
-            <div className="col">
-              <TextInput id="email" className=""
-                autoFocus
-                value={this.state.email}
-                onChange={this.handleChange} />
-              </div>
+            <TextInput id="email" className=""
+              autoFocus
+              placeholder="email"
+              value={this.state.email}
+              onChange={this.handleChange} />
           </div>
 
           <div class="row">
-            <div className="label col-sm-4"><label for="password">password</label></div>
-            <div className="col">
-              <TextInput id="password" className=""
-                autoFocus
-                type="password"
-                value={this.state.password}
-                onChange={this.handleChange} />
-            </div>
+            <TextInput id="password" className=""
+              autoFocus
+              placeholder="password"
+              type="password"
+              value={this.state.password}
+              onChange={this.handleChange} />
           </div>
 
           <div class="text-right">
