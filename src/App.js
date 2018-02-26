@@ -28,14 +28,11 @@ import ChallengeEditScreen from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
 import Login from './users/Login.js';
 import ProfileScreen from './users/ProfileScreen.js';
-import {UploadProgress} from "./MediaManager";
-
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {user: {} };
-    this.registerUpload = this.registerUpload.bind(this);
 
   }
 
@@ -48,11 +45,6 @@ export default class App extends Component {
         this.setState({user: {}});
       }
     });
-  }
-
-  registerUpload(task) {
-    console.log("upload registered");
-    this.setState({uploadTask: task});
   }
 
   render() {
@@ -71,10 +63,9 @@ export default class App extends Component {
             <Header user={this.state.user} />
             <section id="main" className="">
               <SecureScreens 
-                user={this.state.user} registerUpload={this.registerUpload} />
+                user={this.state.user} />
             </section>
             <Footer user={this.state.user} />
-            <UploadProgress uploadTask={this.state.uploadTask} />
           </div>
         </Router>
       );
@@ -103,7 +94,7 @@ const SecureScreens = (props)=>{
       <Switch>        
         <Route exact path="/" component={Home} />
         <Route exact path="/archive" component={ChallengeListScreen} />
-        <PropsRoute  user={props.user} path="/challenge/:id/edit"  registerUpload={props.registerUpload} component={ChallengeEditScreen} />
+        <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
         <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>

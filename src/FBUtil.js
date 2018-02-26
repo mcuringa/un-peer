@@ -29,30 +29,19 @@ const FBUtil =
     return FBUtil._firebase;
   },
 
-  uploadMedia: (file, path, registerHandler)=> {
+  uploadMedia: (file, path, progress, succ, err)=> {
     console.log("uploading media");
     let firebase = FBUtil.init();
     let storageRef = firebase.storage().ref();
     const name = ChallengeDB.slug(file.name);
-    console.log("filename: " + name);
     path = `${path}/${name}`;
-    console.log("uploading to: " + path);
 
     let ref = storageRef.child(path);
 
-
     return new Promise(async (resolve, reject) => {
-      let uploadTask = ref.put(file).then((snapshot)=> {
-        console.log("upload complete");
-        resolve(snapshot);
-      });
-      
-      if(registerHandler) {
-        console.log("registering handler");
-        registerHandler(uploadTask);
-      }
-
-
+      let uploadTask = ref.put(file);
+      const done = ()=>{succ(uploadTask)}
+      uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, progress, err, done );
     });
   },
 

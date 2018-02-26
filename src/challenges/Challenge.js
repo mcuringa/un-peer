@@ -117,11 +117,11 @@ const ChallengeDB = {
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((challenges)=>{
           const now = new Date();
-          let active = _.filter(challenges, c=> c.start < now && c.end > now);
+          let active = _.filter(challenges, c=> c.start < now && c.end > now && c.status == ChallengeStatus.PUBLISHED);
           if(active.length == 0)
             reject();
           else
-            resolve(_.last(challenges));
+            resolve(_.last(active));
         });
     });
   },

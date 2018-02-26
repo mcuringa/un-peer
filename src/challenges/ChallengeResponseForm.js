@@ -7,7 +7,8 @@ import { CalendarIcon, PrimitiveDotIcon, ChevronLeftIcon } from 'react-octicons'
 import FBUtil from "../FBUtil.js";
 
 import Modal from "../Modal";
-// import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {UploadProgress, formatFileSize} from "../MediaManager";
+
 
 import {
   TextGroup,
@@ -17,6 +18,10 @@ import {
   LoadingSpinner,
   VideoUpload
 } from "../FormUtil";
+
+
+let firebase = require("firebase");
+require("firebase/storage");
 
 class ChallengeResponseForm extends React.Component {
   constructor(props) {
@@ -28,7 +33,8 @@ class ChallengeResponseForm extends React.Component {
       dirty: false,
       choose: true,
       showConfirm: false,
-      showVideo: false
+      showVideo: false,
+      uploadStatus: "no upload started"
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -42,24 +48,62 @@ class ChallengeResponseForm extends React.Component {
   chooseText() { this.setState({showText: true, showVideo: false})}
   chooseVideo() { this.setState({showText: false, showVideo: true})}
 
+
   handleUpload(e) {
 
     const challengeId = this.props.challengeId;
-    let r = this.props.response;
 
     let file = e.target.files[0];
     const path = `${challengeId}/${this.props.user.uid}`;
     this.setState({dirty: true, loading: true});
 
-    FBUtil.uploadMedia(file, path).then((snapshot)=>{
-        const filePath = snapshot.downloadURL;
-
-        r.video = filePath;
-        this.props.responseHandler(r);
-        this.setState({dirty: false, loading: false});
+    const succ = (task)=> {
+      console.log("video uploaded");
+      this.setState({
+        uploadStatus: "Upload complete!"
       });
-  }
 
+      const filePath = task.snapshot.downloadURL;
+      console.log("path: " + filePath);
+
+      this.props.responseHandler({video: filePath});
+      this.setState({
+        dirty: false, 
+        loading: false,
+        showVideo: true,
+        uploadStatus: ""
+      });
+    }
+
+    const watch = (snapshot)=> {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      const xfer = formatFileSize(snapshot.bytesTransferred, true);
+      const total = formatFileSize(snapshot.totalBytes, true);
+
+      this.setState( {
+        uploadPct: progress, 
+        uploadStatus: `${xfer} of ${total}`
+      });
+
+      switch (snapshot.state) {
+        case firebase.storage.TaskState.PAUSED: // or 'paused'
+          console.log('Upload is paused');
+          break;
+        case firebase.storage.TaskState.RUNNING: // or 'running'
+          console.log('Upload is running');
+          break;
+      }
+    }
+
+    const err = (e)=>{
+      console.log(e);
+      this.setState({
+        uploadStatus: "Upload failed: " + e
+      });
+    }
+
+    FBUtil.uploadMedia(file, path, watch, succ, err);
+  }
 
   confirmUpload() {
     this.setState({showConfirm: true});
@@ -95,7 +139,7 @@ class ChallengeResponseForm extends React.Component {
     let el = (<MediaPicker show={!this.props.response.text && !this.props.response.video} 
           chooseVideo={this.chooseVideo} chooseText={this.chooseText} />);
     
-    if(this.props.response.text) {
+    if(this.props.response.text || this.state.showText) {
       el = (
         <TextAreaGroup id="text"
           value={this.props.response.text}
@@ -104,12 +148,18 @@ class ChallengeResponseForm extends React.Component {
           onChange={this.handleChange} />
       );
     }
-    else if(this.props.response.video){
+    else if(this.props.response.video || this.state.showVideo) {
       el = (
-        <VideoUpload id="video" video={this.props.response.video} 
-          onChange={this.handleUpload} label="Upload a video" />
+        <div>
+          <VideoUpload id="video" video={this.props.response.video} 
+            onChange={this.handleUpload} label="Upload a video" />
+          <UploadProgress 
+            pct={this.state.uploadPct} 
+            msg={this.state.uploadStatus} />
+        </div>
       );
     }
+
 
     const NextChoice = (
         <div>
@@ -146,7 +196,6 @@ class ChallengeResponseForm extends React.Component {
       </form>);
   }
 }
-
 
 const SubmitButton = (props) =>{
 

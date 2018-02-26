@@ -6458,3 +6458,20 @@ label {
   padding-bottom: 20px;
   padding-left: 2em;
   padding-right: 2em; }
+
+/*======================================= upload progress */
+.UploadProgress {
+  background-color: black;
+  color: white;
+  position: relative;
+  height: 22px;
+  font-size: 14px; }
+
+.UploadProgress .ProgressBar {
+  background-color: #343a40;
+  height: 100%; }
+
+.UploadProgress .ProgressMsg {
+  position: absolute;
+  top: 0;
+  left: 6px; }

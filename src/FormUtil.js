@@ -63,10 +63,11 @@ const TextInput = (props)=> {
 const Video = (props)=> {
 
   const dclass = (props.video)?"":"d-none";
+  const poster = props.poster;
 
   return (  
     <div className={`${props.className} ${dclass} embed-responsive embed-responsive-16by9 mb-2`}>
-      <video controls="true" poster={props.poster} src={props.video} />
+      <video controls="true" poster={poster} src={props.video} />
     </div>
   );
 
@@ -79,10 +80,12 @@ const VideoUpload = (props)=> {
     <div>
       <Video video={props.video} />
       <div className="custom-file">
-        <input type="file" className="d-none" 
+        <input type="file" className="d-none"
         accept="video/*" id={props.id} onChange={props.onChange} />
-        <label className="" htmlFor={props.id}>{props.label}
-        <img src="/img/video-response_btn.png" /> </label>
+        <label className="btn btn-link text-dark" htmlFor={props.id}>
+            {props.label}
+            <img className="ml-1" src="/img/video-response_btn.png" />
+        </label>
       </div>
     </div>
   );

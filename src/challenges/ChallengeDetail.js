@@ -21,6 +21,8 @@ class ChallengeDetailScreen extends React.Component {
       owner: User,
       response: {}
     };
+    this.updateResponse = this.updateResponse.bind(this);
+
   }
 
   componentWillMount() {
@@ -37,6 +39,12 @@ class ChallengeDetailScreen extends React.Component {
 
   }
 
+  updateResponse(props) {
+    console.log("state lifted...ugh");
+    const r = _.merge(this.state.response, props);
+    this.setState({response: r});
+  }
+
   render() {
     const action = this.props.match.params.action;
     let ActiveElement;
@@ -47,7 +55,7 @@ class ChallengeDetailScreen extends React.Component {
             user={this.props.user} 
             challengeId={this.state.challenge.id}
             response={ this.state.response } 
-            responseHandler={(r)=>{this.setState({response: r})}}/>);
+            responseHandler={this.updateResponse}/>);
         break;
       case "responses":
         ActiveElement = (

@@ -3,7 +3,6 @@ import _ from "lodash";
 import dateFormat from 'dateformat';
 import {User, Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import { PrimitiveDotIcon } from 'react-octicons';
-
 import FBUtil from "../FBUtil";
 
 import {
@@ -17,6 +16,13 @@ import {
   VideoUpload
 } from "../FormUtil";
 
+import {UploadProgress, formatFileSize} from "../MediaManager";
+
+let firebase = require("firebase");
+require("firebase/storage");
+
+
+
 class ChallengeEditScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -26,7 +32,8 @@ class ChallengeEditScreen extends React.Component {
       challenge: Challenge, 
       owner: {displayName: props.user.displayName, email: props.user.email, id: props.user.uid},
       loading: true,
-      dirty: false
+      dirty: false,
+      uploadStatus: "no upload running"
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleChange.bind(this);
@@ -67,19 +74,45 @@ class ChallengeEditScreen extends React.Component {
     const key = e.target.id;
 
     this.setState({dirty: true, loading: true});
-    console.log(file);
 
-    console.log("target.id:" + key);
+    const succ = (task)=> {
+      this.setState({
+        uploadStatus: "Upload complete!"
+      });
 
-    FBUtil.uploadMedia(file, c.id, this.props.registerUpload).then((snapshot)=> {
-      c[key] = snapshot.downloadURL;
-      console.log("video before save: " + c.video);
+      c[key] = task.snapshot.downloadURL;
       this.setState({challenge: c});
-      console.log(this.state.challenge);
       this.save();
-      console.log("save complete");
+    }
 
-    });
+    const watch = (snapshot)=> {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      const xfer = formatFileSize(snapshot.bytesTransferred, true);
+      const total = formatFileSize(snapshot.totalBytes, true);
+
+      this.setState( {
+        uploadPct: progress, 
+        uploadStatus: `${xfer} of ${total}`
+      });
+
+      switch (snapshot.state) {
+        case firebase.storage.TaskState.PAUSED: // or 'paused'
+          console.log('Upload is paused');
+          break;
+        case firebase.storage.TaskState.RUNNING: // or 'running'
+          console.log('Upload is running');
+          break;
+      }
+    }
+
+    const err = (e)=>{
+      console.log(e);
+      this.setState({
+        uploadStatus: "Upload failed: " + e
+      });
+    }
+
+    FBUtil.uploadMedia(file, c.id, watch, succ, err);
   }
 
 
@@ -103,7 +136,6 @@ class ChallengeEditScreen extends React.Component {
 
     this.save();
   }
-
 
   handleStartDateChange(e) {
     let c = this.state.challenge;
@@ -151,14 +183,6 @@ class ChallengeEditScreen extends React.Component {
             onChange={this.handleChange} 
             required={true} />
           
-          <TextGroup id="tags"
-            value={c.tags} 
-            label="Tags" 
-            placeholder="#People #Tech #Policy #Etc"
-            onChange={this.handleChange}
-            help="Add tags to make your challenge easier to search and group with similar challenges."
-            required={false} />
-          
           <div className="form-group">
             <div className="input-group mb-3">
               <div className="input-group-prepend">
@@ -176,11 +200,12 @@ class ChallengeEditScreen extends React.Component {
           <VideoUpload id="video" video={c.video} 
             onChange={this.handleUpload}
             label="Upload challenge video" />
+          <UploadProgress pct={this.state.uploadPct} msg={this.state.uploadStatus} />
 
           <TextAreaGroup id="prompt"
             value={c.prompt}
             label="Description"
-            rows="8"
+            rows="4"
             onChange={this.handleChange} />
           
           <fieldset>
@@ -206,6 +231,16 @@ class ChallengeEditScreen extends React.Component {
         </form>
       </div>);
   }
+}
+
+const Tags =(props)=> {
+  <TextGroup id="tags"
+    value={props.tags} 
+    label="Tags" 
+    placeholder="#People #Tech #Policy #Etc"
+    onChange={props.handleChange}
+    help="Add tags to make your challenge easier to search and group with similar challenges."
+    required={false} />
 }
 
 export default ChallengeEditScreen;
