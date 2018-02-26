@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {CalendarIcon} from 'react-octicons';
+import {CalendarIcon, ChevronRightIcon} from 'react-octicons';
 import dateFormat from 'dateformat';
 import _ from "lodash";
 
@@ -31,9 +31,8 @@ class ChallengeListScreen extends React.Component {
       );
     });
     return (
-      <div className="screen home">
+      <div className="ChallengeListScreen screen">
         <div className="ChallengeList">{t}</div>
-        <ChallengeButton home={this.props.home} />
       </div>
     );
   }
@@ -54,17 +53,17 @@ const ChallengeListItem = (props) => {
   const challenge = props.challenge;
   const start = df(challenge.start);
   const end = df(challenge.end);
-  let clazz = "ChallengeItem d-flex align-items-center";
-  if(props.home)
-    clazz = clazz + " home";
+
 
   return (
-    <Link to={`/challenge/${challenge.id}`} className={clazz}>
-    <div className="p2">
-      <div className="StartDate text-right">{start} - {end}</div>
-      <p className="ChallengeListTitle">{challenge.title}</p>
-      <p>Submitted by: {challenge.owner.name}</p>
-    </div>
+    <Link to={`/challenge/${challenge.id}`}
+      className="ChallengeItem d-flex align-items-center flex-row justify-content-between">
+      <div className="p2 m-0">
+        <div className="mb-2"><img className="mr-1" src="/img/calendar.png" alt="cal icon" />{start}</div>
+        <p className="ChallengeListTitle">{challenge.title}</p>
+        <p>Submitted by: {challenge.owner.name}</p>
+      </div>
+      <div className="float-right"><ChevronRightIcon /></div>
     </Link>
   );
 }

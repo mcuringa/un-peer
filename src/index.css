@@ -6111,7 +6111,7 @@ a.text-warning:hover, a.text-warning:focus {
 a.text-danger:hover, a.text-danger:focus {
   color: #bd2130 !important; }
 
-.text-light {
+.text-light, .LoginForm input, .LoginForm input:focus, .LoginForm label {
   color: #f8f9fa !important; }
 
 a.text-light:hover, a.text-light:focus {
@@ -6249,7 +6249,7 @@ small tt {
 .App .screen {
   padding: 4px 8px 2px 8px; }
 
-.App .screen.home {
+.App .screen.home, .ChallengeListScreen {
   background-image: url("/img/hands.jpg");
   background-size: cover;
   background-repeat: no-repeat;
@@ -6308,11 +6308,12 @@ small tt {
   font-size: 16px; }
 
 .ChallengeItem {
+  margin: 0 !important;
+  border-bottom: 1px solid gray;
   color: #6c757d;
   background-color: white;
-  width: 85%;
-  margin: 0 auto;
-  text-align: left; }
+  text-align: left;
+  border-radius: 0; }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group {
   width: 100%; }
@@ -6331,9 +6332,12 @@ small tt {
   padding-top: 1em;
   padding-bottom: 1em; }
 
+.ChallengeListScreen.screen {
+  padding: 0;
+  font-size: .9rem; }
+
 .ChallengeListTitle {
-  font-size: 1.6rem;
-  font-weight: 300;
+  font-size: 1.3rem;
   margin-bottom: 0;
   padding-bottom: 0;
   white-space: normal;
@@ -6388,3 +6392,69 @@ label {
   margin-bottom: 64px;
   margin-left: auto;
   margin-right: auto; }
+
+.LoginForm input, .LoginForm input:focus {
+  line-height: 1.25em;
+  padding: 0px;
+  margin: 0px;
+  text-align: center;
+  border: 0px none transparent;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+  border-radius: 0;
+  height: 100%; }
+
+.LoginForm input:focus {
+  background-color: rgba(255, 255, 255, 0.2); }
+
+.LoginForm label {
+  display: block;
+  text-align: center;
+  font-weight: normal;
+  margin: 0; }
+
+.LoginForm .StartButton {
+  margin-top: 2em; }
+
+.Login .col {
+  padding: 0; }
+
+.Login .StartButton {
+  display: block;
+  margin: 0 auto; }
+
+.Login .row {
+  border: 1px solid white;
+  margin-bottom: 1em; }
+
+.LoginForm .label {
+  border-right: 1px solid white; }
+
+/* ======================== LOADING MODAL */
+.LoadingModal {
+  z-index: 200;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  text-align: center;
+  font-style: italic;
+  color: white; }
+
+.LoadingModal .LoadingModalContent {
+  margin: 0 auto;
+  max-width: 512px;
+  background-color: rgba(255, 255, 255, 0.3); }
+
+.LoadingModal .LoadingSpinner {
+  height: 90px;
+  width: 90px; }
+
+.LoadingStatusMsg {
+  margin-top: 16px;
+  padding-bottom: 20px;
+  padding-left: 2em;
+  padding-right: 2em; }

@@ -10,10 +10,17 @@ class Modal  extends React.Component {
   componentDidUpdate() {
     if(this.props.show)
       $(`#${this.props.id}`).modal("show");
-    else
+    else {
       $(`#${this.props.id}`).modal("hide");
-
+    }
   }
+
+
+  propsWillChange(nextProps) {
+    if(this.props.closeHandler && !nextProps.show && this.props.show)
+      this.props.closeHandler();
+  }
+
 
   render() {
     
@@ -35,11 +42,12 @@ class Modal  extends React.Component {
 
 const ModalHeader = (props)=> {
 
-  if(!props.title)
-    return null;
+  // if(!props.title)
+  //   return null;
 
   return (
     <div className="modal-header">
+      <h5 class="modal-title">{props.title}</h5>
       <button type="button" className="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>

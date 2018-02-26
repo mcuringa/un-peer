@@ -27,7 +27,6 @@ class ChallengeResponseForm extends React.Component {
       loading: true,
       dirty: false,
       choose: true,
-      showText: false,
       showConfirm: false,
       showVideo: false
     };
@@ -93,10 +92,10 @@ class ChallengeResponseForm extends React.Component {
     if(this.state.goHome)
       return <Redirect push to="/" />
     
-    let el = (<MediaPicker show={!this.state.showText && !this.state.showVideo} 
+    let el = (<MediaPicker show={!this.props.response.text && !this.props.response.video} 
           chooseVideo={this.chooseVideo} chooseText={this.chooseText} />);
     
-    if(this.state.showText) {
+    if(this.props.response.text) {
       el = (
         <TextAreaGroup id="text"
           value={this.props.response.text}
@@ -105,7 +104,7 @@ class ChallengeResponseForm extends React.Component {
           onChange={this.handleChange} />
       );
     }
-    else if(this.state.showVideo){
+    else if(this.props.response.video){
       el = (
         <VideoUpload id="video" video={this.props.response.video} 
           onChange={this.handleUpload} label="Upload a video" />
@@ -129,7 +128,8 @@ class ChallengeResponseForm extends React.Component {
           <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
 
         {el}
-        <SubmitButton show={this.state.showText || this.state.showVideo} 
+
+        <SubmitButton show={this.props.response.text || this.props.response.video} 
           update={this.props.response.id}
           onClick={this.confirmUpload} />
 

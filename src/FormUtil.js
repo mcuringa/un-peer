@@ -50,7 +50,7 @@ const TextInput = (props)=> {
 
     <input type={props.type||'text'} 
            value={props.value} 
-           className={`form-control${pt}`} 
+           className={`form-control${pt} ${props.className}`} 
            id={props.id} 
            placeholder={props.placeholder}
            onChange={props.onChange} 

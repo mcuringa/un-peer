@@ -29,11 +29,10 @@ import NewChallengeScreen from './challenges/NewChallenge.js';
 import Login from './users/Login.js';
 import ProfileScreen from './users/ProfileScreen.js';
 
+
 export default class App extends Component {
   constructor(props) {
     super(props);
-
-
     this.state = {user: {} };
   }
 
@@ -48,14 +47,13 @@ export default class App extends Component {
     });
   }
 
-
   render() {
     let Main;
     console.log(this.state.user.email);
     if(!this.state.user.email)
       Main = (
         <div className="App container login">
-          <Login user={this.state.user} />
+          <Login user={this.state.user} loadingHandler={this.loadingHandler} />
         </div>
       );
     else
@@ -68,9 +66,6 @@ export default class App extends Component {
           </div>
         </Router>
       );
-
-    console.log(this.state.user.roles);
-
     return (Main);
   }
 }

@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { Button } from "react-bootstrap";
 import _ from "lodash";
-import {TextGroup} from '../FormUtil.js'
+import {TextInput} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
 import UserDB from "./UserDB.js";
+import Modal from "../Modal";
+import LoadingModal from "../LoadingModal";
+
 
 export default class Login extends Component {
 
@@ -16,15 +19,27 @@ export default class Login extends Component {
       nouser: false,
       reset: false,
       sent: false,
-      user: props.user
+      loading: false,
+      loadingStatus: null
     };
 
     this.reset = this.reset.bind(this);
+    this.handleModalClose = this.handleModalClose.bind(this);
 
   }
 
   validateForm() {
     return this.state.email.length > 0 && this.state.password.length > 0;
+  }
+
+  handleModalClose() {
+    this.setState({
+      nouser: false,
+      reset: false,
+      sent: false,
+      loading: false,
+      loadingStatus: null
+    });
   }
 
   handleChange = event => {
@@ -39,7 +54,7 @@ export default class Login extends Component {
   handleSubmit = event => {
     let loggedIn = false;
 
-    console.log("logging in with google");
+    this.setState({loading: true, loadingStatus: "Authenticating..."});
 
     let email = this.state.email.trim();
     let pw = this.state.password.trim();
@@ -50,8 +65,7 @@ export default class Login extends Component {
     const merge = (u)=>{ 
       console.log("merging");
       console.log(u);
-      user = _.merge(user, u);
-      this.setState({user: user});
+      return _.merge(user, u);
     };
 
     const add = (u)=>{
@@ -64,16 +78,20 @@ export default class Login extends Component {
         admin: false,
         su: false
       }
-      UserDB.save(user).then(merge);
+      // UserDB.save(user).then(merge);
     };
 
     const success = (auth)=> {
       user = firebase.auth().currentUser;
-      UserDB.get(user.uid).then(merge, add);
-    };
+      this.setState({loading: false, loadingStatus: null});
+
+      // UserDB.get(user.uid).then(add);
+    }
+
     const err = (error)=> {
       let code = error.code;
       let msg = error.message;
+      this.setState({loading: false, loadingStatus: null});
 
       if(code === "auth/user-not-found")
         this.setState({nouser: true});
@@ -87,15 +105,13 @@ export default class Login extends Component {
     event.preventDefault();
   }
 
-  reset(e) {
-    e.preventDefault();
+  reset() {
     const firebase = FBUtil.init();
-
+    this.setState({forgotPass: false});
     
     firebase.auth().sendPasswordResetEmail(this.state.email)
       .then(()=> {
-        this.setState({sent: true});
-        this.setState({reset: false});
+        this.setState({sent: true, reset: false});
       })
       .catch((error)=> {
         console.log(error);
@@ -105,44 +121,66 @@ export default class Login extends Component {
   render() {
     return (
       <div className="Login screen">
+        <LoadingModal id="LoadingModal" show={this.state.loading}
+          status={this.state.loadingStatus} /> 
         <img className="LoginLogo d-block" src="/img/unpc-logo.png" />
 
-        <div className={`ResetSent alert alert-success${(this.state.sent)?"":" d-none"}`}>
-          Please check your email for a link to reset your password.
-        </div>  
+        <Modal id="ResetModal" 
+          show={this.state.sent}
+          closeHandler={this.handleModalClose}
+          body="Please check your email for a link to reset your password."
+        />          
+        <Modal id="ForgotPassModal"
+          show={this.state.forgotPass} 
+          closeHandler={this.handleModalClose}
+          body="Send an email to reset your password?"
+          onConfirm={this.reset} />
 
-        <div className={`UserNotFound alert alert-warning${(this.state.nouser)?"":" d-none"}`}>
-          There is no user with email <tt>{this.state.email}</tt>
-        </div>
+        <Modal id="WrongPassModal"
+          show={this.state.reset} 
+          closeHandler={this.handleModalClose}
+          body="Incorrect password. Send an email to reset your password?"
+          onConfirm={this.reset} />
 
-        <div className={`ResetPassword alert alert-warning${(this.state.reset)?"":" d-none"}`}>
-          Incorrect pasword. <a href="#reset-pass" onClick={this.reset} className="alert-link">Click here to send an email with instructions to reset.</a>
-        </div>
+        <Modal id="NoUserModal"
+          show={this.state.nouser} 
+          closeHandler={this.handleModalClose}
+          body={`There is no user with email ${this.state.email}.`}
+          />
 
-        <form onSubmit={this.handleSubmit}>
+        <form className="LoginForm" onSubmit={this.handleSubmit}>
+          <div class="row">
+            <div className="label col-sm-4"><label for="email">email</label></div>
+            <div className="col">
+              <TextInput id="email" className=""
+                autoFocus
+                value={this.state.email}
+                onChange={this.handleChange} />
+              </div>
+          </div>
 
-          <TextGroup id="email"
-            autoFocus
-            label="Email"
-            value={this.state.email}
-            onChange={this.handleChange} 
-            required={true} />
+          <div class="row">
+            <div className="label col-sm-4"><label for="password">password</label></div>
+            <div className="col">
+              <TextInput id="password" className=""
+                autoFocus
+                type="password"
+                value={this.state.password}
+                onChange={this.handleChange} />
+            </div>
+          </div>
 
-          <TextGroup id="password"
-            autoFocus
-            type="password"
-            label="Password"
-            value={this.state.password}
-            onChange={this.handleChange} 
-            required={true} />
+          <div class="text-right">
+            <button className="btn btn-link text-light"
+              onClick={()=>{this.setState({forgotPass: true})}}
+              type="button">Forgot password?</button>
+          </div>
 
-          <Button
-            block
-            bsSize="large"
-            type="submit"
-          >
+          <button type="button"
+            className="StartButton btn btn-secondary"
+            type="submit">
             Start
-          </Button>
+          </button>
         </form>
       </div>
     );
