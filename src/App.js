@@ -28,6 +28,7 @@ import ChallengeEditScreen from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
 import Login from './users/Login.js';
 import ProfileScreen from './users/ProfileScreen.js';
+import ManageUsersScreen from './users/ManageUsersScreen';
 
 export default class App extends Component {
   constructor(props) {
@@ -105,7 +106,9 @@ const SecureScreens = (props)=>{
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
         <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>
+        
         <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
+        <PropsRoute path="/users" user={props.user} component={ManageUsersScreen} />
       </Switch>
   );
 }

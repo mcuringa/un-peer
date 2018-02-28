@@ -5,7 +5,9 @@ import { CalendarIcon, PrimitiveDotIcon } from 'react-octicons';
 
 const LoadingSpinner = (props)=> {
   return (
-    <img className={(props.loading)?"":"d-none"} src="/img/spinner.gif" />
+    <span className="bg-dark round">
+      <img className={(props.loading)?"":"d-none"} src="/img/puff.svg" />
+    </span>
     );
 }
 
