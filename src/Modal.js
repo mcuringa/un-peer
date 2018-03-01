@@ -31,7 +31,7 @@ class Modal  extends React.Component {
           <div className="modal-content">
             <ModalHeader title={this.props.title} />
             <div className="modal-body">{this.props.body}</div>
-            <ConfirmFooter onConfirm={this.props.onConfirm} />
+            <ConfirmFooter id={this.props.id} onConfirm={this.props.onConfirm} />
             <ModalFooter footer={this.props.footer} />
           </div>
         </div>
@@ -75,12 +75,16 @@ const ConfirmFooter = (props)=> {
   if(!props.onConfirm)
     return null;
   const label = props.confirmLabel || "OK";
+  const ok = ()=> {
+    props.onConfirm();
+    $(`#${props.id}`).modal("hide");
+  }
 
   return (
     <div className="modal-footer">
       <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
       <button type="button"
-        onClick={()=>{props.onConfirm()}}
+        onClick={ok}
         className="btn btn-primary">{label}</button>
     </div>
   );

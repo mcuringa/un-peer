@@ -1,37 +1,41 @@
 import FBUtil from "../FBUtil";
 import _ from "lodash";
+import db from "../DBTools"
+
 const firebase = require("firebase");
 
-const db = {
-  get(path, id) {
-
-    let db = FBUtil.connect();
-    let p = new Promise((resolve, reject)=>{
-          db.collection(path).doc(id).get()
-            .then( (doc)=>{
-              if(doc.exists)
-                resolve(doc.data());
-              else
-                reject();
-            });
-          });
-
-    return p;
-  },
-
-  save(path, id, data) {
-    let db = FBUtil.connect();
-    data.modified = new Date();
-    let ref = db.collection(path).doc(id);
-    return new Promise((resolve, reject)=>{
-      ref.set(data).then(()=>{
-        resolve(ref.id);
-      });
-    });
-  },
 
 
-};
+// const db = {
+//   get(path, id) {
+
+//     let db = FBUtil.connect();
+//     let p = new Promise((resolve, reject)=>{
+//           db.collection(path).doc(id).get()
+//             .then( (doc)=>{
+//               if(doc.exists)
+//                 resolve(doc.data());
+//               else
+//                 reject();
+//             });
+//           });
+
+//     return p;
+//   },
+
+//   save(path, id, data) {
+//     let db = FBUtil.connect();
+//     data.modified = new Date();
+//     let ref = db.collection(path).doc(id);
+//     return new Promise((resolve, reject)=>{
+//       ref.set(data).then(()=>{
+//         resolve(ref.id);
+//       });
+//     });
+//   },
+
+
+// };
 
 
 const User = {
@@ -158,9 +162,8 @@ const ChallengeDB = {
     let challenges = [];
     let ids = [];
     
-    if(ChallengeDB.isCacheLoaded()) {
+    if(ChallengeDB.isCacheLoaded() && false) {
       challenges = _.values(ChallengeDB.cache);
-      // challenges = _.sort(challenges,(c)=>);
       console.log("challenges from cache");
     }
 

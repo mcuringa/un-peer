@@ -3,93 +3,139 @@ import {Link} from 'react-router-dom';
 import _ from "lodash";
 import df from "../DateUtil.js";
 import {ChallengeDB} from "./Challenge.js";
-import {StarIcon, ChevronLeftIcon} from 'react-octicons';
+import {StarIcon, DashIcon, PlusIcon, ChevronLeftIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
+import Modal from "../Modal";
+import {LoadingSpinner} from "../FormUtil";
 
 class ResponseRatings extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {responses: []};
-    this.toggle = this.toggle.bind(this);
-
+    this.state = {open: [], loading: true};
+    this.loadAssignments = this.loadAssignments.bind(this);
+    this.submitRatings = this.submitRatings.bind(this);
   }
   
-  componentWillMount() {
+  loadAssignments() {
     const c = this.props.challenge;
-    if(!c.assignments) {
-      ChallengeDB.assignRatings(c).then((newC)=>{
-        console.log("got assignments back from call");
-        console.log(newC);
-      });
-    }
-
-
-    ChallengeDB.getResponses(this.props.challenge.id).then(
-      (responses)=>{
-        const uid = this.props.user.uid;
-        const assignIds = c.assignments[uid];
-        console.log("found my assignments");
-        console.log(assignIds);
-
-        let t = _.filter(responses,r=>_.includes(assignIds,r.id));
-        console.log("found my responses");
-        console.log(t);
-        t =_.map(t,(r)=>{r.open = false; return r;});
-
-        
-        this.setState({responses: t})
-      }
-    );
+    if(!c.assignments)
+      return [];
+    const uid = this.props.user.uid;
+    const assignIds = c.assignments[uid];
+    let t = _.filter(this.props.responses,r=>_.includes(assignIds,r.id));
+    
+    t =_.map(t,(r)=>{r.open = false; return r;});
+    
+    return t;
   }
 
-  toggle(e) {
-    let t = _.map(this.state.responses,(r)=>{
-      r.open = r.id == e.target.id;
-      return r;
-    });
-    this.setState({responses: t})
-
+  submitRatings() {
+    console.log("submitting ratings");
   }
 
   render() {
-    let keyCount = 0;
-    let responseItems = this.state.responses.map((r)=>{
-      keyCount++;
+
+    let assignments = this.loadAssignments();
+    if(_.size(assignments)==0 && !this.state.loading)
+      return (<SorryMsg challenge={this.props.challenge} />);
+
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+    let ratingForms = assignments.map((r, key)=>{
       return (
-        <div className="card">
-          <div className="card-header" id={`head_${keyCount}`} key={`resp_${keyCount}`}>
-            <div className="">
-              <button className="btn btn-link text-dark btn-block text-left" data-toggle="collapse" 
-                data-target={`#body_${keyCount}`}>
-                <em>Response {letters[keyCount-1]}: {r.title}</em>
-              </button>
-              <StarRatings challengeId={this.props.challengeId} user={this.props.user} response={r} />
-            </div>
-          </div>
-          <div id={`body_${keyCount}`} className="collapse" data-parent="#ResponseList">
-            <div className="card-body">
-              {r.title}
-              <Video video={r.video} />
-              {r.text}
-            </div>
-          </div>
-        </div>
-
+        <ResponseRater 
+          response={r} 
+          keyIndex={key} letter={letters[key]}
+          user={this.props.user} 
+          challenge={this.props.challenge} />
       );
     });
 
     return (
       <div id="ResponseList" className="ResponseList">
+        <Modal id="confirmRatings"
+          onConfirm={this.submitRatings}
+          confirmLabel="Submit Ratings"
+          body="Are you sure you want to send your ratings? Once sent, they cannot be changed." />
+
         <Link className="text-dark mb-2"
-          to={`/challenge/${this.props.challengeId}`}>
+          to={`/challenge/${this.props.challenge.id}`}>
           <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
-        {responseItems}
+        <p>
+          Please review and rate each of the three responses below by clicking on the stars.
+          After you have rated each response you can click the button below to send your ratings.
+        </p>
+        <button className="btn btn-block btn-secondary mb-2"
+          data-toggle="modal" data-target="#confirmRatings">
+          Submit my ratings
+        </button>
+        {ratingForms}
       </div>
     );
   }
 }
+
+const ToggleIcon = (props) => {
+    if(props.open)
+      return <DashIcon className="icon-secondary pt-1" />
+    return <PlusIcon className="icon-secondary pt-1" />
+}
+
+
+const ResponseRater = (props) => {
+
+    const r = props.response;
+    console.log("props.keyIndex");
+    console.log(props.keyIndex);
+
+    return (
+      <div className="card">
+        <div className="card-header" id={`head_${props.keyIndex}`} key={`resp_${props.keyIndex}`}>
+          <button className="btn btn-link text-dark btn-block text-left" data-toggle="collapse" 
+            data-target={`#body_${props.keyIndex}`}>
+            <div className="row">
+              <div className="col-11">
+                <em>Response {props.letter}: {r.title}</em>
+              </div>
+              <div className="col-1"><ToggleIcon open={r.open} /></div>
+            </div>
+          </button>
+          <StarRatings challengeId={props.challenge.id} user={props.user} response={r} />
+        </div>
+        <div id={`body_${props.keyIndex}`} className="collapse" data-parent="#ResponseList">
+          <div className="card-body">
+            <Video video={r.video} />
+            {r.text}
+          </div>
+        </div>
+      </div>
+
+    );
+}
+
+
+const SorryMsg = (props)=> {
+
+  return (
+    <div id="SorryNotice" className="card border-dark">
+      <div className="card-header"><h4>No Assignments</h4></div>
+      <div className="card-body">
+        <p class="card-text">
+          You do not have rating assignments for this challenge.
+          In order to rate responses you must submit a respone before
+          the deadline. You will be able to see all of the ratings
+          after {df.day(props.challenge.ratingsDue)}.
+        </p>
+      </div>
+      <div className="card-footer">
+        <Link className="btn btn-secondary mr-2"
+          to={`/challenge/${props.challenge.id}`}>View Challenge</Link>
+        <Link className="btn btn-secondary"
+          to="/">Go Home</Link>
+      </div>
+    </div>
+  );
+}
+
 
 class StarRatings extends React.Component {
   constructor(props) {
@@ -101,10 +147,6 @@ class StarRatings extends React.Component {
     this.rate = this.rate.bind(this);
   }
   
-  componentWillMount() {
-
-  }
-
   rate(val) {
     this.setState({rating: val});
     let r = this.state.response;

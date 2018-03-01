@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "un-peer-challenges"
+    "default": "un-peer-challenges",
+    "production": "un-peer-live"
   }
 }

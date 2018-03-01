@@ -17,7 +17,7 @@ class ChallengeDetailScreen extends React.Component {
 
     const id = this.props.match.params.id;
     this.state = {
-      challenge: {id: id}, 
+      challenge: {}, 
       owner: User,
       response: {}
     };
@@ -25,22 +25,37 @@ class ChallengeDetailScreen extends React.Component {
 
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
-      this.setState({"owner": c.owner});
-      this.setState({challenge: c});
+      if(!c.assignments && c.responseDue > new Date()) {
+        ChallengeDB.assignRatings(c).then((newC)=>{
+          console.log("assigning ratings");
+          this.setState({"owner": c.owner});
+          this.setState({challenge: c});
+        });
+      }
+      else {
+        this.setState({"owner": c.owner});
+        this.setState({challenge: c});
+      }
     });
+
+    ChallengeDB.getResponses(id).then((t)=>{
+      this.setState({responses: t});
+    });
+    
 
     ChallengeDB.getResponse(id, this.props.user.uid)
       .then((r)=>{
         this.setState({response: r});
-      },null);
+        console.log("r");
+        console.log(r);
+      });
 
   }
 
   updateResponse(props) {
-    console.log("state lifted...ugh");
     const r = _.merge(this.state.response, props);
     this.setState({response: r});
   }
@@ -58,11 +73,13 @@ class ChallengeDetailScreen extends React.Component {
             responseHandler={this.updateResponse}/>);
         break;
       case "responses":
+        console.log("state responses: ");
+        console.log(this.state.responses);
         ActiveElement = (
           <ResponseRatings 
             user={this.props.user} 
-            challenge={this.state.challenge}
-            challengeId={this.state.challenge.id} />);
+            responses={ this.state.responses } 
+            challenge={this.state.challenge} />);
         break;
       default:
         ActiveElement = (<ChallengeInfo id={this.state.challenge.id} 
