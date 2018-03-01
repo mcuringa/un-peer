@@ -410,6 +410,7 @@ label
   font-size: 14px;
   // line-height: 18px;
 }
+
 .UploadProgress .ProgressBar {
   background-color: $gray-800;
   height: 100%;
@@ -420,3 +421,47 @@ label
   top: 0;
   left: 6px;
 }
+
+/*================================== user management */
+
+.NewUserForm
+{
+  margin-bottom: 1em;
+}
+
+.NewUserForm input {
+  border-radius: 0;
+}
+.NewUserForm input:focus {
+  background-color: lightyellow;
+}
+
+
+
+.NewUserForm, .NewUserForm .row, .NewUserForm .row div
+{
+  padding: 0;
+}
+
+.CurrentUserList .row div {
+  padding: 0;
+  border: 1px solid $gray-400;
+}
+
+.CurrentUserList input:focus {
+  background-color: $gray-200;
+  border: 2px solid $primary;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.CurrentUserList input {
+  width: 100%;
+  margin: 0;
+  padding: 3px;
+  border-radius: 0;
+  border-style: none;
+  font-size: .9rem;
+}
+
+

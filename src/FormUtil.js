@@ -5,8 +5,8 @@ import { CalendarIcon, PrimitiveDotIcon } from 'react-octicons';
 
 const LoadingSpinner = (props)=> {
   return (
-    <span className="bg-dark round">
-      <img className={(props.loading)?"":"d-none"} src="/img/puff.svg" />
+    <span className="LoadingSpinner">
+      <img className={`${(props.loading)?"":"d-none"}`} src="/img/puff.svg" />
     </span>
     );
 }
@@ -58,7 +58,7 @@ const TextInput = (props)=> {
            onChange={props.onChange} 
            readOnly={props.readOnly} 
            required={props.required}
-           autofocus={props.autofocus} />
+           autoFocus={props.autofocus} />
   );
 };
 

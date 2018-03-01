@@ -5,6 +5,8 @@ import _ from "lodash";
 
 let UserDB = {
 
+
+
 ROLES: {
   STUDENT: 1,
   ADMIN: 2,
@@ -17,8 +19,22 @@ NewUser: {
   firstName: "",
   lastName: "",
   displayName: "",
+  student: true,
+  admin: false,
+  su: false
 
 },
+
+userKeys: [
+  "uid",
+  "email",
+  "firstName",
+  "lastName",
+  "displayName",
+  "student",
+  "admin",
+  "su"
+],
 
 get(uid) {
 
@@ -51,8 +67,8 @@ create(newUser) {
 
     const sendPass = ()=>{ return firebase.auth().sendPasswordResetEmail(user.email) };
     const save = (u)=>{ 
-      console.log("saving user");
-      console.log(u);
+      user.uid = u.uid;
+
       const defaults = {
         admin: false, 
         su: false, 
@@ -67,7 +83,7 @@ create(newUser) {
     firebase.auth().createUserWithEmailAndPassword(user.email, rp())
       .then(save)
       .then(sendPass)
-      .then(resolve)
+      .then(()=>{resolve(user)})
       .catch( (e)=> {
           console.log(e);
           if(reject)

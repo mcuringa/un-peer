@@ -35,6 +35,39 @@ const db = {
     });
   },
 
+  saveAll(path, t, id) {
+
+    const promiseToSave = (resolve, reject) => {
+      // identify function or obj.id
+      if(!id)
+        id = (obj)=>{return obj.id};
+
+      const db = FBUtil.connect();
+      const batch = db.batch();
+
+      const err = (e)=>{
+        console.log(e);
+        reject(e);
+      }
+
+      const save = (o)=> {
+        let ref = db.collection(path).doc(id(o));
+        batch.set(ref, o);
+      }
+
+      _.each(t, save);
+
+
+      batch.commit().then(()=>{
+        resolve(t)
+      }).catch(err);
+
+    }
+
+    return new Promise(promiseToSave);
+
+  },
+
 
   save(path, id, data) {
     let db = FBUtil.connect();

@@ -1,7 +1,7 @@
 <!-- By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL -->
-<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" stroke="#fff">
-    <g fill="none" fill-rule="evenodd" stroke-width="2">
-        <circle cx="22" cy="22" r="1">
+<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" stroke="blue">
+    <g fill="none" fill-rule="evenodd" stroke-width="4">
+        <circle cx="22" cy="22" r="22" fill="#6A82AD">
             <animate attributeName="r"
                 begin="0s" dur="1.8s"
                 values="1; 20"
