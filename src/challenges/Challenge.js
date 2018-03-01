@@ -4,40 +4,6 @@ import db from "../DBTools"
 
 const firebase = require("firebase");
 
-
-
-// const db = {
-//   get(path, id) {
-
-//     let db = FBUtil.connect();
-//     let p = new Promise((resolve, reject)=>{
-//           db.collection(path).doc(id).get()
-//             .then( (doc)=>{
-//               if(doc.exists)
-//                 resolve(doc.data());
-//               else
-//                 reject();
-//             });
-//           });
-
-//     return p;
-//   },
-
-//   save(path, id, data) {
-//     let db = FBUtil.connect();
-//     data.modified = new Date();
-//     let ref = db.collection(path).doc(id);
-//     return new Promise((resolve, reject)=>{
-//       ref.set(data).then(()=>{
-//         resolve(ref.id);
-//       });
-//     });
-//   },
-
-
-// };
-
-
 const User = {
   uid: "0",
   name:"Test User",
@@ -89,7 +55,8 @@ const ChallengeDB = {
     return title.toLowerCase()
         .replace(/[^\w\.\- ]+/g,'')
         .trim()
-        .replace(/ +/g,'-');
+        .replace(/ +/g,'-')
+        .replace(/-+/g,'-');
   },
 
   isCacheStale() {
@@ -162,14 +129,14 @@ const ChallengeDB = {
     let challenges = [];
     let ids = [];
     
-    if(ChallengeDB.isCacheLoaded() && false) {
+    if(ChallengeDB.isCacheLoaded()) {
       challenges = _.values(ChallengeDB.cache);
-      console.log("challenges from cache");
+      // console.log("challenges from cache");
     }
 
     return new Promise(
       (resolve, reject)=>{
-        console.log("challenges from DB");
+        // console.log("challenges from DB");
         if(challenges.length > 0)
         {
           resolve(challenges);
@@ -226,9 +193,6 @@ const ChallengeDB = {
   },
 
   save(c){
-    console.log("save called");
-    console.log(c.id);
-    console.log(c.assignments);
 
     if(_.isNil(c.id) || _.isEmpty(c.id))
       return ChallengeDB.add(c);
@@ -251,8 +215,6 @@ const ChallengeDB = {
     c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
     c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
 
-    console.log("set challenge: " + c.id);
-    console.log(c.assignments);
 
     let db = FBUtil.connect();
     let ref = db.collection("challenges").doc(c.id);
@@ -300,8 +262,6 @@ const ChallengeDB = {
         assignments[r.user.uid] = myAssignments;
       });
 
-      console.log("returning assignments (keys): " + _.keys(assignments));
-      console.log("returning assignments (values): " + _.values(assignments));
       return assignments;
     };
     
@@ -311,13 +271,10 @@ const ChallengeDB = {
       const t = assign(responses);
 
       c.assignments = t;
-      console.log(c.assignments);
 
       let db = FBUtil.connect();
       let ref = db.collection("challenges").doc(c.id);
-      console.log("sending update");
       await ref.update({assignments: t});
-      console.log("caching...");
 
       ChallengeDB.cache[c.id] = c;
       resolve(c);
@@ -325,8 +282,6 @@ const ChallengeDB = {
     });
 
   },
-
-  
 
   getResponses(challengeId) {
     let db = FBUtil.connect();

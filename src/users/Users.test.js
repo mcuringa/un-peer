@@ -65,7 +65,7 @@ it.skip("syncs the auth users to /users ", ()=>{
 
 
 
-it("should create a new user in auth and DB",()=>{
+it.skip("should create a new user in auth and DB",()=>{
   const user = {
     email: "foo.0099@example.com",
     firstName: "foo",
@@ -82,14 +82,14 @@ it("should create a new user in auth and DB",()=>{
 it("should load user extra info from DB",()=>{
   return UserDB.get(mxcId).then(
     (u)=>{
-      console.log("user found: " + u.uid);
+      expect(u.uid).toBe(mxcId);
     },
     (e)=>{
       console.log("no user: " + e);
     });
 });
 
-it("should add a new user to DB",()=>{
+it.skip("should add a new user to DB",()=>{
   const user = {
     created: new Date(),
     uid: "0QuT7TbQvRXFwGgjIsjNbROVjmU2",

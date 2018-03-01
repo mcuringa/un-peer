@@ -28,7 +28,6 @@ it.skip("assigns responses to users for a challenge", async ()=>{
   ChallengeDB.cache = {};
   let challenge;
   await ChallengeDB.get(cid).then((c)=>{challenge = c;});
-  console.log(challenge.title);
 
   return ChallengeDB.assignRatings(challenge).then((c)=>{
     console.log(c.assignments);
@@ -42,7 +41,7 @@ it("should get the user's response for a challenge", ()=>{
   const uid = "qeNXoRsAlsVniTfGy1wHKMHpLIV2";
   return ChallengeDB.getResponse(cid,uid).then(
     (r)=> {
-      console.log(r);
+      expect(r).toBeDefined();
     },()=>{console.log("no response found for this challenge/user");}
   );
 });
@@ -56,7 +55,7 @@ it("should return the active challenge", ()=>{
 
   return ChallengeDB.getActive().then(
     (c)=> {
-      console.log(c);
+      expect(c).toBeDefined();
     },()=>{console.log("no active challenge found");}
   );
 });
@@ -88,10 +87,11 @@ it("should get a challenge based on id",()=>{
 });
 
 it("it should create a safe slug from unsafe text", ()=> {
-  const s = "this-is-a video_today11.12.2008.mpg";
+  const s = "My--Super-hot_Video!🔥🔥🔥.2018.03.01.mov";
   const slug = ChallengeDB.slug(s);
-  const ex = "this-is-foo-bar_22";
   console.log(slug);
+  const ex = "my-super-hot_video.2018.03.01.mov";
+  expect(slug).toBe(ex)
 });
 
 it("should find a new unique id", ()=>{
@@ -142,7 +142,7 @@ it("should update a challenge", ()=>{
 });
 
 it("should add a response to test-id-foo",()=>{
-  const cId = "making-the-world-a-better-place";
+  const cId = "policy-changes-break-everything";
   let r = Response;
   r.text = "I think...";
   r.user = User;
@@ -151,22 +151,13 @@ it("should add a response to test-id-foo",()=>{
   });
 });
 
-it("should get a sub collection",()=>{
-  const id = "policy-changes-break-everything";
-  let db = FBUtil.connect();
-  return db.collection(`challenges/${id}/responses`).get()
-  .then((results)=>{
-        results.forEach((doc)=>{
-          console.log(doc.data());
-        });
-  });
-});
+
 
 it("should get all responses in a challenge",()=>{
   const id = "policy-changes-break-everything";
   return ChallengeDB.getResponses(id).then((t)=>{
-    console.log(t.length);
-    console.log(t[0]);
+    expect(t.length).toBeGreaterThan(0);
+    expect(t[0].id).toBeDefined();
   });
 });
 

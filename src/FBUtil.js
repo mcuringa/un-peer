@@ -1,5 +1,6 @@
 import {ChallengeDB} from "./challenges/Challenge.js";
 // import localforage from "localforage";
+import fireBaseConfig from "./firebase.config.json";
 
 
 const FBUtil =
