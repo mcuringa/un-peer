@@ -149,7 +149,7 @@ export default class Login extends Component {
           />
 
         <form className="LoginForm" onSubmit={this.handleSubmit}>
-          <div class="row">
+          <div className="row">
             <TextInput id="email" className=""
               autoFocus
               placeholder="email"
@@ -157,7 +157,7 @@ export default class Login extends Component {
               onChange={this.handleChange} />
           </div>
 
-          <div class="row">
+          <div className="row">
             <TextInput id="password" className=""
               autoFocus
               placeholder="password"
@@ -166,7 +166,7 @@ export default class Login extends Component {
               onChange={this.handleChange} />
           </div>
 
-          <div class="text-right">
+          <div className="text-right">
             <button className="btn btn-link text-light"
               onClick={()=>{this.setState({forgotPass: true})}}
               type="button">Forgot password?</button>

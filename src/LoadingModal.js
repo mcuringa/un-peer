@@ -7,7 +7,7 @@ const LoadingModal = (props)=> {
   
   return (
     <div className={`LoadingModal ${showSomeClass}`} id="LoadingModal" 
-      tabindex="-1" role="dialog" 
+      tabIndex="-1" role="dialog"
       aria-labelledby="loadingModalMessagePane" aria-hidden="true">
         <div className="LoadingModalContent">
           <img className="LoadingSpinner" src="/img/puff.svg" alt="spinning icon" />
