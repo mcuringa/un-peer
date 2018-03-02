@@ -6400,7 +6400,6 @@ label {
   margin-right: auto; }
 
 .LoginForm input, .LoginForm input:focus {
-  line-height: 1.25em;
   padding: 0px;
   margin: 0px;
   text-align: center;
@@ -6411,6 +6410,10 @@ label {
   border-radius: 0;
   height: 100%; }
 
+.LoginForm .col-3, .LoginForm .col-9 {
+  padding-left: 0;
+  padding-right: 0; }
+
 .LoginForm input:focus {
   background-color: rgba(255, 255, 255, 0.2); }
 
@@ -6418,10 +6421,12 @@ label {
   display: block;
   text-align: center;
   font-weight: normal;
-  margin: 0; }
+  margin: 0;
+  border-right: 1px solid white; }
 
 .LoginForm .StartButton {
-  margin-top: 2em; }
+  margin-top: 2em;
+  width: 224px; }
 
 .Login .col {
   padding: 0; }
