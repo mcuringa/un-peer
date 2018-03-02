@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import { CalendarIcon, PrimitiveDotIcon } from 'react-octicons';
+import { CalendarIcon, PrimitiveDotIcon, CircleSlashIcon } from 'react-octicons';
 
 const LoadingSpinner = (props)=> {
   return (
@@ -83,13 +83,16 @@ class NewTextInput extends React.Component {
   }
 }
 
+
+
 const Video = (props)=> {
 
-  const dclass = (props.video)?"":"d-none";
+  const extracss = (props.video)?"":"d-none";
+  const dclass = (props.className)?props.className:"";
   const poster = props.poster;
 
   return (
-    <div className={`${props.className} ${dclass} embed-responsive embed-responsive-16by9 mb-2`}>
+    <div className={`${extracss} ${dclass} embed-responsive embed-responsive-16by9 mb-2`}>
       <video controls="true" poster={poster} src={props.video} />
     </div>
   );
@@ -100,19 +103,42 @@ const VideoUpload = (props)=> {
 
 
   return (
-    <div>
-      <Video video={props.video} />
+    <div className="mb-2">
+      <Video {...props} />
       <div className="custom-file">
         <input type="file" className="d-none"
         accept="video/*" id={props.id} onChange={props.onChange} />
-        <label className="btn btn-link text-dark" htmlFor={props.id}>
-            {props.label}
+        <label className="btn btn-link text-dark pb-2" htmlFor={props.id}>
+            <div className="btn btn-secondary">{props.label}</div>
             <img className="ml-1" src="/img/video-response_btn.png" />
         </label>
       </div>
     </div>
   );
 };
+
+const VideoUploadImproved = (props)=> {
+
+  const uploadBtn = (
+    <div className="VideoUploadButton d-block">
+      <input type="file" className="d-none"
+        accept="video/*" id={props.id} onChange={props.onChange} />
+        <label className="" htmlFor={props.id}>
+          <img className="" src="/img/video-upload.png" />
+        </label>
+    </div>
+  );
+
+  const VideoEl = (props.video)?<Video {...props} /> : uploadBtn;
+
+  return (
+    <div className="bg-dark mb-1 p-0">
+      {VideoEl}
+      {props.progressBar}
+    </div>
+  );
+};
+
 
 
 const DatePicker = (props)=> {
@@ -223,5 +249,6 @@ export {
   StatusIndicator,
   LoadingSpinner,
   Video,
-  VideoUpload
+  VideoUpload,
+  VideoUploadImproved
 };
