@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button } from "react-bootstrap";
 import _ from "lodash";
-import {TextInput} from '../FormUtil.js'
+import {NewTextInput} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
 import UserDB from "./UserDB.js";
 import Modal from "../Modal";
@@ -62,7 +62,7 @@ export default class Login extends Component {
     const firebase = FBUtil.init();
 
     let user = null;
-    const merge = (u)=>{ 
+    const merge = (u)=>{
       console.log("merging");
       console.log(u);
       return _.merge(user, u);
@@ -114,7 +114,7 @@ export default class Login extends Component {
   reset() {
     const firebase = FBUtil.init();
     this.setState({forgotPass: false});
-    
+
     firebase.auth().sendPasswordResetEmail(this.state.email)
       .then(()=> {
         this.setState({sent: true, reset: false});
@@ -128,48 +128,62 @@ export default class Login extends Component {
     return (
       <div className="Login screen">
         <LoadingModal id="LoadingModal" show={this.state.loading}
-          status={this.state.loadingStatus} /> 
+          status={this.state.loadingStatus} />
         <img className="LoginLogo d-block" src="/img/unpc-logo.png" />
 
-        <Modal id="ResetModal" 
+        <Modal id="ResetModal"
           show={this.state.sent}
           closeHandler={this.handleModalClose}
           body="Please check your email for a link to reset your password."
-        />          
+        />
         <Modal id="ForgotPassModal"
-          show={this.state.forgotPass} 
+          show={this.state.forgotPass}
           closeHandler={this.handleModalClose}
           body="Send an email to reset your password?"
           onConfirm={this.reset} />
 
         <Modal id="WrongPassModal"
-          show={this.state.reset} 
+          show={this.state.reset}
           closeHandler={this.handleModalClose}
           body="Incorrect password. Send an email to reset your password?"
           onConfirm={this.reset} />
 
         <Modal id="NoUserModal"
-          show={this.state.nouser} 
+          show={this.state.nouser}
           closeHandler={this.handleModalClose}
           body={`There is no user with email ${this.state.email}.`}
           />
 
         <form className="LoginForm" onSubmit={this.handleSubmit}>
-          <div className="row">
-            <TextInput id="email" className=""
-              autoFocus
-              placeholder="email"
-              value={this.state.email}
-              onChange={this.handleChange} />
-          </div>
+            <div className="row">
+                <label htmlFor="email"
+                       className="col-3 col-form-label">
+                    Email
+                </label>
+                <div className="col-9">
+                    <NewTextInput
+                        id="email"
+                        className=""
+                        autoFocus
+                        type="email"
+                        value={this.state.email}
+                        onChange={this.handleChange} />
+                </div>
+            </div>
 
-          <div className="row">
-            <TextInput id="password" className=""
-              autoFocus
-              placeholder="password"
-              type="password"
-              value={this.state.password}
-              onChange={this.handleChange} />
+            <div className="row">
+                <label htmlFor="password"
+                       className="col-3 col-form-label">
+                    Password
+                </label>
+                <div className="col-9">
+                    <NewTextInput
+                        id="password"
+                        className=""
+                        type="password"
+                        value={this.state.password}
+                        onChange={this.handleChange} />
+                </div>
           </div>
 
           <div className="text-right">
@@ -179,7 +193,7 @@ export default class Login extends Component {
           </div>
 
           <button type="button"
-            className="StartButton btn btn-secondary"
+            className="StartButton btn btn-light btn-block"
             type="submit">
             Start
           </button>
@@ -189,4 +203,3 @@ export default class Login extends Component {
   }
 
 }
-

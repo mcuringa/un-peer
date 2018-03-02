@@ -310,7 +310,6 @@ label
 
 .LoginForm input, .LoginForm input:focus
 {
-  line-height: 1.25em;
   padding: 0px;
   margin: 0px;
   text-align: center;
@@ -321,6 +320,14 @@ label
   width: 100%;
   border-radius: 0;
   height: 100%
+}
+
+.LoginForm
+{
+  .col-3, .col-9 {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 .LoginForm input:focus
@@ -335,12 +342,13 @@ label
   text-align: center;
   font-weight: normal;
   margin: 0;
-
+  border-right: 1px solid white;
 }
 
 .LoginForm .StartButton
 {
   margin-top: 2em;
+  width: 224px;
 }
 
 .Login .col {
