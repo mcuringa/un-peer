@@ -132,6 +132,9 @@ class ChallengeEditScreen extends React.Component {
     const date = ChallengeDB.parseDateControlToUTC(e.target.value);
     c[e.target.id] = date;
 
+    if(date> this.state.challenge.endDate)
+      c.endDate = date;
+
     this.setState({ challenge: c, dirty: true });
 
     this.save();
@@ -224,6 +227,11 @@ class ChallengeEditScreen extends React.Component {
             <DatePicker id="ratingDue"
               value={c.ratingDue}
               label="rating due"
+              onChange={this.handleDateChange} />
+            
+            <DatePicker id="endDate"
+              value={c.endDate}
+              label="challenge end"
               onChange={this.handleDateChange} />
 
           </fieldset>

@@ -111,6 +111,8 @@ const ChallengeDB = {
   },
 
   getStage(c) {
+    console.log("setting stage");
+    console.log(c.end);
     const now = new Date();
     if(now < c.start)
       return "future";
@@ -144,8 +146,10 @@ const ChallengeDB = {
         }
         db.collection("challenges").get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            let c = {id: doc.id};
-            c = _.merge(c, doc.data());
+            let c = doc.data();
+            console.log("end date")
+            console.log(c.end)
+            c.id = doc.id;
             c.stage = ChallengeDB.getStage(c);
 
             ChallengeDB.cache[c.id] = c;
@@ -163,7 +167,7 @@ const ChallengeDB = {
   get(id) {
     
     let challenge = ChallengeDB.cache[id];
-    if(challenge)
+    if(challenge || false)
     {
       return new Promise(
         (resolve, reject)=>{
@@ -181,6 +185,8 @@ const ChallengeDB = {
           .get()
           .then( (doc)=>{
             challenge = doc.data();
+            console.log("end date")
+            console.log(challenge.end)
             challenge.stage = ChallengeDB.getStage(challenge);
             challenge.id = id;
             if(challenge) //don't cache nulls
@@ -229,16 +235,35 @@ const ChallengeDB = {
   },
 
   calcAvgRating(r) {
-    if(!r.ratings || !_.keys(r).length) {
+    if(!r.ratings || !_.size(r.ratings)) {
       console.log("no ratings");
       return 0;
     }
     const sum = _.reduce(r.ratings, (sum,i)=>sum+i );
-    const size = _.keys(r.ratings).length;
+    const size = _.size(r.ratings);
     return sum / size;
   },
 
 
+
+  /**
+   * `assignRatings` must be called after `response.responseDue`
+   * and before the first user rates a `response`.
+   * The pool of users for a rating are every user who submitted
+   * a response. Each user in the is assigned 3 responses to rate.
+   * This function gaurds against (a) making new assignments if they
+   * have already been made (if they need to be recreated, other
+   * code should clear existing assignments first). and (b) creating
+   * assignments before the due date arrives.
+   * 
+   * Accordingly, it is "safe" to call `assignRatings`.
+   *
+   * @return a `Promise` that will call `resolve` with the 
+   * a `challenge` object with assignments (whether they
+   * are newly created or pre-existing).
+   * It will make a zero argument call to `reject` if the 
+   * challenge response period is still active.
+   */
   assignRatings(c) {
     const sampleSize = 3;
     const sliceWrap = (t, start, n)=>{
@@ -266,6 +291,16 @@ const ChallengeDB = {
     };
     
     return new Promise(async (resolve, reject)=>{
+      if(new Date() < c.responseDue) {
+        reject();
+        return;
+      }
+
+      if(c.assignments && _.size(c.assignments)>0) {
+        resolve(c);
+        return;
+      }
+
       let responses = [];
       await ChallengeDB.getResponses(c.id).then((t)=>{responses = t;});
       const t = assign(responses);

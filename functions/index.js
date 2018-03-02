@@ -7,35 +7,8 @@ admin.initializeApp(functions.config().firebase);
 
 
 
-function rp() {
-  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz _-!@$%^&*()[]{}';";
-  chars = _.split(chars, "");
-  const passLen = 16;
 
-  let p = "";
-  for(let i=0;i<passLen;i++)
-    p += _.sample(chars);
-
-  return p;
-
-}
-
-// admin.auth().createUser({
-//   uid: "some-uid",
-//   email: "user@example.com",
-//   phoneNumber: "+11234567890"
-// })
-//   .then(function(userRecord) {
-//     // See the UserRecord reference doc for the contents of userRecord.
-//     console.log("Successfully created new user:", userRecord.uid);
-//   })
-//   .catch(function(error) {
-//     console.log("Error creating new user:", error);
-//   });
-
-
-
-exports.createUser = functions.firestore
+exports.deleteUser = functions.firestore
   .document('users/{userId}')
   .onCreate(event => {
     // Get an object representing the document

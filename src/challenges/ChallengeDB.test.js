@@ -56,7 +56,7 @@ it("should return the active challenge", ()=>{
   return ChallengeDB.getActive().then(
     (c)=> {
       expect(c).toBeDefined();
-    },()=>{console.log("no active challenge found");}
+    }
   );
 });
 
@@ -160,10 +160,11 @@ it("should get all responses in a challenge",()=>{
 });
 
 
-it("should delete all pf the records starting iwth jest-unit-test", ()=>{
-  ChallengeDB.findAll().then((t)=> {
+it("should delete all pf the records starting with jest-unit-test or marked for delete", ()=>{
+  
+  return ChallengeDB.findAll().then((t)=> {
     t.forEach((c)=>{
-      if(_.startsWith(c.id, "jest-unit-test"))
+      if(_.startsWith(c.id, "jest-unit-test") || c.status == 4)
         ChallengeDB.delete(c.id);
     });
   });
