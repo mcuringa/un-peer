@@ -27,13 +27,14 @@ class ManageUsersScreen extends React.Component {
       loading: false,
       dirty: false,
       users: users,
-      newUser: UserDB.NewUser,
       focusNewUser: true,
-      userExists: false
+      userExists: false,
+      newUser: "",
+      newUserError: "",
     };
 
-    this.handleNewUserChange = this.handleNewUserChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleNewUserChange = this.handleNewUserChange.bind(this);
     this.addUser = this.addUser.bind(this);
     this.save = this.save.bind(this);
     this.save = _.debounce(this.save, 2000);
@@ -46,43 +47,77 @@ class ManageUsersScreen extends React.Component {
 
   }
 
+  handleNewUserChange(e) {
+    e.preventDefault();
+    this.setState({newUser: e.target.value});
+  }
+
   addUser(e) {
     e.preventDefault();
     this.setState({loading: true});
-    const user = this.state.newUser;
-    
+
+    console.log("adding user");
+    console.log(this.state.newUser);
+
+    const parseUser = (val)=> {
+      let u = {};
+      let parts = val.trim().split(" ");
+      if(parts.length == 0)
+        return {};
+      if(parts.length == 1)
+        u.email = parts[0];
+      else if(parts.length==2) {
+        u.firstName = parts[0];
+        u.lastName = parts[1];
+        u.email = parts[2];
+      }
+      else {
+        u.firstName = _.slice(parts, 0, parts.length-2).join(" ");
+        u.lastName = parts[parts.length-2];
+        u.email = parts[parts.length-1];
+      }
+      return u;
+    }
+
+    const user = parseUser(this.state.newUser);
+    console.log(user);
+
+    if(_.size(user) == 0)
+      return;
+
     const afterCreate = (u)=> {
       console.log("after user created do this");
       let all = this.state.users;
       all.uid = user;
-      // this.setState({users: all});
       this.setState({
         users: all, 
         loading: false, 
         focusNewUser: true,
-        newUser: UserDB.NewUser
+        newUser: ""
       });
     };
 
     const err = (e)=>{
       console.log("failed to create user");
       console.log(e);
+      this.setState({userExists: true});
+      this.setState({loading: false});
       if(e.code == "auth/email-already-in-use") {
-        this.setState({userExists: true});
-        this.setState({loading: false});
+        const msg = `User could not be created because an account for ${user.email} already exists.`;
+        this.setState({newUserError: msg});
       }
+      else if(e.code == "auth/invalid-email") {
+        const msg = `Could not create account. Please enter a valid email address.`;
+        this.setState({newUserError: msg});
+      }
+      else {
+        const msg = `Failed to add user: ${e.message}`;
+        this.setState({newUserError: msg});
+      }
+
     }
 
     UserDB.create(user).then(afterCreate, err);
-
-  }
-
-  handleNewUserChange(e) {
-    e.preventDefault();
-
-    let user = this.state.newUser;
-    user[e.target.id] = e.target.value; 
-    this.setState({newUser: user});
 
   }
 
@@ -143,23 +178,46 @@ class ManageUsersScreen extends React.Component {
         </div>
 
         <NewUserForm 
-          onChange={this.handleNewUserChange} 
-          user={this.state.newUser} 
-          autoFocus={this.state.focusNewUser} 
-          submit={this.addUser} />
+          autofocus
+          submit={this.addUser}
+          newUser={this.state.newUser}
+          onChange={this.handleNewUserChange} />
 
         <UserList
           onChange={this.handleChange}
           users={this.state.users} />
 
         <Modal show={this.state.userExists} id="UserExists"
-          body={`Could not create user with email ${this.state.newUser.email} because account already exists.`}
+          body={`Could not create user with email ${this.state.failedEmail} because account already exists.`}
           />
       </div>
 
     );
   }
 }
+
+
+const NewUserForm = (props)=> {
+  return (
+    <form className="NewUserForm" onSubmit={props.submit}>
+      <div className="input-group mb-3">
+        <input type="text" 
+          className="form-control"
+          onChange={props.onChange}
+          value={props.newUser}
+          placeholder="Ex: Test User test@example.com or just.test@example.com"
+          aria-label="Add user" />
+        <div className="input-group-append">
+          <button type="button" className="btn btn-secondary" onClick={props.submit}>
+            add user
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}
+
+
 
 const UserList = (props) => {
     
@@ -208,32 +266,5 @@ const UserList = (props) => {
 
 }
 
-const NewUserForm = (props)=> {
-  return (
-    <form className="NewUserForm" onSubmit={props.submit}>
-      <div className="row">
-        <div className="col">
-          <TextInput id="firstName" 
-            onChange={props.onChange}
-            autoFocus={props.autoFocus}
-            placeholder="first" value={props.user.firstName} />
-        </div>
-        <div className="col">
-          <TextInput id="lastName"
-            placeholder="last"
-            onChange={props.onChange}  value={props.user.lastName} />
-        </div>
-        <div className="col">
-            <TextInput id="email" onChange={props.onChange}
-            placeholder="email"  value={props.user.email} />
-        </div>
-        <div className="col">
-          <button type="button" className="btn btn-block" onClick={props.submit}>
-            add user
-          </button>
-        </div>
-      </div>
-    </form>
-  );
-}
+
 export default ManageUsersScreen;

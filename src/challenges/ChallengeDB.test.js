@@ -151,8 +151,6 @@ it("should add a response to test-id-foo",()=>{
   });
 });
 
-
-
 it("should get all responses in a challenge",()=>{
   const id = "policy-changes-break-everything";
   return ChallengeDB.getResponses(id).then((t)=>{

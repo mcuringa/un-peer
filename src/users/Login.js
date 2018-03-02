@@ -82,7 +82,11 @@ export default class Login extends Component {
     };
 
     const success = (auth)=> {
+
+      console.log("successful sign in...");
       user = firebase.auth().currentUser;
+      console.log("got user: ")
+      console.log(user);
       this.setState({loading: false, loadingStatus: null});
 
       // UserDB.get(user.uid).then(add);
@@ -97,6 +101,8 @@ export default class Login extends Component {
         this.setState({nouser: true});
       else if(code === "auth/wrong-password")
         this.setState({reset: true});
+      else
+        console.log(error);
     }
 
     firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, pw)
@@ -149,7 +155,7 @@ export default class Login extends Component {
           />
 
         <form className="LoginForm" onSubmit={this.handleSubmit}>
-          <div class="row">
+          <div className="row">
             <TextInput id="email" className=""
               autoFocus
               placeholder="email"
@@ -157,7 +163,7 @@ export default class Login extends Component {
               onChange={this.handleChange} />
           </div>
 
-          <div class="row">
+          <div className="row">
             <TextInput id="password" className=""
               autoFocus
               placeholder="password"
@@ -166,7 +172,7 @@ export default class Login extends Component {
               onChange={this.handleChange} />
           </div>
 
-          <div class="text-right">
+          <div className="text-right">
             <button className="btn btn-link text-light"
               onClick={()=>{this.setState({forgotPass: true})}}
               type="button">Forgot password?</button>
