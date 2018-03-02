@@ -12,6 +12,7 @@ const FBUtil =
 
   init: ()=> {
     const config = fireBaseConfig;
+    console.log("Firebase Project: " + config.projectId);
 
     if(FBUtil._firebase)
       return FBUtil._firebase;
