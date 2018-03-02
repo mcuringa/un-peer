@@ -16,8 +16,11 @@ import {
   TextAreaGroup,
   StatusIndicator,
   LoadingSpinner,
-  VideoUpload
+  VideoUpload,
+  VideoUploadImproved
 } from "../FormUtil";
+
+import ChallengeHeader from "./ChallengeHeader";
 
 
 let firebase = require("firebase");
@@ -26,15 +29,26 @@ require("firebase/storage");
 class ChallengeResponseForm extends React.Component {
   constructor(props) {
     super(props);
-    const challengeId = this.props.challengeId;
+    this.challengeId = this.props.match.params.id;
+
+    const emptyR = {
+      id:"",
+      title:"",
+      text:"",
+      video:"",
+    }
 
     this.state = {
+      challenge: {},
+      owner: {},
+      response: emptyR,
       loading: true,
       dirty: false,
       choose: true,
       showConfirm: false,
       showVideo: false,
-      uploadStatus: "no upload started"
+      uploadStatus: "select a video to upload"
+
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -43,15 +57,32 @@ class ChallengeResponseForm extends React.Component {
     this.chooseText = this.chooseText.bind(this);
     this.chooseVideo = this.chooseVideo.bind(this);
     this.confirmUpload = this.confirmUpload.bind(this);
+    this.clearVideo = this.clearVideo.bind(this);
   }
 
   chooseText() { this.setState({showText: true, showVideo: false})}
   chooseVideo() { this.setState({showText: false, showVideo: true})}
 
 
+  componentDidMount() {
+    const id = this.props.match.params.id;
+    ChallengeDB.get(id).then((c)=>{
+        this.setState({"owner": c.owner});
+        this.setState({challenge: c});
+    });
+
+    ChallengeDB.getResponse(id, this.props.user.uid)
+      .then((r)=>{
+        this.setState({response: r});
+      });
+
+  }
+
+
+
   handleUpload(e) {
 
-    const challengeId = this.props.challengeId;
+    const challengeId = this.challengeId;
 
     let file = e.target.files[0];
     const path = `${challengeId}/${this.props.user.uid}`;
@@ -63,13 +94,16 @@ class ChallengeResponseForm extends React.Component {
       });
 
       const filePath = task.snapshot.downloadURL;
+      let r = this.state.response;
+      r.video = filePath;
 
-      this.props.responseHandler({video: filePath});
       this.setState({
+        response: r,
         dirty: false, 
         loading: false,
         showVideo: true,
-        uploadStatus: ""
+        uploadStatus: "",
+        uploadPct: 0
       });
     }
 
@@ -95,15 +129,14 @@ class ChallengeResponseForm extends React.Component {
   }
 
   confirmUpload() {
-    console.log("confrm upload");
     this.setState({showConfirm: true});
   }
 
   publish() {
     this.setState({showConfirm: false, loading: true});
 
-    const challengeId = this.props.challengeId;
-    let r = this.props.response;
+    const challengeId = this.challengeId;
+    let r = this.state.response;
     r.user = {email: this.props.user.email, name:this.props.user.displayName, uid: this.props.user.uid};
     ChallengeDB.addResponse(challengeId, r).then(()=>{
       this.setState({showNextChoice: true});
@@ -111,9 +144,16 @@ class ChallengeResponseForm extends React.Component {
   }
 
   handleChange(e) {
-    this.setState({showConfirm: false}); 
+    const r = this.state.response;
+    r[e.target.id] = e.target.value;
 
-    this.props.responseHandler({[e.target.id]: e.target.value});
+    this.setState({response: r, showConfirm: false});
+  }
+
+  clearVideo() {
+    let r = this.state.response;
+    r.video = "";
+    this.setState({response: r, showVideo: true });
   }
 
   render() {
@@ -134,36 +174,44 @@ class ChallengeResponseForm extends React.Component {
       );
 
     
-    const showVideo = this.props.response.video || this.state.showVideo;
-    const showText = !showVideo && (this.props.response.text || this.state.showText);
+    const showVideo = this.state.response.video || this.state.showVideo;
+    const showText = !showVideo && (this.state.response.text || this.state.showText);
     const showMediaPicker = !showVideo && !showText;
 
 
     return (
+      <div className="ChallengeResponseForm screen">
+        <ChallengeHeader id={this.state.challenge.id} 
+          challenge={this.state.challenge} 
+          owner={this.state.owner} 
+          user={this.props.user} />
+
       <form onSubmit={(e)=>{e.preventDefault();}}>
         <Link className="text-dark mb-2"
-          to={`/challenge/${this.props.challengeId}`}>
+          to={`/challenge/${this.challengeId}`}>
           <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
 
         <MediaPicker show={showMediaPicker} 
           chooseVideo={this.chooseVideo} chooseText={this.chooseText} />
     
         <TextResponse show={showText}
-          response={this.props.response}
+          response={this.state.response}
           onChange={this.handleChange} 
           onSubmit={this.confirmUpload} />
 
         <VideoResponse show={showVideo}
-          response={this.props.response}
+          response={this.state.response}
           onChange={this.handleChange} 
           handleUpload={this.handleUpload}
           pct={this.state.uploadPct} 
           msg={this.state.uploadStatus}
-          onSubmit={this.confirmUpload} />
+          onSubmit={this.confirmUpload} 
+          clearVideo={this.clearVideo} />
 
         <Modal id="SubmitResponseModal"
           show={this.state.showConfirm} 
-          body="Submit your response?"
+          title="Submit Response"
+          body="Tap OK to submit your response fo this challenge."
           onConfirm={this.publish} />
 
         <Modal id="ShowNextModal"
@@ -171,7 +219,8 @@ class ChallengeResponseForm extends React.Component {
           body="Submitted!"
           footer={NextChoice} />
 
-      </form>);
+      </form>
+    </div>);
   }
 }
 
@@ -182,6 +231,13 @@ const VideoResponse = (props) => {
   if(!props.show)
     return null;
 
+  const progress = (<UploadProgress pct={props.pct} msg={props.msg} />);
+  const clearBtn = (props.response.video)?(
+    <button className="btn btn-block btn-sm btn-secondary float-right" onClick={props.clearVideo}>
+      Remove video
+    </button>
+    ) : "";
+
   return (
     <div>
       <TextGroup id="title"
@@ -189,23 +245,31 @@ const VideoResponse = (props) => {
         label="Response title"
         onChange={props.onChange} />
 
-      <VideoUpload id="video" video={props.response.video} 
-        onChange={props.handleUpload} label="Upload a video" />
-      
-      <UploadProgress pct={props.pct} msg={props.msg} />
+      <VideoUploadImproved id="video" 
+       video={props.response.video}
+       poster="/img/poster.png"
+       onChange={props.handleUpload} 
+       label=""
+       progressBar={progress}
+       />
+       <div className="row">
+        <div className="col-8">
+          <small className="text-muted">Upload a short (~1 minute) video with your response.</small>
+        </div>
+        <div className="col">{clearBtn}</div>
+      </div>
 
-        <small className="text-muted">Upload a short (~1 minute video).</small>
+      <TextAreaGroup id="text"
+        value={props.response.text}
+        placeholder="Write a short description of your video."
+        rows="3"
+        onChange={props.onChange} />
 
-        <TextAreaGroup id="text"
-          value={props.response.text}
-          placeholder="Write a short description of your video."
-          rows="3"
-          onChange={props.onChange} />
-        <SubmitButton
-          update={props.response.id}
-          onSubmit={props.onSubmit}
-          disabled={empty(props.response.text) || empty(props.response.text) || empty(props.response.video)}
-          disabledMsg="Title & description are required. You can submit after your video uploads." />
+      <SubmitButton
+        update={props.response.id}
+        onSubmit={props.onSubmit}
+        disabled={empty(props.response.text) || empty(props.response.text) || empty(props.response.video)}
+        disabledMsg="Title & description are required. You can submit after your video uploads." />
     </div>
   );
 
@@ -219,6 +283,7 @@ const TextResponse = (props) => {
   if(!props.show)
     return null;
 
+  const valid = empty(props.response.text) || empty(props.response.title);
   return (
     <div>
       <TextGroup id="title"
@@ -245,20 +310,32 @@ const TextResponse = (props) => {
 
 }
 
-const SubmitButton = (props) =>{
+class SubmitButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showError: false
+    }
+  }
 
-  const label = (props.update)?"Update my response":"Submit my response";
-  const disabled = (props.disabled)?"disabled":"";
-  const help = (props.disabled)?props.disabledMsg:"";
-  return (
-    <div>
-      <button type="button"  onClick={props.onSubmit} 
-        className={`btn btn-block btn-secondary mt-2 ${disabled}`}>
-        {label}
-      </button>
-      <small className="text-muted">{help}</small>
-    </div>
-  );
+  render() {
+    const label = (this.props.update)?"Update my response":"Submit my response";
+    const disabled = (this.props.disabled)?"disabled":"";
+    const help = (this.props.disabled)?this.props.disabledMsg:"";
+    const showErr = ()=>{ this.setState( { showError: true }) };
+    const submitAction = (this.props.disabled) ? showErr : this.props.onSubmit;
+    const errCss = (this.state.showErr)? "text-small text-bold":"text-small text-muted";
+    
+    return (
+      <div>
+        <button type="button"  onClick={submitAction} 
+          className={`btn btn-block btn-secondary mt-2 ${disabled}`}>
+          {label}
+        </button>
+        <small className={errCss}>{help}</small>
+      </div>
+    );
+  }
 }
 
 const MediaPicker = (props)=> {
