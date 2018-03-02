@@ -21,7 +21,7 @@
     "react-octicons": "^0.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17",
+    "react-scripts": "1.1.1",
     "remove": "^0.1.5"
   },
   "scripts": {
