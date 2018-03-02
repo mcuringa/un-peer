@@ -1,5 +1,5 @@
 import React from 'react';
-
+import _ from "lodash";
 
 const formatFileSize = (bytes, si)=>{
   const thresh = si ? 1000 : 1024;
@@ -14,11 +14,17 @@ const formatFileSize = (bytes, si)=>{
 }
 
 const UploadProgress = (props)=> {
- 
+
+  const pct = props.pct;
+  if(!pct || _.isNaN(pct))
+    return null;
+
+
   return (
-    <div className="UploadProgress">
-      <div className="ProgressBar" style={{width: `${props.pct}%`}}></div>
-      <div className="ProgressMsg">{props.msg}</div>
+    <div className="progress w-100">
+      <div className="progress-bar progress-bar progress-bar-striped progress-bar-animated" 
+           role="progressbar" style={{width: `${pct}%`}} 
+           aria-valuenow={pct} aria-valuemin="0" aria-valuemax="100">{_.round(pct)}%</div>
     </div>
   );
 }
