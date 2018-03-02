@@ -67,6 +67,10 @@ create(newUser) {
 
     const sendPass = ()=>{ return firebase.auth().sendPasswordResetEmail(user.email) };
     const save = (u)=>{ 
+
+      console.log("current user after create");
+      console.log(firebase.auth().currentUser);
+
       user.uid = u.uid;
 
       const defaults = {
@@ -79,6 +83,9 @@ create(newUser) {
       const newUser = _.merge(user, defaults);
       return db.save("/users", u.uid, newUser);
     };
+
+    const currentUser = firebase.auth().currentUser;
+    console.log(currentUser.email);
 
     firebase.auth().createUserWithEmailAndPassword(user.email, rp())
       .then(save)

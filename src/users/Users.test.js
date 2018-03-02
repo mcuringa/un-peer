@@ -24,47 +24,6 @@ function rp() {
 }
 
 
-it.skip("syncs the auth users to /users ", ()=>{
-
-   
-  const makeU = (u)=>{
-    u.uid = u.localId;
-    return _.merge(_.pick(u,["uid","email"]), {
-      admin: true,
-      student: true,
-      su: false,
-      firstName: "",
-      lastName: "",
-    });
-  }
-  
-  const t = _.map(users, makeU);
-
-  // console.log(t);
-  let db = FBUtil.connect();
-  
-  let p = new Promise((resolve, reject)=>{
-    let batch = db.batch();
-
-    const save = (u)=> {
-      let ref = db.collection("users").doc(u.uid);
-      batch.set(ref, u);
-    }
-
-    _.each(t, save);
-
-    batch.commit()
-    console.log("batch committed");
-    // resolve();
-  });
-  return p.then();
-
-
-}, longTimeout);
-
-
-
-
 it.skip("should create a new user in auth and DB",()=>{
   const user = {
     email: "foo.0099@example.com",

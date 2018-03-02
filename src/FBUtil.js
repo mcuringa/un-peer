@@ -3,6 +3,7 @@ import {ChallengeDB} from "./challenges/Challenge.js";
 import fireBaseConfig from "./firebase.config.json";
 
 
+
 const FBUtil =
 {
   db: null,
@@ -10,6 +11,8 @@ const FBUtil =
   _firebase: null,
 
   init: ()=> {
+    const config = fireBaseConfig;
+
     if(FBUtil._firebase)
       return FBUtil._firebase;
     
@@ -18,15 +21,9 @@ const FBUtil =
     require("firebase/firestore");
     require("firebase/storage");
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBvgDJ2EyxDaZervfY7yImDrvXE8R8Vzpo",
-      authDomain: "un-peer-challenges.firebaseapp.com",
-      databaseURL: "https://un-peer-challenges.firebaseio.com",
-      projectId: "un-peer-challenges",
-      storageBucket: "un-peer-challenges.appspot.com",
-      messagingSenderId: "789085021989"
-    };
-    FBUtil._firebase.initializeApp(firebaseConfig);
+
+
+    FBUtil._firebase.initializeApp(config);
     return FBUtil._firebase;
   },
 

@@ -82,7 +82,11 @@ export default class Login extends Component {
     };
 
     const success = (auth)=> {
+
+      console.log("successful sign in...");
       user = firebase.auth().currentUser;
+      console.log("got user: ")
+      console.log(user);
       this.setState({loading: false, loadingStatus: null});
 
       // UserDB.get(user.uid).then(add);
@@ -97,6 +101,8 @@ export default class Login extends Component {
         this.setState({nouser: true});
       else if(code === "auth/wrong-password")
         this.setState({reset: true});
+      else
+        console.log(error);
     }
 
     firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, pw)
