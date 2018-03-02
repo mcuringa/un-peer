@@ -119,7 +119,7 @@ const SorryMsg = (props)=> {
     <div id="SorryNotice" className="card border-dark">
       <div className="card-header"><h4>No Assignments</h4></div>
       <div className="card-body">
-        <p class="card-text">
+        <p className="card-text">
           You do not have rating assignments for this challenge.
           In order to rate responses you must submit a respone before
           the deadline. You will be able to see all of the ratings
