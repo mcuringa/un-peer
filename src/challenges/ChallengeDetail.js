@@ -6,16 +6,13 @@ import {NavLink, Link} from 'react-router-dom';
 
 import {Video} from "../FormUtil.js"
 import {User, ChallengeDB} from "./Challenge.js"
-import ChallengeResponseForm from "./ChallengeResponseForm.js"
-import ResponseList from "./ResponseList.js"
-import ResponseRatings from "./ResponseRatings.js"
 
+import ChallengeHeader from "./ChallengeHeader";
 
 class ChallengeDetailScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    const id = this.props.match.params.id;
     this.state = {
       challenge: {}, 
       owner: User,
@@ -28,30 +25,21 @@ class ChallengeDetailScreen extends React.Component {
   componentDidMount() {
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
-      if(!c.assignments && c.responseDue > new Date()) {
-        ChallengeDB.assignRatings(c).then((newC)=>{
-          console.log("assigning ratings");
-          this.setState({"owner": c.owner});
-          this.setState({challenge: c});
-        });
-      }
-      else {
-        this.setState({"owner": c.owner});
-        this.setState({challenge: c});
-      }
+      this.setState({"owner": c.owner});
+      this.setState({challenge: c});
     });
 
-    ChallengeDB.getResponses(id).then((t)=>{
-      this.setState({responses: t});
-    });
+    // ChallengeDB.getResponses(id).then((t)=>{
+    //   this.setState({responses: t});
+    // });
     
 
-    ChallengeDB.getResponse(id, this.props.user.uid)
-      .then((r)=>{
-        this.setState({response: r});
-        console.log("r");
-        console.log(r);
-      });
+    // ChallengeDB.getResponse(id, this.props.user.uid)
+    //   .then((r)=>{
+    //     this.setState({response: r});
+    //     console.log("r");
+    //     console.log(r);
+    //   });
 
   }
 
@@ -61,77 +49,19 @@ class ChallengeDetailScreen extends React.Component {
   }
 
   render() {
-    const action = this.props.match.params.action;
-    let ActiveElement;
-    switch(action) {
-      case "r":
-        ActiveElement = (
-          <ChallengeResponseForm 
-            user={this.props.user} 
-            challengeId={this.state.challenge.id}
-            response={ this.state.response } 
-            responseHandler={this.updateResponse}/>);
-        break;
-      case "responses":
-        console.log("state responses: ");
-        console.log(this.state.responses);
-        ActiveElement = (
-          <ResponseRatings 
-            user={this.props.user} 
-            responses={ this.state.responses } 
-            challenge={this.state.challenge} />);
-        break;
-      default:
-        ActiveElement = (<ChallengeInfo id={this.state.challenge.id} 
-          challenge={this.state.challenge} 
-          owner={this.state.owner} 
-          response={this.state.response} />);
-
-
-    }
     return (
       <div className="ChallengeDetail screen">
         <ChallengeHeader id={this.state.challenge.id} 
           challenge={this.state.challenge} 
           owner={this.state.owner} 
           user={this.props.user} />
-        {ActiveElement}
+        <ChallengeInfo id={this.state.challenge.id} 
+          challenge={this.state.challenge} 
+          owner={this.state.owner} 
+          response={this.state.response} />
       </div>
     );
   }
-}
-
-const ChallengeHeader = (props) => {
-  const c = props.challenge;
-  let stageMsg = "Challenge starts: " + df.day(c.start);
-  if(c.stage == "active")
-    stageMsg = `Response time: ${df.range(c.start, c.ratingsDue)}`;
-  else if(c.stage == "archive")
-    stageMsg = `Archived: ${df.range(c.start, c.end)}`;
-  else if(c.stage == "rating")
-    stageMsg = `Rating time: ${df.range(c.start, c.end)}`;
-  else if(c.stage == "review")
-    stageMsg = `Review until: ${df.day(c.end)}`;
-
-
-  return (
-    <div className="ChallengeDetailHeader">
-      <div className="StartDate">
-        <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
-        {stageMsg}
-      </div>
-      <h4>{props.challenge.title}
-      <small><EditLink user={props.user} challenge={props.challenge} /></small></h4>
-      <div>Challenge owner: {props.owner.name}</div>
-    </div>
-  );
-}
-
-const EditLink = (props) => {
-  const c = props.challenge;
-  if(!props.user.admin)
-    return null;
-  return <Link to={`/${c.id}/edit`}>[edit]</Link>
 }
 
 const ChallengeButton = (props) => {
@@ -161,14 +91,13 @@ const ChallengeButton = (props) => {
     return (
       <NavLink 
         className={`btn btn-block btn-secondary`} 
-        activeClassName="active" to={`/challenge/${props.id}/responses`}>See All Responses</NavLink>
+        activeClassName="active" to={`/challenge/${props.id}/review`}>See All Responses</NavLink>
     );
   }
 
   return null;
 
 }
-
 
 
 const ChallengeInfo = (props) => {
@@ -187,29 +116,4 @@ const ChallengeInfo = (props) => {
 
 
 
-
-const ChallengeButtons = (props) => {
-  let editor = (props.user.editor || props.user.uid == props.owner.uid)?"d-none":"editor";
-  console.log(editor);
-  return (
-    <div className="ChallengeButtons btn-toolbar">
-      <div className="btn-group btn-group-justified" role="group">
-        <NavLink 
-          className={`btn btn-block btn-outline-secondary`} 
-          exact={true} activeClassName="active" to={`/challenge/${props.id}`}>Info</NavLink>
-        <NavLink 
-          className={`btn btn-block btn-outline-secondary`} 
-          activeClassName="active" to={`/challenge/${props.id}/r`}>Respond</NavLink>
-        <NavLink 
-          className={`btn btn-block btn-outline-secondary`} 
-          activeClassName="active" to={`/challenge/${props.id}/responses`}>Responses</NavLink>
-        <NavLink 
-          className={`btn btn-block btn-outline-secondary ${editor}`} 
-          activeClassName="active" to={`/challenge/${props.id}/edit`} edit="true">Edit</NavLink>
-      </div>
-    </div>);
-}
-
-
 export default ChallengeDetailScreen;
-export {ChallengeButtons};
