@@ -5,8 +5,6 @@ import db from "../DBTools.js";
 import _ from "lodash";
 
 
-import users from "./users.json";
-
 const mxcId = "qeNXoRsAlsVniTfGy1wHKMHpLIV2";
 
 const longTimeout = 1000*60*30;
