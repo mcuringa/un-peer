@@ -6230,9 +6230,6 @@ svg.hidden {
 small tt {
   font-size: .65rem; }
 
-.btn-group > .btn:first-child, .btn-group > .ActiveChallenge:first-child, .btn-group > .ChallengeItem:first-child, .btn-group > .NewChallengeButton:first-child {
-  margin-top: 8px; }
-
 /*============================ App.js styles*/
 .container {
   max-width: 512px;
@@ -6260,7 +6257,7 @@ small tt {
   text-align: center;
   line-height: 62px;
   font-size: 18px; }
-  .App-header .active-btn .outer-circle {
+  .App-header .active .outer-circle {
     border-radius: 50%;
     background-color: #6999c9;
     width: 44px;
@@ -6269,17 +6266,33 @@ small tt {
     z-index: -1;
     margin-left: 5px;
     margin-top: 9px; }
-  .App-header .App-home .active-btn img {
+  .App-header .App-home .active img {
     content: url("/img/header/Home_white.png"); }
-  .App-header .App-notifications .active-btn img {
+  .App-header .App-notifications .active img {
     content: url("/img/header/Notification_white.png"); }
 
 .App-footer-toolbar .btn-block, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .ChallengeItem, .App-footer-toolbar .NewChallengeButton {
   display: flex;
   flex-direction: column;
-  justify-content: center; }
+  justify-content: center;
+  border-top: solid 1px #ced4da; }
   .App-footer-toolbar .btn-block .icon-box img, .App-footer-toolbar .ActiveChallenge .icon-box img, .App-footer-toolbar .ChallengeItem .icon-box img, .App-footer-toolbar .NewChallengeButton .icon-box img {
     margin-bottom: 5px; }
+  .App-footer-toolbar .btn-block.active, .App-footer-toolbar .active.ActiveChallenge, .App-footer-toolbar .active.ChallengeItem, .App-footer-toolbar .active.NewChallengeButton {
+    border-top: solid 6px #6999c9;
+    color: #6999c9; }
+
+.App-footer-toolbar .active.calendar-icon img {
+  content: url("/img/footer/Calendar_clicked_btn.png"); }
+
+.App-footer-toolbar .active.archives-icon img {
+  content: url("/img/footer/Archive_clicked_btn.png"); }
+
+.App-footer-toolbar .active.bookmarks-icon img {
+  content: url("/img/footer/Bookmarks_clicked_btn.png"); }
+
+.App-footer-toolbar .active.profile-icon img {
+  content: url("/img/footer/Profile_clicked_btn.png"); }
 
 .App-footer-toolbar, .App-footer-toolbar .btn-group {
   max-width: 512px;

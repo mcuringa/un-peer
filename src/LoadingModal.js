@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const LoadingModal = (props)=> {
-  
+
   const showSomeClass = (props.show)?"":"d-none";
-  
+
   return (
-    <div className={`LoadingModal ${showSomeClass}`} id="LoadingModal" 
-      tabIndex="-1" role="dialog" 
+    <div className={`LoadingModal ${showSomeClass}`} id="LoadingModal"
+      tabIndex="-1" role="dialog"
       aria-labelledby="loadingModalMessagePane" aria-hidden="true">
         <div className="LoadingModalContent">
           <img className="LoadingSpinner" src="/img/puff.svg" alt="spinning icon" />
@@ -21,6 +21,6 @@ const LoadingModal = (props)=> {
 export default LoadingModal;
 
 LoadingModal.propTypes = {
-  show: PropTypes.bool,  
+  show: PropTypes.bool,
   status: PropTypes.string
 };

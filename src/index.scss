@@ -1,6 +1,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
 $bg-blue: #6A82AD;
+$bg-bright-blue: rgb(104.55, 153, 201.45);
 $top-header-height: 62px;
 $bottom-footer-height: 54px;
 $full-screen-width: 512px;
@@ -60,11 +61,6 @@ small tt {
   font-size: .65rem;
 }
 
-.btn-group > .btn:first-child
-{
-  margin-top: 8px;
-}
-
 /*============================ App.js styles*/
 .container
 {
@@ -104,9 +100,9 @@ small tt {
   text-align: center;
   line-height: $top-header-height;
   font-size: 18px;
-  .active-btn .outer-circle {
+  .active .outer-circle {
     border-radius: 50%;
-    background-color: #6999c9;
+    background-color: $bg-bright-blue;
     width: 44px;
     height: 44px;
     position: absolute;
@@ -114,10 +110,10 @@ small tt {
     margin-left: 5px;
     margin-top: 9px;
   }
-  .App-home .active-btn img {
+  .App-home .active img {
     content: url("/img/header/Home_white.png");
   }
-  .App-notifications .active-btn img {
+  .App-notifications .active img {
     content: url("/img/header/Notification_white.png");
   }
 }
@@ -129,9 +125,28 @@ small tt {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    border-top: solid 1px $gray-400;
+
     .icon-box img {
       margin-bottom: 5px;
     }
+
+    &.active {
+      border-top: solid 6px $bg-bright-blue;
+      color: $bg-bright-blue;
+    }
+  }
+  .active.calendar-icon img {
+    content: url("/img/footer/Calendar_clicked_btn.png");
+  }
+  .active.archives-icon img {
+    content: url("/img/footer/Archive_clicked_btn.png");
+  }
+  .active.bookmarks-icon img {
+    content: url("/img/footer/Bookmarks_clicked_btn.png");
+  }
+  .active.profile-icon img {
+    content: url("/img/footer/Profile_clicked_btn.png");
   }
 }
 
