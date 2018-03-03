@@ -6,7 +6,8 @@ import { CalendarIcon, PrimitiveDotIcon, CircleSlashIcon } from 'react-octicons'
 const LoadingSpinner = (props)=> {
   return (
     <span className="LoadingSpinner">
-      <img className={`${(props.loading)?"":"d-none"}`} src="/img/puff.svg" />
+      <img className={`${(props.loading)?"":"d-none"}`} 
+        style={{maxHeight: "16px"}} src="/img/puff.svg" />
     </span>
     );
 }

@@ -8,6 +8,7 @@ import ChallengeHeader from "./ChallengeHeader.js";
 import {StarIcon, DashIcon, PlusIcon, ChevronLeftIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import Modal from "../Modal";
+import LoadingModal from "../LoadingModal";
 import {LoadingSpinner} from "../FormUtil";
 
 class ResponseRatings extends React.Component {
@@ -19,11 +20,12 @@ class ResponseRatings extends React.Component {
     this.state = {
       loadingChallenge: true,
       loadingResponses: true,
+      loading: false,
       challenge: {},
-      ratingCount: 0
+      showThankYou: false,
+      thankYouShown: false
     };
     this.loadAssignments = this.loadAssignments.bind(this);
-    this.submitRatings = this.submitRatings.bind(this);
     this.isLoading = this.isLoading.bind(this);
     this.countRatings = this.countRatings.bind(this);
   }
@@ -38,7 +40,6 @@ class ResponseRatings extends React.Component {
       this.setState({responses: t, loadingResponses: false});
     });
   }
-
 
   isLoading() {
     return this.state.loadingChallenge || this.state.loadingResponses;
@@ -56,13 +57,6 @@ class ResponseRatings extends React.Component {
     return t;
   }
 
-  submitRatings() {
-    console.log("submitting ratings");
-  }
-
-
-
-
   countRatings() {
     const ratings = _.map(this.loadAssignments(), r=>_.keys(r.ratings));
     const raterIds = _.flatten(ratings);
@@ -78,29 +72,31 @@ class ResponseRatings extends React.Component {
   render() {
 
     if(this.isLoading())
-      return <LoadingSpinner show={true} />
+      return <LoadingModal status="Loading assignments" show={true} />
 
     if(new Date() < this.state.challenge.responseDue)
       return (<TooEarly challenge={this.state.challenge} />);
 
     let assignments = this.loadAssignments();
-    console.log("rated");
-    console.log(this.countRatings());
 
     if(_.size(assignments)==0)
       return (<SorryMsg challenge={this.state.challenge} />);
 
 
     const makeValFunction = (r, i)=> {
-
-      const updateResponseState = (savedResponse)=> {
-        let t = this.state.responses;
-        t[i] = savedResponse;
-        this.setState({responses: t });
-      };
-
       const f = (val)=> {
-        console.log(r);
+        const oldCount =  this.countRatings();
+        
+        const updateResponseState = (savedResponse)=> {
+          let t = this.state.responses;
+          t[i] = savedResponse;
+          this.setState({responses: t, loading: false });
+          const newCount = this.countRatings();
+          if(oldCount == 2 && newCount == 3)
+            this.setState({showThankYou: true});
+        };
+
+        this.setState({loading: true})
         r.ratings[this.props.user.uid] = val;
         ChallengeDB.addResponse(this.challengeId, r)
           .then(updateResponseState);
@@ -112,7 +108,6 @@ class ResponseRatings extends React.Component {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let ratingForms = assignments.map((r, i)=>{
       const rateF = makeValFunction(r,i);
-      console.log(rateF);
       return (
         <ResponseRater 
           response={r} 
@@ -126,12 +121,8 @@ class ResponseRatings extends React.Component {
     });
 
     return (
-      <div id="ResponseList" className="ResponseList screen">
-        <Modal id="confirmRatings"
-          onConfirm={this.submitRatings}
-          confirmLabel="Submit Ratings"
-          body="Are you sure you want to send your ratings? Once sent, they cannot be changed." />
 
+      <div className="ResponseList screen">
         <ChallengeHeader challenge={this.state.challenge} 
           owner={this.state.challenge.owner} 
           user={this.props.user} />
@@ -139,15 +130,25 @@ class ResponseRatings extends React.Component {
         <Link className="text-dark mb-2"
           to={`/challenge/${this.state.challenge.id}`}>
           <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
-        <button className="btn btn-block btn-secondary mb-2"
-          data-toggle="modal" data-target="#confirmRatings">
-          Submit my ratings
-        </button>
+        
+        <Modal id="ratingsDone"
+          show={this.state.showThankYou && !this.state.thankYouShown}
+          closeHandler={()=>{this.setState({thankYouShown: true})}}
+          title="★★Congratulations★★"
+          body={`You have submitted all of your ratings. You are done! If you choose to, you can update your ratings while the rating period is still open. Ratings close on ${df.day(this.state.challenge.ratingsDue)}.`} />
+
+        <div className="d-flex m-2 justify-content-end">
+          <div className="badge badge-pill badge-secondary">
+            <LoadingSpinner loading={this.state.loading} />
+            {this.countRatings()} of 3 ratings submitted
+          </div>
+        </div>
+        
         {ratingForms}
-        <small className="text-muted pl-2 pr-2">Please review and rate each
+        <p className="text-muted ml-2 mr-2">Please review and rate each
            of the three responses below by clicking on the stars. After 
            you have rated each response you can click the button below to send your ratings.
-        </small>
+        </p>
       </div>
     );
   }
@@ -163,6 +164,10 @@ const ToggleIcon = (props) => {
 const ResponseRater = (props) => {
 
     const r = props.response;
+    let rating = 0;
+    if(props.response.ratings && props.response.ratings[props.user.uid]){
+      rating = props.response.ratings[props.user.uid];
+    }
 
     return (
       <div className="card">
@@ -176,7 +181,12 @@ const ResponseRater = (props) => {
               <div className="col-1"><ToggleIcon open={r.open} /></div>
             </div>
           </button>
-          <StarRatings challengeId={props.challenge.id} user={props.user} response={r} rateFunction={props.rateFunction} />
+          <StarRatings 
+            challengeId={props.challenge.id} 
+            rating={rating} 
+            user={props.user} 
+            responseId={r.id} 
+            rateFunction={props.rateFunction} />
         </div>
         <div id={`body_${props.keyIndex}`} className="collapse" data-parent="#ResponseList">
           <div className="card-body">
@@ -191,49 +201,19 @@ const ResponseRater = (props) => {
 
 
 
-class StarRatings extends React.Component {
-  constructor(props) {
-    super(props);
-    let initialRating = 0;
-    if(props.response.ratings && props.response.ratings[props.user.uid]){
-      initialRating = props.response.ratings[props.user.uid];
-    }
-    this.state = {
-      rating: initialRating,
-      response: props.response
-    };
-    // this.rate = this.rate.bind(this);
-  }
-  
-  // rate(val) {
-  //   this.setState({rating: val});
-  //   let r = this.state.response;
-  //   r.ratings[this.props.user.uid] = val;
-  //   console.log("updating rating");
-  //   console.log(this.props.challengeId);
-  //   console.log(this.state.response);
-  //   // console.log("updating rating");
-  //   ChallengeDB.addResponse(this.props.challengeId, this.state.response)
-  //   .then((r)=>{
-  //     console.log("rating added");
-  //     this.setState({response: r });
-  //   });
-  // }
-
-  render() {
-    let stars = [];
-    for(let val=1;val<=5;val++)
-      stars.push(
-        <Star key={`star_${this.props.responseId}_${val}`} 
-              val={val} 
-              rating={this.state.rating} 
-              onClick={this.props.rateFunction} />)
-
+const StarRatings = (props)=>{
+  const stars = _.map([,,,,,], (n, i, t)=>{
     return (
-      <div className="bg-light">{stars}</div>
+      <Star key={`star_${props.responseId}_${i}`} 
+        val={i+1} 
+        rating={props.rating} 
+        onClick={props.rateFunction} />
     );
+  });
 
-  }
+  return (
+    <div className="bg-light">{stars}</div>
+  );
 
 }
 

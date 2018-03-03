@@ -24,7 +24,6 @@ class Modal  extends React.Component {
 
   render() {
     
-    // let hide = (this.props.show)?"":"d-none";
     return (
       <div className={`modal fade`} id={this.props.id} tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
