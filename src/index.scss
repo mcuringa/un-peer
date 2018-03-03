@@ -4,6 +4,8 @@ $bg-blue: #6A82AD;
 $top-header-height: 62px;
 $bottom-footer-height: 54px;
 $full-screen-width: 512px;
+$gray-text: rgb(125, 135, 163);
+$dark-gray-text: rgb(104.55, 112.2, 119.85);
 
 .text-white {
   fill: white;
@@ -495,4 +497,37 @@ label
   border-radius: 0;
   border-style: none;
   font-size: .9rem;
+}
+
+.App {
+  .calendar-view {
+    color: $gray-text;
+
+    .challenge-area {
+      background-color: $gray-100;
+    }
+
+    .react-calendar {
+      border: none;
+      margin: 0 auto;
+      color: $gray-text;
+
+      .react-calendar__navigation__prev2-button,
+      .react-calendar__navigation__next2-button {
+        display: none;
+      }
+
+      .react-calendar__navigation__arrow,
+      .react-calendar__navigation__label,
+      .react-calendar__month-view__days__day--weekend,
+      .react-calendar__month-view__days__day {
+        color: $gray-text;
+      }
+
+      .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
+      .react-calendar__month-view__days__day--neighboringMonth {
+        color: lighten($gray-text, 25%);
+      }
+    }
+  }
 }

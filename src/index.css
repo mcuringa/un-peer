@@ -6532,3 +6532,23 @@ label {
   border-radius: 0;
   border-style: none;
   font-size: .9rem; }
+
+.App .calendar-view {
+  color: #7d87a3; }
+  .App .calendar-view .challenge-area {
+    background-color: #f8f9fa; }
+  .App .calendar-view .react-calendar {
+    border: none;
+    margin: 0 auto;
+    color: #7d87a3; }
+    .App .calendar-view .react-calendar .react-calendar__navigation__prev2-button,
+    .App .calendar-view .react-calendar .react-calendar__navigation__next2-button {
+      display: none; }
+    .App .calendar-view .react-calendar .react-calendar__navigation__arrow,
+    .App .calendar-view .react-calendar .react-calendar__navigation__label,
+    .App .calendar-view .react-calendar .react-calendar__month-view__days__day--weekend,
+    .App .calendar-view .react-calendar .react-calendar__month-view__days__day {
+      color: #7d87a3; }
+    .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
+    .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
+      color: #c8ccd8; }
