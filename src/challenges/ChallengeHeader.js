@@ -1,12 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import df from "../DateUtil";
+import {PencilIcon} from "react-octicons";
 
 const EditLink = (props) => {
   const c = props.challenge;
-  if(!props.user.admin)
-    return null;
-  return <Link to={`/${c.id}/edit`}>[edit]</Link>
+  // if(!props.user.admin)
+  //   return null;
+  return <Link to={`/challenge/${props.challenge.id}/edit`}><PencilIcon className="ml-2" /></Link>
 }
 
 
@@ -31,7 +32,7 @@ const ChallengeHeader = (props) => {
       </div>
       <h4>{props.challenge.title}
       <small><EditLink user={props.user} challenge={props.challenge} /></small></h4>
-      <div>Challenge owner: {props.owner.name}</div>
+      <div>Challenge owner: {props.owner.name} </div>
     </div>
   );
 }
