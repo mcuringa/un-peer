@@ -1,10 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom'
 
-import {User, Challenge, ChallengeDB} from "./Challenge";
+import {Challenge, ChallengeDB} from "./Challenge";
 import {
   TextGroup,
-  TextInput,
   LoadingSpinner
 } from "../FormUtil"
 

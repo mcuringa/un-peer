@@ -2,8 +2,6 @@ import FBUtil from "../FBUtil";
 import _ from "lodash";
 import db from "../DBTools"
 
-const firebase = require("firebase");
-
 const User = {
   uid: "0",
   name:"Test User",
@@ -53,7 +51,7 @@ const ChallengeDB = {
 
   slug(title) {
     return title.toLowerCase()
-        .replace(/[^\w\.\- ]+/g,'')
+        .replace(/[^\w.\- ]+/g,'')
         .trim()
         .replace(/ +/g,'-')
         .replace(/-+/g,'-');
@@ -88,8 +86,8 @@ const ChallengeDB = {
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((challenges)=>{
           const now = new Date();
-          let active = _.filter(challenges, c=> c.start < now && c.end > now && c.status == ChallengeStatus.PUBLISHED);
-          if(active.length == 0)
+          let active = _.filter(challenges, c=> c.start < now && c.end > now && c.status === ChallengeStatus.PUBLISHED);
+          if(active.length === 0)
             reject();
           else
             resolve(_.last(active));
@@ -103,7 +101,7 @@ const ChallengeDB = {
 
       ChallengeDB.findAll().then((challenges)=>{
 
-        challenges = _.filter(challenges, c=>c.status == status);
+        challenges = _.filter(challenges, c=>c.status === status);
         challenges = _.sortBy(challenges,c=>c.start);
         resolve(challenges);
       });      
@@ -319,7 +317,7 @@ const ChallengeDB = {
   },
 
   getResponses(challengeId) {
-    let db = FBUtil.connect();
+    //let db = FBUtil.connect();
     let responses = [];
     
     return new Promise(

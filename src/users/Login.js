@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { Button } from "react-bootstrap";
 import _ from "lodash";
 import {NewTextInput} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
-import UserDB from "./UserDB.js";
 import Modal from "../Modal";
 import LoadingModal from "../LoadingModal";
 
@@ -52,8 +50,6 @@ export default class Login extends Component {
   }
 
   handleSubmit = event => {
-    let loggedIn = false;
-
     this.setState({loading: true, loadingStatus: "Authenticating..."});
 
     let email = this.state.email.trim();
@@ -129,7 +125,9 @@ export default class Login extends Component {
       <div className="Login screen">
         <LoadingModal id="LoadingModal" show={this.state.loading}
           status={this.state.loadingStatus} />
-        <img className="LoginLogo d-block" src="/img/unpc-logo.png" />
+        <img className="LoginLogo d-block"
+             alt="UN Peer Challenges logo"
+             src="/img/unpc-logo.png" />
 
         <Modal id="ResetModal"
           show={this.state.sent}
@@ -192,7 +190,7 @@ export default class Login extends Component {
               type="button">Forgot password?</button>
           </div>
 
-          <button type="button"
+          <button
             className="StartButton btn btn-light btn-block"
             type="submit">
             Start

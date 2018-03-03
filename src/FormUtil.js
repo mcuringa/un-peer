@@ -195,7 +195,7 @@ const RadioButtonGroup = (props)=>
         key={`${props.id}.${k}`}
         id={`${props.id}.${k}`}
         name={props.id}
-        checked={props.value == k}
+        checked={props.value === k}
         value={k}
         label={v}
         onChange={props.onChange}

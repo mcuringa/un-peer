@@ -1,13 +1,7 @@
 import React from 'react';
 import FBUtil from "../FBUtil";
 import _ from "lodash";
-import {
-  TextGroup,
-  TextInput,
-  TextAreaGroup,
-  StatusIndicator,
-  LoadingSpinner,
-} from "../FormUtil";
+import {StatusIndicator} from "../FormUtil";
 
 import Modal from "../Modal";
 
@@ -81,7 +75,6 @@ class ProfileScreen extends React.Component {
   }
 
   render() {
-    const user = this.state.user;
     return (
       <div className="ProfileScreen screen">
         <div className="row">

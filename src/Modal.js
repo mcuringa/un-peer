@@ -3,10 +3,6 @@ import $ from "jquery";
 
 class Modal  extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidUpdate() {
     if(this.props.show)
       $(`#${this.props.id}`).modal("show");
