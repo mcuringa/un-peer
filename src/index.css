@@ -4307,7 +4307,7 @@ button.bg-dark:hover,
 button.bg-dark:focus {
   background-color: #1d2124 !important; }
 
-.bg-white, .App-header {
+.bg-white, .App-header, .App-footer-toolbar {
   background-color: #fff !important; }
 
 .bg-transparent {
@@ -6261,17 +6261,18 @@ small tt {
   line-height: 62px;
   font-size: 18px; }
 
-.App-header svg {
-  color: #6c757d;
-  fill: #6c757d;
-  height: 100%; }
+.App-footer-toolbar .btn-block, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .ChallengeItem, .App-footer-toolbar .NewChallengeButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+  .App-footer-toolbar .btn-block .icon-box img, .App-footer-toolbar .ActiveChallenge .icon-box img, .App-footer-toolbar .ChallengeItem .icon-box img, .App-footer-toolbar .NewChallengeButton .icon-box img {
+    margin-bottom: 5px; }
 
 .App-footer-toolbar, .App-footer-toolbar .btn-group {
   max-width: 512px;
   width: 100%;
   padding: 0;
-  margin: 0;
-  background-color: #e9ecef; }
+  margin: 0; }
 
 .App-footer-toolbar .btn, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .ChallengeItem, .App-footer-toolbar .NewChallengeButton {
   margin: 0;
