@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import {
   BrowserRouter as Router,
   Route,
+  NavLink,
   Link,
   Switch,
 } from "react-router-dom";
@@ -89,11 +90,18 @@ const Header = (props)=>{
     <header className="App-header container fixed-top">
       <div className="row">
         <div className="App-home col-2">
-          <Link to="/">
-            <HomeIcon />
-          </Link>
+          <NavLink to="/">
+              <img src="/img/header/Home_unclicked_btn.png"
+                   width="31" height="28"                   
+                   alt="Home icon" />
+          </NavLink>
         </div>
         <div className="App-title col-8">UN Peer Challenges</div>
+        <div className="col-2">
+            <img src="/img/header/Notification_unclicked_btn.png"
+                 width="25" height="28"
+                 alt="Notification icon" />
+        </div>
       </div>
     </header>
   );

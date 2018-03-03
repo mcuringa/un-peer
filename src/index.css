@@ -4291,14 +4291,12 @@ button.bg-danger:hover,
 button.bg-danger:focus {
   background-color: #bd2130 !important; }
 
-.bg-light, .App-header {
+.bg-light {
   background-color: #f8f9fa !important; }
 
-a.bg-light:hover, a.App-header:hover, a.bg-light:focus, a.App-header:focus,
+a.bg-light:hover, a.bg-light:focus,
 button.bg-light:hover,
-button.App-header:hover,
-button.bg-light:focus,
-button.App-header:focus {
+button.bg-light:focus {
   background-color: #dae0e5 !important; }
 
 .bg-dark {
@@ -4309,7 +4307,7 @@ button.bg-dark:hover,
 button.bg-dark:focus {
   background-color: #1d2124 !important; }
 
-.bg-white {
+.bg-white, .App-header {
   background-color: #fff !important; }
 
 .bg-transparent {
@@ -4324,7 +4322,7 @@ button.bg-dark:focus {
 .border-right {
   border-right: 1px solid #dee2e6 !important; }
 
-.border-bottom, .App-header {
+.border-bottom {
   border-bottom: 1px solid #dee2e6 !important; }
 
 .border-left {
@@ -6241,7 +6239,7 @@ small tt {
   margin: 0 auto; }
 
 .App {
-  padding-top: 30px;
+  padding-top: 62px;
   padding-bottom: 54px;
   padding-left: 0;
   padding-right: 0; }
@@ -6257,10 +6255,10 @@ small tt {
   min-height: 100vh; }
 
 .App-header {
-  height: 30px;
-  box-shadow: 0px 2px 2px black;
+  border-bottom: 2px solid #010101;
+  height: 62px;
   text-align: center;
-  line-height: 30px;
+  line-height: 62px;
   font-size: 18px; }
 
 .App-header svg {
