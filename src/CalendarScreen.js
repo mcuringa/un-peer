@@ -45,7 +45,6 @@ class CalendarScreen extends React.Component {
   }
 
   render() {
-    console.log(this.state.challenges);
     return (
       <div className="calendar-view">
           <Calendar

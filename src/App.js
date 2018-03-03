@@ -16,6 +16,7 @@ import NewChallengeScreen from './challenges/NewChallenge.js';
 import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
 
+import BookmarksScreen from './BookmarksScreen.js';
 import CalendarScreen from './CalendarScreen.js';
 
 import Login from './users/Login.js';
@@ -108,7 +109,7 @@ const SecureScreens = (props)=>{
         <Route exact path="/archive" component={ChallengeListScreen} />
 
         <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
-        <PropsRoute  user={props.user} path="/bookmarks"  component={ChallengeListScreen} />
+        <PropsRoute  user={props.user} path="/bookmarks"  component={BookmarksScreen} />
 
         <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
