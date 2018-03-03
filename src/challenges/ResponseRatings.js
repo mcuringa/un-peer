@@ -61,7 +61,7 @@ class ResponseRatings extends React.Component {
     const ratings = _.map(this.loadAssignments(), r=>_.keys(r.ratings));
     const raterIds = _.flatten(ratings);
     const count = _.reduce(raterIds, (n,id)=>{
-      if(id == this.props.user.uid)
+      if(id === this.props.user.uid)
         return n + 1;
       return n;
     }, 0);
@@ -79,7 +79,7 @@ class ResponseRatings extends React.Component {
 
     let assignments = this.loadAssignments();
 
-    if(_.size(assignments)==0)
+    if(_.size(assignments)===0)
       return (<SorryMsg challenge={this.state.challenge} />);
 
 
@@ -92,7 +92,7 @@ class ResponseRatings extends React.Component {
           t[i] = savedResponse;
           this.setState({responses: t, loading: false });
           const newCount = this.countRatings();
-          if(oldCount == 2 && newCount == 3)
+          if(oldCount === 2 && newCount === 3)
             this.setState({showThankYou: true});
         };
 

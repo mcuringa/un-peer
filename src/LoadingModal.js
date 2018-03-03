@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const LoadingModal = (props)=> {
   
@@ -18,3 +19,8 @@ const LoadingModal = (props)=> {
 
 
 export default LoadingModal;
+
+LoadingModal.propTypes = {
+  show: PropTypes.bool,  
+  status: PropTypes.string
+};

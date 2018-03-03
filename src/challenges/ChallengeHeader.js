@@ -14,13 +14,13 @@ const EditLink = (props) => {
 const ChallengeHeader = (props) => {
   const c = props.challenge;
   let stageMsg = "Challenge starts: " + df.day(c.start);
-  if(c.stage == "active")
+  if(c.stage === "active")
     stageMsg = `Response time: ${df.range(c.start, c.ratingsDue)}`;
-  else if(c.stage == "archive")
+  else if(c.stage === "archive")
     stageMsg = `Archived: ${df.range(c.start, c.end)}`;
-  else if(c.stage == "rating")
+  else if(c.stage === "rating")
     stageMsg = `Rating time: ${df.range(c.start, c.end)}`;
-  else if(c.stage == "review")
+  else if(c.stage === "review")
     stageMsg = `Review until: ${df.day(c.end)}`;
 
 

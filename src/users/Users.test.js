@@ -1,3 +1,5 @@
+/* eslint-env jest */
+
 import FBUtil from "../FBUtil";
 import UserDB from "./UserDB";
 import db from "../DBTools.js";
