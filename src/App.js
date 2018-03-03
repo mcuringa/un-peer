@@ -3,19 +3,10 @@ import React, { Component } from "react";
 import {
   BrowserRouter as Router,
   Route,
+  NavLink,
   Link,
   Switch,
 } from "react-router-dom";
-
-
-import {
-  HomeIcon,
-  CalendarIcon,
-  PersonIcon,
-  BriefcaseIcon,
-  BookmarkIcon
-
-} from 'react-octicons';
 
 import FBUtil from './FBUtil.js';
 import Home from './Home.js';
@@ -25,7 +16,6 @@ import {ChallengeEditScreen} from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
 import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
-
 
 import CalendarScreen from './CalendarScreen.js';
 
@@ -89,11 +79,23 @@ const Header = (props)=>{
     <header className="App-header container fixed-top">
       <div className="row">
         <div className="App-home col-2">
-          <Link to="/">
-            <HomeIcon />
-          </Link>
+            <NavLink to="/" activeClassName="active-btn" exact={true}>
+                <div className="outer-circle"></div>
+                <img src="/img/header/Home_unclicked_btn.png"
+                     width="31" height="28"
+                     alt="Home icon" />
+          </NavLink>
         </div>
         <div className="App-title col-8">UN Peer Challenges</div>
+        <div className="App-notifications col-2">
+            <NavLink to="/notifications" activeClassName="active-btn">
+                <div className="outer-circle">
+                </div>
+                <img src="/img/header/Notification_unclicked_btn.png"
+                     width="25" height="28"
+                     alt="Notification icon" />
+          </NavLink>
+        </div>
       </div>
     </header>
   );
@@ -102,20 +104,20 @@ const Header = (props)=>{
 
 const SecureScreens = (props)=>{
   return (
-      <Switch>        
+      <Switch>
         <PropsRoute exact path="/" setAppClass={props.setAppClass} component={Home} />
         <Route exact path="/archive" component={ChallengeListScreen} />
-        
+
         <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
         <PropsRoute  user={props.user} path="/bookmarks"  component={ChallengeListScreen} />
-        
+
         <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/r" component={ChallengeResponseForm}/>
         <PropsRoute  user={props.user} path="/challenge/:id/responses" component={ResponseRatings}/>
         <PropsRoute  user={props.user} path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
         <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>
-        
+
         <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
         <PropsRoute path="/users" user={props.user} component={ManageUsersScreen} />
       </Switch>
@@ -138,7 +140,7 @@ const PropsRoute = ({ component, ...rest }) => {
 }
 
 const Footer = (props)=>{
-  
+
   let disabled = (props.user.email)?"":" disabled";
 
   return (
@@ -146,22 +148,47 @@ const Footer = (props)=>{
       <div className="App-footer-toolbar btn-toolbar" role="toolbar" aria-label="Bottom navigation">
         <div className="btn-group btn-group-justified" role="group" aria-label="Bottom navigation">
 
-          <Link to="/calendar" className={`btn btn-btn-light btn-block${disabled}`}>
-            <CalendarIcon /><br/>
-            Calendar
-          </Link>
-          <Link to="/archive" className={`btn btn-btn-light btn-block${disabled}`}>
-            <BriefcaseIcon /><br/>
-            Archives
-          </Link>
-          <Link to="/bookmarks" className={`btn btn-btn-light btn-block${disabled}`}>
-            <BookmarkIcon /><br/>
-            Bookmarks
-          </Link>
-          <Link to="/profile" className={`btn btn-btn-light btn-block${disabled}`}>
-            <PersonIcon /><br/>
-            Profile
-          </Link>
+            <NavLink to="/calendar" className={`btn btn-btn-light btn-block${disabled}`}>
+                <div className="icon-box">
+                    <img src="/img/footer/Calendar_unclicked_btn.png"
+                         width="21" height="22"
+                         alt="Calendaricon" />
+                </div>
+
+                <div className="icon-box">
+                    Calendar
+                </div>
+            </NavLink>
+            <NavLink to="/archive" className={`btn btn-btn-light btn-block${disabled}`}>
+                <div className="icon-box">
+                    <img src="/img/footer/Archive_unclicked_btn.png"
+                         width="18" height="18"
+                         alt="Archives icon" />
+                </div>
+                <div className="icon-box">
+                    Archives
+                </div>
+            </NavLink>
+            <NavLink to="/bookmarks" className={`btn btn-btn-light btn-block${disabled}`}>
+                <div className="icon-box">
+                    <img src="/img/footer/Bookmarks_unclicked_btn.png"
+                         width="20" height="18"
+                         alt="Bookmarks icon" />
+                </div>
+                <div className="icon-box">
+                    Bookmarks
+                </div>
+            </NavLink>
+            <NavLink to="/profile" className={`btn btn-btn-light btn-block${disabled}`}>
+                <div className="icon-box">
+                    <img src="/img/footer/Profile_unclicked_btn.png"
+                         width="17" height="17"
+                         alt="Profile icon" />
+                </div>
+                <div className="icon-box">
+                    Profile
+                </div>
+            </NavLink>
         </div>
       </div>
 
