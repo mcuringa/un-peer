@@ -79,18 +79,21 @@ const Header = (props)=>{
     <header className="App-header container fixed-top">
       <div className="row">
         <div className="App-home col-2">
-          <NavLink to="/" activeClassName="active-btn" exact={true}>
-              <img src="/img/header/Home_unclicked_btn.png"
-                   width="31" height="28"
-                   alt="Home icon" />
+            <NavLink to="/" activeClassName="active-btn" exact={true}>
+                <div className="outer-circle"></div>
+                <img src="/img/header/Home_unclicked_btn.png"
+                     width="31" height="28"
+                     alt="Home icon" />
           </NavLink>
         </div>
         <div className="App-title col-8">UN Peer Challenges</div>
-        <div className="col-2">
-          <NavLink to="/notifications" activeClassName="active-btn">
-            <img src="/img/header/Notification_unclicked_btn.png"
-                 width="25" height="28"
-                 alt="Notification icon" />
+        <div className="App-notifications col-2">
+            <NavLink to="/notifications" activeClassName="active-btn">
+                <div className="outer-circle">
+                </div>
+                <img src="/img/header/Notification_unclicked_btn.png"
+                     width="25" height="28"
+                     alt="Notification icon" />
           </NavLink>
         </div>
       </div>
@@ -145,7 +148,7 @@ const Footer = (props)=>{
       <div className="App-footer-toolbar btn-toolbar" role="toolbar" aria-label="Bottom navigation">
         <div className="btn-group btn-group-justified" role="group" aria-label="Bottom navigation">
 
-            <Link to="/calendar" className={`btn btn-btn-light btn-block${disabled}`}>
+            <NavLink to="/calendar" className={`btn btn-btn-light btn-block${disabled}`}>
                 <div className="icon-box">
                     <img src="/img/footer/Calendar_unclicked_btn.png"
                          width="21" height="22"
@@ -155,8 +158,8 @@ const Footer = (props)=>{
                 <div className="icon-box">
                     Calendar
                 </div>
-            </Link>
-            <Link to="/archive" className={`btn btn-btn-light btn-block${disabled}`}>
+            </NavLink>
+            <NavLink to="/archive" className={`btn btn-btn-light btn-block${disabled}`}>
                 <div className="icon-box">
                     <img src="/img/footer/Archive_unclicked_btn.png"
                          width="18" height="18"
@@ -165,8 +168,8 @@ const Footer = (props)=>{
                 <div className="icon-box">
                     Archives
                 </div>
-            </Link>
-            <Link to="/bookmarks" className={`btn btn-btn-light btn-block${disabled}`}>
+            </NavLink>
+            <NavLink to="/bookmarks" className={`btn btn-btn-light btn-block${disabled}`}>
                 <div className="icon-box">
                     <img src="/img/footer/Bookmarks_unclicked_btn.png"
                          width="20" height="18"
@@ -175,8 +178,8 @@ const Footer = (props)=>{
                 <div className="icon-box">
                     Bookmarks
                 </div>
-            </Link>
-            <Link to="/profile" className={`btn btn-btn-light btn-block${disabled}`}>
+            </NavLink>
+            <NavLink to="/profile" className={`btn btn-btn-light btn-block${disabled}`}>
                 <div className="icon-box">
                     <img src="/img/footer/Profile_unclicked_btn.png"
                          width="17" height="17"
@@ -185,7 +188,7 @@ const Footer = (props)=>{
                 <div className="icon-box">
                     Profile
                 </div>
-            </Link>
+            </NavLink>
         </div>
       </div>
 

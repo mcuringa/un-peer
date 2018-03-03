@@ -102,6 +102,22 @@ small tt {
   text-align: center;
   line-height: $top-header-height;
   font-size: 18px;
+  .active-btn .outer-circle {
+    border-radius: 50%;
+    background-color: #6999c9;
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    z-index: -1;
+    margin-left: 5px;
+    margin-top: 9px;
+  }
+  .App-home .active-btn img {
+    content: url("/img/header/Home_white.png");
+  }
+  .App-notifications .active-btn img {
+    content: url("/img/header/Notification_white.png");
+  }
 }
 
 .App-footer-toolbar {
