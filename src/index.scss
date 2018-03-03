@@ -548,20 +548,29 @@ label
         color: lighten($gray-text, 25%);
       }
 
+      .react-calendar__tile.rating,
+      .react-calendar__tile.archive {
+        color: white;
+      }
+
       .react-calendar__tile.rating {
         background-color: $bg-bright-blue;
+        &.react-calendar__month-view__days__day--neighboringMonth {
+          background-color: lighten($bg-bright-blue, 25%);
+        }
       }
       .react-calendar__tile.archive {
         background-color: $bg-blue;
+        &.react-calendar__month-view__days__day--neighboringMonth {
+          background-color: lighten($bg-blue, 25%);
+        }
       }
       .react-calendar__tile.start.rating,
       .react-calendar__tile.end.rating {
-        background-color: $bg-bright-blue;
         border-radius: 50%;
       }
       .react-calendar__tile.start.archive,
       .react-calendar__tile.end.archive {
-        background-color: $bg-blue;
         border-radius: 50%;
       }
     }
