@@ -1,9 +1,7 @@
 import React from 'react';
-import _ from "lodash";
 import { Link, Redirect } from 'react-router-dom';
-import dateFormat from 'dateformat';
-import { ChallengeDB, User, Response } from "./Challenge.js"
-import { CalendarIcon, PrimitiveDotIcon, ChevronLeftIcon } from 'react-octicons';
+import { ChallengeDB } from "./Challenge.js"
+import { ChevronLeftIcon } from 'react-octicons';
 import FBUtil from "../FBUtil.js";
 
 import Modal from "../Modal";
@@ -12,7 +10,6 @@ import {UploadProgress, formatFileSize} from "../MediaManager";
 
 import {
   TextGroup,
-  TextInput,
   TextAreaGroup,
   StatusIndicator,
   LoadingSpinner,
@@ -23,7 +20,6 @@ import {
 import ChallengeHeader from "./ChallengeHeader";
 
 
-let firebase = require("firebase");
 require("firebase/storage");
 
 class ChallengeResponseForm extends React.Component {

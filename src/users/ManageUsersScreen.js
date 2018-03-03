@@ -1,12 +1,6 @@
 import React from 'react';
-import FBUtil from "../FBUtil";
 import _ from "lodash";
-import {
-  TextGroup,
-  TextInput,
-  StatusIndicator,
-  LoadingSpinner,
-} from "../FormUtil";
+import {TextInput, StatusIndicator} from "../FormUtil";
 
 
 import { Redirect } from 'react-router-dom';
@@ -62,11 +56,11 @@ class ManageUsersScreen extends React.Component {
     const parseUser = (val)=> {
       let u = {};
       let parts = val.trim().split(" ");
-      if(parts.length == 0)
+      if(parts.length === 0)
         return {};
-      if(parts.length == 1)
+      if(parts.length === 1)
         u.email = parts[0];
-      else if(parts.length==2) {
+      else if(parts.length===2) {
         u.firstName = parts[0];
         u.lastName = parts[1];
         u.email = parts[2];
@@ -82,7 +76,7 @@ class ManageUsersScreen extends React.Component {
     const user = parseUser(this.state.newUser);
     console.log(user);
 
-    if(_.size(user) == 0)
+    if(_.size(user) === 0)
       return;
 
     const afterCreate = (u)=> {
@@ -102,11 +96,11 @@ class ManageUsersScreen extends React.Component {
       console.log(e);
       this.setState({userExists: true});
       this.setState({loading: false});
-      if(e.code == "auth/email-already-in-use") {
+      if(e.code === "auth/email-already-in-use") {
         const msg = `User could not be created because an account for ${user.email} already exists.`;
         this.setState({newUserError: msg});
       }
-      else if(e.code == "auth/invalid-email") {
+      else if(e.code === "auth/invalid-email") {
         const msg = `Could not create account. Please enter a valid email address.`;
         this.setState({newUserError: msg});
       }
@@ -139,7 +133,7 @@ class ManageUsersScreen extends React.Component {
   save() {
     console.log("saving...");
     this.setState({ loading: true });
-    let changeList = _.filter(this.state.users, (u)=>{return u.changed==true} );
+    let changeList = _.filter(this.state.users, (u)=>{return u.changed===true} );
     changeList = _.values(changeList);
 
     // console.log(changeList);
@@ -153,10 +147,6 @@ class ManageUsersScreen extends React.Component {
 
       this.setState({loading: false, dirty: false, users: t});
     }
-    const cleanKeys = (u)=>{return _.pick(u, UserDB.userKeys) };
-    
-    const cleanData = _.map(changeList, cleanKeys);
-    // console.log(changeList);
     const idFunction = u=>u.uid;
     db.saveAll("users", changeList, idFunction).then(afterSave);
   }

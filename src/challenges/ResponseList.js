@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from "lodash";
-import df from "../DateUtil.js";
 import {ChallengeDB} from "./Challenge.js";
 import {StarIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
@@ -23,7 +22,7 @@ class ResponseList extends React.Component {
 
   toggle(e) {
     let t = _.map(this.state.responses,(r)=>{
-      r.open = r.id == e.target.id;
+      r.open = r.id === e.target.id;
       return r;
     });
     this.setState({responses: t})

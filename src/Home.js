@@ -1,8 +1,6 @@
 import React from "react";
-import {ChallengeListItem} from './challenges/ChallengeList.js';
 import { Link } from 'react-router-dom';
 import {ChallengeDB, Challenge} from "./challenges/Challenge.js"
-import df from "./DateUtil";
 import { PrimitiveDotIcon } from 'react-octicons';
 
 

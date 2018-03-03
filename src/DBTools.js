@@ -1,6 +1,5 @@
 import FBUtil from "./FBUtil";
 import _ from "lodash";
-const firebase = require("firebase");
 
 const db = {
   get(path, id) {

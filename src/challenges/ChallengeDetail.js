@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from "lodash";
-import {CalendarIcon, PrimitiveDotIcon} from 'react-octicons';
 import df from "../DateUtil";
 import {NavLink, Link} from 'react-router-dom';
 
@@ -67,7 +66,7 @@ class ChallengeDetailScreen extends React.Component {
 const ChallengeButton = (props) => {
   const c = props.challenge;
 
-  if(c.stage == "active") {
+  if(c.stage === "active") {
 
     const label = (props.response.user)?"View/Edit Response":"Take the challenge";
 
@@ -79,7 +78,7 @@ const ChallengeButton = (props) => {
       );
   }
   
-  if(c.stage == "archive" || c.stage == "rating") {
+  if(c.stage === "archive" || c.stage === "rating") {
     return (
       <NavLink 
         className={`btn btn-block btn-secondary`} 
@@ -87,7 +86,7 @@ const ChallengeButton = (props) => {
     );
   }
   
-  if(c.stage == "archive" || c.stage == "review") {
+  if(c.stage === "archive" || c.stage === "review") {
     return (
       <NavLink 
         className={`btn btn-block btn-secondary`} 

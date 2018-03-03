@@ -1,18 +1,14 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import {User, Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
-import { PrimitiveDotIcon } from 'react-octicons';
+import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import FBUtil from "../FBUtil";
 
 import {
   TextGroup,
-  TextInput,
   DatePicker,
   TextAreaGroup,
   StatusIndicator,
-  LoadingSpinner,
-  RadioButtonGroup,
   VideoUpload
 } from "../FormUtil";
 
@@ -27,7 +23,6 @@ class ChallengeEditScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    const id = this.props.match.params.id || "";
     this.state = {
       challenge: Challenge, 
       owner: {displayName: props.user.displayName, email: props.user.email, id: props.user.uid},
@@ -101,6 +96,8 @@ class ChallengeEditScreen extends React.Component {
           break;
         case firebase.storage.TaskState.RUNNING: // or 'running'
           console.log('Upload is running');
+          break;
+        default:
           break;
       }
     }
@@ -242,13 +239,13 @@ class ChallengeEditScreen extends React.Component {
 }
 
 const Tags =(props)=> {
-  <TextGroup id="tags"
-    value={props.tags} 
-    label="Tags" 
-    placeholder="#People #Tech #Policy #Etc"
-    onChange={props.handleChange}
-    help="Add tags to make your challenge easier to search and group with similar challenges."
-    required={false} />
+  return <TextGroup id="tags"
+  value={props.tags} 
+  label="Tags" 
+  placeholder="#People #Tech #Policy #Etc"
+  onChange={props.handleChange}
+  help="Add tags to make your challenge easier to search and group with similar challenges."
+  required={false} />;
 }
 
-export default ChallengeEditScreen;
+export {ChallengeEditScreen, Tags};

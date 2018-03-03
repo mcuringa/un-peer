@@ -5,14 +5,11 @@ import {
   Route,
   Link,
   Switch,
-  Redirect,
-  withRouter
 } from "react-router-dom";
 
 
 import {
   HomeIcon,
-  BellIcon,
   CalendarIcon,
   PersonIcon,
   BriefcaseIcon,
@@ -24,7 +21,7 @@ import FBUtil from './FBUtil.js';
 import Home from './Home.js';
 import {ChallengeListScreen} from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
-import ChallengeEditScreen from './challenges/ChallengeEdit.js';
+import {ChallengeEditScreen} from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
 import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
