@@ -6584,3 +6584,6 @@ label {
     .App .calendar-view .react-calendar .react-calendar__tile.start.archive,
     .App .calendar-view .react-calendar .react-calendar__tile.end.archive {
       border-radius: 50%; }
+
+.App .accordion__body {
+  animation: none; }
