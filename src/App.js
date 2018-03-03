@@ -30,6 +30,8 @@ import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
 
 
+import CalendarScreen from './CalendarScreen.js';
+
 import Login from './users/Login.js';
 import ProfileScreen from './users/ProfileScreen.js';
 import ManageUsersScreen from './users/ManageUsersScreen';
@@ -106,6 +108,10 @@ const SecureScreens = (props)=>{
       <Switch>        
         <PropsRoute exact path="/" setAppClass={props.setAppClass} component={Home} />
         <Route exact path="/archive" component={ChallengeListScreen} />
+        
+        <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
+        <PropsRoute  user={props.user} path="/bookmarks"  component={ChallengeListScreen} />
+        
         <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/r" component={ChallengeResponseForm}/>
@@ -138,14 +144,12 @@ const Footer = (props)=>{
   
   let disabled = (props.user.email)?"":" disabled";
 
-  if(true) return null;
-
   return (
     <footer className="App-footer container fixed-bottom">
       <div className="App-footer-toolbar btn-toolbar" role="toolbar" aria-label="Bottom navigation">
         <div className="btn-group btn-group-justified" role="group" aria-label="Bottom navigation">
 
-          <Link to="/" className={`btn btn-btn-light btn-block disabled`}>
+          <Link to="/calendar" className={`btn btn-btn-light btn-block${disabled}`}>
             <CalendarIcon /><br/>
             Calendar
           </Link>
@@ -153,7 +157,7 @@ const Footer = (props)=>{
             <BriefcaseIcon /><br/>
             Archives
           </Link>
-          <Link to="/" className="btn btn-btn-light btn-block disabled">
+          <Link to="/bookmarks" className={`btn btn-btn-light btn-block${disabled}`}>
             <BookmarkIcon /><br/>
             Bookmarks
           </Link>
