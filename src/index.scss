@@ -1,4 +1,5 @@
 @import "node_modules/bootstrap/scss/bootstrap";
+@import "./loaders.min";
 
 $bg-blue: #6A82AD;
 $bg-bright-blue: rgb(104.55, 153, 201.45);
@@ -580,4 +581,12 @@ label
   .accordion__body {
     animation: none;
   }
+}
+
+.loader-inner.ball-pulse {
+  margin-top: 3em;
+  text-align: center;
+}
+.loader-inner.ball-pulse > div {
+  background-color: $bg-bright-blue;
 }

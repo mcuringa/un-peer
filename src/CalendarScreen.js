@@ -8,14 +8,18 @@ class CalendarScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      challenges: []
+      challenges: [],
+      loading: true
     };
   }
 
   componentWillMount() {
     ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
       .then((t) => {
-        this.setState({challenges: t})
+        this.setState({
+          challenges: t,
+          loading: false
+        });
       });
   }
 
@@ -45,6 +49,13 @@ class CalendarScreen extends React.Component {
   }
 
   render() {
+    if (this.state.loading) {
+        return <div className="loader-inner ball-pulse">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>;
+    }
     return (
       <div className="calendar-view">
           <Calendar
