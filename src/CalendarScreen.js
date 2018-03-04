@@ -2,7 +2,7 @@ import React from "react";
 import _ from "lodash";
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js"
-import {isDateWithin, isSameDay} from "./Utils.js"
+import {isDateWithin, isSameDay, getChallengeForDate} from "./Utils.js"
 import Modal from "./Modal";
 
 class CalendarScreen extends React.Component {
@@ -11,7 +11,7 @@ class CalendarScreen extends React.Component {
     this.state = {
       challenges: [],
       loading: true,
-      detailDate: null,
+      selectedChallenge: null,
       showDetail: false
     };
   }
@@ -52,10 +52,13 @@ class CalendarScreen extends React.Component {
   }
 
   onChange(v) {
-    this.setState({
-      detailDate: v.toString(),
-      showDetail: true
-    });
+    const challenge = getChallengeForDate(this.state.challenges, v);
+    if (challenge) {
+      this.setState({
+        selectedChallenge: challenge,
+        showDetail: true
+      });
+    }
   }
 
   getTileContent(date, view) {
@@ -109,7 +112,8 @@ class CalendarScreen extends React.Component {
           </div>
         <Modal id="ChallengeDetailModal"
                show={this.state.showDetail}
-               body={this.state.detailDate} />
+               title={this.state.selectedChallenge && this.state.selectedChallenge.title}
+               body={this.state.selectedChallenge && this.state.selectedChallenge.prompt} />
       </div>
     );
   }

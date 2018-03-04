@@ -11,8 +11,21 @@ function isSameDay(d1, d2) {
  * Returns true if the first date's day happens within the
  * other two.
  */
-function isDateWithin(d1, start, end) {
-  return d1 >= start && d1 <= end;
+function isDateWithin(d, start, end) {
+  return d >= start && d <= end;
 }
 
-export {isSameDay, isDateWithin};
+/**
+ * Given a list of challenges and a date, return a challenge, or null.
+ */
+function getChallengeForDate(challenges, d) {
+  for (let i = 0; i < challenges.length; i++) {
+    if (isDateWithin(d, challenges[i].start, challenges[i].end)) {
+      return challenges[i];
+    }
+  }
+
+  return null;
+}
+
+export {isSameDay, isDateWithin, getChallengeForDate};
