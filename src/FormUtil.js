@@ -1,13 +1,15 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import { CalendarIcon, PrimitiveDotIcon, CircleSlashIcon } from 'react-octicons';
+import { PrimitiveDotIcon } from 'react-octicons';
 
 const LoadingSpinner = (props)=> {
   return (
     <span className="LoadingSpinner">
-      <img className={`${(props.loading)?"":"d-none"}`} 
-        style={{maxHeight: "16px"}} src="/img/puff.svg" />
+        <img className={`${(props.loading)?"":"d-none"}`}
+             alt="Loading"
+             style={{maxHeight: "16px"}}
+             src="/img/puff.svg" />
     </span>
     );
 }
@@ -111,7 +113,8 @@ const VideoUpload = (props)=> {
         accept="video/*" id={props.id} onChange={props.onChange} />
         <label className="btn btn-link text-dark pb-2" htmlFor={props.id}>
             <div className="btn btn-secondary">{props.label}</div>
-            <img className="ml-1" src="/img/video-response_btn.png" />
+            <img className="ml-1" src="/img/video-response_btn.png"
+                 alt="Video response button"/>
         </label>
       </div>
     </div>
@@ -125,7 +128,8 @@ const VideoUploadImproved = (props)=> {
       <input type="file" className="d-none"
         accept="video/*" id={props.id} onChange={props.onChange} />
         <label className="" htmlFor={props.id}>
-          <img className="" src="/img/video-upload.png" />
+            <img className="" src="/img/video-upload.png"
+                 alt="Video upload button"/>
         </label>
     </div>
   );

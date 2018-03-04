@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js"
 import {isDateWithin, isSameDay, getChallengeForDate} from "./Utils.js"
@@ -62,24 +61,28 @@ class CalendarScreen extends React.Component {
   }
 
   getTileContent(date, view) {
-    return <div>
-      <div className="bg-el-left"></div>
-      <div className="bg-el">
-      <time dateTime={date.date.toISOString()}>
-      {date.date.getDate()}
-    </time>
+    return (
+      <div>
+          <div className="bg-el-left"></div>
+          <div className="bg-el">
+              <time dateTime={date.date.toISOString()}>
+                  {date.date.getDate()}
+              </time>
+          </div>
+          <div className="bg-el-right"></div>
       </div>
-      <div className="bg-el-right"></div>
-      </div>;
+    );
   }
 
   render() {
     if (this.state.loading) {
-        return <div className="loader-inner ball-pulse">
+      return (
+        <div className="loader-inner ball-pulse">
             <div></div>
             <div></div>
             <div></div>
-        </div>;
+        </div>
+      );
     }
     return (
       <div className="calendar-view">
