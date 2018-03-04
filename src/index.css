@@ -8210,6 +8210,8 @@ label {
     .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
     .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
       color: #c8ccd8; }
+    .App .calendar-view .react-calendar .react-calendar__tile {
+      padding: 0; }
     .App .calendar-view .react-calendar .react-calendar__tile--active {
       background: none; }
     .App .calendar-view .react-calendar .react-calendar__tile > time {
@@ -8217,10 +8219,18 @@ label {
     .App .calendar-view .react-calendar .react-calendar__tile .bg-el {
       width: 32px;
       height: 32px;
-      display: inline-block; }
+      display: inline-block;
+      z-index: 5;
+      position: relative; }
       .App .calendar-view .react-calendar .react-calendar__tile .bg-el time {
         position: relative;
         top: 8px; }
+    .App .calendar-view .react-calendar .react-calendar__tile.rating .bg-el,
+    .App .calendar-view .react-calendar .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth .bg-el,
+    .App .calendar-view .react-calendar .react-calendar__tile.archive .bg-el,
+    .App .calendar-view .react-calendar .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth .bg-el {
+      width: 50px;
+      margin-top: 8px; }
     .App .calendar-view .react-calendar .react-calendar__tile.rating .bg-el {
       background-color: #c7d9eb; }
     .App .calendar-view .react-calendar .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth .bg-el {
@@ -8230,15 +8240,31 @@ label {
     .App .calendar-view .react-calendar .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth .bg-el {
       background-color: #eef0f5; }
     .App .calendar-view .react-calendar .react-calendar__tile.start.rating .bg-el,
-    .App .calendar-view .react-calendar .react-calendar__tile.end.rating .bg-el {
-      color: white;
-      background-color: #6999c9;
-      border-radius: 50%; }
+    .App .calendar-view .react-calendar .react-calendar__tile.end.rating .bg-el,
     .App .calendar-view .react-calendar .react-calendar__tile.start.archive .bg-el,
     .App .calendar-view .react-calendar .react-calendar__tile.end.archive .bg-el {
       color: white;
-      background-color: #6A82AD;
-      border-radius: 50%; }
+      border-radius: 50%;
+      width: 32px;
+      height: 32px; }
+    .App .calendar-view .react-calendar .react-calendar__tile.start.rating .bg-el,
+    .App .calendar-view .react-calendar .react-calendar__tile.end.rating .bg-el {
+      background-color: #6999c9; }
+    .App .calendar-view .react-calendar .react-calendar__tile.start.archive .bg-el,
+    .App .calendar-view .react-calendar .react-calendar__tile.end.archive .bg-el {
+      background-color: #6A82AD; }
+    .App .calendar-view .react-calendar .react-calendar__tile.end .bg-el-left {
+      margin-top: 8px;
+      width: 22px;
+      height: 32px;
+      position: absolute;
+      z-index: 0; }
+    .App .calendar-view .react-calendar .react-calendar__tile.end.rating .bg-el-left,
+    .App .calendar-view .react-calendar .react-calendar__tile.end.rating .bg-el-right {
+      background-color: #c7d9eb; }
+    .App .calendar-view .react-calendar .react-calendar__tile.end.archive .bg-el-left,
+    .App .calendar-view .react-calendar .react-calendar__tile.end.archive .bg-el-right {
+      background-color: #bcc7da; }
 
 .App .accordion__body {
   animation: none; }

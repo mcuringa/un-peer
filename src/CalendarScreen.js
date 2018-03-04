@@ -54,13 +54,13 @@ class CalendarScreen extends React.Component {
 
   getTileContent(date, view) {
     return <div>
-      <div className="bg-el-start"></div>
+      <div className="bg-el-left"></div>
       <div className="bg-el">
       <time dateTime={date.date.toISOString()}>
       {date.date.getDate()}
     </time>
       </div>
-      <div className="bg-el-end"></div>
+      <div className="bg-el-right"></div>
       </div>;
   }
 
