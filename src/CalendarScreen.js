@@ -3,13 +3,16 @@ import _ from "lodash";
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js"
 import {isDateWithin, isSameDay} from "./Utils.js"
+import Modal from "./Modal";
 
 class CalendarScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       challenges: [],
-      loading: true
+      loading: true,
+      detailDate: null,
+      showDetail: false
     };
   }
 
@@ -49,7 +52,10 @@ class CalendarScreen extends React.Component {
   }
 
   onChange(v) {
-    console.log('hey!', v);
+    this.setState({
+      detailDate: v.toString(),
+      showDetail: true
+    });
   }
 
   getTileContent(date, view) {
@@ -78,7 +84,7 @@ class CalendarScreen extends React.Component {
               calendarType="US"
               minDetail="month"
               view="month"
-              onChange={this.onChange}
+              onChange={this.onChange.bind(this)}
               formatShortWeekday={this.formatDayName}
               tileClassName={this.getTileClass.bind(this)}
               tileContent={this.getTileContent}
@@ -101,6 +107,9 @@ class CalendarScreen extends React.Component {
                   </div>
               </div>
           </div>
+        <Modal id="ChallengeDetailModal"
+               show={this.state.showDetail}
+               body={this.state.detailDate} />
       </div>
     );
   }
