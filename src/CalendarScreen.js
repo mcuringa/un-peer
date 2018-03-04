@@ -48,6 +48,22 @@ class CalendarScreen extends React.Component {
     return s;
   }
 
+  onChange(v) {
+    console.log('hey!', v);
+  }
+
+  getTileContent(date, view) {
+    return <div>
+      <div className="bg-el-start"></div>
+      <div className="bg-el">
+      <time dateTime={date.date.toISOString()}>
+      {date.date.getDate()}
+    </time>
+      </div>
+      <div className="bg-el-end"></div>
+      </div>;
+  }
+
   render() {
     if (this.state.loading) {
         return <div className="loader-inner ball-pulse">
@@ -62,12 +78,28 @@ class CalendarScreen extends React.Component {
               calendarType="US"
               minDetail="month"
               view="month"
+              onChange={this.onChange}
               formatShortWeekday={this.formatDayName}
               tileClassName={this.getTileClass.bind(this)}
+              tileContent={this.getTileContent}
               />
-          <div className="challenge-area">
-              <div>Challenge of the week</div>
-              <div>Rate the responses</div>
+          <div className="container challenge-area">
+              <div className="d-flex flex-row">
+                  <div className="p-2">
+                      <div className="challenge-dot"></div>
+                  </div>
+                  <div className="p-2 dot-text">
+                      Challenge of the week
+                  </div>
+              </div>
+              <div className="d-flex flex-row">
+                  <div className="p-2">
+                      <div className="responses-dot"></div>
+                  </div>
+                  <div className="p-2 dot-text">
+                      Rate the responses
+                  </div>
+              </div>
           </div>
       </div>
     );
