@@ -44,9 +44,11 @@ class ChallengeEditScreen extends React.Component {
     console.log(this.props.registerUpload);
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
-      this.setState({"owner": c.owner});
-      this.setState({challenge: c});
-      this.setState({loading: false});
+      this.setState({
+        owner: c.owner,
+        challenge: c,
+        loading: false
+      });
     });
   }
 

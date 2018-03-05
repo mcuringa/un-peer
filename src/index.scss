@@ -674,6 +674,13 @@ label
   .accordion__body {
     animation: none;
   }
+
+  .back-button {
+    height: 40px;
+    line-height: 20px;
+    color: $gray-text;
+    border-bottom: 1px solid $gray-200;
+  }
 }
 
 .loader-inner.ball-pulse {

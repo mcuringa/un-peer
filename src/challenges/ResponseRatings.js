@@ -61,7 +61,7 @@ class ResponseRatings extends React.Component {
     const ratings = _.map(this.loadAssignments(), r=>_.keys(r.ratings));
     const raterIds = _.flatten(ratings);
     const count = _.reduce(raterIds, (n,id)=>{
-      if(id === this.props.user.uid)
+      if(window.parseInt(id, 10) === window.parseInt(this.props.user.uid, 10))
         return n + 1;
       return n;
     }, 0);

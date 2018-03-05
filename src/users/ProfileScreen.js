@@ -36,8 +36,10 @@ class ProfileScreen extends React.Component {
       .then(()=> {
         console.log("reset succeeded");
         // $('#resetModal').modal();
-        this.setState({sent: true});
-        this.setState({reset: true});
+        this.setState({
+          sent: true,
+          reset: true
+        });
       })
       .catch((error)=> {
         console.log(error);

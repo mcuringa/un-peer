@@ -8277,6 +8277,12 @@ label {
 .App .accordion__body {
   animation: none; }
 
+.App .back-button {
+  height: 40px;
+  line-height: 20px;
+  color: #7d87a3;
+  border-bottom: 1px solid #e9ecef; }
+
 .loader-inner.ball-pulse {
   margin-top: 3em;
   text-align: center; }
