@@ -7,7 +7,7 @@
     "dateformat": "^3.0.3",
     "firebase": "^4.10.1",
     "jquery": "^3.3.1",
-    "localforage": "^1.5.7",
+    "localforage": "^1.6.0",
     "lodash": "^4.17.5",
     "node-sass-chokidar": "0.0.3",
     "npm-run-all": "^4.1.2",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "node-sass": "^4.7.2",
     "postcss-loader": "^2.1.1",
-    "sass-loader": "^6.0.6",
+    "sass-loader": "^6.0.7",
     "webpack": "^3.11.0"
   }
 }

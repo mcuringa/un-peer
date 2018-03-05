@@ -57,29 +57,6 @@ const ChallengeDB = {
         .replace(/-+/g,'-');
   },
 
-  isCacheStale() {
-
-    if(!ChallengeDB.cacheDate)
-      return true;
-
-    const cacheTimeout = 1000 * 60 * 5; //5 min 
-    const lastUpdate = ChallengeDB.cacheDate.getTime();
-    const now = _.now();
-    const delta = now - lastUpdate;
-
-    return delta > cacheTimeout;
-  },
-
-  isCacheLoaded() {
-    // return !_.isEmpty(ChallengeDB.cache);
-    return !_.isEmpty(ChallengeDB.cache) && !ChallengeDB.isCacheStale();
-  },
-
-  purgeCache(fresh) {
-    const keys = _.keys(ChallengeDB.cache);
-    const del = _.filter(keys,(k)=>{return !_.includes(fresh, k)});
-    _.each(del, (k)=>{_.remove(ChallengeDB.cache,k);});
-  },
 
   getActive() {
     return new Promise((resolve, reject)=>{
@@ -109,8 +86,8 @@ const ChallengeDB = {
   },
 
   getStage(c) {
-    console.log("setting stage");
-    console.log(c.end);
+    // console.log("setting stage");
+    // console.log(c.end);
     const now = new Date();
     if(now < c.start)
       return "future";
@@ -125,70 +102,42 @@ const ChallengeDB = {
   },
 
   findAll() {
+    console.log("find all called");
     let db = FBUtil.connect();
-    let challenges = [];
-    let ids = [];
-    
-    if(ChallengeDB.isCacheLoaded()) {
-      challenges = _.values(ChallengeDB.cache);
-      // console.log("challenges from cache");
-    }
+
+    console.log("got the db");
+    console.log(db);
+
 
     return new Promise(
       (resolve, reject)=>{
-        // console.log("challenges from DB");
-        if(challenges.length > 0)
-        {
-          resolve(challenges);
-          return;
-        }
+
+        let challenges = [];
         db.collection("challenges").get().then((querySnapshot) => {
+          console.log("got the challenges");
+
           querySnapshot.forEach((doc) => {
             let c = doc.data();
-            console.log("end date")
-            console.log(c.end)
             c.id = doc.id;
             c.stage = ChallengeDB.getStage(c);
 
-            ChallengeDB.cache[c.id] = c;
             challenges.push(c);
-            ids.push(c.id);
-          });
-          ChallengeDB.cacheDate = new Date();
           resolve(challenges);
-          // purge the cache later, no need to make caller wait
-          ChallengeDB.purgeCache(ids);
+          });
         });
     });
   },
 
   get(id) {
-    
-    let challenge = ChallengeDB.cache[id];
-    if(challenge || false)
-    {
-      return new Promise(
-        (resolve, reject)=>{
-          challenge.stage = ChallengeDB.getStage(challenge);
-          resolve(challenge);
-        });
-
-    }
-    challenge = {};
-
     let db = FBUtil.connect();
     return new Promise(
       (resolve, reject)=>{
         db.collection("challenges").doc(id)
           .get()
           .then( (doc)=>{
-            challenge = doc.data();
-            console.log("end date")
-            console.log(challenge.end)
+            let challenge = doc.data();
             challenge.stage = ChallengeDB.getStage(challenge);
             challenge.id = id;
-            if(challenge) //don't cache nulls
-              ChallengeDB.cache[id] = challenge;
             resolve(challenge);
 
           });
@@ -226,7 +175,6 @@ const ChallengeDB = {
     return new Promise((resolve, reject) => {
       ref.set(c).then(()=>{
         c.id = ref.id;
-        ChallengeDB.cache[c.id] = c;
         resolve(c);
       });
     });

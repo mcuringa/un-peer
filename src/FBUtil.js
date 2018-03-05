@@ -37,25 +37,39 @@ const FBUtil =
 
     let ref = storageRef.child(path);
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let uploadTask = ref.put(file);
       const done = ()=>{succ(uploadTask)}
       uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, progress, err, done );
     });
   },
 
+
   connect: ()=> {
-    // console.log("connecting");
-    // console.log("db: " + db);
-    if(FBUtil.db) {
-      return FBUtil.db;
+
+
+
+
+    const persist = (resolve, reject)=>
+    {
+
+      const fallBack = (e)=>{
+        console.log("failed to init firebase with persistence");
+        console.log(e);
+        let db = FBUtil._firebase.firestore();
+        resolv(db);
+
+      };
+      const f = ()=>{
+        let db = FBUtil._firebase.firestore();
+        resolve(db);
+      };
+      console.log("initializing fb with persistence");
+      FBUtil._firebase.firestore().enablePersistence()
+      .then(resolve(db))
+      .catch(fallback);
     }
-
-    FBUtil.init();
-
-    FBUtil.db = FBUtil._firebase.firestore();
-    return FBUtil.db;
-
+    return new Promise(persist);
   }
 
 }
