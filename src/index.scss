@@ -713,15 +713,21 @@ label
       margin-bottom: 0;
     }
 
-    svg {
+    svg.octicon-chevron-right {
       fill: $gray-text;
     }
   }
 
   .BookmarkDetailScreen {
     color: $gray-text;
-    svg {
+    svg.octicon-chevron-right {
       fill: $gray-text;
+    }
+  }
+
+  .rating-stars {
+    .Star {
+      margin-right: 4px;
     }
   }
 }

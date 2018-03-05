@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import {ChevronLeftIcon, ChevronDownIcon, StarIcon} from 'react-octicons';
-import df from './DateUtil';
 import {
   Accordion,
   AccordionItem,
   AccordionItemTitle,
   AccordionItemBody,
 } from 'react-accessible-accordion';
+import df from './DateUtil';
+import StarRating from './StarRating';
 import {ChallengeDB} from "./challenges/Challenge"
 
 class BackButton extends React.Component {
@@ -117,8 +118,12 @@ export default class BookmarkDetailScreen extends React.Component {
             <AccordionItemTitle>
                 <div className="d-flex d-row justify-content-between">
                     <div>
-                        <h3>{idx} : {i.title}</h3>
-                        <div>{i.rating} Stars</div>
+                        <h5>{idx} : {i.title}</h5>
+                        <div>
+                            <StarRating
+                                responseId={idx}
+                                rating={i.rating} />
+                        </div>
                     </div>
                     <div className="ml-auto">
                         <ChevronDownIcon />

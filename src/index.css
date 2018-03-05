@@ -8304,13 +8304,16 @@ label {
     text-decoration: none; }
   .App .BookmarkItem h3 {
     margin-bottom: 0; }
-  .App .BookmarkItem svg {
+  .App .BookmarkItem svg.octicon-chevron-right {
     fill: #7d87a3; }
 
 .App .BookmarkDetailScreen {
   color: #7d87a3; }
-  .App .BookmarkDetailScreen svg {
+  .App .BookmarkDetailScreen svg.octicon-chevron-right {
     fill: #7d87a3; }
+
+.App .rating-stars .Star {
+  margin-right: 4px; }
 
 .loader-inner.ball-pulse {
   margin-top: 3em;
