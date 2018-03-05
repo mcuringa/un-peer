@@ -8309,7 +8309,8 @@ label {
 
 .App .BookmarkDetailScreen {
   color: #7d87a3; }
-  .App .BookmarkDetailScreen svg.octicon-chevron-right {
+  .App .BookmarkDetailScreen svg.octicon-chevron-left,
+  .App .BookmarkDetailScreen svg.octicon-chevron-down {
     fill: #7d87a3; }
 
 .App .rating-stars .Star {

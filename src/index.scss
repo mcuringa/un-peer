@@ -720,7 +720,9 @@ label
 
   .BookmarkDetailScreen {
     color: $gray-text;
-    svg.octicon-chevron-right {
+
+    svg.octicon-chevron-left,
+    svg.octicon-chevron-down {
       fill: $gray-text;
     }
   }
