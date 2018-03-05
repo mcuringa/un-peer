@@ -7977,6 +7977,8 @@ small tt {
   background-color: white;
   text-align: left;
   border-radius: 0; }
+  .ChallengeItem svg.octicon-chevron-right {
+    fill: #7d87a3; }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group {
   width: 100%; }
@@ -8037,11 +8039,11 @@ label {
 /*============================== Ratings */
 .Star svg {
   fill: transparent;
-  stroke: gray;
+  stroke: #7d87a3;
   stroke-width: 1.1px; }
 
 .Star.filled svg {
-  fill: gray; }
+  fill: #7d87a3; }
 
 /*============================== LOGIN */
 .App.login {
@@ -8274,8 +8276,17 @@ label {
     .App .calendar-view .react-calendar .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth .bg-el-left, .App .calendar-view .react-calendar .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth .bg-el-right {
       background-color: #eef0f5; }
 
+.App .accordion {
+  border-left: none;
+  border-right: none; }
+
 .App .accordion__body {
   animation: none; }
+
+.App .accordion__title,
+.App .accordion__title:hover {
+  color: #7d87a3;
+  background-color: transparent; }
 
 .App .back-button {
   height: 40px;
@@ -8293,9 +8304,13 @@ label {
     text-decoration: none; }
   .App .BookmarkItem h3 {
     margin-bottom: 0; }
+  .App .BookmarkItem svg {
+    fill: #7d87a3; }
 
 .App .BookmarkDetailScreen {
   color: #7d87a3; }
+  .App .BookmarkDetailScreen svg {
+    fill: #7d87a3; }
 
 .loader-inner.ball-pulse {
   margin-top: 3em;

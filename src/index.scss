@@ -227,6 +227,10 @@ small tt {
   background-color: white;
   text-align: left;
   border-radius: 0;
+
+  svg.octicon-chevron-right {
+    fill: $gray-text;
+  }
 }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group
@@ -319,13 +323,13 @@ label
 .Star svg
 {
   fill: transparent;
-  stroke: gray;
+  stroke: $gray-text;
   stroke-width: 1.1px;
 }
 
 .Star.filled svg
 {
-  fill: gray;
+  fill: $gray-text;
 }
 
 /*============================== LOGIN */
@@ -671,8 +675,19 @@ label
   }
 
   // react-accessible-accordion
+  .accordion {
+    border-left: none;
+    border-right: none;
+  }
+
   .accordion__body {
     animation: none;
+  }
+
+  .accordion__title,
+  .accordion__title:hover {
+    color: $gray-text;
+    background-color: transparent;
   }
 
   .back-button {
@@ -697,10 +712,17 @@ label
     h3 {
       margin-bottom: 0;
     }
+
+    svg {
+      fill: $gray-text;
+    }
   }
 
   .BookmarkDetailScreen {
     color: $gray-text;
+    svg {
+      fill: $gray-text;
+    }
   }
 }
 

@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import {ChevronLeftIcon, StarIcon} from 'react-octicons';
+import {ChevronLeftIcon, ChevronDownIcon, StarIcon} from 'react-octicons';
+import df from './DateUtil';
 import {
-    Accordion,
-    AccordionItem,
-    AccordionItemTitle,
-    AccordionItemBody,
+  Accordion,
+  AccordionItem,
+  AccordionItemTitle,
+  AccordionItemBody,
 } from 'react-accessible-accordion';
 import {ChallengeDB} from "./challenges/Challenge"
 
@@ -49,6 +50,7 @@ export default class BookmarkDetailScreen extends React.Component {
 
     this.state = {
       challenge: null,
+      challengeResponses: [],
       // Each item in this array is a Response
       bookmarks: [
         {
@@ -91,7 +93,9 @@ export default class BookmarkDetailScreen extends React.Component {
       return window.parseInt(obj.id, 10) === window.parseInt(id, 10);
     });
     this.setState({
-      challenge: obj
+      challenge: obj,
+      challengeResponses: this.state.bookmarks.filter(
+        r => r.challenge === obj.id)
     });
   }
 
@@ -111,8 +115,15 @@ export default class BookmarkDetailScreen extends React.Component {
       return (
         <AccordionItem key={idx}>
             <AccordionItemTitle>
-                <h3>{idx} : {i.title}</h3>
-                <div>{i.rating} Stars</div>
+                <div className="d-flex d-row justify-content-between">
+                    <div>
+                        <h3>{idx} : {i.title}</h3>
+                        <div>{i.rating} Stars</div>
+                    </div>
+                    <div className="ml-auto">
+                        <ChevronDownIcon />
+                    </div>
+                </div>
             </AccordionItemTitle>
             <AccordionItemBody>
                 <p>{i.desc}</p>
@@ -123,8 +134,24 @@ export default class BookmarkDetailScreen extends React.Component {
 
     return (
       <div className="BookmarkDetailScreen screen">
-          <div>
-              <BackButton />
+          <BackButton />
+
+          <div className="d-flex d-row justify-content-between">
+              <div className="mb-2 p-3">
+                  <img className="mr-1"
+                       src="/img/calendar.png"
+                       alt="cal icon" />
+                  Posted on {df.df(this.state.challenge.posted_on)}
+              </div>
+              <div className="mb-2 p-3 ml-auto">
+                  <img className="mr-1"
+                       src="/img/footer/Bookmarks_unclicked_btn.png"
+                       alt="Heart icon" />
+                  {this.state.challengeResponses.length} response{this.state.challengeResponses.length === 1 ? '' : 's'}
+              </div>
+          </div>
+
+          <div className="container">
               <h3>{this.state.challenge.title}</h3>
               <h5>Challenge owner: {this.state.challenge.owner.name}</h5>
           </div>
