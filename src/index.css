@@ -8294,6 +8294,9 @@ label {
   .App .BookmarkItem h3 {
     margin-bottom: 0; }
 
+.App .BookmarkDetailScreen {
+  color: #7d87a3; }
+
 .loader-inner.ball-pulse {
   margin-top: 3em;
   text-align: center; }

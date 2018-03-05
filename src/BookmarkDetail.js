@@ -1,6 +1,12 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import {ChevronLeftIcon} from 'react-octicons';
+import {ChevronLeftIcon, StarIcon} from 'react-octicons';
+import {
+    Accordion,
+    AccordionItem,
+    AccordionItemTitle,
+    AccordionItemBody,
+} from 'react-accessible-accordion';
 import {ChallengeDB} from "./challenges/Challenge"
 
 class BackButton extends React.Component {
@@ -42,7 +48,40 @@ export default class BookmarkDetailScreen extends React.Component {
     ];
 
     this.state = {
-      challenge: null
+      challenge: null,
+      // Each item in this array is a Response
+      bookmarks: [
+        {
+          title: 'a',
+          challenge: 1,
+          rating: 3,
+          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        },
+        {
+          title: 'b',
+          challenge: 1,
+          rating: 4,
+          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        },
+        {
+          title: 'c',
+          challenge: 1,
+          rating: 3,
+          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        },
+        {
+          title: 'd',
+          challenge: 2,
+          rating: 3,
+          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        },
+        {
+          title: 'e',
+          challenge: 2,
+          rating: 4,
+          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        }
+      ]
     };
   }
 
@@ -65,6 +104,23 @@ export default class BookmarkDetailScreen extends React.Component {
         </div>
       );
     }
+    const responses = this.state.bookmarks.filter(
+      i => i.challenge === this.state.challenge.id);
+
+    const responseItems = responses.map((i, idx) => {
+      return (
+        <AccordionItem key={idx}>
+            <AccordionItemTitle>
+                <h3>{idx} : {i.title}</h3>
+                <div>{i.rating} Stars</div>
+            </AccordionItemTitle>
+            <AccordionItemBody>
+                <p>{i.desc}</p>
+            </AccordionItemBody>
+        </AccordionItem>
+      );
+    });
+
     return (
       <div className="BookmarkDetailScreen screen">
           <div>
@@ -73,6 +129,9 @@ export default class BookmarkDetailScreen extends React.Component {
               <h5>Challenge owner: {this.state.challenge.owner.name}</h5>
           </div>
 
+          <Accordion>
+              {responseItems}
+          </Accordion>
 
       </div>
     );

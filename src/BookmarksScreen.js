@@ -1,13 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import {ChevronRightIcon} from 'react-octicons';
-import {
-    Accordion,
-    AccordionItem,
-    AccordionItemTitle,
-    AccordionItemBody,
-} from 'react-accessible-accordion';
-import {StarIcon} from 'react-octicons';
 import df from './DateUtil';
 import 'react-accessible-accordion/dist/fancy-example.css';
 
@@ -97,12 +90,6 @@ class BookmarksScreen extends React.Component {
 
       const challengeResponses = me.state.bookmarks.filter(
         r => r.challenge === i.id);
-      const responses = challengeResponses.map((r, ridx) => {
-        return <div key={ridx}>
-          {r.rating} stars
-          <button className={`Star btn btn-link filled`}><StarIcon /></button>
-          </div>;
-      });
 
       return (
         <BookmarkItem
