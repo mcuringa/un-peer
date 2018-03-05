@@ -16,13 +16,24 @@ class BookmarkItem extends React.Component {
     const bookmark = this.props.bookmark;
     return (
       <Link to={`/bookmark/${bookmark.id}/`}
-          className="BookmarkItem d-flex align-items-center flex-row justify-content-between">
-          <div className="p2 m-0">
-              <div className="mb-2"><img className="mr-1" src="/img/calendar.png" alt="cal icon" />
-                  {df.df(bookmark.posted_on)}
+          className="BookmarkItem d-flex align-items-center flex-row">
+          <div className="container">
+              <div className="d-flex d-row justify-content-between">
+                  <div className="mb-2">
+                      <img className="mr-1"
+                           src="/img/calendar.png"
+                           alt="cal icon" />
+                      {df.df(bookmark.posted_on)}
+                  </div>
+                  <div className="mb-2 ml-auto">
+                      <img className="mr-1"
+                           src="/img/footer/Bookmarks_unclicked_btn.png"
+                           alt="Heart icon" />
+                      {this.props.responseCount} response{this.props.responseCount === 1 ? '' : 's'}
+                  </div>
               </div>
-              <p className="ChallengeListTitle">{bookmark.title}</p>
-              <p>Submitted by: {bookmark.owner.name}</p>
+              <h3 className="BookmarksListTitle">{bookmark.title}</h3>
+              <p>Submitted by {bookmark.owner.name}</p>
           </div>
           <div className="float-right"><ChevronRightIcon /></div>
       </Link>
@@ -93,7 +104,12 @@ class BookmarksScreen extends React.Component {
           </div>;
       });
 
-      return <BookmarkItem key={idx} bookmark={i} />;
+      return (
+        <BookmarkItem
+            key={idx}
+            bookmark={i}
+            responseCount={challengeResponses.length} />
+      );
     });
 
     return (
