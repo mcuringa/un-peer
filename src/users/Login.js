@@ -4,6 +4,7 @@ import {NewTextInput} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
 import Modal from "../Modal";
 import LoadingModal from "../LoadingModal";
+import db from "../DBTools";
 
 
 export default class Login extends Component {
@@ -64,19 +65,6 @@ export default class Login extends Component {
       return _.merge(user, u);
     };
 
-    const add = (u)=>{
-      const user = {
-        created: new Date(),
-        uid: u.uid,
-        email: u.email,
-        roles: ["user"],
-        student: true,
-        admin: false,
-        su: false
-      }
-      // UserDB.save(user).then(merge);
-    };
-
     const success = (auth)=> {
 
       console.log("successful sign in...");
@@ -84,6 +72,7 @@ export default class Login extends Component {
       console.log("got user: ")
       console.log(user);
       this.setState({loading: false, loadingStatus: null});
+      db.get("/users", user.uid).then(merge);
 
       // UserDB.get(user.uid).then(add);
     }

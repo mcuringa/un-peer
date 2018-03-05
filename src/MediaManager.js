@@ -23,7 +23,7 @@ const UploadProgress = (props)=> {
   return (
     <div className="progress w-100">
       <div className="progress-bar progress-bar progress-bar-striped progress-bar-animated" 
-           role="progressbar" style={{width: `${pct}%`}} 
+           role="progressbar" style={{width: `${pct}%`, minWidth: "2em"}} 
            aria-valuenow={pct} aria-valuemin="0" aria-valuemax="100">{_.round(pct)}%</div>
     </div>
   );

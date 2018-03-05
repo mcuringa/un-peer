@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from "lodash";
 
 import {
   BrowserRouter as Router,
@@ -23,26 +24,42 @@ import CalendarScreen from './CalendarScreen.js';
 import Login from './users/Login.js';
 import ProfileScreen from './users/ProfileScreen.js';
 import ManageUsersScreen from './users/ManageUsersScreen';
+import db from "./DBTools";
+
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {user: {} };
     this.setAppClass = this.setAppClass.bind(this);
+    this.userListener = this.userListener.bind(this);
 
   }
 
-  componentWillMount() {
-    const firebase = FBUtil.init();
-    this.setState( {appClass: ""});
-
-    firebase.auth().onAuthStateChanged((user)=> {
-      if (user) {
+  userListener(user) {
+    let merge = (u)=> {
+      db.get("/users", user.uid).then((u)=>{
+        let user = _.merge(user, u);
         this.setState({user: user});
-      } else {
-        this.setState({user: {}});
-      }
-    });
+      });
+    };
+
+    merge = _.once(merge);
+    if(user && !user.firstName)
+      merge(user);
+
+    if (user) {
+      this.setState({user: user});
+    } else {
+      this.setState({user: {}});
+    }
+  }
+
+  componentWillMount() {
+
+    console.log("mounting app");
+    FBUtil.getAuthUser(this.userListener)
+
   }
 
   setAppClass(clazz) {
@@ -53,24 +70,25 @@ export default class App extends Component {
     let Main;
 
     if(!this.state.user.email)
-      Main = (
+      return (
         <div className={`App container login`}>
           <Login user={this.state.user} setAppClass={this.setAppClass} loadingHandler={this.loadingHandler} />
         </div>
       );
-    else
-      Main = (
-        <Router>
-          <div className={`App container`}>
-            <Header user={this.state.user} />
-            <section id="main" className="">
-              <SecureScreens user={this.state.user} setAppClass={this.setAppClass} />
-            </section>
-            <Footer user={this.state.user} />
-          </div>
-        </Router>
-      );
-    return (Main);
+
+
+    return (
+      <Router>
+        <div className={`App container`}>
+          <Header user={this.state.user} />
+          <section id="main" className="">
+            <SecureScreens user={this.state.user} setAppClass={this.setAppClass} />
+          </section>
+          <Footer user={this.state.user} />
+        </div>
+      </Router>
+    );
+  
   }
 }
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import { PrimitiveDotIcon } from 'react-octicons';
+import {XIcon, PrimitiveDotIcon, QuestionIcon } from 'react-octicons';
+import {UploadProgress} from "./MediaManager";  
 
 const LoadingSpinner = (props)=> {
   return (
@@ -29,6 +30,9 @@ const StatusIndicator = (props)=> {
 
 const TextGroup = (props)=> {
 
+  if(props.hide)
+    return null;
+
   return (
   <div className="form-group">
     <label htmlFor={props.id}>{props.label}</label>
@@ -43,11 +47,25 @@ const TextGroup = (props)=> {
            required={props.required}
            autofocus={props.autoFocus} />
     <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
+    <ErrorMessage msg={props.validationErrorMsg} show={props.showError} />
+
   </div>
   );
 };
 
+const ErrorMessage = (props)=>{
+  if(!props.show || !props.msg || props.msg.length==0)
+    return null;
+  console.log("error");
+  return (      
+    <div className="text-danger"><small>{props.msg}</small></div>
+  );
+}
+
 const TextInput = (props)=> {
+
+  if(props.hide)
+    return null;
 
   const pt = (props.plaintext && props.readOnly)?"-plaintext":"";
 
@@ -95,7 +113,7 @@ const Video = (props)=> {
   const poster = props.poster;
 
   return (
-    <div className={`${extracss} ${dclass} embed-responsive embed-responsive-16by9 mb-2`}>
+    <div className={`${extracss} ${dclass} embed-responsive embed-responsive-16by9`}>
       <video controls="true" poster={poster} src={props.video} />
     </div>
   );
@@ -122,6 +140,8 @@ const VideoUpload = (props)=> {
 };
 
 const VideoUploadImproved = (props)=> {
+  if(props.hide)
+    return null;
 
   const uploadBtn = (
     <div className="VideoUploadButton d-block">
@@ -137,16 +157,72 @@ const VideoUploadImproved = (props)=> {
   const VideoEl = (props.video)?<Video {...props} /> : uploadBtn;
 
   return (
-    <div className="bg-dark mb-1 p-0">
+    <div className="bg-dark p-0">
       {VideoEl}
       {props.progressBar}
     </div>
   );
 };
 
+const ImageUpload = (props)=> {
+
+  if(props.hide)
+    return null;
+
+  const uploadBtn = (
+    <div className="VideoUploadButton d-block">
+      <input type="file" className="d-none"
+        accept="image/*" id={props.id} onChange={props.onChange} />
+        <label className="text-primary" htmlFor={props.id}>
+          <div className="btn btn-secondary btn-sm">
+            select image
+          </div>
+        </label>
+    </div>
+  );
+    
+  const clear = ()=>{
+    props.clearImage(props.id);
+  }
+
+  const img = ()=> {
+    
+    if(!props.img)
+      return null;
+
+    return (
+      <img src={props.img} style={{maxWidth: "250px"}}  alt="thumbnail" />
+    );
+  }
+  
+  return (
+    <div className="form-group">
+      <label htmlFor={props.id}>
+        {props.label}
+        <button type="button" className="btn btn-link mt-1 ml-1 pl-0" onClick={clear}>
+          <XIcon className="icon-danger" />
+        </button>
+      </label>
+
+      <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
+
+      <div className="d-flex justify-content-between">
+        {img()}
+        {uploadBtn}
+      </div>
+      <UploadProgress pct={props.pct} msg={props.msg} hide={props.hideProgress} />
+
+
+    </div>
+  );
+};
 
 
 const DatePicker = (props)=> {
+
+  if(props.hide)
+    return null;
+
   // 📅 -- emoji?
   const dFmt = (d)=> dateFormat(d, "ddd mmm dd");
   const cFmt = (d)=> dateFormat(d, "yyyy-mm-dd");
@@ -175,19 +251,22 @@ const DatePicker = (props)=> {
 
 const TextAreaGroup = (props)=> {
 
+  if(props.hide)
+    return null;
+
   return (
-  <div className="form-group">
-    <label htmlFor={props.id}>{props.label}</label>
-    <textarea id={props.id}
-      className="form-control"
-      onChange={props.onChange}
-      rows={props.rows || 4}
-      placeholder={props.placeholder}
-      value={props.value}
-      readOnly={props.readonly}
-      required={props.required} />
-    <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
-  </div>
+    <div className="form-group">
+      <label htmlFor={props.id}>{props.label}</label>
+      <textarea id={props.id}
+        className="form-control"
+        onChange={props.onChange}
+        rows={props.rows || 4}
+        placeholder={props.placeholder}
+        value={props.value}
+        readOnly={props.readonly}
+        required={props.required} />
+      <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
+    </div>
   );
 };
 
@@ -255,5 +334,6 @@ export {
   LoadingSpinner,
   Video,
   VideoUpload,
+  ImageUpload,
   VideoUploadImproved
 };

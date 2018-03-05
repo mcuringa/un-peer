@@ -109,8 +109,6 @@ const ChallengeDB = {
   },
 
   getStage(c) {
-    console.log("setting stage");
-    console.log(c.end);
     const now = new Date();
     if(now < c.start)
       return "future";
@@ -145,8 +143,6 @@ const ChallengeDB = {
         db.collection("challenges").get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             let c = doc.data();
-            console.log("end date")
-            console.log(c.end)
             c.id = doc.id;
             c.stage = ChallengeDB.getStage(c);
 
@@ -183,8 +179,6 @@ const ChallengeDB = {
           .get()
           .then( (doc)=>{
             challenge = doc.data();
-            console.log("end date")
-            console.log(challenge.end)
             challenge.stage = ChallengeDB.getStage(challenge);
             challenge.id = id;
             if(challenge) //don't cache nulls
@@ -234,7 +228,6 @@ const ChallengeDB = {
 
   calcAvgRating(r) {
     if(!r.ratings || !_.size(r.ratings)) {
-      console.log("no ratings");
       return 0;
     }
     const sum = _.reduce(r.ratings, (sum,i)=>sum+i );

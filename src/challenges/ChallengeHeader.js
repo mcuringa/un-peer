@@ -5,8 +5,8 @@ import {PencilIcon} from "react-octicons";
 
 const EditLink = (props) => {
   const c = props.challenge;
-  // if(!props.user.admin)
-  //   return null;
+  if(!props.user.admin)
+    return null;
   return <Link to={`/challenge/${props.challenge.id}/edit`}><PencilIcon className="ml-2" /></Link>
 }
 

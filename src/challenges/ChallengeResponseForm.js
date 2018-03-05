@@ -13,7 +13,6 @@ import {
   TextAreaGroup,
   StatusIndicator,
   LoadingSpinner,
-  VideoUpload,
   VideoUploadImproved
 } from "../FormUtil";
 

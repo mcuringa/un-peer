@@ -1,6 +1,9 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
+import {XIcon} from "react-octicons";
+
+
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import FBUtil from "../FBUtil";
 
@@ -9,15 +12,15 @@ import {
   DatePicker,
   TextAreaGroup,
   StatusIndicator,
-  VideoUpload
+  VideoUploadImproved,
+  ImageUpload
 } from "../FormUtil";
 
 import {UploadProgress, formatFileSize} from "../MediaManager";
+import ChooseUser from "../users/ChooseUser";
 
 let firebase = require("firebase");
 require("firebase/storage");
-
-
 
 class ChallengeEditScreen extends React.Component {
   constructor(props) {
@@ -37,11 +40,18 @@ class ChallengeEditScreen extends React.Component {
     this.handleUpload = this.handleUpload.bind(this);
     this.save = this.save.bind(this);
     this.save = _.debounce(this.save, 2000);
+    this.clearField = this.clearField.bind(this);
+    this.selectProfessor = _.bind(this.selectProfessor, this);
+
+  }
+
+  clearField(key) { 
+    let c = this.state.challenge;
+    c[key] = "";
+    this.setState({challenge: c });
   }
 
   componentWillMount() {
-    console.log("registerUpload:");
-    console.log(this.props.registerUpload);
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
       this.setState({
@@ -66,15 +76,21 @@ class ChallengeEditScreen extends React.Component {
   
   handleUpload(e) {
 
+    console.log("handling upload");
+
     let c = this.state.challenge;
     let file = e.target.files[0];
     const key = e.target.id;
 
     this.setState({dirty: true, loading: true});
 
+    const pctKey = key+"Pct";
+    const msgKey = key+"Status";
+    
     const succ = (task)=> {
       this.setState({
-        uploadStatus: "Upload complete!"
+        [pctKey]: "",
+        [msgKey]: 0
       });
 
       c[key] = task.snapshot.downloadURL;
@@ -88,32 +104,30 @@ class ChallengeEditScreen extends React.Component {
       const total = formatFileSize(snapshot.totalBytes, true);
 
       this.setState( {
-        uploadPct: progress, 
-        uploadStatus: `${xfer} of ${total}`
+        [pctKey]: progress, 
+        [msgKey]: `${xfer} of ${total}`
       });
-
-      switch (snapshot.state) {
-        case firebase.storage.TaskState.PAUSED: // or 'paused'
-          console.log('Upload is paused');
-          break;
-        case firebase.storage.TaskState.RUNNING: // or 'running'
-          console.log('Upload is running');
-          break;
-        default:
-          break;
-      }
     }
 
     const err = (e)=>{
       console.log(e);
       this.setState({
-        uploadStatus: "Upload failed: " + e
+        [msgKey]: "Upload failed: " + e
       });
     }
 
     FBUtil.uploadMedia(file, c.id, watch, succ, err);
   }
 
+
+  selectProfessor(u) {
+      console.log("selectProfessor called")
+      console.log(u.email);
+    let c = this.state.challenge;
+    c.professor = u;
+    this.setState({ challenge: c, dirty: true });
+    this.save();
+  }
 
 
   handleChange(e) {
@@ -199,10 +213,28 @@ class ChallengeEditScreen extends React.Component {
             </div>
           </div>
 
-          <VideoUpload id="video" video={c.video} 
+          <ChallengeVideo 
+            id="video"
+            pct={this.state.videoPct} 
+            msg={this.state.videoStatus} 
+            clearVideo={()=>{this.clearField("video");}}
+            video={c.video} 
+            poster={c.videoPoster}
+            handleUpload={this.handleUpload}
+          />
+
+          <ImageUpload 
+            id="videoPoster"
+            label="Video thumbnail"
+            pct={this.state.videoPosterPct} 
+            img={c.videoPoster} 
             onChange={this.handleUpload}
-            label="Upload challenge video" />
-          <UploadProgress pct={this.state.uploadPct} msg={this.state.uploadStatus} />
+            clearImage={this.clearField}
+            help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
+          />
+
+          <ChooseProf challenge={this.state.challenge} selectUser={this.selectProfessor} />
+
 
           <TextAreaGroup id="prompt"
             value={c.prompt}
@@ -238,6 +270,67 @@ class ChallengeEditScreen extends React.Component {
         </form>
       </div>);
   }
+}
+
+
+const ChooseProf = (props)=> {
+  const c = props.challenge;
+  const Prof = (props.challenge.professor)?
+    (
+      <div className="m-2">{c.professor.firstName} {c.professor.lastName} &lt;{c.professor.email}&gt;</div>
+    ):
+    (<div className="m-2 text-muted">no professor selected yet</div>)
+  return (
+    <div className="form-group">
+      <label>Choose professor</label>
+      <ChooseUser label="Choose professor" 
+        selectUser={props.selectUser}
+        placeholder="find user" />
+      {Prof}
+    </div>
+  )
+}
+
+const ChallengeVideo = (props)=> {
+  const vidFileName = (path)=> {
+    let start = path.lastIndexOf("/");
+    let end = path.lastIndexOf("?")
+    let fileName = (end==-1)?path.slice(start): path.slice(start,end);
+    fileName = fileName.replace("%2F","/");
+    return fileName;
+  }
+
+
+  const progress = (<UploadProgress pct={props.pct} msg={props.msg} />);
+  const clearBtn = (props.video)?(
+    <div className="bg-dark text-right text-light m-0 p-0">
+      <small>
+        {vidFileName(props.video)}
+        <button className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearVideo}>
+          <XIcon className="icon-danger" />
+        </button>
+      </small>
+    </div>
+    ) : "";
+
+  const poster = props.poster || "/img/poster.png";
+
+  return (
+    <div className="mb-2">
+      <VideoUploadImproved id="video" 
+       className="m-0 p-0"
+       video={props.video}
+       poster={poster}
+       onChange={props.handleUpload} 
+       label=""
+       progressBar={progress}
+       />
+      {clearBtn}     
+    </div>
+
+  );
+
+
 }
 
 const Tags =(props)=> {

@@ -11,7 +11,10 @@ class ProfileScreen extends React.Component {
     super(props);
     // const firebase = FBUtil.init();
     // let fbu = firebase.auth().currentUser;
-    let user = {email: props.user.email, displayName: props.user.displayName, uid: props.user.uid};
+    let user = {
+      email: props.user.email, 
+      displayName: `${props.user.firstName} ${props.user.lastName}`, 
+      uid: props.user.uid};
 
     this.state = {
       "loading": false,
@@ -87,7 +90,7 @@ class ProfileScreen extends React.Component {
         </div>
         <div className="row">
           <div className="col-sm-4 text-strong">Name:</div>
-          <div className="col">{this.props.user.displayName}</div>
+          <div className="col">{`${this.props.user.firstName} ${this.props.user.lastName}`}</div>
         </div>
         <div className="row">
           <div className="col-sm-4 text-strong">Email:</div>

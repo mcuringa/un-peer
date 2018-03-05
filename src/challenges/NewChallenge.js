@@ -4,22 +4,20 @@ import { Redirect } from 'react-router-dom'
 import {Challenge, ChallengeDB} from "./Challenge";
 import {
   TextGroup,
+  TextAreaGroup,
   LoadingSpinner
 } from "../FormUtil"
 
 class NewChallengeScreen extends React.Component {
   constructor(props) {
     super(props);
-    const owner = {
-      id: props.user.uid,
-      name: props.user.displayName,
-      email: props.user.email
-    }
+
     this.state = {
       "id": "",
       "title": "", 
-      owner: owner,
+      "prompt": "", 
       loading: false,
+      validationError: false,
       step2: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -27,18 +25,34 @@ class NewChallengeScreen extends React.Component {
   }
 
   handleChange(e) {
-
+    const title = this.state.title.trim();
+    if(title.length > 0) {
+      this.setState({validationError: false,});
+    }
+    
     let st = {};
     st[e.target.id] = e.target.value;
     this.setState(st);
   }
 
   submit(e) {
+
+    const title = this.state.title.trim();
+    if(title.length == 0) {
+      this.setState({validationError: true,});
+      return;
+    }
+    const owner = {
+      id: this.props.user.uid,
+      name: `${this.props.user.firstName} + ${this.props.user.lastName}`,
+      email: this.props.user.email
+    }
     e.preventDefault();
     this.setState({loading: true});
     let c = Challenge;
-    c.owner = this.state.owner;
+    c.owner = owner;
     c.title = this.state.title;
+    c.prompt = this.state.title;
     c.id = null;
     ChallengeDB.save(c).then((docRef)=> {
       this.setState({id: docRef.id, step2: true});
@@ -61,7 +75,15 @@ class NewChallengeScreen extends React.Component {
           label="Challenge Title" 
           onChange={this.handleChange} 
           required={true} 
-          help="First, create a title that describes the challenge. You can change it later."/>
+          validationErrorMsg="Please enter a title for your challenge. You can change it later."
+          showError={this.state.validationError}/>
+
+          <TextAreaGroup id="prompt"
+            value={this.state.prompt}
+            label=""
+            placeholder="Enter a short description of your challenge."
+            rows="4"
+            onChange={this.handleChange} />
 
         <button id="createChallengeButton"
                 className={"btn btn-block btn-primary mt-2" + hide}
