@@ -275,18 +275,21 @@ class ChallengeEditScreen extends React.Component {
 
 const ChooseProf = (props)=> {
   const c = props.challenge;
-  const Prof = (props.challenge.professor)?
+  const Prof = (c.professor && c.professor.email)?
     (
       <div className="m-2">{c.professor.firstName} {c.professor.lastName} &lt;{c.professor.email}&gt;</div>
     ):
-    (<div className="m-2 text-muted">no professor selected yet</div>)
+    (
+      <div>
+        <ChooseUser label="Choose professor" selectUser={props.selectUser} placeholder="find user" />
+        <small className="text-muted">Choose the professor who will submit a video response to this challenge.</small>
+      </div>
+    );
   return (
     <div className="form-group">
-      <label>Choose professor</label>
-      <ChooseUser label="Choose professor" 
-        selectUser={props.selectUser}
-        placeholder="find user" />
+      <label>Professor</label>
       {Prof}
+      
     </div>
   )
 }
