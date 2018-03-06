@@ -53,6 +53,28 @@ get(uid) {
 
 },
 
+addBookmark(uid, response, challenge) {
+  
+  const rKeys = ["title", "video", "avgRating","text"];
+  let bookmark = _.pick(response, rKeys);
+  bookmark.challengeId = challenge.id;
+  bookmark.challengeTitle = challenge.title;
+  bookmark.challengeStart = challenge.start;
+  bookmark.created = new Date();
+
+  const path = `/users/${uid}/bookmarks`;
+  const id = response.id;
+
+  console.log(path);
+  console.log(bookmark);
+
+
+  return new Promise((resolve,reject)=>{
+    db.save(path,id,bookmark).then(resolve);
+    // resolve({});
+  });
+},
+
 create(newUser) {
   const user = newUser;
 
