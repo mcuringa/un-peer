@@ -76,7 +76,7 @@ const ChallengeButton = (props) => {
       <NavLink 
         className={`btn btn-block bt-lg btn-secondary`} 
         activeClassName="active" 
-        to={`/challenge/${props.id}/r`}>{label}</NavLink>
+        to={`/challenge/${props.id}/respond`}>{label}</NavLink>
       );
   }
   
@@ -84,7 +84,7 @@ const ChallengeButton = (props) => {
     return (
       <NavLink 
         className={`btn btn-block btn-secondary`} 
-        activeClassName="active" to={`/challenge/${props.id}/responses`}>Rate Responses</NavLink>
+        activeClassName="active" to={`/challenge/${props.id}/rate`}>Rate Responses</NavLink>
     );
   }
   
@@ -105,7 +105,7 @@ const ChallengeInfo = (props) => {
 
   return (
     <div className="ChallengeDescription">
-      <Video className="ChallengeVideo" video={props.challenge.video} />
+      <Video className="ChallengeVideo" video={props.challenge.video} poster={props.challenge.videoPoster} />
       <p>{props.challenge.prompt}</p>
       <ChallengeButton id={props.id} 
         challenge={props.challenge}
