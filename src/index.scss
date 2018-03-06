@@ -744,3 +744,19 @@ label
 .loader-inner.ball-pulse > div {
   background-color: $bg-bright-blue;
 }
+
+
+// ======================= snackbar
+.Snackbar {
+  background-color: rgba(0, 0, 0, 0.85);
+  // min-height: 80px;
+  z-index: 1080;
+  max-width: 250px;
+  margin: 0 auto;
+  color: $gray-200;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  transition: height 1s ease-in;
+}
+

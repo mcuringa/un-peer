@@ -9,6 +9,7 @@ import {StarIcon, DashIcon, ChevronDownIcon, ChevronLeftIcon} from 'react-octico
 import { Video } from "../FormUtil";
 import Modal from "../Modal";
 import LoadingModal from "../LoadingModal";
+import Snackbar from "../Snackbar";
 import {LoadingSpinner} from "../FormUtil";
 
 class ResponseRatings extends React.Component {
@@ -23,7 +24,8 @@ class ResponseRatings extends React.Component {
       loading: false,
       challenge: {},
       showThankYou: false,
-      thankYouShown: false
+      thankYouShown: false,
+      ratingSaved: false
     };
     this.loadAssignments = this.loadAssignments.bind(this);
     this.isLoading = this.isLoading.bind(this);
@@ -89,7 +91,10 @@ class ResponseRatings extends React.Component {
         const updateResponseState = (savedResponse)=> {
           let t = this.state.responses;
           t[i] = savedResponse;
-          this.setState({responses: t, loading: false });
+          this.setState({responses: t, 
+            loading: false,
+            ratingSaved: true
+          });
           const newCount = this.countRatings();
           if(oldCount === 2 && newCount === 3)
             this.setState({showThankYou: true});
@@ -138,7 +143,6 @@ class ResponseRatings extends React.Component {
 
         <div className="d-flex m-2 justify-content-end">
           <div className="badge badge-pill badge-secondary">
-            <LoadingSpinner loading={this.state.loading} />
             {this.countRatings()} of 3 ratings submitted
           </div>
         </div>
@@ -150,6 +154,10 @@ class ResponseRatings extends React.Component {
             of the three responses above by clicking on the stars.
           </small>
         </p>
+        <Snackbar show={this.state.ratingSaved} 
+          msg="Rating recorded"
+          wait={1500}
+          onClose={()=>{this.setState({ratingSaved: false});}} />
       </div>
     );
   }

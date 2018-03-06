@@ -8325,3 +8325,14 @@ label {
 
 .loader-inner.ball-pulse > div {
   background-color: #6999c9; }
+
+.Snackbar {
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 1080;
+  max-width: 250px;
+  margin: 0 auto;
+  color: #e9ecef;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  transition: height 1s ease-in; }

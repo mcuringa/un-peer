@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import {XIcon} from "react-octicons";
+import {XIcon, EyeIcon} from "react-octicons";
 
 
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
@@ -18,6 +18,8 @@ import {
 
 import {UploadProgress, formatFileSize} from "../MediaManager";
 import ChooseUser from "../users/ChooseUser";
+import Snackbar from "../Snackbar";
+
 
 let firebase = require("firebase");
 require("firebase/storage");
@@ -31,7 +33,9 @@ class ChallengeEditScreen extends React.Component {
       owner: {displayName: props.user.displayName, email: props.user.email, id: props.user.uid},
       loading: true,
       dirty: false,
-      uploadStatus: "no upload running"
+      uploadStatus: "no upload running",
+      showSnack: false,
+      snackMsg: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleChange.bind(this);
@@ -65,7 +69,9 @@ class ChallengeEditScreen extends React.Component {
   save() {
     this.setState({loading: true});
     ChallengeDB.save(this.state.challenge)
-    .then(()=>{this.setState({loading: false, dirty: false});});
+    .then(()=>{
+      this.setState({loading: false, dirty: false, showSnack: true});
+    });
   }
 
   handleSubmit(e) {
@@ -182,8 +188,11 @@ class ChallengeEditScreen extends React.Component {
       <div className="ChallengeEdit screen card bg-light">
         <div className="card-header">
           <div className="row">
-            <div className="col-11">{c.title}</div>
-            <div className="col-1">
+            <div className="col-11 d-flex  align-items-baseline justify-content-between pr-2">
+              <h4>{c.title}</h4>
+              <div><a href={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></a></div>
+            </div>
+            <div className="col-1 d-flex pt-1">
               <StatusIndicator dirty={this.state.dirty} loading={this.state.loading} />
             </div>
           </div>
@@ -266,8 +275,11 @@ class ChallengeEditScreen extends React.Component {
               onChange={this.handleDateChange} />
 
           </fieldset>
-        
         </form>
+        <Snackbar show={this.state.showSnack} 
+          msg="Saved..."
+          wait={1000}
+          onClose={()=>{this.setState({showSnack: false});}} />
       </div>);
   }
 }

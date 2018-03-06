@@ -10,7 +10,7 @@ import UserDB from "../users/UserDB.js";
 import {ChallengeDB} from "./Challenge.js";
 import ChallengeHeader from "./ChallengeHeader.js";
 
-import {StarIcon, DashIcon, PlusIcon, ChevronLeftIcon, ChevronDownIcon, BookmarkIcon} from 'react-octicons';
+import {StarIcon, ChevronLeftIcon, ChevronDownIcon, BookmarkIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import Modal from "../Modal";
 import LoadingModal from "../LoadingModal";
@@ -51,11 +51,8 @@ class ChallengeReviewScreen extends React.Component {
     });
 
     const path = `/users/${this.props.user.uid}/bookmarks`;
-    console.log(path);
     db.findAll(path).then((bookmarks)=>{
       const t = _.keyBy(bookmarks, (b)=>{return b.id});
-      console.log(bookmarks);
-      console.log(t);
       this.setState({bookmarks: t});
     });
 
@@ -146,9 +143,7 @@ const Bookmark = (props) => {
 }
 
 const ToggleIcon = (props) => {
-    if(props.open)
-      return <DashIcon className="icon-secondary pt-1" />
-    return <ChevronDownIcon className="icon-secondary pt-1" />
+  return <ChevronDownIcon className="icon-secondary pt-1" />
 }
 
 
