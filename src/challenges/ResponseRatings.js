@@ -5,7 +5,7 @@ import df from "../DateUtil.js";
 import {ChallengeDB} from "./Challenge.js";
 import ChallengeHeader from "./ChallengeHeader.js";
 
-import {StarIcon, DashIcon, PlusIcon, ChevronLeftIcon} from 'react-octicons';
+import {StarIcon, DashIcon, ChevronDownIcon, ChevronLeftIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import Modal from "../Modal";
 import LoadingModal from "../LoadingModal";
@@ -52,8 +52,7 @@ class ResponseRatings extends React.Component {
     const assignIds = c.assignments[uid];
     let t = _.filter(this.state.responses, r=>_.includes(assignIds,r.id));
     
-    t =_.map(t,(r)=>{r.open = false; return r;});
-    
+  
     return t;
   }
 
@@ -61,7 +60,7 @@ class ResponseRatings extends React.Component {
     const ratings = _.map(this.loadAssignments(), r=>_.keys(r.ratings));
     const raterIds = _.flatten(ratings);
     const count = _.reduce(raterIds, (n,id)=>{
-      if(window.parseInt(id, 10) === window.parseInt(this.props.user.uid, 10))
+      if(id === this.props.user.uid)
         return n + 1;
       return n;
     }, 0);
@@ -72,7 +71,7 @@ class ResponseRatings extends React.Component {
   render() {
 
     if(this.isLoading())
-      return <LoadingModal status="Loading assignments" show={true} />
+      return <LoadingSpinner status="Loading assignments" show={true} />
 
     if(new Date() < this.state.challenge.responseDue)
       return (<TooEarly challenge={this.state.challenge} />);
@@ -145,9 +144,11 @@ class ResponseRatings extends React.Component {
         </div>
         
         {ratingForms}
-        <p className="text-muted ml-2 mr-2">Please review and rate each
-           of the three responses below by clicking on the stars. After 
-           you have rated each response you can click the button below to send your ratings.
+        <p className="text-muted ml-2 mr-2">
+          <small>
+            Please review and rate each
+            of the three responses above by clicking on the stars.
+          </small>
         </p>
       </div>
     );
@@ -157,7 +158,7 @@ class ResponseRatings extends React.Component {
 const ToggleIcon = (props) => {
     if(props.open)
       return <DashIcon className="icon-secondary pt-1" />
-    return <PlusIcon className="icon-secondary pt-1" />
+    return <ChevronDownIcon className="icon-secondary pt-1" />
 }
 
 
@@ -172,15 +173,14 @@ const ResponseRater = (props) => {
     return (
       <div className="card">
         <div className="card-header" id={`head_${props.keyIndex}`}>
-          <button className="btn btn-link text-dark btn-block text-left" data-toggle="collapse" 
-            data-target={`#body_${props.keyIndex}`}>
-            <div className="row">
-              <div className="col-11">
-                <em>Response {props.letter}: {r.title}</em>
-              </div>
-              <div className="col-1"><ToggleIcon open={r.open} /></div>
+
+          <div className="row clickable" data-toggle="collapse" data-target={`#body_${props.keyIndex}`}>
+            <div className="col-11">
+              Response {props.letter}: {r.title} 
             </div>
-          </button>
+            <div className="col-1"><ToggleIcon open={r.open} /></div>
+          </div>
+
           <StarRatings 
             challengeId={props.challenge.id} 
             rating={rating} 
@@ -212,18 +212,18 @@ const StarRatings = (props)=>{
   });
 
   return (
-    <div className="bg-light">{stars}</div>
+    <div className="bg-light d-flex justify-start">{stars}</div>
   );
 
 }
 
 const Star = (props)=> {
-  const filled = (props.val<=props.rating)?"filled":"";
+  const fill = (props.val<=props.rating)?"filled":"";
   const rate = ()=> {
     props.onClick(props.val);
   }
   return (
-    <button className={`Star btn btn-link ${filled}`} onClick={rate}><StarIcon /></button>
+    <div className={`Star clickable mr-2 ${fill}`} onClick={rate}><StarIcon /></div>
     );
 }
 
