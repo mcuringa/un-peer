@@ -16,6 +16,7 @@ import {ChallengeEditScreen} from './challenges/ChallengeEdit.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
 import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
+import ChallengeReviewScreen from './challenges/ChallengeReviewScreen.js';
 
 import BookmarkDetailScreen from './BookmarkDetail.js';
 import BookmarksScreen from './BookmarksScreen.js';
@@ -36,30 +37,23 @@ export default class App extends Component {
 
   }
 
-  userListener(user) {
-    let merge = (u)=> {
-      db.get("/users", user.uid).then((u)=>{
-        let user = _.merge(user, u);
-        this.setState({user: user});
-      });
-    };
+  userListener(authUser) {
+    console.log("user listener called");
 
-    merge = _.once(merge);
-    if(user && !user.firstName)
-      merge(user);
 
-    if (user) {
-      this.setState({user: user});
-    } else {
+    if(!authUser) {
       this.setState({user: {}});
+      return;
     }
+
+    db.get("/users", authUser.uid).then((u)=>{
+      this.setState({user: u});
+    });
+
   }
 
   componentWillMount() {
-
-    console.log("mounting app");
-    FBUtil.getAuthUser(this.userListener)
-
+    FBUtil.getAuthUser(this.userListener);
   }
 
   setAppClass(clazz) {
@@ -67,6 +61,11 @@ export default class App extends Component {
   }
 
   render() {
+
+    // console.log(`Authenticated user: ${this.state.user.email}`);
+    // console.log(`DB user: ${this.state.user.firstName} ${this.state.user.lastName}`);
+    // console.log("Is admin: " + this.state.user.admin);
+
     let Main;
 
     if(!this.state.user.email)
@@ -130,12 +129,12 @@ const SecureScreens = (props)=>{
         <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
         <PropsRoute  user={props.user} path="/bookmarks"  component={BookmarksScreen} />
         <PropsRoute  user={props.user} path="/bookmark/:id"  component={BookmarkDetailScreen} />
-
-        <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
+        
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
-        <PropsRoute  user={props.user} path="/challenge/:id/r" component={ChallengeResponseForm}/>
-        <PropsRoute  user={props.user} path="/challenge/:id/responses" component={ResponseRatings}/>
-        <PropsRoute  user={props.user} path="/challenge/:id/:action" component={ChallengeDetailScreen}/>
+        <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
+        <PropsRoute  user={props.user} path="/challenge/:id/respond" component={ChallengeResponseForm}/>
+        <PropsRoute  user={props.user} path="/challenge/:id/rate" component={ResponseRatings}/>
+        <PropsRoute  user={props.user} path="/challenge/:id/review" component={ChallengeReviewScreen}/>
         <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>
 
         <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
