@@ -69,26 +69,22 @@ const db = {
 
 
   save(path, id, data) {
+    if(!id)
+      return this.add(path, data);
+
     let db = FBUtil.connect();
     data.modified = new Date();
     let ref = db.collection(path).doc(id);
     return new Promise((resolve, reject)=>{
       ref.set(data).then(()=>{
-        resolve(ref.id);
+        resolve(data);
       });
     });
   },
 
 
   update(path, id, data) {
-    let db = FBUtil.connect();
-    data.modified = new Date();
-    let ref = db.collection(path).doc(id);
-    return new Promise((resolve, reject)=>{
-      ref.update(data).then(()=>{
-        resolve(ref.data());
-      });
-    });
+    return this.save(path, id, data);
   },
 
   add(path, data) {
@@ -99,11 +95,18 @@ const db = {
     return new Promise((resolve, reject)=>{
       ref.add(data).then(()=>{
         let obj = {id: ref.id};
-        obj = _.merge(obj, ref.data());
+        obj = _.merge(obj, data);
         resolve(obj);
       });
     });
   },
+
+  delete(path, id) {
+    let db = FBUtil.connect();
+    let ref = db.collection(path).doc(id);
+    return new Promise((resolve, reject)=>{ref.delete().then(resolve);});
+  }
+
 
 
 
