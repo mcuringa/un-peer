@@ -7823,6 +7823,9 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
 .text-dark, .App-header {
   color: #687077; }
 
+.clickable {
+  cursor: pointer; }
+
 .icon-primary {
   color: #007bff;
   fill: #007bff; }

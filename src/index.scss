@@ -19,6 +19,9 @@ img {
   @extend .img-fluid;
 }
 
+.clickable {
+  cursor: pointer;
+}
 
 .icon-primary {
   color: theme-color("primary");
