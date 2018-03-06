@@ -38,7 +38,7 @@ const Response = {
   audio:"",
   img:"",
   ratings: {},
-  avgRatin: 0,
+  avgRating: 0,
   created: new Date(),
   modified: new Date()
 };
