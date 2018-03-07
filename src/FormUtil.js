@@ -157,7 +157,7 @@ const VideoUploadImproved = (props)=> {
   const VideoEl = (props.video)?<Video {...props} /> : uploadBtn;
 
   return (
-    <div className="bg-dark p-0">
+    <div className="p-0">
       {VideoEl}
       {props.progressBar}
     </div>
