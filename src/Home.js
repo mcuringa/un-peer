@@ -22,8 +22,6 @@ class Home  extends React.Component {
   }
 
   render() {
-    console.log("home screen");
-
     if(!this.active) {
       return (
         <div className="Home screen">
