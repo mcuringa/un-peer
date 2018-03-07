@@ -160,7 +160,7 @@ it("should get all responses in a challenge",()=>{
 });
 
 
-it("should delete all pf the records starting with jest-unit-test or marked for delete", ()=>{
+it.only("should delete all pf the records starting with jest-unit-test or marked for delete", ()=>{
   
   return ChallengeDB.findAll().then((t)=> {
     t.forEach((c)=>{
