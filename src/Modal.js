@@ -3,6 +3,10 @@ import $ from "jquery";
 
 class Modal  extends React.Component {
 
+  componentDidMount() {
+    $(`#${this.props.id}`).on('hide.bs.modal', this.props.closeHandler);
+  }
+
   componentDidUpdate() {
     if(this.props.show)
       $(`#${this.props.id}`).modal("show");
@@ -13,19 +17,22 @@ class Modal  extends React.Component {
 
 
   propsWillChange(nextProps) {
-    if(this.props.closeHandler && !nextProps.show && this.props.show)
+    console.log(this.props.closeHandler);
+    if(this.props.closeHandler && !nextProps.show && this.props.show) {
+      console.log("calling close handler");
       this.props.closeHandler();
+    }
   }
 
 
   render() {
-    
+    const ModalBody = this.props.body || this.props.children;
     return (
       <div className={`modal fade`} id={this.props.id} tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
             <ModalHeader title={this.props.title} />
-            <div className="modal-body">{this.props.body}</div>
+            <div className="modal-body">{ModalBody}</div>
             <ConfirmFooter id={this.props.id} onConfirm={this.props.onConfirm} />
             <ModalFooter footer={this.props.footer} />
           </div>
