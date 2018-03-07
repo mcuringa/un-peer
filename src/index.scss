@@ -321,6 +321,23 @@ label
   cursor: pointer;
 }
 
+.ChallengeEdit {
+  background-color: $gray-200;
+}
+
+.ChallengeEdit fieldset {
+  background-color: white;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  padding: 6px;
+}
+
+.ChallengeEdit legend {
+
+}
+
+
+
 /*============================== Ratings */
 
 .Star svg
@@ -757,6 +774,5 @@ label
   text-align: center;
   padding-top: 8px;
   padding-bottom: 8px;
-  transition: height 1s ease-in;
 }
 

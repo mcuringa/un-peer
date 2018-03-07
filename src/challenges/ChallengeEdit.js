@@ -6,6 +6,7 @@ import {XIcon, EyeIcon} from "react-octicons";
 
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import FBUtil from "../FBUtil";
+import df from "../DateUtil";
 
 import {
   TextGroup,
@@ -127,8 +128,6 @@ class ChallengeEditScreen extends React.Component {
 
 
   selectProfessor(u) {
-      console.log("selectProfessor called")
-      console.log(u.email);
     let c = this.state.challenge;
     c.professor = u;
     this.setState({ challenge: c, dirty: true });
@@ -145,8 +144,6 @@ class ChallengeEditScreen extends React.Component {
   }
 
   handleDateChange(e) {
-    console.log("handleDateChange");
-
     let c = this.state.challenge;
     const date = ChallengeDB.parseDateControlToUTC(e.target.value);
     c[e.target.id] = date;
@@ -176,7 +173,6 @@ class ChallengeEditScreen extends React.Component {
 
   render() {
     const c = this.state.challenge;
-    const ts = (d)=>dateFormat(d,"yyyy-mm-dd HH:MM:ss");
     const statusOptions = { };
     statusOptions[ChallengeStatus.DRAFT] = "draft";
     statusOptions[ChallengeStatus.REVIEW] = "review";
@@ -185,71 +181,52 @@ class ChallengeEditScreen extends React.Component {
     
 
     return (
-      <div className="ChallengeEdit screen card bg-light">
-        <div className="card-header">
-          <div className="row">
-            <div className="col-11 d-flex  align-items-baseline justify-content-between pr-2">
-              <h4>{c.title}</h4>
-              <div><a href={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></a></div>
-            </div>
-            <div className="col-1 d-flex pt-1">
-              <StatusIndicator dirty={this.state.dirty} loading={this.state.loading} />
-            </div>
-          </div>
-          <div className="small text-muted">Owner: {this.state.owner.name}</div>
-          <small className="text-muted"><tt>created: {ts(c.created)} | </tt></small>
-          <small className="text-muted"><tt>modified: {ts(c.modified)}</tt></small>
-        </div>
+      <div className="ChallengeEdit screen">
+        <FormHeader challenge={c} owner={this.state.owner} loading={this.state.loading} dirty={this.state.dirty} />
         <form className="mt-2">
-
-          <TextGroup id="title"
-            value={c.title} 
-            label="Challenge Title" 
-            onChange={this.handleChange} 
-            required={true} />
           
-          <div className="form-group">
-            <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text">Set Status</span>
-              </div>
-              <select id="status" value={c.status} className="custom-select" onChange={this.handleChange}>
-                <option value={ChallengeStatus.DRAFT}>draft</option>
-                <option value={ChallengeStatus.REVIEW}>review</option>
-                <option value={ChallengeStatus.PUBLISHED}>published</option>
-                <option value={ChallengeStatus.ARCHIVED}>archive</option>
-              </select>
-            </div>
-          </div>
-
-          <ChallengeVideo 
-            id="video"
+          <BasicFields 
+            user={this.props.user}
+            challenge={c} 
+            onChange={this.handleChange}
             pct={this.state.videoPct} 
             msg={this.state.videoStatus} 
             clearVideo={()=>{this.clearField("video");}}
-            video={c.video} 
-            poster={c.videoPoster}
-            handleUpload={this.handleUpload}
-          />
+            handleUpload={this.handleUpload} />
 
-          <ImageUpload 
-            id="videoPoster"
-            label="Video thumbnail"
-            pct={this.state.videoPosterPct} 
-            img={c.videoPoster} 
-            onChange={this.handleUpload}
-            clearImage={this.clearField}
-            help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
-          />
+          <fieldset>
+            <legend>Advanced</legend>
+              <ImageUpload 
+                id="videoPoster"
+                label="Video thumbnail"
+                pct={this.state.videoPosterPct} 
+                img={c.videoPoster} 
+                onChange={this.handleUpload}
+                clearImage={this.clearField}
+                help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
+              />
+            <div className="form-group">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text">Set Status</span>
+                </div>
+                <select id="status" value={c.status} className="custom-select" onChange={this.handleChange}>
+                  <option value={ChallengeStatus.DRAFT}>draft</option>
+                  <option value={ChallengeStatus.REVIEW}>review</option>
+                  <option value={ChallengeStatus.PUBLISHED}>published</option>
+                  <option value={ChallengeStatus.ARCHIVED}>archive</option>
+                </select>
+              </div>
+            </div>
+            <ChooseProf challenge={this.state.challenge} selectUser={this.selectProfessor} />
+          </fieldset>
 
-          <ChooseProf challenge={this.state.challenge} selectUser={this.selectProfessor} />
 
 
-          <TextAreaGroup id="prompt"
-            value={c.prompt}
-            label="Description"
-            rows="4"
-            onChange={this.handleChange} />
+
+
+
+
           
           <fieldset>
             <legend>Schedule</legend>
@@ -282,6 +259,56 @@ class ChallengeEditScreen extends React.Component {
           onClose={()=>{this.setState({showSnack: false});}} />
       </div>);
   }
+}
+
+
+const FormHeader = (props)=>
+{
+  const c = props.challenge;
+  return (
+    <div>
+      <div className="row">
+        <div className="col-11 d-flex  align-items-baseline justify-content-between pr-2">
+          <h4>{c.title}</h4>
+          <div><a href={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></a></div>
+        </div>
+        <div className="col-1 d-flex pt-1">
+          <StatusIndicator dirty={props.dirty} loading={props.loading} />
+        </div>
+      </div>
+      <div className="small text-muted">Owner: {props.owner.firstName} {props.owner.lastName}</div>
+      <small className="text-muted"><tt>created: {df.ts(c.created)} | </tt></small>
+      <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>
+    </div> );
+}
+
+const BasicFields = (props)=>
+{
+  const c = props.challenge;
+  return (
+    <fieldset>
+      <strong className="text-secondary">Basics</strong>
+        <TextGroup id="title"
+          value={c.title} 
+          label="Challenge Title" 
+          onChange={props.onChange} 
+          required={true} />
+        <ChallengeVideo 
+          id="video"
+          pct={props.pct} 
+          msg={props.msg}
+          video={props.video}
+          clearVideo={props.clearVideo}
+          poster={props.poster}
+          onChange={props.handleUpload} 
+        />
+        <TextAreaGroup id="prompt"
+          value={c.prompt}
+          label="Description"
+          rows="4"
+          onChange={props.onChange} />
+      </fieldset>
+  );
 }
 
 
