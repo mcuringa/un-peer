@@ -575,6 +575,7 @@ label
 
       .react-calendar__tile {
         padding: 0;
+        height: 50px;
       }
 
       .react-calendar__tile--active {
@@ -585,17 +586,9 @@ label
         display: none;
       }
 
-      .react-calendar__tile .bg-el {
-        width: 32px;
-        height: 32px;
-        display: inline-block;
-        z-index: 5;
-        position: relative;
-
-        time {
+      .react-calendar__tile svg {
           position: relative;
-          top: 8px;
-        }
+          top: -36px;
       }
 
       .react-calendar__tile.rating .bg-el,
@@ -646,12 +639,13 @@ label
         background-color: lighten($bg-blue, 25%);
       }
 
-      .react-calendar__tile.end .bg-el-left {
-        margin-top: 8px;
-        width: 22px;
-        height: 32px;
-        position: absolute;
-        z-index: 0;
+      .react-calendar__tile {
+          .bg-el-left, .bg-el-right {
+              width: 25px;
+              height: 32px;
+              margin-top: 8px;
+              z-index: 0;
+          }
       }
 
       .react-calendar__tile.end.rating {
@@ -758,4 +752,3 @@ label
   padding-top: 8px;
   padding-bottom: 8px;
 }
-

@@ -35,7 +35,6 @@ class CalendarScreen extends React.Component {
 
     for (let i = 0; i < this.state.challenges.length; i++) {
       let challenge = this.state.challenges[i];
-      console.log(date.date, challenge.start);
       if (isDateWithin(date.date, challenge.start, challenge.end)) {
 
         if (isSameDay(date.date, challenge.start)) {
@@ -62,15 +61,37 @@ class CalendarScreen extends React.Component {
   }
 
   getTileContent(date, view) {
+    const bgBlue = '#6A82AD';
+    const bgBrightBlue = 'rgb(104, 153, 201)';
+    const darkGrayText = 'rgb(105, 112, 120)';
+
+    const a = <div className="bg-el">
+          <time dateTime={date.date.toISOString()}>s</time>
+          </div>;
+
+    const cls = this.getTileClass(date, view);
+    const drawCircle = cls.includes('start') || cls.includes('end');
+
     return (
       <div>
-          <div className="bg-el-left"></div>
-          <div className="bg-el">
-              <time dateTime={date.date.toISOString()}>
-                  {date.date.getDate()}
-              </time>
+          <div className="d-flex">
+              <div className="bg-el-left"></div>
+              <div className="bg-el-right"></div>
           </div>
-          <div className="bg-el-right"></div>
+          <svg height="40" width="40">
+              <circle
+                  cx="20" cy="20" r="17" strokeWidth="0"
+                  fill={drawCircle ? bgBrightBlue : 'transparent'} />
+              <text
+                  x="20" y="22"
+                  fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
+                  textAnchor="middle"
+                  fontWeight="bold"
+                  fill={drawCircle ? 'white' : darkGrayText}
+                  fontSize="14">
+                  {date.date.getDate()}
+              </text>
+          </svg>
       </div>
     );
   }
@@ -86,10 +107,9 @@ class CalendarScreen extends React.Component {
       );
     }
 
-    console.log(this.state.challenges);
     const challenges = this.state.challenges.map((challenge, idx) => {
       return (
-        <div className="d-flex flex-row">
+        <div className="d-flex flex-row" key={idx}>
             <div className="p-2">
                 <div className={`challenge-dot ${challenge.stage}`}></div>
             </div>
@@ -108,7 +128,7 @@ class CalendarScreen extends React.Component {
               onChange={this.onChange.bind(this)}
               formatShortWeekday={this.formatDayName}
               tileClassName={this.getTileClass.bind(this)}
-              tileContent={this.getTileContent}
+              tileContent={this.getTileContent.bind(this)}
               />
           <div className="container challenge-area">
               {challenges}

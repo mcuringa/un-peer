@@ -8215,20 +8215,15 @@ label {
     .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
       color: #c8ccd8; }
     .App .calendar-view .react-calendar .react-calendar__tile {
-      padding: 0; }
+      padding: 0;
+      height: 50px; }
     .App .calendar-view .react-calendar .react-calendar__tile--active {
       background: none; }
     .App .calendar-view .react-calendar .react-calendar__tile > time {
       display: none; }
-    .App .calendar-view .react-calendar .react-calendar__tile .bg-el {
-      width: 32px;
-      height: 32px;
-      display: inline-block;
-      z-index: 5;
-      position: relative; }
-      .App .calendar-view .react-calendar .react-calendar__tile .bg-el time {
-        position: relative;
-        top: 8px; }
+    .App .calendar-view .react-calendar .react-calendar__tile svg {
+      position: relative;
+      top: -36px; }
     .App .calendar-view .react-calendar .react-calendar__tile.rating .bg-el,
     .App .calendar-view .react-calendar .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth .bg-el,
     .App .calendar-view .react-calendar .react-calendar__tile.archive .bg-el,
@@ -8263,11 +8258,10 @@ label {
     .App .calendar-view .react-calendar .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth.start .bg-el,
     .App .calendar-view .react-calendar .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth.end .bg-el {
       background-color: #bcc7da; }
-    .App .calendar-view .react-calendar .react-calendar__tile.end .bg-el-left {
-      margin-top: 8px;
-      width: 22px;
+    .App .calendar-view .react-calendar .react-calendar__tile .bg-el-left, .App .calendar-view .react-calendar .react-calendar__tile .bg-el-right {
+      width: 25px;
       height: 32px;
-      position: absolute;
+      margin-top: 8px;
       z-index: 0; }
     .App .calendar-view .react-calendar .react-calendar__tile.end.rating .bg-el-left, .App .calendar-view .react-calendar .react-calendar__tile.end.rating .bg-el-right {
       background-color: #c7d9eb; }
