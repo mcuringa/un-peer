@@ -9,7 +9,7 @@ const df = {
   range: (a,b)=> {
 
     const start = dateFormat(a, "ddd mm/dd - ");
-    const end = dateFormat(a, "ddd mm/dd/yy");
+    const end = dateFormat(b, "ddd mm/dd/yy");
     return `${start}${end}`
 
   }
