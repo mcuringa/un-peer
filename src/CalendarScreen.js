@@ -35,6 +35,7 @@ class CalendarScreen extends React.Component {
 
     for (let i = 0; i < this.state.challenges.length; i++) {
       let challenge = this.state.challenges[i];
+      console.log(date.date, challenge.start);
       if (isDateWithin(date.date, challenge.start, challenge.end)) {
 
         if (isSameDay(date.date, challenge.start)) {
@@ -84,6 +85,20 @@ class CalendarScreen extends React.Component {
         </div>
       );
     }
+
+    console.log(this.state.challenges);
+    const challenges = this.state.challenges.map((challenge, idx) => {
+      return (
+        <div className="d-flex flex-row">
+            <div className="p-2">
+                <div className={`challenge-dot ${challenge.stage}`}></div>
+            </div>
+            <div className="p-2 dot-text">
+                {challenge.title}
+            </div>
+        </div>
+      );
+    });
     return (
       <div className="calendar-view">
           <Calendar
@@ -96,22 +111,7 @@ class CalendarScreen extends React.Component {
               tileContent={this.getTileContent}
               />
           <div className="container challenge-area">
-              <div className="d-flex flex-row">
-                  <div className="p-2">
-                      <div className="challenge-dot"></div>
-                  </div>
-                  <div className="p-2 dot-text">
-                      Challenge of the week
-                  </div>
-              </div>
-              <div className="d-flex flex-row">
-                  <div className="p-2">
-                      <div className="responses-dot"></div>
-                  </div>
-                  <div className="p-2 dot-text">
-                      Rate the responses
-                  </div>
-              </div>
+              {challenges}
           </div>
         <Modal id="ChallengeDetailModal"
                show={this.state.showDetail}

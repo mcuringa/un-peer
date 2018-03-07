@@ -533,17 +533,17 @@ label
         margin-top: 8px;
       }
 
-      .challenge-dot,
-      .responses-dot {
+      .challenge-dot {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-      }
-      .challenge-dot {
-        background-color: $bg-bright-blue;
-      }
-      .responses-dot {
-        background-color: $bg-blue;
+        &.archive {
+          background-color: $bg-blue;
+        }
+
+        &.rating {
+          background-color: $bg-bright-blue;
+        }
       }
     }
 

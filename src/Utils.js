@@ -12,7 +12,8 @@ function isSameDay(d1, d2) {
  * other two.
  */
 function isDateWithin(d, start, end) {
-  return d >= start && d <= end;
+  return isSameDay(d, start) || isSameDay(d, end) ||
+    d >= start && d <= end;
 }
 
 /**
