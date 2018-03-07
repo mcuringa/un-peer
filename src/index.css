@@ -8039,15 +8039,6 @@ label {
 .VideoUploadButton label {
   cursor: pointer; }
 
-.ChallengeEdit {
-  background-color: #e9ecef; }
-
-.ChallengeEdit fieldset {
-  background-color: white;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  padding: 6px; }
-
 /*============================== Ratings */
 .Star svg {
   fill: transparent;

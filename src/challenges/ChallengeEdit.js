@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import {XIcon, EyeIcon} from "react-octicons";
+import {XIcon, EyeIcon, ChevronDownIcon, ChevronRightIcon} from "react-octicons";
 
 
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
@@ -47,6 +47,7 @@ class ChallengeEditScreen extends React.Component {
     this.save = _.debounce(this.save, 2000);
     this.clearField = this.clearField.bind(this);
     this.selectProfessor = _.bind(this.selectProfessor, this);
+    this.selectOwner = _.bind(this.selectOwner, this);
 
   }
 
@@ -134,6 +135,13 @@ class ChallengeEditScreen extends React.Component {
     this.save();
   }
 
+  selectOwner(u) {
+    let c = this.state.challenge;
+    c.owner = u;
+    this.setState({ challenge: c, dirty: true, owner: u });
+    this.save();
+  }
+
 
   handleChange(e) {
 
@@ -194,17 +202,29 @@ class ChallengeEditScreen extends React.Component {
             clearVideo={()=>{this.clearField("video");}}
             handleUpload={this.handleUpload} />
 
-          <fieldset>
-            <legend>Advanced</legend>
+
+
+          <Accordion title="Advanced" id="AdvancedFields" hide={!this.props.user.admin}>
               <ImageUpload 
                 id="videoPoster"
                 label="Video thumbnail"
                 pct={this.state.videoPosterPct} 
                 img={c.videoPoster} 
                 onChange={this.handleUpload}
-                clearImage={this.clearField}
+                clearImage={()=>{this.clearField("videoPoster");}}
                 help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
               />
+
+            <ChooseProf challenge={this.state.challenge}
+              clearProfessor={()=>{this.clearField("professor");}}
+              selectUser={this.selectProfessor} />
+
+            <ChooseOwner challenge={this.state.challenge}
+              clearOwner={()=>{this.clearField("owner");}}
+              selectUser={this.selectOwner} />
+          </Accordion>
+
+          <Accordion id="ScheduleFields" title="Schedule" hide={!this.props.user.admin}>
             <div className="form-group">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
@@ -218,18 +238,6 @@ class ChallengeEditScreen extends React.Component {
                 </select>
               </div>
             </div>
-            <ChooseProf challenge={this.state.challenge} selectUser={this.selectProfessor} />
-          </fieldset>
-
-
-
-
-
-
-
-          
-          <fieldset>
-            <legend>Schedule</legend>
             
             <DatePicker id="start"
               value={c.start}
@@ -251,7 +259,7 @@ class ChallengeEditScreen extends React.Component {
               label="challenge end"
               onChange={this.handleDateChange} />
 
-          </fieldset>
+          </Accordion>
         </form>
         <Snackbar show={this.state.showSnack} 
           msg="Saved..."
@@ -268,7 +276,7 @@ const FormHeader = (props)=>
   return (
     <div>
       <div className="row">
-        <div className="col-11 d-flex  align-items-baseline justify-content-between pr-2">
+        <div className="col-11 d-flex align-items-baseline justify-content-between pr-2">
           <h4>{c.title}</h4>
           <div><a href={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></a></div>
         </div>
@@ -282,55 +290,70 @@ const FormHeader = (props)=>
     </div> );
 }
 
+class Accordion extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {open: props.open}
+  }
+
+  render() {
+    if(this.props.hide)
+      return null;
+    const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
+    const toggleCss = (this.state.open)?"show":"";
+    const toggleFunction = ()=> {
+      this.setState({open: !this.state.open})
+    }
+    return(
+    <div className="Accordion card">
+      <div id={`${this.props.id}Header`} 
+        className="clickable d-flex justify-content-between card-header" 
+        data-toggle="collapse" 
+        onClick={toggleFunction}
+        data-target={`#${this.props.id}`}
+        aria-expanded={this.state.open}
+        aria-controls={this.props.id}>
+        <strong className="text-secondary">{this.props.title}</strong>
+        {ToggleIcon}
+      </div>
+      <div id={this.props.id} className={`AccordionBody card-body collapse pl-2 ${toggleCss}`}  data-parent={`${this.props.id}Header`}>
+        {this.props.children}
+      </div>
+    </div>
+
+    )
+  }
+
+  // ChevronDownIcon
+}
+
 const BasicFields = (props)=>
 {
   const c = props.challenge;
   return (
-    <fieldset>
-      <strong className="text-secondary">Basics</strong>
-        <TextGroup id="title"
-          value={c.title} 
-          label="Challenge Title" 
-          onChange={props.onChange} 
-          required={true} />
-        <ChallengeVideo 
-          id="video"
-          pct={props.pct} 
-          msg={props.msg}
-          video={props.video}
-          clearVideo={props.clearVideo}
-          poster={props.poster}
-          onChange={props.handleUpload} 
-        />
-        <TextAreaGroup id="prompt"
-          value={c.prompt}
-          label="Description"
-          rows="4"
-          onChange={props.onChange} />
-      </fieldset>
+    <Accordion id="BasicChallengeFieldsHeader" open={true}  title="Basics">
+      <TextGroup id="title"
+        value={c.title} 
+        label="Challenge Title" 
+        onChange={props.onChange} 
+        required={true} />
+      <ChallengeVideo 
+        id="video"
+        props={props.video} 
+        pct={props.pct} 
+        msg={props.msg}
+        video={props.video}
+        clearVideo={props.clearVideo}
+        poster={props.poster}
+        onChange={props.handleUpload} 
+      />
+      <TextAreaGroup id="prompt"
+        value={c.prompt}
+        label="Description"
+        rows="4"
+        onChange={props.onChange} />
+    </Accordion>
   );
-}
-
-
-const ChooseProf = (props)=> {
-  const c = props.challenge;
-  const Prof = (c.professor && c.professor.email)?
-    (
-      <div className="m-2">{c.professor.firstName} {c.professor.lastName} &lt;{c.professor.email}&gt;</div>
-    ):
-    (
-      <div>
-        <ChooseUser label="Choose professor" selectUser={props.selectUser} placeholder="find user" />
-        <small className="text-muted">Choose the professor who will submit a video response to this challenge.</small>
-      </div>
-    );
-  return (
-    <div className="form-group">
-      <label>Professor</label>
-      {Prof}
-      
-    </div>
-  )
 }
 
 const ChallengeVideo = (props)=> {
@@ -348,7 +371,7 @@ const ChallengeVideo = (props)=> {
     <div className="bg-dark text-right text-light m-0 p-0">
       <small>
         {vidFileName(props.video)}
-        <button className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearVideo}>
+        <button type="button" className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearVideo}>
           <XIcon className="icon-danger" />
         </button>
       </small>
@@ -371,9 +394,64 @@ const ChallengeVideo = (props)=> {
     </div>
 
   );
-
-
 }
+
+const ChooseOwner = (props)=> {
+  const c = props.challenge;
+  const Owner = (c.owner && c.owner.email)? (
+    <div className="mt-2">
+      <span class="badge badge-secondary-outline">
+        {c.owner.firstName} {c.owner.lastName} &lt;{c.owner.email}&gt;
+        <button type="button" className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearOwner}>
+          <XIcon className="icon-danger" />
+        </button>
+      </span>
+    </div>
+  ): (
+    <div>
+      <ChooseUser label="Choose owner" selectUser={props.selectUser} placeholder="search the users" />
+      <small className="text-muted">Choose a user who will be the owner of this challenge.</small>
+    </div>
+  );
+
+  return (
+    <div className="form-group">
+      <label>Challenge Owner</label>
+      {Owner}
+      
+    </div>
+  )
+}
+
+
+const ChooseProf = (props)=> {
+  const c = props.challenge;
+  const Prof = (c.professor && c.professor.email)?
+    (
+      <div className="mt-2">
+        <span class="badge badge-secondary">
+          {c.professor.firstName} {c.professor.lastName} &lt;{c.professor.email}&gt;
+          <button type="button" className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearProfessor}>
+            <XIcon className="icon-danger" />
+          </button>
+        </span>
+      </div>
+    ):
+    (
+      <div>
+        <ChooseUser label="Choose professor" selectUser={props.selectUser} placeholder="search for professor" />
+        <small className="text-muted">Choose the professor who will submit a video response to this challenge.</small>
+      </div>
+    );
+  return (
+    <div className="form-group">
+      <label>Professor</label>
+      {Prof}
+      
+    </div>
+  )
+}
+
 
 const Tags =(props)=> {
   return <TextGroup id="tags"
