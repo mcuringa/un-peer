@@ -105,7 +105,7 @@ const Header = (props)=>{
           </NavLink>
         </div>
         <div className="App-title col-8">UN Peer Challenges</div>
-        <div className="App-notifications col-2">
+        <div className="App-notifications col-2 d-none">
             <NavLink to="/notifications">
                 <div className="outer-circle">
                 </div>
@@ -124,7 +124,7 @@ const SecureScreens = (props)=>{
   return (
       <Switch>
         <PropsRoute exact path="/" setAppClass={props.setAppClass} component={Home} />
-        <Route exact path="/archive" component={ChallengeListScreen} />
+        <PropsRoute exact path="/archive" user={props.user} component={ChallengeListScreen} />
 
         <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
         <PropsRoute  user={props.user} path="/bookmarks"  component={BookmarksScreen} />
