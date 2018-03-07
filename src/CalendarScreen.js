@@ -50,16 +50,6 @@ class CalendarScreen extends React.Component {
     return s;
   }
 
-  onChange(v) {
-    const challenge = getChallengeForDate(this.state.challenges, v);
-    if (challenge) {
-      this.setState({
-        selectedChallenge: challenge,
-        showDetail: true
-      });
-    }
-  }
-
   getTileContent(date, view) {
     const bgBlue = '#6A82AD';
     const bgBrightBlue = 'rgb(104, 153, 201)';
@@ -107,31 +97,33 @@ class CalendarScreen extends React.Component {
       );
     }
 
-    const challenges = this.state.challenges.map((challenge, idx) => {
-      return (
-        <div className="d-flex flex-row" key={idx}>
-            <div className="p-2">
-                <div className={`challenge-dot ${challenge.stage}`}></div>
-            </div>
-            <div className="p-2 dot-text">
-                {challenge.title}
-            </div>
-        </div>
-      );
-    });
     return (
       <div className="calendar-view">
           <Calendar
               calendarType="US"
               minDetail="month"
               view="month"
-              onChange={this.onChange.bind(this)}
               formatShortWeekday={this.formatDayName}
               tileClassName={this.getTileClass.bind(this)}
               tileContent={this.getTileContent.bind(this)}
               />
           <div className="container challenge-area">
-              {challenges}
+              <div className="d-flex flex-row">
+                  <div className="p-2">
+                      <div className="challenge-dot of-the-week"></div>
+                  </div>
+                  <div className="p-2 dot-text">
+                      Challenge of the week
+                  </div>
+              </div>
+              <div className="d-flex flex-row">
+                  <div className="p-2">
+                      <div className="challenge-dot rating"></div>
+                  </div>
+                  <div className="p-2 dot-text">
+                      Rate the responses
+                  </div>
+              </div>
           </div>
         <Modal id="ChallengeDetailModal"
                show={this.state.showDetail}
