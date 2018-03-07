@@ -43,8 +43,10 @@ class NewChallengeScreen extends React.Component {
       return;
     }
     const owner = {
-      id: this.props.user.uid,
-      name: `${this.props.user.firstName} + ${this.props.user.lastName}`,
+      uid: this.props.user.uid,
+      firstName: this.props.user.firstName,
+      lastName: this.props.user.lastName,
+      name: `${this.props.user.firstName} ${this.props.user.lastName}`,
       email: this.props.user.email
     }
     e.preventDefault();
@@ -52,7 +54,7 @@ class NewChallengeScreen extends React.Component {
     let c = Challenge;
     c.owner = owner;
     c.title = this.state.title;
-    c.prompt = this.state.title;
+    c.prompt = this.state.prompt;
     c.id = null;
     ChallengeDB.save(c).then((docRef)=> {
       this.setState({id: docRef.id, step2: true});
