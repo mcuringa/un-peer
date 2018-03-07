@@ -2,6 +2,7 @@ import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
 import {XIcon, EyeIcon, ChevronDownIcon, ChevronRightIcon} from "react-octicons";
+import { Link, Redirect } from 'react-router-dom';
 
 
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
@@ -19,6 +20,7 @@ import {
 
 import {UploadProgress, formatFileSize} from "../MediaManager";
 import ChooseUser from "../users/ChooseUser";
+import Modal from "../Modal";
 import Snackbar from "../Snackbar";
 
 
@@ -36,7 +38,8 @@ class ChallengeEditScreen extends React.Component {
       dirty: false,
       uploadStatus: "no upload running",
       showSnack: false,
-      snackMsg: ""
+      snackMsg: "",
+      undoClear: {}
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleChange.bind(this);
@@ -48,18 +51,22 @@ class ChallengeEditScreen extends React.Component {
     this.clearField = this.clearField.bind(this);
     this.selectProfessor = _.bind(this.selectProfessor, this);
     this.selectOwner = _.bind(this.selectOwner, this);
+    this.submitForReview = _.bind(this.submitForReview, this);
 
   }
 
-  clearField(key) { 
+
+  clearField(key, msg) { 
     let c = this.state.challenge;
     c[key] = "";
-    this.setState({challenge: c });
+    this.setState({ challenge: c, dirty: true });
+    this.save();
   }
 
   componentWillMount() {
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
+
       this.setState({
         owner: c.owner,
         challenge: c,
@@ -69,6 +76,7 @@ class ChallengeEditScreen extends React.Component {
   }
 
   save() {
+
     this.setState({loading: true});
     ChallengeDB.save(this.state.challenge)
     .then(()=>{
@@ -179,6 +187,14 @@ class ChallengeEditScreen extends React.Component {
     this.save();
   }
 
+  submitForReview() {
+    let c = this.state.challenge;
+    c.status = ChallengeStatus.REVIEW;
+    this.setState({ challenge: c, dirty: true  });
+    this.save();
+    this.setState({showThankYou:true});
+  }
+
   render() {
     const c = this.state.challenge;
     const statusOptions = { };
@@ -186,7 +202,12 @@ class ChallengeEditScreen extends React.Component {
     statusOptions[ChallengeStatus.REVIEW] = "review";
     statusOptions[ChallengeStatus.PUBLISHED] = "published";
     statusOptions[ChallengeStatus.ARCHIVED] = "archived";
-    
+
+    const hasEditRights = this.props.user.admin || 
+      (c.owner && this.props.user.uid === c.owner.uid && (c.status === ChallengeStatus.DRAFT || c.status === ChallengeStatus.REVIEW));
+
+    if(!this.state.loading && (this.state.goHome || !hasEditRights)) //send them home
+      return <Redirect push to="/" />
 
     return (
       <div className="ChallengeEdit screen">
@@ -199,7 +220,7 @@ class ChallengeEditScreen extends React.Component {
             onChange={this.handleChange}
             pct={this.state.videoPct} 
             msg={this.state.videoStatus} 
-            clearVideo={()=>{this.clearField("video");}}
+            clearVideo={()=>{this.setState({confirmClearVideo:true})}}
             handleUpload={this.handleUpload} />
 
 
@@ -260,13 +281,70 @@ class ChallengeEditScreen extends React.Component {
               onChange={this.handleDateChange} />
 
           </Accordion>
+
+          <SubmitChallengeButtons 
+            user={this.props.user} 
+            saveDraft={()=>{this.save()}} 
+            sendForReview={()=>{this.setState({confirmReview:true})}}
+          />
+
         </form>
         <Snackbar show={this.state.showSnack} 
           msg="Saved..."
           wait={1000}
           onClose={()=>{this.setState({showSnack: false});}} />
+        
+        <Modal id="confirmRemoveVideo" 
+          title="Remove video" 
+          show={this.state.confirmClearVideo}
+          onConfirm={()=>{this.clearField("video");this.save();}}
+          closeHandler={()=>{this.setState({confirmClearVideo:false})}}
+          >
+          Really remove the challenge video? This cannot be undone.
+        </Modal>
+
+        <Modal id="thankYou" 
+          title="Thank you!" 
+          show={this.state.showThankYou}
+          onConfirm={()=>{this.setState({goHome:true})}}
+          closeHandler={()=>{this.setState({goHome:true})}}
+          >
+          Your challenge has been submitted.
+        </Modal>
+
+        <Modal id="confirmSendForReview" 
+          title="Submit for review" 
+          show={this.state.confirmReview}
+          onConfirm={this.submitForReview}
+          closeHandler={()=>{this.setState({confirmReview:false})}}
+          >
+          Please click <strong>OK</strong> to submit your challenge for review.
+          You will hear back shortly from the course instructors after they review your video.
+        </Modal>
+
       </div>);
   }
+}
+
+
+const SubmitChallengeButtons = (props)=> {
+  if(props.user.admin)
+    return null;
+  
+  return (
+    <div className="d-flex justify-content-end mt-2">
+      <button type="button" 
+        onClick={props.saveDraft} 
+        className="btn btn-secondary mr-2">
+        Save draft
+      </button>
+      <button type="button" 
+        onClick={props.sendForReview} 
+        className="btn btn-secondary">
+        Send for review
+      </button>
+    </div>
+  )
 }
 
 
@@ -278,7 +356,7 @@ const FormHeader = (props)=>
       <div className="row">
         <div className="col-11 d-flex align-items-baseline justify-content-between pr-2">
           <h4>{c.title}</h4>
-          <div><a href={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></a></div>
+          <div><Link to={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></Link></div>
         </div>
         <div className="col-1 d-flex pt-1">
           <StatusIndicator dirty={props.dirty} loading={props.loading} />
@@ -320,18 +398,15 @@ class Accordion extends React.Component {
         {this.props.children}
       </div>
     </div>
-
     )
   }
-
-  // ChevronDownIcon
 }
 
 const BasicFields = (props)=>
 {
   const c = props.challenge;
-  return (
-    <Accordion id="BasicChallengeFieldsHeader" open={true}  title="Basics">
+  const Fields = (
+    <div>
       <TextGroup id="title"
         value={c.title} 
         label="Challenge Title" 
@@ -339,19 +414,28 @@ const BasicFields = (props)=>
         required={true} />
       <ChallengeVideo 
         id="video"
-        props={props.video} 
         pct={props.pct} 
         msg={props.msg}
-        video={props.video}
+        video={c.video}
         clearVideo={props.clearVideo}
-        poster={props.poster}
-        onChange={props.handleUpload} 
+        poster={c.videoPoster}
+        handleUpload={props.handleUpload} 
       />
       <TextAreaGroup id="prompt"
         value={c.prompt}
         label="Description"
         rows="4"
         onChange={props.onChange} />
+    </div>
+  );
+
+  if(!props.user.admin)
+    return <div>{Fields}</div>;
+
+  return (
+
+    <Accordion id="BasicChallengeFieldsHeader" open={true}  title="Basics">
+      {Fields}
     </Accordion>
   );
 }
@@ -364,7 +448,6 @@ const ChallengeVideo = (props)=> {
     fileName = fileName.replace("%2F","/");
     return fileName;
   }
-
 
   const progress = (<UploadProgress pct={props.pct} msg={props.msg} />);
   const clearBtn = (props.video)?(
@@ -400,7 +483,7 @@ const ChooseOwner = (props)=> {
   const c = props.challenge;
   const Owner = (c.owner && c.owner.email)? (
     <div className="mt-2">
-      <span class="badge badge-secondary-outline">
+      <span className="badge border">
         {c.owner.firstName} {c.owner.lastName} &lt;{c.owner.email}&gt;
         <button type="button" className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearOwner}>
           <XIcon className="icon-danger" />
@@ -429,7 +512,7 @@ const ChooseProf = (props)=> {
   const Prof = (c.professor && c.professor.email)?
     (
       <div className="mt-2">
-        <span class="badge badge-secondary">
+        <span className="badge border">
           {c.professor.firstName} {c.professor.lastName} &lt;{c.professor.email}&gt;
           <button type="button" className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearProfessor}>
             <XIcon className="icon-danger" />
