@@ -132,7 +132,7 @@ class ChallengeResponseForm extends React.Component {
 
     const challengeId = this.challengeId;
     let r = this.state.response;
-    r.user = {email: this.props.user.email, name:this.props.user.displayName, uid: this.props.user.uid};
+    r.user = this.props.user;
     ChallengeDB.addResponse(challengeId, r).then(()=>{
       this.setState({showNextChoice: true});
     });
@@ -178,7 +178,7 @@ class ChallengeResponseForm extends React.Component {
       <div className="ChallengeResponseForm screen">
         <ChallengeHeader id={this.state.challenge.id} 
           challenge={this.state.challenge} 
-          owner={this.state.owner} 
+          owner={this.props.user}
           user={this.props.user} />
 
       <form onSubmit={(e)=>{e.preventDefault();}}>
