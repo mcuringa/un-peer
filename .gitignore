@@ -84,4 +84,5 @@ yarn-error.log*
 
 # production configuration files
 /src/firebase.prod.config.json
-
+dev
+prod
