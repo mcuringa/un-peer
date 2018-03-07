@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import _ from "lodash";
 import {PrimitiveDotIcon, ChevronRightIcon} from 'react-octicons';
 import df from "../DateUtil";
 
@@ -11,14 +12,25 @@ class ChallengeListScreen extends React.Component {
     this.state = {challenges: []};
   }
   componentWillMount() {
-    
-    ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
-      this.setState({challenges: challenges});
-    });
+    if(this.props.user.admin) {
+      ChallengeDB.findAll().then((challenges)=> {
+        let t = _.filter(challenges,(c)=>c.status != ChallengeStatus.DRAFT);
+        this.setState({challenges: t});
+      });
+    }
+    else {
+      ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
+        this.setState({challenges: _.reverse(challenges)});
+      });
+    }
 
   }
   render() {
-    const t = this.state.challenges.map((challenge) => {
+    let t = this.state.challenges;
+    t = _.sortBy(t,(c)=>{c.start});
+    t = _.reverse(t);
+
+    t = t.map((challenge) => {
       return (
         <ChallengeListItem 
           key={challenge.id} 
@@ -50,8 +62,6 @@ const ChallengeListItem = (props) => {
   const dates = df.range(challenge.start, challenge.end);
 
 
-
-
   return (
     <Link to={`/challenge/${challenge.id}`}
       className="ChallengeItem d-flex align-items-center flex-row justify-content-between">
@@ -60,7 +70,7 @@ const ChallengeListItem = (props) => {
           {dates}<PrimitiveDotIcon className={`pt-1 ml-1 mr-1 icon-${challenge.stage}`} />
         </div>
         <p className="ChallengeListTitle">{challenge.title}</p>
-        <p>Submitted by: {challenge.owner.name}</p>
+        <p>Owner: {challenge.owner.firstName} {challenge.owner.lastName}</p>
       </div>
       <div className="float-right"><ChevronRightIcon /></div>
     </Link>
