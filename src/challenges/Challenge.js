@@ -331,8 +331,8 @@ const ChallengeDB = {
     });
   },
 
-  getResponse(challengeId, uuid) {
-    return db.get(`challenges/${challengeId}/responses`, uuid);
+  getResponse(challengeId, uid) {
+    return db.get(`challenges/${challengeId}/responses`, uid);
   },
 
   addResponse(challengeId, response) {
