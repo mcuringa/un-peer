@@ -32,7 +32,7 @@ const ChallengeHeader = (props) => {
       </div>
       <h4>{props.challenge.title}
       <small><EditLink user={props.user} challenge={props.challenge} /></small></h4>
-      <div>Challenge owner: {props.owner.name} </div>
+      <div>Challenge owner: {props.owner.firstName} {props.owner.lastName} </div>
     </div>
   );
 }
