@@ -8037,7 +8037,12 @@ label {
   line-height: auto; }
 
 .VideoUploadButton label {
+  border-radius: 14px;
   cursor: pointer; }
+
+.VideoUploadButton label:hover {
+  opacity: .8;
+  background-color: black; }
 
 /*============================== Ratings */
 .Star svg {
