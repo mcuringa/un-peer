@@ -6,15 +6,13 @@ import df from "../DateUtil.js";
 import db from "../DBTools.js";
 import UserDB from "../users/UserDB.js";
 
-
 import {ChallengeDB} from "./Challenge.js";
 import ChallengeHeader from "./ChallengeHeader.js";
 
 import {StarIcon, ChevronLeftIcon, ChevronDownIcon, BookmarkIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
-import Modal from "../Modal";
 import LoadingModal from "../LoadingModal";
-import {LoadingSpinner} from "../FormUtil";
+import Snackbar from "../Snackbar";
 
 class ChallengeReviewScreen extends React.Component {
   constructor(props) {
@@ -33,13 +31,37 @@ class ChallengeReviewScreen extends React.Component {
       isProfessor: false
     };
 
-    this.earlyAccess = this.props.user.admin;
+    this.timeout = 1500;
+    this.snack = _.bind(this.snack, this);
+    this.clearSnack = _.bind(this.clearSnack, this);
+    this.snack = _.throttle(this.snack, this.timeout + 200);
 
+    this.earlyAccess = this.props.user.admin;
     this.toggleBookmark = _.bind(this.toggleBookmark, this);
     this.isLoading = this.isLoading.bind(this);
+
   }
 
+  snack(msg, undo) {
+    this.setState({
+      showSnack: true,
+      snackMsg: msg,
+      snackUndo: undo
+    });
+  }
+
+  clearSnack() {
+    this.setState({
+      showSnack: false,
+      snackMsg: "",
+      snackUndo: null
+    });
+  }
+
+
   componentWillMount() {
+
+    this.clearSnack();
 
     ChallengeDB.get(this.challengeId)
       .then((c)=> { 
@@ -47,22 +69,33 @@ class ChallengeReviewScreen extends React.Component {
         this.setState({
           challenge: c, 
           loadingChallenge: false,
-          isOwner: c.owner.uid == this.props.user.uid,
-          isProfessor: c.professor && c.professor.uid == this.props.user.uid
+          isOwner: c.owner.uid === this.props.user.uid,
+          isProfessor: c.professor && c.professor.uid === this.props.user.uid
         }); 
-
       });
 
-    ChallengeDB.getResponses(this.challengeId).then((t)=>{
+    db.findAll(`/challenges/${this.challengeId}/responses`).then((t)=>{
       this.setState({responses: t, loadingResponses: false});
     });
 
     const path = `/users/${this.props.user.uid}/bookmarks`;
     db.findAll(path).then((bookmarks)=>{
-      const t = _.keyBy(bookmarks, (b)=>{return b.id});
+      let t = _.keyBy(bookmarks, (b)=>{return b.id});
+      t = _.map(t, (b)=>{ return {[b.id]: true}; });
       this.setState({bookmarks: t});
     });
 
+  }
+
+  featureResponse(response) {
+    let c = this.state.challenge;
+    if(this.state.isProfessor)
+      c.professorChoice = response;
+    else
+      c.ownerChoice = response;
+    ChallengeDB.save(c).then(()=>{
+      this.setState({challenge: c});
+    });
   }
 
   isLoading() {
@@ -74,16 +107,22 @@ class ChallengeReviewScreen extends React.Component {
     const uid = this.props.user.uid;
     let bookmarks = this.state.bookmarks;
 
-    const updateState = ()=> {
-      bookmarks[response.id] = !bookmarks[response.id];    
-      this.setState({bookmarks: bookmarks});
-    };
+    console.log("response: " );
+    console.log(response);
+    const exists = bookmarks[response.id];
 
-    if(bookmarks[response.id]) {
-      db.delete(`/users/${uid}/bookmarks`, response.id).then(updateState);
+    bookmarks[response.id] = !bookmarks[response.id];    
+    this.setState({bookmarks: bookmarks});
+
+    if(exists) {
+      const msg = this.snack("bookmark deleted");
+      const path = `/users/${uid}/bookmarks`;
+
+      db.delete(path, response.id).then(msg);
     }
     else {
-      UserDB.addBookmark(uid, response, c).then(updateState);
+      const msg = this.snack("bookmark added");
+      UserDB.addBookmark(uid, response, c).then(msg);
     }
   }
 
@@ -116,11 +155,15 @@ class ChallengeReviewScreen extends React.Component {
           keyIndex={i}
           key={`resp_${i}`}
           user={this.props.user} 
+          isOwner={this.state.isOwner}
+          isProfessor={this.state.isProfessor}
+          featureResponse={this.featureResponse}
           challenge={this.state.challenge}
           toggleBookmark={makeToggleFunction(r)} 
           bookmarked={this.state.bookmarks[r.id]}/>
       );
     });
+
 
     return (
       <div className="ResponseReviewScreen screen">
@@ -132,39 +175,69 @@ class ChallengeReviewScreen extends React.Component {
           to={`/challenge/${this.state.challenge.id}`}>
           <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
 
-        <WelcomeMsg 
+        <WelcomeProfessor 
           challenge={this.state.challenge}
-          isOwner={this.state.isOwner} 
           isProfessor={this.state.isProfessor} />
         
+        <WelcomeOwner 
+          challenge={this.state.challenge}
+          isOwner={this.state.isOwner} />
+        
         {ResponseList}
-      
+        <Snackbar show={this.state.showSnack} 
+          msg={this.state.snackMsg}
+          wait={1500}
+          onClose={this.clearSnack} />
       </div>
     );
   }
 }
 
-const WelcomeMsg = (props) => {
 
-  const title = (props.isOwner)?"owner of":"professor for";
-  if(props.isOwner || props.isProfessor) {
-    return (
-      <div>
-         <p className="text-muted pl-3 pr-3">
-          As the {title} this challenge, please review the responses as
-          they become available. After you are satisfied with your study,
-          click the <span className="badge badge-secondary">feature</span> button
-          to choose the response you would like to feature.
-        </p>
-        <p className="text-muted pl-3 pr-3">
-          All responses to this challenge will be
-          completed by <strong>{df.day(props.challenge.ratingsDue)}</strong>.
-        </p>
-      </div>
-    );
-  }
-  return null;
+const WelcomeProfessor = (props) => {
 
+  if(!props.isProfessor)
+    return null;
+
+  return (
+    <div>
+      <h4>Welcome Professor</h4>
+      <p className="text-muted pl-3 pr-3">
+        As the professor for this challenge, please review the responses as
+        they become available. After you are satisfied,
+        click the <span className="badge badge-secondary">feature</span> button
+        to choose the response you would like to feature.
+      </p>
+      <p className="text-muted pl-3 pr-3">
+        All responses to this challenge will be
+        completed by <strong>{df.day(props.challenge.ratingsDue)}</strong>.
+      </p>
+    </div>
+  );
+}
+
+const WelcomeOwner = (props) => {
+  
+
+  if(!props.isOwner)
+    return null;
+  
+  return (
+    <div>
+      <h4>Welcome {props.user.firstName} {props.user.firstName}</h4>
+
+      <p className="text-muted pl-3 pr-3">
+        As the owner of this challenge, please review the responses as
+        they become available. After you are satisfied,
+        click the <span className="badge badge-secondary">feature</span> button
+        to choose the response you would like to feature.
+      </p>
+      <p className="text-muted pl-3 pr-3">
+        All responses to this challenge will be
+        completed by <strong>{df.day(props.challenge.ratingsDue)}</strong>.
+      </p>
+    </div>
+  );
 
 }
 
@@ -188,6 +261,21 @@ const ToggleIcon = (props) => {
 const Response = (props) => {
 
     const r = props.response;
+    const feature = ()=>{ this.props.featureResponse(r); };
+
+    const FeatureButton = ()=>{
+      if(!props.isProfessor && !props.isOwner)
+        return null;
+
+      return (
+        <button 
+          className="btn btn-sm btn-primary" 
+          type="button"
+          onCLick={feature}>
+          ★ set feature ★
+        </button>
+      )
+    };
     return (
       <div className="card">
         <div className="card-header" id={`head_${props.keyIndex}`}>
@@ -213,12 +301,10 @@ const Response = (props) => {
                   <Bookmark {...props} />
                 </div>
             </div>
-
-
-
         </div>
         <div id={`body_${props.keyIndex}`} className="collapse" data-parent="#ResponseList">
           <div className="card-body">
+            id: {r.id} 
             <Video video={r.video} />
             {r.text}
           </div>
@@ -231,7 +317,8 @@ const Response = (props) => {
 
 
 const StarRatings = (props)=>{
-  const stars = _.map([,,,,,], (n, i, t)=>{
+
+  const stars = _.map([true,true,true,true,true,true], (n, i, t)=>{
     return (
       <Star key={`star_${props.responseId}_${i}`} 
         val={i+1} 
