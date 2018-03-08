@@ -8198,10 +8198,10 @@ label {
       width: 40px;
       height: 40px;
       border-radius: 50%; }
-      .App .calendar-view .challenge-area .challenge-dot.archive {
-        background-color: #6A82AD; }
-      .App .calendar-view .challenge-area .challenge-dot.rating {
+      .App .calendar-view .challenge-area .challenge-dot.of-the-week {
         background-color: #6999c9; }
+      .App .calendar-view .challenge-area .challenge-dot.rating {
+        background-color: #6A82AD; }
   .App .calendar-view .react-calendar {
     border: none;
     margin: 0 auto;
@@ -8222,6 +8222,8 @@ label {
     .App .calendar-view .react-calendar .react-calendar__tile {
       padding: 0;
       height: 50px; }
+      .App .calendar-view .react-calendar .react-calendar__tile:hover {
+        background-color: transparent; }
     .App .calendar-view .react-calendar .react-calendar__tile--active {
       background: none; }
     .App .calendar-view .react-calendar .react-calendar__tile > time {
