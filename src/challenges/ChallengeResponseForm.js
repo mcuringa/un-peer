@@ -35,7 +35,6 @@ class ChallengeResponseForm extends React.Component {
 
     this.state = {
       challenge: {},
-      owner: {},
       response: emptyR,
       loading: true,
       dirty: false,
@@ -58,22 +57,17 @@ class ChallengeResponseForm extends React.Component {
   chooseText() { this.setState({showText: true, showVideo: false})}
   chooseVideo() { this.setState({showText: false, showVideo: true})}
 
-
   componentDidMount() {
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
-        this.setState({"owner": c.owner});
         this.setState({challenge: c});
     });
 
     ChallengeDB.getResponse(id, this.props.user.uid)
       .then((r)=>{
-        this.setState({response: r});
-      });
-
+          this.setState({response: r});
+      },()=>{console.log("no response");});
   }
-
-
 
   handleUpload(e) {
 

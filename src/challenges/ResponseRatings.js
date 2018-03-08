@@ -34,13 +34,16 @@ class ResponseRatings extends React.Component {
 
   componentWillMount() {
 
+    const setRatings = (c)=>{ this.setState({challenge: c, loadingChallenge: false}); };
+    const noAssignments = ()=>{console.log("no assignments");};
+    const noResponses = ()=>{console.log("no responses");};
     ChallengeDB.get(this.challengeId)
-      .then(ChallengeDB.assignRatings)
-      .then((c)=> { this.setState({challenge: c, loadingChallenge: false}); });
+      .then(ChallengeDB.assignRatings, noAssignments)
+      .then(setRatings);
 
     ChallengeDB.getResponses(this.challengeId).then((t)=>{
       this.setState({responses: t, loadingResponses: false});
-    });
+    },noResponses);
   }
 
   isLoading() {

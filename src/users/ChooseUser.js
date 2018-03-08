@@ -23,9 +23,7 @@ class ChooseUser extends React.Component {
 
   componentWillMount() {
     db.findAll("/users").then((t)=>{
-      this.setState({
-        users: t,
-      });
+      this.setState({users: t});
     });
   }
 
@@ -54,8 +52,6 @@ class ChooseUser extends React.Component {
 
     const results = search();
     const clearAndSelect = (u)=> {
-      console.log("clear called")
-      console.log(u.email);
       this.props.selectUser(u);
       this.setState({[this.termKey]: ""});
     }
@@ -85,22 +81,21 @@ const SearchResults = (props)=> {
     $(`#${props.id}`).hide();
 
   const makeRow = (u)=> {
-    // console.log("making a row");
-    // console.log(u.email);
 
     const choose = ()=>{ 
-      console.log("choose called")
-      console.log(u.email);
       props.selectUser(u);
       $(`#${props.id}`).hide();
     }
 
     return (
-      <div id={props.id} key={`${props.id}_${u.uid}`} className="dropdown-item">
-        <button type="button" className="btn btn-link" onClick={choose}>
+        <button
+          id={props.id}
+          key={`${props.id}_${u.uid}`}
+          type="button" 
+          className="dropdown-item" 
+          onClick={choose}>
           {u.firstName} {u.lastName} &lt;{u.email}&gt;
         </button>
-      </div>
     )
   }
 

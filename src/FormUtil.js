@@ -170,7 +170,7 @@ const ImageUpload = (props)=> {
     return null;
 
   const uploadBtn = (
-    <div className="VideoUploadButton d-block">
+    <div className="ImageUploadButton d-block">
       <input type="file" className="d-none"
         accept="image/*" id={props.id} onChange={props.onChange} />
         <label className="text-primary" htmlFor={props.id}>
@@ -210,7 +210,7 @@ const ImageUpload = (props)=> {
         {img()}
         {uploadBtn}
       </div>
-      <UploadProgress pct={props.pct} msg={props.msg} hide={props.hideProgress} />
+      <UploadProgress pct={props.pct} msg={props.msg} hide={false} />
 
 
     </div>

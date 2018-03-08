@@ -93,6 +93,7 @@ class ChallengeEditScreen extends React.Component {
   handleUpload(e) {
 
     console.log("handling upload");
+    console.log(e.target.id);
 
     let c = this.state.challenge;
     let file = e.target.files[0];
@@ -180,7 +181,7 @@ class ChallengeEditScreen extends React.Component {
     c.start = date;
     c.responseDue = new Date(date.getTime() + dayInMillis * 5);
     c.ratingDue = new Date(date.getTime() + dayInMillis * 7);
-    c.end = new Date(date.getTime() + dayInMillis * 7);
+    c.end = new Date(date.getTime() + dayInMillis * 8);
 
     this.setState({ challenge: c, dirty: true });
 
@@ -276,7 +277,7 @@ class ChallengeEditScreen extends React.Component {
               onChange={this.handleDateChange} />
             
             <DatePicker id="endDate"
-              value={c.endDate}
+              value={c.end}
               label="challenge end"
               onChange={this.handleDateChange} />
 
@@ -382,22 +383,22 @@ class Accordion extends React.Component {
     const toggleFunction = ()=> {
       this.setState({open: !this.state.open})
     }
-    return(
-    <div className="Accordion card">
-      <div id={`${this.props.id}Header`} 
-        className="clickable d-flex justify-content-between card-header" 
-        data-toggle="collapse" 
-        onClick={toggleFunction}
-        data-target={`#${this.props.id}`}
-        aria-expanded={this.state.open}
-        aria-controls={this.props.id}>
-        <strong className="text-secondary">{this.props.title}</strong>
-        {ToggleIcon}
+    return (
+      <div className="Accordion card">
+        <div id={`${this.props.id}Header`} 
+          className="clickable d-flex justify-content-between card-header" 
+          data-toggle="collapse" 
+          onClick={toggleFunction}
+          data-target={`#${this.props.id}`}
+          aria-expanded={this.state.open}
+          aria-controls={this.props.id}>
+          <strong className="text-secondary">{this.props.title}</strong>
+          {ToggleIcon}
+        </div>
+        <div id={this.props.id} className={`AccordionBody card-body collapse pl-2 ${toggleCss}`}  data-parent={`${this.props.id}Header`}>
+          {this.props.children}
+        </div>
       </div>
-      <div id={this.props.id} className={`AccordionBody card-body collapse pl-2 ${toggleCss}`}  data-parent={`${this.props.id}Header`}>
-        {this.props.children}
-      </div>
-    </div>
     )
   }
 }

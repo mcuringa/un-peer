@@ -28,8 +28,11 @@ class ChallengeReviewScreen extends React.Component {
       loading: false,
       challenge: {},
       responses: [],
-      bookmarks: []
+      bookmarks: [],
+      isOwner: false,
+      isProfessor: false
     };
+
     this.earlyAccess = this.props.user.admin;
 
     this.toggleBookmark = _.bind(this.toggleBookmark, this);
@@ -40,10 +43,14 @@ class ChallengeReviewScreen extends React.Component {
 
     ChallengeDB.get(this.challengeId)
       .then((c)=> { 
-        this.setState({challenge: c, loadingChallenge: false}); 
-        this.earlyAccess = this.earlyAccess 
-          || c.owner.uid == this.props.user.uid
-          || (c.professor && c.professor.uid == this.props.user.uid);
+
+        this.setState({
+          challenge: c, 
+          loadingChallenge: false,
+          isOwner: c.owner.uid == this.props.user.uid,
+          isProfessor: c.professor && c.professor.uid == this.props.user.uid
+        }); 
+
       });
 
     ChallengeDB.getResponses(this.challengeId).then((t)=>{
@@ -91,7 +98,7 @@ class ChallengeReviewScreen extends React.Component {
     if(this.isLoading())
       return <LoadingModal status="Loading responses" show={true} />
 
-    if(new Date() < this.state.challenge.ratingDue && !this.earlyAccess)
+    if(new Date() < this.state.challenge.ratingDue && !(this.state.isOwner || this.state.isProfessor))
       return (<TooEarly challenge={this.state.challenge} />);
 
     const makeToggleFunction = (r)=> {
@@ -120,14 +127,45 @@ class ChallengeReviewScreen extends React.Component {
         <ChallengeHeader challenge={this.state.challenge} 
           owner={this.state.challenge.owner} 
           user={this.props.user} />
-
+       
         <Link className="text-dark mb-2"
           to={`/challenge/${this.state.challenge.id}`}>
           <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
+
+        <WelcomeMsg 
+          challenge={this.state.challenge}
+          isOwner={this.state.isOwner} 
+          isProfessor={this.state.isProfessor} />
+        
         {ResponseList}
+      
       </div>
     );
   }
+}
+
+const WelcomeMsg = (props) => {
+
+  const title = (props.isOwner)?"owner of":"professor for";
+  if(props.isOwner || props.isProfessor) {
+    return (
+      <div>
+         <p className="text-muted pl-3 pr-3">
+          As the {title} this challenge, please review the responses as
+          they become available. After you are satisfied with your study,
+          click the <span className="badge badge-secondary">feature</span> button
+          to choose the response you would like to feature.
+        </p>
+        <p className="text-muted pl-3 pr-3">
+          All responses to this challenge will be
+          completed by <strong>{df.day(props.challenge.ratingsDue)}</strong>.
+        </p>
+      </div>
+    );
+  }
+  return null;
+
+
 }
 
 
@@ -224,8 +262,8 @@ const TooEarly = (props)=> {
       <div className="card-body">
         <p className="card-text">
           Responses are not available yet for this challenge.
-          The professor video and responses will be available on 
-          <em>{df.day(props.challenge.ratingsDue)}</em>.
+          The professor video and responses will be available
+          on <strong>{df.day(props.challenge.ratingsDue)}</strong>.
         </p>
       </div>
       <div className="card-footer">
