@@ -27,11 +27,12 @@ import ProfileScreen from './users/ProfileScreen.js';
 import ManageUsersScreen from './users/ManageUsersScreen';
 import db from "./DBTools";
 
+import {LoadingSpinner} from "./FormUtil"
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {user: {} };
+    this.state = {user: {}, loading: true };
     this.setAppClass = this.setAppClass.bind(this);
     this.userListener = this.userListener.bind(this);
 
@@ -39,7 +40,7 @@ export default class App extends Component {
 
   userListener(authUser) {
     console.log("user listener called");
-
+    this.setState({loading: false});
 
     if(!authUser) {
       this.setState({user: {}});
@@ -53,7 +54,10 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    FBUtil.getAuthUser(this.userListener);
+    FBUtil.getAuthUser(this.userListener)
+      .then(()=>{
+
+      });
   }
 
   setAppClass(clazz) {
@@ -67,6 +71,9 @@ export default class App extends Component {
     // console.log("Is admin: " + this.state.user.admin);
 
     let Main;
+
+    // if(this.state.loading)
+    //   return <LoadingSpinner show={true} />
 
     if(!this.state.user.email)
       return (

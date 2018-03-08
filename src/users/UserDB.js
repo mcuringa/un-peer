@@ -65,13 +65,8 @@ addBookmark(uid, response, challenge) {
   const path = `/users/${uid}/bookmarks`;
   const id = response.id;
 
-  console.log(path);
-  console.log(bookmark);
-
-
   return new Promise((resolve,reject)=>{
     db.save(path,id,bookmark).then(resolve);
-    // resolve({});
   });
 },
 

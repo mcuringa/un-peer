@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 
-class Snackbar  extends React.Component {
+class Snackbar extends React.Component {
 
   constructor(props) {
     super(props);
@@ -39,12 +39,13 @@ class Snackbar  extends React.Component {
       </div>
     );
   }
+
 }
 
 const Undo = (props)=> {
   if(!props.handleUndo) 
     return null;
-  return null;
+  return (<button onClick={props.handleUndo} className=".SnackUndo btn btn-lnk">UNDO</button>);
 }
 
 export default Snackbar;

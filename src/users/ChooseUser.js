@@ -2,7 +2,6 @@ import React from 'react';
 import _ from "lodash";
 import db from "../DBTools";
 
-import {TextInput} from "../FormUtil"
 import $ from "jquery";
 
 
@@ -39,7 +38,7 @@ class ChooseUser extends React.Component {
 
     const term = this.state[this.termKey];
     const search = ()=> {
-      if(!term || term.length == 0)
+      if(!term || term.length === 0)
         return [];
       
       const f = (u)=> {
@@ -77,7 +76,7 @@ class ChooseUser extends React.Component {
 
 const SearchResults = (props)=> {
 
-  if(_.size(props.userList) == 0)
+  if(_.size(props.userList) === 0)
     $(`#${props.id}`).hide();
 
   const makeRow = (u)=> {

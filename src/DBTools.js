@@ -25,8 +25,10 @@ const db = {
         let t = [];
         db.collection(path).get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            let record = {id: doc.id};
-            record = _.merge(record, doc.data());
+            let record = doc.data();
+            record.id = doc.id;
+            console.log("recod.id:")
+            console.log(record.id);
             t.push(record);
           });
           resolve(t);
@@ -93,7 +95,7 @@ const db = {
     data.modified = new Date();
     let ref = db.collection(path).doc();
     return new Promise((resolve, reject)=>{
-      ref.add(data).then(()=>{
+      ref.set(data).then(()=>{
         let obj = {id: ref.id};
         obj = _.merge(obj, data);
         resolve(obj);
@@ -103,7 +105,10 @@ const db = {
 
   delete(path, id) {
     let db = FBUtil.connect();
+    console.log(path);
+    console.log(id);
     let ref = db.collection(path).doc(id);
+
     return new Promise((resolve, reject)=>{ref.delete().then(resolve);});
   }
 

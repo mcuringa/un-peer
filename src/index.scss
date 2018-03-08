@@ -544,11 +544,12 @@ label
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        &.of-the-week {
-          background-color: $bg-bright-blue;
-        }
-        &.rating {
+        &.archive {
           background-color: $bg-blue;
+        }
+
+        &.rating {
+          background-color: $bg-bright-blue;
         }
       }
     }
@@ -582,9 +583,6 @@ label
       .react-calendar__tile {
         padding: 0;
         height: 50px;
-        &:hover {
-            background-color: transparent;
-        }
       }
 
       .react-calendar__tile--active {

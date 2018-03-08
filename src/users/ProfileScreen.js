@@ -4,7 +4,6 @@ import _ from "lodash";
 import {StatusIndicator} from "../FormUtil";
 
 import Modal from "../Modal";
-import {ChallengeDB} from "../challenges/Challenge.js";
 
 
 class ProfileScreen extends React.Component {

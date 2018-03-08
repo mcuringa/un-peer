@@ -78,8 +78,7 @@ export default class Login extends Component {
     }
 
     const err = (error)=> {
-      let code = error.code;
-      let msg = error.message;
+      const code = error.code;
       this.setState({loading: false, loadingStatus: null});
 
       if(code === "auth/user-not-found")

@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import {XIcon, PrimitiveDotIcon, QuestionIcon } from 'react-octicons';
+import {XIcon, PrimitiveDotIcon } from 'react-octicons';
 import {UploadProgress} from "./MediaManager";  
 
 const LoadingSpinner = (props)=> {
@@ -54,7 +54,7 @@ const TextGroup = (props)=> {
 };
 
 const ErrorMessage = (props)=>{
-  if(!props.show || !props.msg || props.msg.length==0)
+  if(!props.show || !props.msg || props.msg.length === 0)
     return null;
   console.log("error");
   return (      
