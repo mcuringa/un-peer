@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import df from "../DateUtil";
-import {PencilIcon} from "react-octicons";
+import {PencilIcon, ChevronLeftIcon} from "react-octicons";
 
 const EditLink = (props) => {
   if(!props.user.admin)
@@ -25,6 +25,9 @@ const ChallengeHeader = (props) => {
 
   return (
     <div className="ChallengeDetailHeader">
+      <Link className="text-dark mb-2" to={`/challenge/${props.challenge.id}`}>
+        <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back
+      </Link>
       <div className="StartDate">
         <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
         {stageMsg}
