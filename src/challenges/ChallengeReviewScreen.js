@@ -9,10 +9,11 @@ import UserDB from "../users/UserDB.js";
 import {ChallengeDB} from "./Challenge.js";
 import ChallengeHeader from "./ChallengeHeader.js";
 
-import {StarIcon, ChevronLeftIcon, ChevronDownIcon, BookmarkIcon} from 'react-octicons';
+import {StarIcon, FlameIcon, ChevronDownIcon, ChevronRightIcon, BookmarkIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import LoadingModal from "../LoadingModal";
 import Snackbar from "../Snackbar";
+import Accordion from "../Accordion";
 
 class ChallengeReviewScreen extends React.Component {
   constructor(props) {
@@ -28,7 +29,9 @@ class ChallengeReviewScreen extends React.Component {
       responses: [],
       bookmarks: [],
       isOwner: false,
-      isProfessor: false
+      isProfessor: false,
+      professorChoice: {},
+      ownersChoice: {}
     };
 
     this.timeout = 1500;
@@ -39,6 +42,7 @@ class ChallengeReviewScreen extends React.Component {
     this.earlyAccess = this.props.user.admin;
     this.toggleBookmark = _.bind(this.toggleBookmark, this);
     this.isLoading = this.isLoading.bind(this);
+    this.featureResponse = this.featureResponse.bind(this);
 
   }
 
@@ -57,7 +61,6 @@ class ChallengeReviewScreen extends React.Component {
       snackUndo: null
     });
   }
-
 
   componentWillMount() {
 
@@ -89,12 +92,19 @@ class ChallengeReviewScreen extends React.Component {
 
   featureResponse(response) {
     let c = this.state.challenge;
-    if(this.state.isProfessor)
+    let msg = "";
+    if(this.state.isProfessor){
       c.professorChoice = response;
-    else
+      msg = "Professor's Choice saved";
+    }
+    else{
       c.ownerChoice = response;
+      msg = "Owner's Choice saved";
+    }
+    
     ChallengeDB.save(c).then(()=>{
       this.setState({challenge: c});
+      this.snack(msg);       
     });
   }
 
@@ -107,8 +117,6 @@ class ChallengeReviewScreen extends React.Component {
     const uid = this.props.user.uid;
     let bookmarks = this.state.bookmarks;
 
-    console.log("response: " );
-    console.log(response);
     const exists = bookmarks[response.id];
 
     bookmarks[response.id] = !bookmarks[response.id];    
@@ -160,7 +168,7 @@ class ChallengeReviewScreen extends React.Component {
           featureResponse={this.featureResponse}
           challenge={this.state.challenge}
           toggleBookmark={makeToggleFunction(r)} 
-          bookmarked={this.state.bookmarks[r.id]}/>
+          bookmarked={this.state.bookmarks[r.id]} />
       );
     });
 
@@ -170,19 +178,28 @@ class ChallengeReviewScreen extends React.Component {
         <ChallengeHeader challenge={this.state.challenge} 
           owner={this.state.challenge.owner} 
           user={this.props.user} />
-       
-        <Link className="text-dark mb-2"
-          to={`/challenge/${this.state.challenge.id}`}>
-          <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
 
         <WelcomeProfessor 
           challenge={this.state.challenge}
           isProfessor={this.state.isProfessor} />
-        
+
         <WelcomeOwner 
           challenge={this.state.challenge}
           isOwner={this.state.isOwner} />
-        
+
+        <ProfessorResponse
+          response={this.state.challenge.professorChoice}
+          key="profRespKey"
+          keyIndex="profRespKey"
+          challenge={this.state.challenge}
+          isProfessor={this.state.isProfessor} 
+          isOwner={this.state.isOwner}
+          bookmarked={this.state.bookmarks[this.state.challenge.professorChoice.id]}
+          toggleBookmark={makeToggleFunction(this.state.challenge.professorChoice)} 
+          user={this.props.user} 
+        />
+
+        <h4>All Responses</h4>
         {ResponseList}
         <Snackbar show={this.state.showSnack} 
           msg={this.state.snackMsg}
@@ -193,6 +210,37 @@ class ChallengeReviewScreen extends React.Component {
   }
 }
 
+const ProfessorResponse = (props) => {
+  if(!props.response && !props.challenge.professorVideo)
+    return null;
+
+  return (
+    <div>
+      <h4>Professor's Response</h4>
+      <Video 
+        video={props.challenge.professorVideo}
+        poster={props.challenge.professorPoster} />
+      <div className="text-muted">
+        <small>Video by Professor {props.challenge.professor.lastName}</small>
+      </div>
+
+      <Response
+        open={true}
+        response={props.response}
+        challenge={props.challenge}
+        keyIndex="profRespKey"
+        key="profRespKey"
+        user={props.response.user} 
+        challenge={props.response.challenge}
+        toggleBookmark={props.toggleBookmark} 
+        bookmarked={props.bookmarked}
+        profChoice={true}
+      />
+    </div>
+  )
+}
+
+
 
 const WelcomeProfessor = (props) => {
 
@@ -200,18 +248,21 @@ const WelcomeProfessor = (props) => {
     return null;
 
   return (
-    <div>
-      <h4>Welcome Professor</h4>
-      <p className="text-muted pl-3 pr-3">
+    <div className="alert alert-secondary alert-dismissible fade show" role="alert">
+      <strong>Welcome Professor</strong>
+      <p>
         As the professor for this challenge, please review the responses as
         they become available. After you are satisfied,
-        click the <span className="badge badge-secondary">feature</span> button
+        click the <span className="badge badge-primary"> ★ set feature ★</span> button
         to choose the response you would like to feature.
       </p>
-      <p className="text-muted pl-3 pr-3">
+      <p>
         All responses to this challenge will be
-        completed by <strong>{df.day(props.challenge.ratingsDue)}</strong>.
+        completed by <strong>{df.fullDay(props.challenge.ratingsDue)}</strong>.
       </p>
+      <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
   );
 }
@@ -223,16 +274,15 @@ const WelcomeOwner = (props) => {
     return null;
   
   return (
-    <div>
-      <h4>Welcome {props.user.firstName} {props.user.firstName}</h4>
-
-      <p className="text-muted pl-3 pr-3">
+    <div className="alert alert-secondary alert-dismissible fade show" role="alert">
+      <strong>Welcome {props.user.firstName} {props.user.firstName}</strong>
+      <p>
         As the owner of this challenge, please review the responses as
         they become available. After you are satisfied,
         click the <span className="badge badge-secondary">feature</span> button
         to choose the response you would like to feature.
       </p>
-      <p className="text-muted pl-3 pr-3">
+      <p>
         All responses to this challenge will be
         completed by <strong>{df.day(props.challenge.ratingsDue)}</strong>.
       </p>
@@ -253,58 +303,75 @@ const Bookmark = (props) => {
   );
 }
 
-const ToggleIcon = (props) => {
-  return <ChevronDownIcon className="icon-secondary pt-1" />
-}
+class Response  extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {open: props.open}
+  }
 
-
-const Response = (props) => {
-
-    const r = props.response;
+  render() {
+    const r = this.props.response;
     const feature = ()=>{ this.props.featureResponse(r); };
+    const toggleCss = (this.state.open)?"show":"";
+    const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
+
+
+    const ProfFeature = ()=> {
+      if(!this.props.profChoice)
+        return null;
+
+      return (
+        <div className="badge badge-primary p-1">
+          <strong>Professor's Choice</strong>
+          <div className="icon-light badge badge-primary ml-1"><FlameIcon /></div>
+        </div>
+      )  
+    }
 
     const FeatureButton = ()=>{
-      if(!props.isProfessor && !props.isOwner)
+      if(!this.props.isProfessor && !this.props.isOwner)
         return null;
 
       return (
         <button 
           className="btn btn-sm btn-primary" 
           type="button"
-          onCLick={feature}>
+          onClick={feature}>
           ★ set feature ★
         </button>
       )
     };
     return (
       <div className="card">
-        <div className="card-header" id={`head_${props.keyIndex}`}>
-
-            <div className="row">
-                <div className="col-6 clickable" data-toggle="collapse" 
-                  data-target={`#body_${props.keyIndex}`}>
-                  <em>{r.title}</em>
-                </div>
-                <div className="col-4 clickable" data-toggle="collapse" 
-                  data-target={`#body_${props.keyIndex}`}>
-                  <StarRatings 
-                    challengeId={props.challenge.id} 
-                    rating={r.avgRating} 
-                    user={props.user} 
-                    responseId={r.id} />
-                </div>
-                <div className="col-1 clickable" data-toggle="collapse" 
-                  data-target={`#body_${props.keyIndex}`}>
-                  <ToggleIcon open={r.open} />
-                </div>
-                <div className="col-1">
-                  <Bookmark {...props} />
-                </div>
-            </div>
+        <div 
+          id={`head_${this.props.keyIndex}`}
+          className="card-header" 
+          aria-expanded={this.props.open}>
+          <div className="row">
+              <div className="col-5 clickable" data-toggle="collapse" 
+                data-target={`#body_${this.props.keyIndex}`}>
+                <ProfFeature />
+                <h5>{r.title}</h5>
+              </div>
+              <div className="col-5 clickable" data-toggle="collapse" 
+                data-target={`#body_${this.props.keyIndex}`}>
+                <StarRatings 
+                  rating={r.avgRating} 
+                  user={this.props.user} 
+                  responseId={r.id} />
+              </div>
+              <div className="col-1 clickable" data-toggle="collapse" 
+                data-target={`#body_${this.props.keyIndex}`}>
+                {ToggleIcon}
+              </div>
+              <div className="col-1">
+                <Bookmark {...this.props} />
+              </div>
+          </div>
         </div>
-        <div id={`body_${props.keyIndex}`} className="collapse" data-parent="#ResponseList">
+        <div id={`body_${this.props.keyIndex}`} className="collapse" data-parent="#ResponseList">
           <div className="card-body">
-            id: {r.id} 
+            <FeatureButton />
             <Video video={r.video} />
             {r.text}
           </div>
@@ -312,13 +379,14 @@ const Response = (props) => {
       </div>
 
     );
+  }
 }
 
 
 
 const StarRatings = (props)=>{
 
-  const stars = _.map([true,true,true,true,true,true], (n, i, t)=>{
+  const stars = _.map([true,true,true,true,true], (n, i, t)=>{
     return (
       <Star key={`star_${props.responseId}_${i}`} 
         val={i+1} 
