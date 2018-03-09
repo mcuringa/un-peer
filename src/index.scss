@@ -564,7 +564,7 @@ label
     .react-calendar {
       border: none;
       margin: 0 auto;
-      color: $gray-text;
+      color: $cal-text;
 
       .react-calendar__navigation__prev2-button,
       .react-calendar__navigation__next2-button {
@@ -579,12 +579,12 @@ label
       .react-calendar__navigation__label,
       .react-calendar__month-view__days__day--weekend,
       .react-calendar__month-view__days__day {
-        color: $gray-text;
+        color: $cal-text;
       }
 
       .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
       .react-calendar__month-view__days__day--neighboringMonth {
-        color: lighten($gray-text, 25%);
+        color: lighten($cal-text, 25%);
       }
 
       .react-calendar__tile {
@@ -596,10 +596,23 @@ label
           cursor: default;
           background: transparent;
         }
-      }
 
-      .react-calendar__tile--active {
-        background: none;
+        .d-flex {
+            height: 14px;
+        }
+
+        .bg-el-right, .bg-el-left {
+            width: 25px;
+        }
+
+        .bg-el-right {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+        .bg-el-left {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
       }
 
       .react-calendar__tile>time {
@@ -607,8 +620,19 @@ label
       }
 
       .react-calendar__tile svg {
-          position: relative;
-          top: -36px;
+        //position: relative;
+      }
+
+      .react-calendar__tile.active.start .bg-el-right,
+      .react-calendar__tile.active.end .bg-el-left,
+      .react-calendar__tile.active.cont .d-flex {
+        background-color: $gray-400;
+      }
+
+      .react-calendar__tile.future.start .bg-el-right,
+      .react-calendar__tile.future.end .bg-el-left,
+      .react-calendar__tile.future.cont .d-flex {
+        background-color: lighten($gray-400, 11%);
       }
 
       .react-calendar__tile.rating .bg-el,
@@ -634,15 +658,6 @@ label
       }
 
       .react-calendar__tile.start.rating .bg-el,
-      .react-calendar__tile.end.rating .bg-el,
-      .react-calendar__tile.start.archive .bg-el,
-      .react-calendar__tile.end.archive .bg-el {
-        color: white;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-      }
-      .react-calendar__tile.start.rating .bg-el,
       .react-calendar__tile.end.rating .bg-el {
         background-color: $bg-bright-blue;
       }
@@ -657,15 +672,6 @@ label
       .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth.start .bg-el,
       .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth.end .bg-el {
         background-color: lighten($bg-blue, 25%);
-      }
-
-      .react-calendar__tile {
-          .bg-el-left, .bg-el-right {
-              width: 25px;
-              height: 32px;
-              margin-top: 8px;
-              z-index: 0;
-          }
       }
 
       .react-calendar__tile.end.rating {

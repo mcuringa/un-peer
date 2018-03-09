@@ -1,7 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
-import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js"
-import {isDateWithin, isSameDay, getChallengeForDate} from "./Utils.js"
+import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js";
+import {isDateWithin, isSameDay, getChallengeForDate} from "./Utils.js";
 
 class CalendarScreen extends React.Component {
   constructor(props) {
@@ -17,6 +17,7 @@ class CalendarScreen extends React.Component {
   componentWillMount() {
     ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
       .then((t) => {
+        console.log(t);
         this.setState({
           challenges: t,
           loading: false
@@ -34,6 +35,8 @@ class CalendarScreen extends React.Component {
 
     for (let i = 0; i < this.state.challenges.length; i++) {
       let challenge = this.state.challenges[i];
+      /*console.log(date.date, challenge.start, challenge.end,
+                  isDateWithin(date.date, challenge.start, challenge.end));*/
       if (isDateWithin(date.date, challenge.start, challenge.end)) {
 
         if (isSameDay(date.date, challenge.start)) {
@@ -42,45 +45,50 @@ class CalendarScreen extends React.Component {
           s += ` end ${challenge.stage} `;
         }
 
-        return s === '' ? challenge.stage : s;
+        s = s === '' ? `cont ${challenge.stage}` : s;
+        //console.log('returning', s);
+        return s;
       }
     }
 
+    //console.log('returning s here', s);
     return s;
   }
 
   getTileContent(date, view) {
-    const bgBlue = '#6A82AD';
+    /*const bgBlue = '#6A82AD';
     const bgBrightBlue = 'rgb(104, 153, 201)';
-    const darkGrayText = 'rgb(105, 112, 120)';
+    const darkGrayText = 'rgb(105, 112, 120)';*/
 
-    const a = <div className="bg-el">
-          <time dateTime={date.date.toISOString()}>s</time>
-          </div>;
+    /*const a = <div className="bg-el">
+          <time dateTime={date.date.toISOString()}></time>
+          </div>;*/
 
-    const cls = this.getTileClass(date, view);
-    const drawCircle = cls.includes('start') || cls.includes('end');
+    //const cls = this.getTileClass(date, view);
+    //const drawCircle = cls.includes('start') || cls.includes('end');
+
+    /*const svg = (
+      <svg height="40" width="40">
+          <circle
+              cx="20" cy="20" r="17" strokeWidth="0"
+              fill="transparent" />
+          <text
+              x="19.5" y="25"
+              fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
+              textAnchor="middle"
+              fontWeight="bold"
+              fill={darkGrayText}
+              fontSize="14">
+              {date.date.getDate()}
+          </text>
+      </svg>
+    );*/
 
     return (
-      <div>
-          <div className="d-flex">
-              <div className="bg-el-left"></div>
-              <div className="bg-el-right"></div>
-          </div>
-          <svg height="40" width="40">
-              <circle
-                  cx="20" cy="20" r="17" strokeWidth="0"
-                  fill={drawCircle ? bgBrightBlue : 'transparent'} />
-              <text
-                  x="19.5" y="25"
-                  fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
-                  textAnchor="middle"
-                  fontWeight="bold"
-                  fill={drawCircle ? 'white' : darkGrayText}
-                  fontSize="14">
-                  {date.date.getDate()}
-              </text>
-          </svg>
+      <div className="d-flex">
+          <div className="bg-el-left"></div>
+          <time dateTime={date.date.toISOString()}>{date.date.getDate()}</time>
+          <div className="bg-el-right"></div>
       </div>
     );
   }
