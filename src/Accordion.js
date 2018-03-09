@@ -69,4 +69,3 @@ const AccordionHeader = (props)=> {
 }
 
 export default Accordion;
-export {AccordionBody};
