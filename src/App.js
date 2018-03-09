@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import _ from "lodash";
 
 import {
   BrowserRouter as Router,
@@ -17,6 +16,7 @@ import NewChallengeScreen from './challenges/NewChallenge.js';
 import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
 import ChallengeReviewScreen from './challenges/ChallengeReviewScreen.js';
+import ProfessorResponseForm from './challenges/ProfessorResponseForm.js';
 
 import BookmarkDetailScreen from './BookmarkDetail.js';
 import BookmarksScreen from './BookmarksScreen.js';
@@ -27,7 +27,6 @@ import ProfileScreen from './users/ProfileScreen.js';
 import ManageUsersScreen from './users/ManageUsersScreen';
 import db from "./DBTools";
 
-import {LoadingSpinner} from "./FormUtil"
 
 export default class App extends Component {
   constructor(props) {
@@ -66,22 +65,12 @@ export default class App extends Component {
 
   render() {
 
-    // console.log(`Authenticated user: ${this.state.user.email}`);
-    // console.log(`DB user: ${this.state.user.firstName} ${this.state.user.lastName}`);
-    // console.log("Is admin: " + this.state.user.admin);
-
-    let Main;
-
-    // if(this.state.loading)
-    //   return <LoadingSpinner show={true} />
-
     if(!this.state.user.email)
       return (
         <div className={`App container login`}>
           <Login user={this.state.user} setAppClass={this.setAppClass} loadingHandler={this.loadingHandler} />
         </div>
       );
-
 
     return (
       <Router>
@@ -140,6 +129,7 @@ const SecureScreens = (props)=>{
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/respond" component={ChallengeResponseForm}/>
+        <PropsRoute  user={props.user} path="/challenge/:id/prof" component={ProfessorResponseForm}/>
         <PropsRoute  user={props.user} path="/challenge/:id/rate" component={ResponseRatings}/>
         <PropsRoute  user={props.user} path="/challenge/:id/review" component={ChallengeReviewScreen}/>
         <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>
