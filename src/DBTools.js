@@ -84,7 +84,14 @@ const db = {
 
 
   update(path, id, data) {
-    return this.save(path, id, data);
+    let db = FBUtil.connect();
+    data.modified = new Date();
+    let ref = db.collection(path).doc(id);
+    return new Promise((resolve, reject)=>{
+      ref.update(data).then(()=>{
+        resolve(data);
+      });
+    });
   },
 
   add(path, data) {
