@@ -21,6 +21,7 @@ import {UploadProgress, formatFileSize} from "../MediaManager";
 import ChooseUser from "../users/ChooseUser";
 import Modal from "../Modal";
 import Snackbar from "../Snackbar";
+import Accordion from "../Accordion";
 
 class ChallengeEditScreen extends React.Component {
   constructor(props) {
@@ -47,10 +48,44 @@ class ChallengeEditScreen extends React.Component {
     this.selectProfessor = _.bind(this.selectProfessor, this);
     this.selectOwner = _.bind(this.selectOwner, this);
     this.submitForReview = _.bind(this.submitForReview, this);
+    this.snack = _.bind(this.snack, this);
+    this.snack = _.throttle(this.snack, this.snackTime);
 
   }
 
+  snack(msg, showUndo) {
 
+    const p = (resolve, reject)=>
+    {
+      const clear = ()=> {
+        this.setState({
+          showSnack: false,
+          snackMsg: "",
+          snackUndo: null
+        });
+      }
+      const over = ()=> {
+        clear();
+        resolve();
+      }
+
+      const undo = ()=> {
+        clear();
+        reject();
+      }
+
+      this.setState({
+        showSnack: true,
+        snackMsg: msg,
+        showUndo: showUndo,
+        snackUndo: undo,
+        snackOver: over
+      });      
+    }
+
+    return new Promise(p);
+
+  }
   clearField(key, msg) { 
     let c = this.state.challenge;
     c[key] = "";
@@ -73,9 +108,11 @@ class ChallengeEditScreen extends React.Component {
   save() {
 
     this.setState({loading: true});
+    this.snack("saving...");
     ChallengeDB.save(this.state.challenge)
     .then(()=>{
-      this.setState({loading: false, dirty: false, showSnack: true});
+      this.setState({loading: false, dirty: false});
+      this.snack("saved");
     });
   }
 
@@ -87,12 +124,15 @@ class ChallengeEditScreen extends React.Component {
   
   handleUpload(e) {
 
-    console.log("handling upload");
-    console.log(e.target.id);
-
     let c = this.state.challenge;
     let file = e.target.files[0];
     const key = e.target.id;
+
+    if(key === "video")
+      this.snack("Uploading video");
+    else if(key === "videoPoster")
+      this.snack("Uploading thumbnail image");
+
 
     this.setState({dirty: true, loading: true});
 
@@ -100,6 +140,7 @@ class ChallengeEditScreen extends React.Component {
     const msgKey = key+"Status";
     
     const succ = (task)=> {
+      this.snack("Upload complete");
       this.setState({
         [pctKey]: "",
         [msgKey]: 0
@@ -123,6 +164,7 @@ class ChallengeEditScreen extends React.Component {
 
     const err = (e)=>{
       console.log(e);
+      this.snack("Upload failed");
       this.setState({
         [msgKey]: "Upload failed: " + e
       });
@@ -145,7 +187,6 @@ class ChallengeEditScreen extends React.Component {
     this.setState({ challenge: c, dirty: true, owner: u });
     this.save();
   }
-
 
   handleChange(e) {
 
@@ -221,16 +262,16 @@ class ChallengeEditScreen extends React.Component {
 
 
 
-          <Accordion title="Advanced" id="AdvancedFields" hide={!this.props.user.admin}>
-              <ImageUpload 
-                id="videoPoster"
-                label="Video thumbnail"
-                pct={this.state.videoPosterPct} 
-                img={c.videoPoster} 
-                onChange={this.handleUpload}
-                clearImage={()=>{this.clearField("videoPoster");}}
-                help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
-              />
+          <Accordion id="AdvancedFields" hide={!this.props.user.admin} header="Advanced">
+            <ImageUpload 
+              id="videoPoster"
+              label="Video thumbnail"
+              pct={this.state.videoPosterPct} 
+              img={c.videoPoster} 
+              onChange={this.handleUpload}
+              clearImage={()=>{this.clearField("videoPoster");}}
+              help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
+            />
 
             <ChooseProf challenge={this.state.challenge}
               clearProfessor={()=>{this.clearField("professor");}}
@@ -241,7 +282,7 @@ class ChallengeEditScreen extends React.Component {
               selectUser={this.selectOwner} />
           </Accordion>
 
-          <Accordion id="ScheduleFields" title="Schedule" hide={!this.props.user.admin}>
+          <Accordion id="ScheduleFields" hide={!this.props.user.admin} header="Schedule">
             <div className="form-group">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
@@ -274,8 +315,7 @@ class ChallengeEditScreen extends React.Component {
             <DatePicker id="endDate"
               value={c.end}
               label="challenge end"
-              onChange={this.handleDateChange} />
-
+                onChange={this.handleDateChange} />
           </Accordion>
 
           <SubmitChallengeButtons 
@@ -286,9 +326,10 @@ class ChallengeEditScreen extends React.Component {
 
         </form>
         <Snackbar show={this.state.showSnack} 
-          msg="Saved..."
-          wait={1000}
-          onClose={()=>{this.setState({showSnack: false});}} />
+          msg={this.state.snackMsg}
+          showUndo={this.state.showUndo}
+          undo={this.state.snackUndo}
+          onClose={this.state.snackOver} />
         
         <Modal id="confirmRemoveVideo" 
           title="Remove video" 
@@ -364,39 +405,39 @@ const FormHeader = (props)=>
     </div> );
 }
 
-class Accordion extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {open: props.open}
-  }
+// class Accordion extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {open: props.open}
+//   }
 
-  render() {
-    if(this.props.hide)
-      return null;
-    const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
-    const toggleCss = (this.state.open)?"show":"";
-    const toggleFunction = ()=> {
-      this.setState({open: !this.state.open})
-    }
-    return (
-      <div className="Accordion card">
-        <div id={`${this.props.id}Header`} 
-          className="clickable d-flex justify-content-between card-header" 
-          data-toggle="collapse" 
-          onClick={toggleFunction}
-          data-target={`#${this.props.id}`}
-          aria-expanded={this.state.open}
-          aria-controls={this.props.id}>
-          <strong className="text-secondary">{this.props.title}</strong>
-          {ToggleIcon}
-        </div>
-        <div id={this.props.id} className={`AccordionBody card-body collapse pl-2 ${toggleCss}`}  data-parent={`${this.props.id}Header`}>
-          {this.props.children}
-        </div>
-      </div>
-    )
-  }
-}
+//   render() {
+//     if(this.props.hide)
+//       return null;
+//     const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
+//     const toggleCss = (this.state.open)?"show":"";
+//     const toggleFunction = ()=> {
+//       this.setState({open: !this.state.open})
+//     }
+//     return (
+//       <div className="Accordion card">
+//         <div id={`${this.props.id}Header`} 
+//           className="clickable d-flex justify-content-between card-header" 
+//           data-toggle="collapse" 
+//           onClick={toggleFunction}
+//           data-target={`#${this.props.id}`}
+//           aria-expanded={this.state.open}
+//           aria-controls={this.props.id}>
+//           <strong className="text-secondary">{this.props.title}</strong>
+//           {ToggleIcon}
+//         </div>
+//         <div id={this.props.id} className={`AccordionBody card-body collapse pl-2 ${toggleCss}`}  data-parent={`${this.props.id}Header`}>
+//           {this.props.children}
+//         </div>
+//       </div>
+//     )
+//   }
+// }
 
 const BasicFields = (props)=>
 {
@@ -429,11 +470,10 @@ const BasicFields = (props)=>
     return <div>{Fields}</div>;
 
   return (
-
-    <Accordion id="BasicChallengeFieldsHeader" open={true}  title="Basics">
-      {Fields}
+    <Accordion id="BasicChallengeFieldsHeader" header="Basics" open={true}>
+       {Fields}
     </Accordion>
-  );
+  )
 }
 
 const ChallengeVideo = (props)=> {
