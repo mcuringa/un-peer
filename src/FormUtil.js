@@ -34,22 +34,22 @@ const TextGroup = (props)=> {
     return null;
 
   return (
-  <div className="form-group">
-    <label htmlFor={props.id}>{props.label}</label>
-    <TextInput type={props.type||'text'}
-           value={props.value}
-           className="form-control"
-           id={props.id}
-           placeholder={props.placeholder}
-           onChange={props.onChange}
-           readOnly={props.readOnly}
-           plaintext={props.plaintext}
-           required={props.required}
-           autofocus={props.autoFocus} />
-    <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
-    <ErrorMessage msg={props.validationErrorMsg} show={props.showError} />
+    <div className="form-group">
+      <label htmlFor={props.id}>{props.label}</label>
+      <TextInput type={props.type||'text'}
+             value={props.value}
+             className="form-control"
+             id={props.id}
+             placeholder={props.placeholder}
+             onChange={props.onChange}
+             readOnly={props.readOnly}
+             plaintext={props.plaintext}
+             required={props.required}
+             autofocus={props.autoFocus} />
+      <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
+      <ErrorMessage msg={props.validationErrorMsg} show={props.showError} />
 
-  </div>
+    </div>
   );
 };
 
@@ -169,29 +169,32 @@ const ImageUpload = (props)=> {
   if(props.hide)
     return null;
 
-  const uploadBtn = (
-    <div className="ImageUploadButton d-block">
-      <input type="file" className="d-none"
-        accept="image/*" id={props.id} onChange={props.onChange} />
-        <label className="text-primary" htmlFor={props.id}>
-          <div className="btn btn-secondary btn-sm">
-            select image
-          </div>
-        </label>
-    </div>
-  );
-    
+  const UploadBtn = ()=> {
+    const btnLabel = (props.img && props.img.length)?"replace image":"choose image"
+    return (
+      <div className="ImageUploadButton">
+        <input type="file" className="d-none"
+          accept="image/*" id={props.id} onChange={props.onChange} />
+          <label className="text-primary d-block" htmlFor={props.id}>
+            <div className="btn btn-secondary btn-block">
+              {btnLabel}
+            </div>
+          </label>
+      </div>
+    )
+  }
+
   const clear = ()=>{
     props.clearImage(props.id);
   }
 
-  const img = ()=> {
+  const ImageThumbnail = ()=> {
     
     if(!props.img)
       return null;
 
     return (
-      <img src={props.img} style={{maxWidth: "250px"}}  alt="thumbnail" />
+      <img src={props.img} alt="thumbnail" />
     );
   }
   
@@ -203,15 +206,10 @@ const ImageUpload = (props)=> {
           <XIcon className="icon-danger" />
         </button>
       </label>
-
       <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
-
-      <div className="d-flex justify-content-between">
-        {img()}
-        {uploadBtn}
-      </div>
+      <UploadBtn />
+      <ImageThumbnail />
       <UploadProgress pct={props.pct} msg={props.msg} hide={false} />
-
 
     </div>
   );
