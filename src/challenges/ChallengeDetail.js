@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from "lodash";
-import df from "../DateUtil";
-import {NavLink, Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 
 import {Video} from "../FormUtil.js"
 import {User, ChallengeDB} from "./Challenge.js"
@@ -23,10 +22,6 @@ class ChallengeDetailScreen extends React.Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
-
-    const loadResponsesForOwner = (c)=>{
-      
-    };
 
     ChallengeDB.get(id).then((c)=>{
       this.setState({
@@ -51,7 +46,8 @@ class ChallengeDetailScreen extends React.Component {
         <ChallengeInfo id={this.state.challenge.id} 
           challenge={this.state.challenge} 
           owner={this.state.owner} 
-          response={this.state.response} />
+          response={this.state.response}
+          user={this.props.user} />
       </div>
     );
   }
@@ -59,6 +55,23 @@ class ChallengeDetailScreen extends React.Component {
 
 const ChallengeButton = (props) => {
   const c = props.challenge;
+
+  if(c.professor && c.professor.uid === props.user.uid) {
+    return (
+      <div>
+        <NavLink 
+          className={`btn btn-block bt-lg btn-secondary mb-2`} 
+          activeClassName="active" 
+          to={`/challenge/${props.id}/review`}>Select the best response</NavLink>
+        
+        <NavLink 
+          className={`btn btn-block bt-lg btn-secondary`} 
+          activeClassName="active" 
+          to={`/challenge/${props.id}/prof`}>Make/upload a wrap-up video</NavLink>
+      </div>
+    )
+  }
+
 
 
   if(c.stage === "active") {
@@ -102,7 +115,8 @@ const ChallengeInfo = (props) => {
       <p>{props.challenge.prompt}</p>
       <ChallengeButton id={props.id} 
         challenge={props.challenge}
-        response={props.response} />
+        response={props.response}
+        user={props.user} />
    </div>
 
   );
