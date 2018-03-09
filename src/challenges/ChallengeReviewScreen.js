@@ -13,7 +13,6 @@ import {StarIcon, FlameIcon, ChevronDownIcon, ChevronRightIcon, BookmarkIcon} fr
 import { Video } from "../FormUtil";
 import LoadingModal from "../LoadingModal";
 import Snackbar from "../Snackbar";
-import Accordion from "../Accordion";
 
 class ChallengeReviewScreen extends React.Component {
   constructor(props) {
@@ -155,7 +154,13 @@ class ChallengeReviewScreen extends React.Component {
       return f;
     }
 
-    let ResponseList = _.map(this.state.responses, (r, i)=>{
+    // const profFeatId = this.state.challenge.professorChoice.id;
+    const ownerFeatId = this.state.challenge.professorChoice.id;
+    const filterFeatures = (r)=>{ return r.id !== ownerFeatId && r.id !== ownerFeatId };
+    
+    const responses = _.filter(this.state.responses, filterFeatures);
+
+    let ResponseList = _.map(responses, (r, i)=>{
 
       return (
         <Response 
@@ -199,7 +204,6 @@ class ChallengeReviewScreen extends React.Component {
           user={this.props.user} 
         />
 
-        <h4>All Responses</h4>
         {ResponseList}
         <Snackbar show={this.state.showSnack} 
           msg={this.state.snackMsg}
@@ -210,18 +214,18 @@ class ChallengeReviewScreen extends React.Component {
   }
 }
 
+
 const ProfessorResponse = (props) => {
-  if(!props.response && !props.challenge.professorVideo)
-    return null;
+
 
   return (
     <div>
-      <h4>Professor's Response</h4>
       <Video 
         video={props.challenge.professorVideo}
         poster={props.challenge.professorPoster} />
-      <div className="text-muted">
-        <small>Video by Professor {props.challenge.professor.lastName}</small>
+      
+      <div>
+        <small><strong>Response from Professor {props.challenge.professor.lastName}</strong></small>
       </div>
 
       <Response
@@ -231,7 +235,6 @@ const ProfessorResponse = (props) => {
         keyIndex="profRespKey"
         key="profRespKey"
         user={props.response.user} 
-        challenge={props.response.challenge}
         toggleBookmark={props.toggleBookmark} 
         bookmarked={props.bookmarked}
         profChoice={true}
@@ -239,7 +242,6 @@ const ProfessorResponse = (props) => {
     </div>
   )
 }
-
 
 
 const WelcomeProfessor = (props) => {
@@ -252,14 +254,14 @@ const WelcomeProfessor = (props) => {
       <strong>Welcome Professor</strong>
       <p>
         As the professor for this challenge, please review the responses as
-        they become available. After you are satisfied,
-        click the <span className="badge badge-primary"> ★ set feature ★</span> button
-        to choose the response you would like to feature.
+        they become available. After you have chosen the response you would like to feature,
+        click the <span className="badge badge-primary">★ set feature ★</span> button
+        for that response.
       </p>
-      <p>
+      <small>
         All responses to this challenge will be
         completed by <strong>{df.fullDay(props.challenge.ratingsDue)}</strong>.
-      </p>
+      </small>
       <button type="button" className="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -314,18 +316,27 @@ class Response  extends React.Component {
     const feature = ()=>{ this.props.featureResponse(r); };
     const toggleCss = (this.state.open)?"show":"";
     const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
-
+    
+    const setToggle = () => {this.setState({open: !this.state.open})};
 
     const ProfFeature = ()=> {
       if(!this.props.profChoice)
         return null;
 
       return (
-        <div className="badge badge-primary p-1">
+        <div className="badge badge-primary">
           <strong>Professor's Choice</strong>
           <div className="icon-light badge badge-primary ml-1"><FlameIcon /></div>
         </div>
       )  
+    }
+
+    const AuthorInfo = ()=> {
+      if(!this.props.profChoice && !this.props.ownerChoice)
+        return null;
+      return (
+        <p><small>Submitted by: {r.user.firstName} {r.user.lastName}</small></p>
+      )
     }
 
     const FeatureButton = ()=>{
@@ -334,7 +345,8 @@ class Response  extends React.Component {
 
       return (
         <button 
-          className="btn btn-sm btn-primary" 
+          className="btn btn-sm btn-block btn-primary mb-2" 
+          style={{marginTop:"-1rem"}}
           type="button"
           onClick={feature}>
           ★ set feature ★
@@ -342,25 +354,29 @@ class Response  extends React.Component {
       )
     };
     return (
-      <div className="card">
+      <div className="card mb-3">
         <div 
           id={`head_${this.props.keyIndex}`}
           className="card-header" 
           aria-expanded={this.props.open}>
           <div className="row">
-              <div className="col-5 clickable" data-toggle="collapse" 
+              <div className="col-5 clickable"
+                onClick={setToggle}
+                data-toggle="collapse" 
                 data-target={`#body_${this.props.keyIndex}`}>
+                <strong>{r.title}</strong>
                 <ProfFeature />
-                <h5>{r.title}</h5>
               </div>
               <div className="col-5 clickable" data-toggle="collapse" 
+                onClick={setToggle}
                 data-target={`#body_${this.props.keyIndex}`}>
                 <StarRatings 
                   rating={r.avgRating} 
                   user={this.props.user} 
                   responseId={r.id} />
               </div>
-              <div className="col-1 clickable" data-toggle="collapse" 
+              <div className="col-1 clickable" data-toggle="collapse"
+                onClick={setToggle} 
                 data-target={`#body_${this.props.keyIndex}`}>
                 {ToggleIcon}
               </div>
@@ -369,10 +385,11 @@ class Response  extends React.Component {
               </div>
           </div>
         </div>
-        <div id={`body_${this.props.keyIndex}`} className="collapse" data-parent="#ResponseList">
+        <div id={`body_${this.props.keyIndex}`} className={toggleCss} data-parent="#ResponseList">
           <div className="card-body">
             <FeatureButton />
             <Video video={r.video} />
+            <AuthorInfo />
             {r.text}
           </div>
         </div>
