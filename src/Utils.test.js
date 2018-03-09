@@ -41,6 +41,7 @@ it("finds a challenge in a date range", () =>{
     start: today,
     end: nextMonth,
   };
+
   const challenges = [c1,c2,c3];
   let x = df.getChallengeForDate(challenges, today);
   expect(x.id).toBe("challenge-1");
