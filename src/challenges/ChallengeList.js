@@ -14,7 +14,7 @@ class ChallengeListScreen extends React.Component {
   componentWillMount() {
     if(this.props.user.admin) {
       ChallengeDB.findAll().then((challenges)=> {
-        let t = _.filter(challenges,(c)=>c.status != ChallengeStatus.DRAFT);
+        let t = _.filter(challenges,(c)=>c.status !== ChallengeStatus.DRAFT);
         this.setState({challenges: t});
       });
     }
@@ -27,7 +27,7 @@ class ChallengeListScreen extends React.Component {
   }
   render() {
     let t = this.state.challenges;
-    t = _.sortBy(t,(c)=>{c.start});
+    t = _.sortBy(t,(c)=>{return c.start});
     t = _.reverse(t);
 
     t = t.map((challenge) => {
