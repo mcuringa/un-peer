@@ -29,7 +29,7 @@ class Accordion extends React.Component {
           aria-expanded={this.state.open}
           aria-controls={this.props.id}>
           
-          {this.props.headerContent}
+          {this.props.header}
 
         </AccordionHeader>
         <AccordionBody id={this.props.id} toggleCss={toggleCss}>
@@ -69,3 +69,4 @@ const AccordionHeader = (props)=> {
 }
 
 export default Accordion;
+export {AccordionBody};
