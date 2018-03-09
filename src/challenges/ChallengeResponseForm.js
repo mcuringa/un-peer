@@ -11,8 +11,6 @@ import {UploadProgress, formatFileSize} from "../MediaManager";
 import {
   TextGroup,
   TextAreaGroup,
-  StatusIndicator,
-  LoadingSpinner,
   VideoUploadImproved
 } from "../FormUtil";
 
@@ -272,7 +270,6 @@ const TextResponse = (props) => {
   if(!props.show)
     return null;
 
-  const valid = empty(props.response.text) || empty(props.response.title);
   return (
     <div>
       <TextGroup id="title"
