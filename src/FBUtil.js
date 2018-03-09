@@ -1,8 +1,8 @@
-import _ from "lodash";
+// import _ from "lodash";
 // import localforage from "localforage";
 import {ChallengeDB} from "./challenges/Challenge.js";
 import fireBaseConfig from "./firebase.config.json";
-import db from "./DBTools";
+// import db from "./DBTools";
 
 
 const FBUtil =
