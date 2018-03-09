@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from "lodash";
-import dateFormat from 'dateformat';
 import {XIcon, EyeIcon, ChevronDownIcon, ChevronRightIcon} from "react-octicons";
 import { Link, Redirect } from 'react-router-dom';
 
@@ -22,10 +21,6 @@ import {UploadProgress, formatFileSize} from "../MediaManager";
 import ChooseUser from "../users/ChooseUser";
 import Modal from "../Modal";
 import Snackbar from "../Snackbar";
-
-
-let firebase = require("firebase");
-require("firebase/storage");
 
 class ChallengeEditScreen extends React.Component {
   constructor(props) {
@@ -445,7 +440,7 @@ const ChallengeVideo = (props)=> {
   const vidFileName = (path)=> {
     let start = path.lastIndexOf("/");
     let end = path.lastIndexOf("?")
-    let fileName = (end==-1)?path.slice(start): path.slice(start,end);
+    let fileName = (end === -1)?path.slice(start): path.slice(start,end);
     fileName = fileName.replace("%2F","/");
     return fileName;
   }

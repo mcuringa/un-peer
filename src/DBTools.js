@@ -27,8 +27,6 @@ const db = {
           querySnapshot.forEach((doc) => {
             let record = doc.data();
             record.id = doc.id;
-            console.log("recod.id:")
-            console.log(record.id);
             t.push(record);
           });
           resolve(t);

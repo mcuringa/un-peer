@@ -38,7 +38,7 @@ class NewChallengeScreen extends React.Component {
   submit(e) {
 
     const title = this.state.title.trim();
-    if(title.length == 0) {
+    if(title.length === 0) {
       this.setState({validationError: true,});
       return;
     }
