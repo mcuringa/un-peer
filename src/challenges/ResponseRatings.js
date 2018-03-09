@@ -8,7 +8,6 @@ import ChallengeHeader from "./ChallengeHeader.js";
 import {StarIcon, DashIcon, ChevronDownIcon, ChevronLeftIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import Modal from "../Modal";
-import LoadingModal from "../LoadingModal";
 import Snackbar from "../Snackbar";
 import {LoadingSpinner} from "../FormUtil";
 
@@ -213,7 +212,7 @@ const ResponseRater = (props) => {
 
 
 const StarRatings = (props)=>{
-  const stars = _.map([,,,,,], (n, i, t)=>{
+  const stars = _.map([0,0,0,0,0], (n, i, t)=>{
     return (
       <Star key={`star_${props.responseId}_${i}`} 
         val={i+1} 
