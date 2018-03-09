@@ -12,6 +12,9 @@ const EditLink = (props) => {
 
 const ChallengeHeader = (props) => {
   const c = props.challenge;
+  let owner = {firstName:"", lastName:""};
+  if(c.owner)
+    owner = c.owner;
   let stageMsg = "Challenge starts: " + df.day(c.start);
   if(c.stage === "active")
     stageMsg = `Response time: ${df.range(c.start, c.ratingsDue)}`;
@@ -34,7 +37,8 @@ const ChallengeHeader = (props) => {
       </div>
       <h4>{props.challenge.title}
       <small><EditLink user={props.user} challenge={props.challenge} /></small></h4>
-      <div>Challenge owner: {props.owner.firstName} {props.owner.lastName} </div>
+      <div>Challenge owner: {owner.firstName} {owner.lastName} </div>
+      <h6 className="text-right text-uppercase">{props.screenTitle}</h6>
     </div>
   );
 }
