@@ -30,7 +30,7 @@ class ChallengeReviewScreen extends React.Component {
       isOwner: false,
       isProfessor: false,
       professorChoice: {},
-      ownersChoice: {}
+      ownerChoice: {}
     };
 
     this.timeout = 1500;
@@ -154,9 +154,9 @@ class ChallengeReviewScreen extends React.Component {
       return f;
     }
 
-    // const profFeatId = this.state.challenge.professorChoice.id;
-    const ownerFeatId = this.state.challenge.professorChoice.id;
-    const filterFeatures = (r)=>{ return r.id !== ownerFeatId && r.id !== ownerFeatId };
+    const profFeatId = this.state.professorChoice.id || "";
+    const ownerFeatId = this.state.professorChoice.id || "";
+    const filterFeatures = (r)=>{ return r.id !== profFeatId && r.id !== ownerFeatId };
     
     const responses = _.filter(this.state.responses, filterFeatures);
 
@@ -181,6 +181,7 @@ class ChallengeReviewScreen extends React.Component {
     return (
       <div className="ResponseReviewScreen screen">
         <ChallengeHeader challenge={this.state.challenge} 
+          screenTitle="Challenge Review"
           owner={this.state.challenge.owner} 
           user={this.props.user} />
 
@@ -190,7 +191,8 @@ class ChallengeReviewScreen extends React.Component {
 
         <WelcomeOwner 
           challenge={this.state.challenge}
-          isOwner={this.state.isOwner} />
+          isOwner={this.state.isOwner} 
+          user={this.props.user} />
 
         <ProfessorResponse
           response={this.state.challenge.professorChoice}
@@ -199,7 +201,7 @@ class ChallengeReviewScreen extends React.Component {
           challenge={this.state.challenge}
           isProfessor={this.state.isProfessor} 
           isOwner={this.state.isOwner}
-          bookmarked={this.state.bookmarks[this.state.challenge.professorChoice.id]}
+          bookmarked={this.state.bookmarks[this.state.professorChoice.id]}
           toggleBookmark={makeToggleFunction(this.state.challenge.professorChoice)} 
           user={this.props.user} 
         />
@@ -234,7 +236,7 @@ const ProfessorResponse = (props) => {
         challenge={props.challenge}
         keyIndex="profRespKey"
         key="profRespKey"
-        user={props.response.user} 
+        user={props.user} 
         toggleBookmark={props.toggleBookmark} 
         bookmarked={props.bookmarked}
         profChoice={true}
@@ -274,25 +276,26 @@ const WelcomeOwner = (props) => {
 
   if(!props.isOwner)
     return null;
-  
+
   return (
     <div className="alert alert-secondary alert-dismissible fade show" role="alert">
-      <strong>Welcome {props.user.firstName} {props.user.firstName}</strong>
+      <strong>Welcome {props.user.firstName}</strong>
       <p>
-        As the owner of this challenge, please review the responses as
-        they become available. After you are satisfied,
-        click the <span className="badge badge-secondary">feature</span> button
-        to choose the response you would like to feature.
+        As the creator of this challenge, please review the responses as
+        they become available. After you have chosen the response you would like to feature,
+        click the <span className="badge badge-primary">★ set feature ★</span> button
+        for that response.
       </p>
-      <p>
+      <small>
         All responses to this challenge will be
-        completed by <strong>{df.day(props.challenge.ratingsDue)}</strong>.
-      </p>
+        completed by <strong>{df.fullDay(props.challenge.ratingsDue)}</strong>.
+      </small>
+      <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
   );
-
 }
-
 
 const Bookmark = (props) => {
 
@@ -313,6 +316,9 @@ class Response  extends React.Component {
 
   render() {
     const r = this.props.response;
+    if(!r)
+      return null;
+
     const feature = ()=>{ this.props.featureResponse(r); };
     const toggleCss = (this.state.open)?"show":"";
     const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
