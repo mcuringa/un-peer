@@ -8188,7 +8188,7 @@ label {
   font-size: .9rem; }
 
 .App .calendar-view {
-  color: #7d87a3; }
+  color: #667179; }
   .App .calendar-view .challenge-area {
     background-color: #f8f9fa; }
     .App .calendar-view .challenge-area .dot-text {
@@ -8197,10 +8197,12 @@ label {
       width: 40px;
       height: 40px;
       border-radius: 50%; }
-      .App .calendar-view .challenge-area .challenge-dot.archive {
-        background-color: #6A82AD; }
+      .App .calendar-view .challenge-area .challenge-dot.respond {
+        background-color: #60d600; }
       .App .calendar-view .challenge-area .challenge-dot.rating {
-        background-color: #6999c9; }
+        background-color: #2b91e9; }
+      .App .calendar-view .challenge-area .challenge-dot.published {
+        background-color: #ae1963; }
   .App .calendar-view .react-calendar {
     border: none;
     margin: 0 auto;
@@ -8220,7 +8222,11 @@ label {
       color: #c8ccd8; }
     .App .calendar-view .react-calendar .react-calendar__tile {
       padding: 0;
-      height: 50px; }
+      height: 50px;
+      /* Tiles aren't clickable. */ }
+      .App .calendar-view .react-calendar .react-calendar__tile:hover {
+        cursor: default;
+        background: transparent; }
     .App .calendar-view .react-calendar .react-calendar__tile--active {
       background: none; }
     .App .calendar-view .react-calendar .react-calendar__tile > time {

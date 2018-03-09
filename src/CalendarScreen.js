@@ -2,7 +2,6 @@ import React from "react";
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js"
 import {isDateWithin, isSameDay, getChallengeForDate} from "./Utils.js"
-import Modal from "./Modal";
 
 class CalendarScreen extends React.Component {
   constructor(props) {
@@ -110,10 +109,10 @@ class CalendarScreen extends React.Component {
           <div className="container challenge-area">
               <div className="d-flex flex-row">
                   <div className="p-2">
-                      <div className="challenge-dot of-the-week"></div>
+                      <div className="challenge-dot respond"></div>
                   </div>
                   <div className="p-2 dot-text">
-                      Challenge of the week
+                      Respond to the challenges
                   </div>
               </div>
               <div className="d-flex flex-row">
@@ -124,11 +123,15 @@ class CalendarScreen extends React.Component {
                       Rate the responses
                   </div>
               </div>
+              <div className="d-flex flex-row">
+                  <div className="p-2">
+                      <div className="challenge-dot published"></div>
+                  </div>
+                  <div className="p-2 dot-text">
+                      Results published
+                  </div>
+              </div>
           </div>
-        <Modal id="ChallengeDetailModal"
-               show={this.state.showDetail}
-               title={this.state.selectedChallenge && this.state.selectedChallenge.title}
-               body={this.state.selectedChallenge && this.state.selectedChallenge.prompt} />
       </div>
     );
   }

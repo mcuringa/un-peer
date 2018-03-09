@@ -9,6 +9,11 @@ $full-screen-width: 512px;
 $gray-text: rgb(125, 135, 163);
 $dark-gray-text: rgb(104.55, 112.2, 119.85);
 
+$cal-text: #667179;
+$cal-green: #60d600;
+$cal-blue: #2b91e9;
+$cal-purple: #ae1963;
+
 .text-white {
   fill: white;
 }
@@ -530,9 +535,10 @@ label
 
 .App {
   .calendar-view {
-    color: $gray-text;
+    color: $cal-text;
 
     .challenge-area {
+
       background-color: $gray-100;
 
       .dot-text {
@@ -543,12 +549,14 @@ label
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        &.archive {
-          background-color: $bg-blue;
+        &.respond {
+          background-color: $cal-green;
         }
-
         &.rating {
-          background-color: $bg-bright-blue;
+          background-color: $cal-blue;
+        }
+        &.published {
+          background-color: $cal-purple;
         }
       }
     }
@@ -582,6 +590,12 @@ label
       .react-calendar__tile {
         padding: 0;
         height: 50px;
+
+        /* Tiles aren't clickable. */
+        &:hover {
+          cursor: default;
+          background: transparent;
+        }
       }
 
       .react-calendar__tile--active {
