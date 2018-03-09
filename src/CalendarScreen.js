@@ -73,7 +73,7 @@ class CalendarScreen extends React.Component {
                   cx="20" cy="20" r="17" strokeWidth="0"
                   fill={drawCircle ? bgBrightBlue : 'transparent'} />
               <text
-                  x="20" y="22"
+                  x="19.5" y="25"
                   fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
                   textAnchor="middle"
                   fontWeight="bold"
