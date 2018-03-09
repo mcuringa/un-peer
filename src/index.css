@@ -8331,10 +8331,10 @@ label {
 
 .Snackbar {
   background-color: rgba(0, 0, 0, 0.85);
+  height: 3rem;
   z-index: 1080;
-  max-width: 250px;
+  width: 400px;
   margin: 0 auto;
   color: #e9ecef;
   text-align: center;
-  padding-top: 8px;
-  padding-bottom: 8px; }
+  padding: 8px; }
