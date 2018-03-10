@@ -9,9 +9,9 @@ const df = {
   ts: (d)=> dateFormat(d,"yyyy-mm-dd HH:MM:ss"),
   range: (a,b)=> {
 
-    const start = dateFormat(a, "ddd mm/dd - ");
+    const start = dateFormat(a, "ddd mm/dd");
     const end = dateFormat(b, "ddd mm/dd/yy");
-    return `${start}${end}`
+    return `${start} - ${end}`;
   },
 
   isSameDay: (d1,d2)=>{
