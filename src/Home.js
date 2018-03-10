@@ -1,28 +1,28 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import {ChallengeDB, Challenge} from "./challenges/Challenge.js"
+import {ChallengeDB} from "./challenges/Challenge.js"
 import { PrimitiveDotIcon } from 'react-octicons';
 
 
 class Home  extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {challenge: Challenge};
-    this.active = false;
-    // this.props.setAppClass("Home");
+    this.state = {
+      challenge: {}
+    };
   }
 
 
   componentWillMount() {
 
-    const activate = (c)=>{ this.active= true; this.setState({challenge: c}); };
+    const activate = (c)=>{ this.active = true; this.setState({challenge: c}); };
     const noActiveChallenge = ()=>{ console.log("no active challenge"); };
     ChallengeDB.getActive().then(activate, noActiveChallenge);
 
   }
 
   render() {
-    if(!this.active) {
+    if(!this.state.challenge.id) {
       return (
         <div className="Home screen">
           <ChallengeButton />
