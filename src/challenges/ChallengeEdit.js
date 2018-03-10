@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from "lodash";
-import {XIcon, EyeIcon, ChevronDownIcon, ChevronRightIcon} from "react-octicons";
+import {XIcon, EyeIcon} from "react-octicons";
 import { Link, Redirect } from 'react-router-dom';
 
 

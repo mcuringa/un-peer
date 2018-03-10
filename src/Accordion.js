@@ -1,5 +1,5 @@
 import React from 'react';
-import {ChevronDownIcon, ChevronRightIcon, BookmarkIcon} from 'react-octicons';
+import {ChevronDownIcon, ChevronRightIcon} from 'react-octicons';
 
 class Accordion extends React.Component {
   constructor(props) {
@@ -11,8 +11,6 @@ class Accordion extends React.Component {
 
     if(this.props.hide)
       return null;
-
-    let DefaultHeader = "";
 
     const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
     const toggleCss = (this.state.open)?"show":"";
