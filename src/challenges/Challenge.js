@@ -85,8 +85,9 @@ const ChallengeDB = {
     return new Promise((resolve, reject)=>{
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((challenges)=>{
+          console.log(challenges);
           const now = new Date();
-          let active = _.filter(challenges, c=> c.start < now && c.end > now && c.status === ChallengeStatus.PUBLISHED);
+          let active = _.filter(challenges, (c)=> {return c.start < now && c.end > now});
           if(active.length === 0)
             reject();
           else
@@ -144,6 +145,7 @@ const ChallengeDB = {
           querySnapshot.forEach((doc) => {
             let c = doc.data();
             c.id = doc.id;
+            c.status = Number.parseInt(c.status);
             c.stage = ChallengeDB.getStage(c);
 
             ChallengeDB.cache[c.id] = c;
@@ -161,11 +163,12 @@ const ChallengeDB = {
   get(id) {
     
     let challenge = ChallengeDB.cache[id];
-    if(challenge || false)
+    if(challenge)
     {
       return new Promise(
         (resolve, reject)=>{
           challenge.stage = ChallengeDB.getStage(challenge);
+          challenge.status = Number.parseInt(challenge.status);
           resolve(challenge);
         });
 
@@ -180,6 +183,7 @@ const ChallengeDB = {
           .then( (doc)=>{
             challenge = doc.data();
             challenge.stage = ChallengeDB.getStage(challenge);
+            challenge.status = Number.parseInt(challenge.status);
             challenge.id = id;
             if(challenge) //don't cache nulls
               ChallengeDB.cache[id] = challenge;
