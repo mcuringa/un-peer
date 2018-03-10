@@ -13,23 +13,23 @@ class ChallengeListScreen extends React.Component {
   }
   componentWillMount() {
     if(this.props.user.admin) {
+
       ChallengeDB.findAll().then((challenges)=> {
         let t = _.filter(challenges,(c)=>c.status !== ChallengeStatus.DRAFT);
+        t = _.sortBy(challenges, c=> c.start);
         this.setState({challenges: t});
       });
     }
     else {
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
-        this.setState({challenges: _.reverse(challenges)});
+        let t = _.sortBy(challenges, c=> c.start);
+        this.setState({challenges: t});
       });
     }
 
   }
   render() {
     let t = this.state.challenges;
-    t = _.sortBy(t,(c)=>{return c.start});
-    t = _.reverse(t);
-
     t = t.map((challenge) => {
       return (
         <ChallengeListItem 
