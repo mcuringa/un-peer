@@ -592,7 +592,8 @@ label
         height: 50px;
 
         /* Tiles aren't clickable. */
-        &:hover {
+        &:hover,
+        &.react-calendar__tile--active {
           cursor: default;
           background: transparent;
         }
@@ -600,99 +601,31 @@ label
         .d-flex {
             height: 14px;
         }
-
-        .bg-el-right, .bg-el-left {
-            width: 25px;
-        }
-
-        .bg-el-right {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-        .bg-el-left {
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
       }
 
       .react-calendar__tile>time {
         display: none;
       }
 
-      .react-calendar__tile svg {
-        //position: relative;
+      .react-calendar__tile .d-flex time {
+          margin: 0 auto;
       }
 
-      .react-calendar__tile.active.start .bg-el-right,
-      .react-calendar__tile.active.end .bg-el-left,
-      .react-calendar__tile.active.cont .d-flex {
+      .react-calendar__tile.active .d-flex {
         background-color: $gray-400;
       }
 
-      .react-calendar__tile.future.start .bg-el-right,
-      .react-calendar__tile.future.end .bg-el-left,
-      .react-calendar__tile.future.cont .d-flex {
+      .react-calendar__tile.start .d-flex {
+          border-top-left-radius: 10px;
+          border-bottom-left-radius: 10px;
+      }
+      .react-calendar__tile.end .d-flex {
+          border-top-right-radius: 10px;
+          border-bottom-right-radius: 10px;
+      }
+
+      .react-calendar__tile.future .d-flex {
         background-color: lighten($gray-400, 11%);
-      }
-
-      .react-calendar__tile.rating .bg-el,
-      .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth .bg-el,
-      .react-calendar__tile.archive .bg-el,
-      .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth .bg-el {
-        width: 50px;
-        margin-top: 8px;
-      }
-      .react-calendar__tile.rating .bg-el {
-        background-color: lighten($bg-bright-blue, 25%);
-      }
-      .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth .bg-el {
-        background-color: lighten($bg-bright-blue, 40%);
-      }
-
-      .react-calendar__tile.archive .bg-el {
-        background-color: lighten($bg-blue, 25%);
-
-      }
-      .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth .bg-el {
-        background-color: lighten($bg-blue, 40%);
-      }
-
-      .react-calendar__tile.start.rating .bg-el,
-      .react-calendar__tile.end.rating .bg-el {
-        background-color: $bg-bright-blue;
-      }
-      .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth.start .bg-el,
-      .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth.end .bg-el {
-        background-color: lighten($bg-bright-blue, 25%);
-      }
-      .react-calendar__tile.start.archive .bg-el,
-      .react-calendar__tile.end.archive .bg-el {
-        background-color: $bg-blue;
-      }
-      .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth.start .bg-el,
-      .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth.end .bg-el {
-        background-color: lighten($bg-blue, 25%);
-      }
-
-      .react-calendar__tile.end.rating {
-        .bg-el-left, .bg-el-right {
-          background-color: lighten($bg-bright-blue, 25%);
-        }
-      }
-      .react-calendar__tile.rating.react-calendar__month-view__days__day--neighboringMonth {
-        .bg-el-left, .bg-el-right {
-          background-color: lighten($bg-bright-blue, 40%);
-        }
-      }
-      .react-calendar__tile.end.archive {
-        .bg-el-left, .bg-el-right {
-          background-color: lighten($bg-blue, 25%);
-        }
-      }
-      .react-calendar__tile.archive.react-calendar__month-view__days__day--neighboringMonth {
-        .bg-el-left, .bg-el-right {
-          background-color: lighten($bg-blue, 40%);
-        }
       }
     }
   }

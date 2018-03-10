@@ -46,12 +46,10 @@ class CalendarScreen extends React.Component {
         }
 
         s = s === '' ? `cont ${challenge.stage}` : s;
-        //console.log('returning', s);
         return s;
       }
     }
 
-    //console.log('returning s here', s);
     return s;
   }
 
@@ -86,9 +84,7 @@ class CalendarScreen extends React.Component {
 
     return (
       <div className="d-flex">
-          <div className="bg-el-left"></div>
           <time dateTime={date.date.toISOString()}>{date.date.getDate()}</time>
-          <div className="bg-el-right"></div>
       </div>
     );
   }
