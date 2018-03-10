@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import _ from "lodash";
 import {ChevronLeftIcon, ChevronDownIcon, StarIcon} from 'react-octicons';
 import {
   Accordion,
@@ -9,7 +10,8 @@ import {
 } from 'react-accessible-accordion';
 import df from './DateUtil';
 import StarRating from './StarRating';
-import {ChallengeDB} from "./challenges/Challenge"
+import {ChallengeDB} from "./challenges/Challenge";
+import UserDB from './users/UserDB';
 
 class BackButton extends React.Component {
   render() {
@@ -29,74 +31,27 @@ class BackButton extends React.Component {
 export default class BookmarkDetailScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.challenges = [
-      {
-        id: 1,
-        title: 'Strategic Management',
-        posted_on: new Date('2018-02-01'),
-        owner: {
-          name: 'Sam Thorndike'
-        },
-
-      },
-      {
-        id: 2,
-        title: 'Internal Communication',
-        posted_on: new Date('2018-01-24'),
-        owner: {
-          name: 'Alice Li'
-        }
-      }
-    ];
-
     this.state = {
       challenge: null,
       challengeResponses: [],
-      // Each item in this array is a Response
-      bookmarks: [
-        {
-          title: 'a',
-          challenge: 1,
-          rating: 3,
-          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-        },
-        {
-          title: 'b',
-          challenge: 1,
-          rating: 4,
-          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-        },
-        {
-          title: 'c',
-          challenge: 1,
-          rating: 3,
-          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-        },
-        {
-          title: 'd',
-          challenge: 2,
-          rating: 3,
-          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-        },
-        {
-          title: 'e',
-          challenge: 2,
-          rating: 4,
-          desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-        }
-      ]
+      bookmark: null,
+      challenge: null
     };
   }
 
   componentWillMount() {
-    const id = this.props.match.params.id;
-    const obj = this.challenges.find(function (obj) {
-      return window.parseInt(obj.id, 10) === window.parseInt(id, 10);
-    });
-    this.setState({
-      challenge: obj,
-      challengeResponses: this.state.bookmarks.filter(
-        r => r.challenge === obj.id)
+    const me = this;
+    const id = this.props.computedMatch.params.id;
+    UserDB.getBookmarks(this.props.user.uid).then(function(a) {
+      me.setState({
+        bookmark: _.find(a, function(o) {
+          return o.id === id;
+        })
+      });
+
+      ChallengeDB.get(me.state.bookmark.challengeId).then(function(challenge) {
+        me.setState({challenge: challenge});
+      });
     });
   }
 
@@ -109,9 +64,8 @@ export default class BookmarkDetailScreen extends React.Component {
         </div>
       );
     }
-    const responses = this.state.bookmarks.filter(
-      i => i.challenge === this.state.challenge.id);
 
+    const responses = [];
     const responseItems = responses.map((i, idx) => {
       return (
         <AccordionItem key={idx}>

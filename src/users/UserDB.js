@@ -42,6 +42,7 @@ get(uid) {
   let p = new Promise((resolve, reject)=>{
     store.collection("users").doc(uid).get()
       .then( (doc)=>{
+        console.log('doc', doc);
         if(doc.exists)
           resolve(doc.data());
         else
@@ -68,6 +69,11 @@ addBookmark(uid, response, challenge) {
   return new Promise((resolve,reject)=>{
     db.save(path,id,bookmark).then(resolve);
   });
+},
+
+getBookmarks(uid) {
+  const path = `/users/${uid}/bookmarks`;
+  return db.findAll(path);
 },
 
 create(newUser) {

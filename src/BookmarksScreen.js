@@ -1,12 +1,17 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import _ from "lodash";
 import {ChevronRightIcon} from 'react-octicons';
+import UserDB from './users/UserDB';
+import {ChallengeDB} from './challenges/Challenge';
 import df from './DateUtil';
 import 'react-accessible-accordion/dist/fancy-example.css';
 
 class BookmarkItem extends React.Component {
+
   render() {
     const bookmark = this.props.bookmark;
+    const challenge = this.props.challenge;
     return (
       <Link to={`/bookmark/${bookmark.id}/`}
           className="BookmarkItem d-flex align-items-center flex-row">
@@ -26,7 +31,7 @@ class BookmarkItem extends React.Component {
                   </div>
               </div>
               <h3 className="BookmarksListTitle">{bookmark.title}</h3>
-              <p>Submitted by {bookmark.owner.name}</p>
+              <p>Submitted by {challenge && challenge.owner.firstName + ' ' + challenge.owner.lastName}</p>
           </div>
           <div className="float-right"><ChevronRightIcon /></div>
       </Link>
@@ -58,43 +63,45 @@ class BookmarksScreen extends React.Component {
     ];
 
     this.state = {
-      // Each item in this array is a Response
-      bookmarks: [
-        {
-          challenge: 1,
-          rating: 3
-        },
-        {
-          challenge: 1,
-          rating: 4
-        },
-        {
-          challenge: 1,
-          rating: 3
-        },
-        {
-          challenge: 2,
-          rating: 3
-        },
-        {
-          challenge: 2,
-          rating: 4
-        }
-      ]
+      bookmarks: [],
+      challenges: []
     };
+  }
+
+  componentWillMount() {
+    const me = this;
+    UserDB.getBookmarks(this.props.user.uid).then(function(a) {
+      me.setState({
+        bookmarks: a
+      });
+
+      let pArr = [];
+      a.forEach(function(bookmark) {
+        pArr.push(ChallengeDB.get(bookmark.challengeId));
+      });
+
+      Promise.all(pArr).then(function(challenges) {
+        me.setState({challenges: challenges});
+      });
+    });
   }
 
   render() {
     const me = this;
-    const items = this.challenges.map((i, idx) => {
+    const items = this.state.bookmarks.map((i, idx) => {
 
       const challengeResponses = me.state.bookmarks.filter(
         r => r.challenge === i.id);
+
+      const challenge = _.find(me.state.challenges, function (o) {
+        return o.id === i.challengeId;
+      });
 
       return (
         <BookmarkItem
             key={idx}
             bookmark={i}
+            challenge={challenge}
             responseCount={challengeResponses.length} />
       );
     });
