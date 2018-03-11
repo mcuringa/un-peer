@@ -52,18 +52,22 @@ class CalendarScreen extends React.Component {
         let yesterday = new Date(date.date);
         yesterday.setDate(yesterday.getDate() - 1);
         let tomorrow = new Date(date.date);
-        tomorrow.setDate(yesterday.getDate() + 1);
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
         if (
           df.isSameDay(date.date, challenge.ratingDue) &&
             !df.isSameDay(date.date, challenge.end)
         ) {
           s += ` rating-due${below} `;
-        } else if (
-          df.isSameDay(yesterday, challenge.responseDue) &&
-            !df.isSameDay(tomorrow, challenge.end)
-        ) {
-          s += ` rating-start${below} `;
+        } else if (df.isSameDay(yesterday, challenge.responseDue)) {
+          if (df.isSameDay(tomorrow, challenge.end)) {
+            // If the challenge end date is tomorrow, just hide the
+            // connecting line, becaue there is only one day for
+            // rating the challenge.
+            s += ` rating-start${below} hideline`;
+          } else {
+            s += ` rating-start${below} `;
+          }
         } else if (df.isSameDay(date.date, challenge.responseDue)) {
           if (challenge.stage === 'future') {
             // If it's happening in the future, just assume a

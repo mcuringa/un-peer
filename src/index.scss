@@ -686,7 +686,7 @@ label
             fill: $cal-blue;
           }
         }
-        &.rating-start.active svg.calendar-dotline {
+        &.rating-start.active:not(.hideline) svg.calendar-dotline {
           line.after {
             stroke: $cal-blue;
           }
@@ -707,7 +707,7 @@ label
             fill: lighten($cal-blue, 30%);
           }
         }
-        &.rating-start.future:not(.active) svg.calendar-dotline {
+        &.rating-start.future:not(.active):not(.hideline) svg.calendar-dotline {
           line.after {
             stroke: lighten($cal-blue, 30%);
           }
