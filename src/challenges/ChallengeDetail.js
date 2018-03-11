@@ -42,7 +42,8 @@ class ChallengeDetailScreen extends React.Component {
         <ChallengeHeader id={this.state.challenge.id} 
           challenge={this.state.challenge} 
           owner={this.state.owner} 
-          user={this.props.user} />
+          user={this.props.user}
+          hideBack={true} />
         <ChallengeInfo id={this.state.challenge.id} 
           challenge={this.state.challenge} 
           owner={this.state.owner} 
@@ -72,6 +73,15 @@ const ChallengeButton = (props) => {
     )
   }
 
+
+  if(c.owner && c.owner.uid === props.user.uid) {
+    return (
+      <NavLink 
+        className={`btn btn-block bt-lg btn-secondary mb-2`} 
+        activeClassName="active" 
+        to={`/challenge/${props.id}/review`}>Review responses and select the best</NavLink>
+    )
+  }
 
 
   if(c.stage === "active") {

@@ -145,7 +145,7 @@ const ChallengeDB = {
           querySnapshot.forEach((doc) => {
             let c = doc.data();
             c.id = doc.id;
-            c.status = Number.parseInt(c.status);
+            c.status = Number.parseInt(c.status, 10);
             c.stage = ChallengeDB.getStage(c);
 
             ChallengeDB.cache[c.id] = c;
@@ -168,7 +168,7 @@ const ChallengeDB = {
       return new Promise(
         (resolve, reject)=>{
           challenge.stage = ChallengeDB.getStage(challenge);
-          challenge.status = Number.parseInt(challenge.status);
+          challenge.status = Number.parseInt(challenge.status, 10);
           resolve(challenge);
         });
 
@@ -183,7 +183,7 @@ const ChallengeDB = {
           .then( (doc)=>{
             challenge = doc.data();
             challenge.stage = ChallengeDB.getStage(challenge);
-            challenge.status = Number.parseInt(challenge.status);
+            challenge.status = Number.parseInt(challenge.status, 10);
             challenge.id = id;
             if(challenge) //don't cache nulls
               ChallengeDB.cache[id] = challenge;

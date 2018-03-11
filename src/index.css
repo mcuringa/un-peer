@@ -7817,6 +7817,10 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   width: 100%;
   height: 100%; }
 
+.badge-primary, .btn-primary {
+  background-color: #6999c9;
+  border-color: #6999c9; }
+
 .text-white {
   fill: white; }
 
@@ -7850,9 +7854,10 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   color: #17a2b8;
   fill: #17a2b8; }
 
-.icon-light {
+svg.icon-light {
   color: #f8f9fa;
-  fill: #f8f9fa; }
+  fill: #f8f9fa;
+  stroke: #f8f9fa; }
 
 .icon-dark {
   color: #343a40;
@@ -8119,15 +8124,14 @@ label {
   bottom: 0;
   right: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  text-align: center;
-  font-style: italic;
-  color: white; }
+  background-color: white;
+  font-style: italic; }
 
 .LoadingModal .LoadingModalContent {
   margin: 0 auto;
+  margin-top: 82px;
   max-width: 512px;
-  background-color: rgba(255, 255, 255, 0.3); }
+  text-align: center; }
 
 .LoadingModal .LoadingSpinner {
   height: 90px;
@@ -8137,7 +8141,8 @@ label {
   margin-top: 16px;
   padding-bottom: 20px;
   padding-left: 2em;
-  padding-right: 2em; }
+  padding-right: 2em;
+  font-size: 1.5rem; }
 
 /*======================================= upload progress */
 .UploadProgress {

@@ -1,3 +1,4 @@
+
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "./loaders.min";
 
@@ -13,6 +14,31 @@ $cal-text: #667179;
 $cal-green: #60d600;
 $cal-blue: #2b91e9;
 $cal-purple: #ae1963;
+$blue: green;
+
+//override bootstrap defaults
+.badge-primary, .btn-primary {
+  background-color: $bg-bright-blue;
+  border-color:  $bg-bright-blue;
+}
+
+
+$colors: (
+  "blue": $bg-bright-blue,
+  "indigo": $indigo,
+  "purple": $purple,
+  "pink": $pink,
+  "red": $red,
+  "orange": $orange,
+  "yellow": $yellow,
+  "green": $green,
+  "teal": $teal,
+  "cyan": $cyan,
+  "white": $white,
+  "gray": $gray-600,
+  "gray-dark": $gray-800
+) !default;
+
 
 .text-white {
   fill: white;
@@ -52,9 +78,11 @@ img {
   color: theme-color("info");
   fill: theme-color("info");
 }
-.icon-light {
+
+svg.icon-light {
   color: theme-color("light");
   fill: theme-color("light");
+  stroke: theme-color("light");
 }
 .icon-dark {
   color: theme-color("dark");
@@ -442,17 +470,16 @@ label
   bottom: 0;
   right: 0;
   left: 0;
-  background-color: rgba(0,0,0,.8);
-
-  text-align: center;
+  background-color: white;
   font-style: italic;
-  color: white;
 }
+
 .LoadingModal .LoadingModalContent
 {
   margin: 0 auto;
+  margin-top: $top-header-height + 20px;
   max-width: $full-screen-width;
-  background-color: rgba(255,255,255,.3);
+  text-align: center;
 }
 
 .LoadingModal .LoadingSpinner
@@ -467,6 +494,7 @@ label
   padding-bottom: 20px;
   padding-left: 2em;
   padding-right: 2em;
+  font-size: 1.5rem;
 }
 
 

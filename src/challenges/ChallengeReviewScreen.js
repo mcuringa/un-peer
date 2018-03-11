@@ -206,6 +206,18 @@ class ChallengeReviewScreen extends React.Component {
           user={this.props.user} 
         />
 
+      <Response
+        open={true}
+        response={this.state.challenge.ownerChoice}
+        challenge={this.state.challenge}
+        key="ownerResponseKey"
+        keyIndex="ownerResponseKey"
+        user={this.props.user} 
+        toggleBookmark={makeToggleFunction(this.state.challenge.ownerChoice)} 
+        bookmarked={this.state.bookmarks[this.state.ownerChoice.id]}
+        ownerChoice={true}
+      />
+
         {ResponseList}
         <Snackbar show={this.state.showSnack} 
           msg={this.state.snackMsg}
@@ -218,14 +230,11 @@ class ChallengeReviewScreen extends React.Component {
 
 
 const ProfessorResponse = (props) => {
-
-
   return (
     <div>
       <Video 
         video={props.challenge.professorVideo}
         poster={props.challenge.professorPoster} />
-      
       <div>
         <small><strong>Response from Professor {props.challenge.professor.lastName}</strong></small>
       </div>
@@ -244,7 +253,6 @@ const ProfessorResponse = (props) => {
     </div>
   )
 }
-
 
 const WelcomeProfessor = (props) => {
 
@@ -331,11 +339,24 @@ class Response  extends React.Component {
 
       return (
         <div className="badge badge-primary">
-          <strong>Professor's Choice</strong>
           <div className="icon-light badge badge-primary ml-1"><FlameIcon /></div>
+          <strong>Professor's Choice</strong>
         </div>
       )  
     }
+
+    const OwnerFeature = ()=> {
+      if(!this.props.ownerChoice)
+        return null;
+
+      return (
+        <div className="badge badge-primary">
+          <div className="icon-light ml-1"><FlameIcon /></div>
+          <strong>Owner's Choice</strong>
+        </div>
+      )  
+    }
+
 
     const AuthorInfo = ()=> {
       if(!this.props.profChoice && !this.props.ownerChoice)
@@ -361,34 +382,34 @@ class Response  extends React.Component {
     };
     return (
       <div className="card mb-3">
-        <div 
-          id={`head_${this.props.keyIndex}`}
-          className="card-header" 
-          aria-expanded={this.props.open}>
+        <div id={`head_${this.props.keyIndex}`} className="card-header" aria-expanded={this.props.open}>
           <div className="row">
-              <div className="col-5 clickable"
-                onClick={setToggle}
-                data-toggle="collapse" 
-                data-target={`#body_${this.props.keyIndex}`}>
-                <strong>{r.title}</strong>
-                <ProfFeature />
-              </div>
-              <div className="col-5 clickable" data-toggle="collapse" 
-                onClick={setToggle}
-                data-target={`#body_${this.props.keyIndex}`}>
-                <StarRatings 
-                  rating={r.avgRating} 
-                  user={this.props.user} 
-                  responseId={r.id} />
-              </div>
-              <div className="col-1 clickable" data-toggle="collapse"
-                onClick={setToggle} 
-                data-target={`#body_${this.props.keyIndex}`}>
-                {ToggleIcon}
-              </div>
-              <div className="col-1">
-                <Bookmark {...this.props} />
-              </div>
+            <div className="col-5 clickable"
+              onClick={setToggle}
+              data-toggle="collapse" 
+              data-target={`#body_${this.props.keyIndex}`}>
+              <strong>{r.title}</strong>
+            </div>
+            <div className="col-5 clickable" data-toggle="collapse" 
+              onClick={setToggle}
+              data-target={`#body_${this.props.keyIndex}`}>
+              <StarRatings 
+                rating={r.avgRating} 
+                user={this.props.user} 
+                responseId={r.id} />
+            </div>
+            <div className="col-1 clickable" data-toggle="collapse"
+              onClick={setToggle} 
+              data-target={`#body_${this.props.keyIndex}`}>
+              {ToggleIcon}
+            </div>
+            <div className="col-1">
+              <Bookmark {...this.props} />
+            </div>
+          </div>
+          <div className="d-flex flex-row-reverse">
+            <ProfFeature />
+            <OwnerFeature />
           </div>
         </div>
         <div id={`body_${this.props.keyIndex}`} className={toggleCss} data-parent="#ResponseList">

@@ -26,11 +26,11 @@ const ChallengeHeader = (props) => {
     stageMsg = `Review until: ${df.day(c.end)}`;
 
 
+
+
   return (
     <div className="ChallengeDetailHeader">
-      <Link className="text-dark mb-2" to={`/challenge/${props.challenge.id}`}>
-        <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back
-      </Link>
+      <BackButton hideBack={props.hideBack} challenge={props.challenge} />
       <div className="StartDate">
         <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
         {stageMsg}
@@ -41,6 +41,16 @@ const ChallengeHeader = (props) => {
       <h6 className="text-right text-uppercase">{props.screenTitle}</h6>
     </div>
   );
+}
+
+const BackButton = (props)=>{
+  if(props.hideBack)
+    return null;
+  return (
+    <Link className="text-dark mb-2" to={`/challenge/${props.challenge.id}`}>
+      <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back
+    </Link>
+  )
 }
 
 export default ChallengeHeader;

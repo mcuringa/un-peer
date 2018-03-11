@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { ChallengeDB } from "./Challenge.js"
-import { ChevronLeftIcon } from 'react-octicons';
 import FBUtil from "../FBUtil.js";
 
 import Modal from "../Modal";
@@ -174,9 +173,6 @@ class ChallengeResponseForm extends React.Component {
           user={this.props.user} />
 
       <form onSubmit={(e)=>{e.preventDefault();}}>
-        <Link className="text-dark mb-2"
-          to={`/challenge/${this.challengeId}`}>
-          <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
 
         <MediaPicker show={showMediaPicker} 
           chooseVideo={this.chooseVideo} chooseText={this.chooseText} />

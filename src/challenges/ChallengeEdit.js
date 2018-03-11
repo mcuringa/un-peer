@@ -405,40 +405,6 @@ const FormHeader = (props)=>
     </div> );
 }
 
-// class Accordion extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {open: props.open}
-//   }
-
-//   render() {
-//     if(this.props.hide)
-//       return null;
-//     const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
-//     const toggleCss = (this.state.open)?"show":"";
-//     const toggleFunction = ()=> {
-//       this.setState({open: !this.state.open})
-//     }
-//     return (
-//       <div className="Accordion card">
-//         <div id={`${this.props.id}Header`} 
-//           className="clickable d-flex justify-content-between card-header" 
-//           data-toggle="collapse" 
-//           onClick={toggleFunction}
-//           data-target={`#${this.props.id}`}
-//           aria-expanded={this.state.open}
-//           aria-controls={this.props.id}>
-//           <strong className="text-secondary">{this.props.title}</strong>
-//           {ToggleIcon}
-//         </div>
-//         <div id={this.props.id} className={`AccordionBody card-body collapse pl-2 ${toggleCss}`}  data-parent={`${this.props.id}Header`}>
-//           {this.props.children}
-//         </div>
-//       </div>
-//     )
-//   }
-// }
-
 const BasicFields = (props)=>
 {
   const c = props.challenge;
