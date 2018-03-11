@@ -1,7 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js";
-import {isDateWithin, isSameDay} from "./Utils.js";
+import df from "./DateUtil";
 
 class CalendarScreen extends React.Component {
   constructor(props) {
@@ -35,17 +35,17 @@ class CalendarScreen extends React.Component {
 
     for (let i = 0; i < this.state.challenges.length; i++) {
       let challenge = this.state.challenges[i];
-      if (isDateWithin(date.date, challenge.start, challenge.end)) {
-        if (isSameDay(date.date, challenge.start)) {
+      if (df.isDateWithin(date.date, challenge.start, challenge.end)) {
+        if (df.isSameDay(date.date, challenge.start)) {
           s += ` start response-start ${challenge.stage} `;
-        } else if (isSameDay(date.date, challenge.end)) {
+        } else if (df.isSameDay(date.date, challenge.end)) {
           s += ` end published ${challenge.stage} `;
         } else {
           s = ` cont ${challenge.stage} `;
 
-          if (isSameDay(date.date, challenge.ratingDue)) {
+          if (df.isSameDay(date.date, challenge.ratingDue)) {
             s += ' rating-due ';
-          } else if (isSameDay(date.date, challenge.responseDue)) {
+          } else if (df.isSameDay(date.date, challenge.responseDue)) {
             s += ' response-due ';
           } else if (date.date < challenge.responseDue) {
             s += ' response-cont ';
