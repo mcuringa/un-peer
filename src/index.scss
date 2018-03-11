@@ -608,18 +608,29 @@ label
           left: 10px;
         }
 
-        &.response-start svg.calendar-dotline circle,
-        &.response-due svg.calendar-dotline circle {
+        &.response-start.active svg.calendar-dotline circle,
+        &.response-due.active svg.calendar-dotline circle {
           fill: $cal-green;
         }
-
-        &.rating-start svg.calendar-dotline circle,
-        &.rating-due svg.calendar-dotline circle {
-          fill: $cal-blue;
+        &.response-start.future svg.calendar-dotline circle,
+        &.response-due.future svg.calendar-dotline circle {
+          fill: lighten($cal-green, 30%);
         }
 
-        &.published svg.calendar-dotline circle {
+        &.rating-start.active svg.calendar-dotline circle,
+        &.rating-due.active svg.calendar-dotline circle {
+          fill: $cal-blue;
+        }
+        &.rating-start.future svg.calendar-dotline circle,
+        &.rating-due.future svg.calendar-dotline circle {
+          fill: lighten($cal-blue, 30%);
+        }
+
+        &.published.active svg.calendar-dotline circle {
           fill: $cal-purple;
+        }
+        &.published.future svg.calendar-dotline circle {
+          fill: lighten($cal-purple, 30%);
         }
       }
 

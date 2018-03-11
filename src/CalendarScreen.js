@@ -1,7 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js";
-import {isDateWithin, isSameDay, getChallengeForDate} from "./Utils.js";
+import {isDateWithin, isSameDay} from "./Utils.js";
 
 class CalendarScreen extends React.Component {
   constructor(props) {
@@ -84,10 +84,6 @@ class CalendarScreen extends React.Component {
           </text>
       </svg>
       );*/
-
-    const calGreen = '#60d600';
-    const calBlue = '#2b91e9';
-    const calPurple = '#ae1963';
 
     return (
       <React.Fragment>

@@ -8233,14 +8233,22 @@ label {
         position: relative;
         top: 10px;
         left: 10px; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-start svg.calendar-dotline circle,
-      .App .calendar-view .react-calendar .react-calendar__tile.response-due svg.calendar-dotline circle {
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start.active svg.calendar-dotline circle,
+      .App .calendar-view .react-calendar .react-calendar__tile.response-due.active svg.calendar-dotline circle {
         fill: #60d600; }
-      .App .calendar-view .react-calendar .react-calendar__tile.rating-start svg.calendar-dotline circle,
-      .App .calendar-view .react-calendar .react-calendar__tile.rating-due svg.calendar-dotline circle {
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start.future svg.calendar-dotline circle,
+      .App .calendar-view .react-calendar .react-calendar__tile.response-due.future svg.calendar-dotline circle {
+        fill: #b0ff70; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.active svg.calendar-dotline circle,
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-due.active svg.calendar-dotline circle {
         fill: #2b91e9; }
-      .App .calendar-view .react-calendar .react-calendar__tile.published svg.calendar-dotline circle {
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.future svg.calendar-dotline circle,
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-due.future svg.calendar-dotline circle {
+        fill: #b6d9f7; }
+      .App .calendar-view .react-calendar .react-calendar__tile.published.active svg.calendar-dotline circle {
         fill: #ae1963; }
+      .App .calendar-view .react-calendar .react-calendar__tile.published.future svg.calendar-dotline circle {
+        fill: #eb75b0; }
     .App .calendar-view .react-calendar .react-calendar__tile > time {
       display: none; }
     .App .calendar-view .react-calendar .react-calendar__tile .d-flex time {
