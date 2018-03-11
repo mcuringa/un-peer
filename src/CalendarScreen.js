@@ -46,10 +46,10 @@ class CalendarScreen extends React.Component {
           let yesterday = new Date(date.date);
           yesterday.setDate(yesterday.getDate() - 1);
 
-          if (df.isSameDay(yesterday, challenge.responseDue)) {
-            s += ' rating-start ';
-          } else if (df.isSameDay(date.date, challenge.ratingDue)) {
+          if (df.isSameDay(date.date, challenge.ratingDue)) {
             s += ' rating-due ';
+          } else if (df.isSameDay(yesterday, challenge.responseDue)) {
+            s += ' rating-start ';
           } else if (df.isSameDay(date.date, challenge.responseDue)) {
             s += ' response-due ';
           } else if (date.date < challenge.responseDue) {
@@ -71,21 +71,21 @@ class CalendarScreen extends React.Component {
       <React.Fragment>
           <svg className="calendar-dotline" height="14" width="50">
               <circle
-                  cx="34" cy="5" r="5" strokeWidth="0"
+                  cx="35" cy="5" r="5" strokeWidth="0"
                   fill="transparent" />
               <line
                   className="before"
                   x1="0" y1="5"
-                  x2="35" y2="5"
+                  x2="36" y2="5"
                   stroke="transparent"
-                  strokeWidth="3"
+                  strokeWidth="2"
                   />
               <line
                   className="after"
-                  x1="35" y1="5"
+                  x1="36" y1="5"
                   x2="50" y2="5"
                   stroke="transparent"
-                  strokeWidth="3"
+                  strokeWidth="2"
                   />
           </svg>
           <div className="d-flex">
@@ -121,7 +121,10 @@ class CalendarScreen extends React.Component {
           <div className="container challenge-area">
               <div className="d-flex flex-row">
                   <div className="p-2">
-                      <div className="challenge-dot respond"></div>
+                      <div className="challenge-dot respond">
+                          <img src="/img/calendar_respond.png"
+                               alt="Calendar respond icon" />
+                      </div>
                   </div>
                   <div className="p-2 dot-text">
                       Respond to the challenges
@@ -129,7 +132,10 @@ class CalendarScreen extends React.Component {
               </div>
               <div className="d-flex flex-row">
                   <div className="p-2">
-                      <div className="challenge-dot rating"></div>
+                      <div className="challenge-dot rating">
+                          <img src="/img/calendar_rate.png"
+                               alt="Calendar rate icon" />
+                      </div>
                   </div>
                   <div className="p-2 dot-text">
                       Rate the responses
@@ -137,7 +143,10 @@ class CalendarScreen extends React.Component {
               </div>
               <div className="d-flex flex-row">
                   <div className="p-2">
-                      <div className="challenge-dot published"></div>
+                      <div className="challenge-dot published">
+                          <img src="/img/calendar_results.png"
+                               alt="Calendar results icon" />
+                      </div>
                   </div>
                   <div className="p-2 dot-text">
                       Results published
