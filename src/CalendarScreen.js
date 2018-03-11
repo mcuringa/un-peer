@@ -8,16 +8,13 @@ class CalendarScreen extends React.Component {
     super(props);
     this.state = {
       challenges: [],
-      loading: true,
-      selectedChallenge: null,
-      showDetail: false
+      loading: true
     };
   }
 
   componentWillMount() {
     ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
       .then((t) => {
-        console.log(t);
         this.setState({
           challenges: t,
           loading: false

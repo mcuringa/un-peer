@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import _ from "lodash";
-import {ChevronLeftIcon, ChevronDownIcon, StarIcon} from 'react-octicons';
+import {ChevronLeftIcon, ChevronDownIcon} from 'react-octicons';
 import {
   Accordion,
   AccordionItem,
@@ -34,8 +34,7 @@ export default class BookmarkDetailScreen extends React.Component {
     this.state = {
       challenge: null,
       challengeResponses: [],
-      bookmark: null,
-      challenge: null
+      bookmark: null
     };
   }
 
