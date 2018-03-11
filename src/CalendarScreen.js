@@ -54,11 +54,18 @@ class CalendarScreen extends React.Component {
 
         let yesterday = new Date(date.date);
         yesterday.setDate(yesterday.getDate() - 1);
+        let tomorrow = new Date(date.date);
+        tomorrow.setDate(yesterday.getDate() + 1);
 
-
-        if (df.isSameDay(date.date, challenge.ratingDue)) {
+        if (
+          df.isSameDay(date.date, challenge.ratingDue) &&
+            !df.isSameDay(date.date, challenge.end)
+        ) {
           s += ` rating-due${below} `;
-        } else if (df.isSameDay(yesterday, challenge.responseDue)) {
+        } else if (
+          df.isSameDay(yesterday, challenge.responseDue) &&
+            !df.isSameDay(tomorrow, challenge.end)
+        ) {
           s += ` rating-start${below} `;
         } else if (df.isSameDay(date.date, challenge.responseDue)) {
           s += ` response-due${below} `;
@@ -69,7 +76,8 @@ class CalendarScreen extends React.Component {
           s += ` response-cont${below} `;
         } else if (
           date.date < challenge.ratingDue &&
-            !df.isSameDay(date.date, challenge.start)
+            !df.isSameDay(date.date, challenge.start) &&
+            !df.isSameDay(date.date, challenge.end)
         ) {
           s += ` rating-cont${below} `;
         }

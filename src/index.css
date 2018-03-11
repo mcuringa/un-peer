@@ -8273,14 +8273,14 @@ label {
         stroke: #b6d9f7; }
       .App .calendar-view .react-calendar .react-calendar__tile.rating-due.future:not(.active) svg.calendar-dotline line.before {
         stroke: #b6d9f7; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-start-below.future:not(.active) svg.calendar-dotline-below circle,
-      .App .calendar-view .react-calendar .react-calendar__tile.response-due-below.future:not(.active) svg.calendar-dotline-below circle {
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start-below svg.calendar-dotline-below circle,
+      .App .calendar-view .react-calendar .react-calendar__tile.response-due-below svg.calendar-dotline-below circle {
         fill: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-start-below.future:not(.active) svg.calendar-dotline-below line.after {
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start-below svg.calendar-dotline-below line.after {
         stroke: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-cont-below.future:not(.active) svg.calendar-dotline-below line {
+      .App .calendar-view .react-calendar .react-calendar__tile.response-cont-below svg.calendar-dotline-below line {
         stroke: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-due-below.future:not(.active) svg.calendar-dotline-below line.before {
+      .App .calendar-view .react-calendar .react-calendar__tile.response-due-below svg.calendar-dotline-below line.before {
         stroke: #b0ff70; }
       .App .calendar-view .react-calendar .react-calendar__tile.published.active svg.calendar-dotline circle {
         fill: #ae1963; }

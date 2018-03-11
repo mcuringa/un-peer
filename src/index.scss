@@ -718,23 +718,23 @@ label
           }
         }
 
-        &.response-start-below.future:not(.active) svg.calendar-dotline-below,
-        &.response-due-below.future:not(.active) svg.calendar-dotline-below {
+        &.response-start-below svg.calendar-dotline-below,
+        &.response-due-below svg.calendar-dotline-below {
           circle {
             fill: lighten($cal-green, 30%);
           }
         }
-        &.response-start-below.future:not(.active) svg.calendar-dotline-below {
+        &.response-start-below svg.calendar-dotline-below {
           line.after {
             stroke: lighten($cal-green, 30%);
           }
         }
-        &.response-cont-below.future:not(.active) svg.calendar-dotline-below {
+        &.response-cont-below svg.calendar-dotline-below {
           line {
             stroke: lighten($cal-green, 30%);
           }
         }
-        &.response-due-below.future:not(.active) svg.calendar-dotline-below {
+        &.response-due-below svg.calendar-dotline-below {
           line.before {
             stroke: lighten($cal-green, 30%);
           }
