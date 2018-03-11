@@ -35,7 +35,7 @@ class CalendarScreen extends React.Component {
 
     for (let i = 0; i < this.state.challenges.length; i++) {
       let challenge = this.state.challenges[i];
-      if (df.isDateWithin(date.date, challenge.start, challenge.end)) {
+      if (df.isDayWithin(date.date, challenge.start, challenge.end)) {
         if (df.isSameDay(date.date, challenge.start)) {
           s += ` start response-start ${challenge.stage} `;
         } else if (df.isSameDay(date.date, challenge.end)) {

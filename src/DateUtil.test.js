@@ -12,6 +12,16 @@ it('Calculates dates correctly', () => {
     new Date('2017-07-30'),
     new Date('2017-05-01'),
     new Date('2017-08-04'))).toBe(true);
+
+  expect(df.isDateWithin(
+    new Date('2017-05-01 00:00'),
+    new Date('2017-05-01 08:20'),
+    new Date('2017-08-04'))).toBe(false);
+
+  expect(df.isDayWithin(
+    new Date('2017-05-01 00:00'),
+    new Date('2017-05-01 08:20'),
+    new Date('2017-08-04'))).toBe(true);
 });
 
 it("finds a challenge in a date range", () =>{

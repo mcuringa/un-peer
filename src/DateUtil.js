@@ -15,13 +15,19 @@ const df = {
   },
 
   isSameDay: (d1,d2)=>{
-  return d1.getYear() === d2.getYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
+    return d1.getYear() === d2.getYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
   },
 
   isDateWithin: (d, start, end)=> {
-    return d.getTime() >= start.getTime() && d.getTime() <= end.getTime();
+    return d.getTime() >= start.getTime() &&
+      d.getTime() <= end.getTime();
+  },
+
+  isDayWithin: (d, start, end)=> {
+    return df.isSameDay(d, start) || df.isSameDay(d, end) ||
+      df.isDateWithin(d, start, end);
   },
 
   getChallengeForDate: (challenges, d)=> {
