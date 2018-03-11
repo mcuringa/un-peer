@@ -633,7 +633,6 @@ label
         svg.calendar-dotline {
           position: relative;
           top: 10px;
-          left: 10px;
         }
 
         &.response-start.active svg.calendar-dotline,
@@ -644,6 +643,11 @@ label
         }
         &.response-start.active svg.calendar-dotline {
           line.after {
+            stroke: $cal-green;
+          }
+        }
+        &.response-cont.active svg.calendar-dotline {
+          line {
             stroke: $cal-green;
           }
         }
@@ -663,6 +667,11 @@ label
             stroke: lighten($cal-green, 30%);
           }
         }
+        &.response-cont.future svg.calendar-dotline {
+          line {
+            stroke: lighten($cal-green, 30%);
+          }
+        }
         &.response-due.future svg.calendar-dotline {
           line.before {
             stroke: lighten($cal-green, 30%);
@@ -677,6 +686,11 @@ label
         }
         &.rating-start.active svg.calendar-dotline {
           line.after {
+            stroke: $cal-blue;
+          }
+        }
+        &.rating-cont.active svg.calendar-dotline {
+          line {
             stroke: $cal-blue;
           }
         }

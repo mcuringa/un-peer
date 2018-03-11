@@ -40,15 +40,20 @@ class CalendarScreen extends React.Component {
           s += ` start response-start ${challenge.stage} `;
         } else if (isSameDay(date.date, challenge.end)) {
           s += ` end published ${challenge.stage} `;
+        } else {
+          s = ` cont ${challenge.stage} `;
+
+          if (isSameDay(date.date, challenge.ratingDue)) {
+            s += ' rating-due ';
+          } else if (isSameDay(date.date, challenge.responseDue)) {
+            s += ' response-due ';
+          } else if (date.date < challenge.responseDue) {
+            s += ' response-cont ';
+          } else if (date.te < challenge.ratingDue) {
+            s += ' response-cont ';
+          }
         }
 
-        if (isSameDay(date.date, challenge.ratingDue)) {
-          s += ` cont ${challenge.stage} rating-due `;
-        } else if (isSameDay(date.date, challenge.responseDue)) {
-          s += ` cont ${challenge.stage} response-due `;
-        }
-
-        s = (s === '') ? `cont ${challenge.stage}` : s;
         return s;
       }
     }
@@ -61,18 +66,18 @@ class CalendarScreen extends React.Component {
       <React.Fragment>
           <svg className="calendar-dotline" height="14" width="50">
               <circle
-                  cx="27" cy="5" r="5" strokeWidth="0"
+                  cx="34" cy="5" r="5" strokeWidth="0"
                   fill="transparent" />
               <line
                   className="before"
                   x1="0" y1="5"
-                  x2="28" y2="5"
+                  x2="35" y2="5"
                   stroke="transparent"
                   strokeWidth="3"
                   />
               <line
                   className="after"
-                  x1="28" y1="5"
+                  x1="35" y1="5"
                   x2="50" y2="5"
                   stroke="transparent"
                   strokeWidth="3"
