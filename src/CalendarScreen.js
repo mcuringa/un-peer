@@ -43,7 +43,12 @@ class CalendarScreen extends React.Component {
         } else {
           s = ` cont ${challenge.stage} `;
 
-          if (df.isSameDay(date.date, challenge.ratingDue)) {
+          let yesterday = new Date(date.date);
+          yesterday.setDate(yesterday.getDate() - 1);
+
+          if (df.isSameDay(yesterday, challenge.responseDue)) {
+            s += ' rating-start ';
+          } else if (df.isSameDay(date.date, challenge.ratingDue)) {
             s += ' rating-due ';
           } else if (df.isSameDay(date.date, challenge.responseDue)) {
             s += ' response-due ';
