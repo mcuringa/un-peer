@@ -627,7 +627,38 @@ label
         }
 
         .d-flex {
-            height: 14px;
+          height: 14px;
+        }
+
+        svg.calendar-dotline {
+          position: relative;
+          top: 10px;
+          left: 10px;
+        }
+
+        &.response-start.active svg.calendar-dotline circle,
+        &.response-due.active svg.calendar-dotline circle {
+          fill: $cal-green;
+        }
+        &.response-start.future svg.calendar-dotline circle,
+        &.response-due.future svg.calendar-dotline circle {
+          fill: lighten($cal-green, 30%);
+        }
+
+        &.rating-start.active svg.calendar-dotline circle,
+        &.rating-due.active svg.calendar-dotline circle {
+          fill: $cal-blue;
+        }
+        &.rating-start.future svg.calendar-dotline circle,
+        &.rating-due.future svg.calendar-dotline circle {
+          fill: lighten($cal-blue, 30%);
+        }
+
+        &.published.active svg.calendar-dotline circle {
+          fill: $cal-purple;
+        }
+        &.published.future svg.calendar-dotline circle {
+          fill: lighten($cal-purple, 30%);
         }
       }
 
