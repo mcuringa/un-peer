@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from "lodash";
 
 import {
   BrowserRouter as Router,
@@ -9,6 +10,8 @@ import {
 
 import FBUtil from './FBUtil.js';
 import Home from './Home.js';
+import LoadingModal from './LoadingModal.js';
+
 import {ChallengeListScreen} from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
 import {ChallengeEditScreen} from './challenges/ChallengeEdit.js';
@@ -26,28 +29,36 @@ import Login from './users/Login.js';
 import ProfileScreen from './users/ProfileScreen.js';
 import ManageUsersScreen from './users/ManageUsersScreen';
 import db from "./DBTools";
+import {ChallengeDB} from "./challenges/Challenge";
 
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {user: {}, loading: true };
+    this.state = {user: {}, 
+      loading: true,
+      userLoaded: false,
+    };
     this.setAppClass = this.setAppClass.bind(this);
     this.userListener = this.userListener.bind(this);
 
   }
 
+  childLoaded() {
+    this.setState({childLoaded: true});
+  }
+
   userListener(authUser) {
     console.log("user listener called");
-    this.setState({loading: false});
+    console.log(authUser)
 
     if(!authUser) {
-      this.setState({user: {}});
+      this.setState({user: {}, loading: false, userLoaded: true});
       return;
     }
 
     db.get("/users", authUser.uid).then((u)=>{
-      this.setState({user: u});
+      this.setState({user: u, loading: false, userLoaded: true});
     });
 
   }
@@ -55,8 +66,18 @@ export default class App extends Component {
   componentWillMount() {
     FBUtil.getAuthUser(this.userListener)
       .then(()=>{
-
+        console.log("auth promise resolved");
       });
+    ChallengeDB.findAll().then((u)=>{
+      this.setState({challengesLoaded: true});
+      // try to cache the active video and poser
+      const preload = (c)=> {
+        let thumb = new Image();
+        thumb.src = c.videoPoster;
+      }
+      
+      ChallengeDB.getActive().then(preload, _.noop);
+    });
   }
 
   setAppClass(clazz) {
@@ -64,6 +85,21 @@ export default class App extends Component {
   }
 
   render() {
+
+    if(!this.state.userLoaded || !this.state.challengesLoaded) {
+      return (
+        <Router>
+          <div className={`App container`}>
+            <Header user={this.state.user} />
+            <section id="main" className="">
+              <LoadingModal show={true} status="Loading assets" />
+            </section>
+            <Footer user={this.state.user} />
+          </div>
+        </Router>
+      )
+    }
+
 
     if(!this.state.user.email)
       return (
