@@ -633,6 +633,9 @@ label
           position: relative;
           top: 10px;
         }
+        svg.calendar-dotline-below {
+          position: relative;
+        }
 
         &.response-start.active svg.calendar-dotline,
         &.response-due.active svg.calendar-dotline {
@@ -655,23 +658,23 @@ label
             stroke: $cal-green;
           }
         }
-        &.response-start.future svg.calendar-dotline,
-        &.response-due.future svg.calendar-dotline {
+        &.response-start.future:not(.active) svg.calendar-dotline,
+        &.response-due.future:not(.active) svg.calendar-dotline {
           circle {
             fill: lighten($cal-green, 30%);
           }
         }
-        &.response-start.future svg.calendar-dotline {
+        &.response-start.future:not(.active) svg.calendar-dotline {
           line.after {
             stroke: lighten($cal-green, 30%);
           }
         }
-        &.response-cont.future svg.calendar-dotline {
+        &.response-cont.future:not(.active) svg.calendar-dotline {
           line {
             stroke: lighten($cal-green, 30%);
           }
         }
-        &.response-due.future svg.calendar-dotline {
+        &.response-due.future:not(.active) svg.calendar-dotline {
           line.before {
             stroke: lighten($cal-green, 30%);
           }
@@ -698,20 +701,42 @@ label
             stroke: $cal-blue;
           }
         }
-        &.rating-start.future svg.calendar-dotline,
-        &.rating-due.future svg.calendar-dotline {
+        &.rating-start.future:not(.active) svg.calendar-dotline,
+        &.rating-due.future:not(.active) svg.calendar-dotline {
           circle {
             fill: lighten($cal-blue, 30%);
           }
         }
-        &.rating-start.future svg.calendar-dotline {
+        &.rating-start.future:not(.active) svg.calendar-dotline {
           line.after {
             stroke: lighten($cal-blue, 30%);
           }
         }
-        &.rating-due.future svg.calendar-dotline {
+        &.rating-due.future:not(.active) svg.calendar-dotline {
           line.before {
             stroke: lighten($cal-blue, 30%);
+          }
+        }
+
+        &.response-start-below.future:not(.active) svg.calendar-dotline-below,
+        &.response-due-below.future:not(.active) svg.calendar-dotline-below {
+          circle {
+            fill: lighten($cal-green, 30%);
+          }
+        }
+        &.response-start-below.future:not(.active) svg.calendar-dotline-below {
+          line.after {
+            stroke: lighten($cal-green, 30%);
+          }
+        }
+        &.response-cont-below.future:not(.active) svg.calendar-dotline-below {
+          line {
+            stroke: lighten($cal-green, 30%);
+          }
+        }
+        &.response-due-below.future:not(.active) svg.calendar-dotline-below {
+          line.before {
+            stroke: lighten($cal-green, 30%);
           }
         }
 
@@ -720,7 +745,7 @@ label
             fill: $cal-purple;
           }
         }
-          &.published.future svg.calendar-dotline {
+          &.published.future:not(.active) svg.calendar-dotline {
           circle {
             fill: lighten($cal-purple, 30%);
           }
@@ -739,16 +764,16 @@ label
         background-color: $gray-400;
       }
 
-      .react-calendar__tile.start .d-flex {
+      .react-calendar__tile.start:not(.cont) .d-flex {
           border-top-left-radius: 10px;
           border-bottom-left-radius: 10px;
       }
-      .react-calendar__tile.end .d-flex {
+      .react-calendar__tile.end:not(.cont) .d-flex {
           border-top-right-radius: 10px;
           border-bottom-right-radius: 10px;
       }
 
-      .react-calendar__tile.future .d-flex {
+      .react-calendar__tile.future:not(.active) .d-flex {
         background-color: lighten($gray-400, 11%);
       }
     }

@@ -33,33 +33,48 @@ class CalendarScreen extends React.Component {
   getTileClass(date, view) {
     let s = '';
 
+    let line = 0;
     for (let i = 0; i < this.state.challenges.length; i++) {
+
       let challenge = this.state.challenges[i];
+
       if (df.isDayWithin(date.date, challenge.start, challenge.end)) {
+        // If we've already added classes for an event in this tile,
+        // append -below to these classes, to tell CSS to use the SVG
+        // element below the date, for overlaps.
+        const below = (line === 0)? '' : '-below';
+
         if (df.isSameDay(date.date, challenge.start)) {
-          s += ` start response-start ${challenge.stage} `;
+          s += ` start response-start${below} ${challenge.stage} `;
         } else if (df.isSameDay(date.date, challenge.end)) {
           s += ` end published ${challenge.stage} `;
-        } else {
+        } else if (s === '') {
           s = ` cont ${challenge.stage} `;
-
-          let yesterday = new Date(date.date);
-          yesterday.setDate(yesterday.getDate() - 1);
-
-          if (df.isSameDay(date.date, challenge.ratingDue)) {
-            s += ' rating-due ';
-          } else if (df.isSameDay(yesterday, challenge.responseDue)) {
-            s += ' rating-start ';
-          } else if (df.isSameDay(date.date, challenge.responseDue)) {
-            s += ' response-due ';
-          } else if (date.date < challenge.responseDue) {
-            s += ' response-cont ';
-          } else if (date.te < challenge.ratingDue) {
-            s += ' response-cont ';
-          }
         }
 
-        return s;
+        let yesterday = new Date(date.date);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+
+        if (df.isSameDay(date.date, challenge.ratingDue)) {
+          s += ` rating-due${below} `;
+        } else if (df.isSameDay(yesterday, challenge.responseDue)) {
+          s += ` rating-start${below} `;
+        } else if (df.isSameDay(date.date, challenge.responseDue)) {
+          s += ` response-due${below} `;
+        } else if (
+          date.date < challenge.responseDue &&
+            !df.isSameDay(date.date, challenge.start)
+        ) {
+          s += ` response-cont${below} `;
+        } else if (
+          date.date < challenge.ratingDue &&
+            !df.isSameDay(date.date, challenge.start)
+        ) {
+          s += ` rating-cont${below} `;
+        }
+
+        line++;
       }
     }
 
@@ -93,6 +108,25 @@ class CalendarScreen extends React.Component {
                   {date.date.getDate()}
               </time>
           </div>
+          <svg className="calendar-dotline-below" height="14" width="50">
+              <circle
+                  cx="35" cy="5" r="5" strokeWidth="0"
+                  fill="transparent" />
+              <line
+                  className="before"
+                  x1="0" y1="5"
+                  x2="36" y2="5"
+                  stroke="transparent"
+                  strokeWidth="2"
+                  />
+              <line
+                  className="after"
+                  x1="36" y1="5"
+                  x2="50" y2="5"
+                  stroke="transparent"
+                  strokeWidth="2"
+                  />
+          </svg>
       </React.Fragment>
     );
   }
@@ -156,6 +190,6 @@ class CalendarScreen extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default CalendarScreen;
