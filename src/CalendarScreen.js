@@ -65,12 +65,24 @@ class CalendarScreen extends React.Component {
         ) {
           s += ` rating-start${below} `;
         } else if (df.isSameDay(date.date, challenge.responseDue)) {
-          s += ` response-due${below} `;
+          if (challenge.stage === 'future') {
+            // If it's happening in the future, just assume a
+            // response-due line is below.
+            s += ' response-due-below ';
+          } else {
+            s += ` response-due${below} `;
+          }
         } else if (
           date.date < challenge.responseDue &&
             !df.isSameDay(date.date, challenge.start)
         ) {
-          s += ` response-cont${below} `;
+          if (challenge.stage === 'future') {
+            // If it's happening in the future, just assume a
+            // response-cont line is below.
+            s += ' response-cont-below ';
+          } else {
+            s += ` response-cont${below} `;
+          }
         } else if (
           date.date < challenge.ratingDue &&
             !df.isSameDay(date.date, challenge.start) &&
