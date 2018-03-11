@@ -8241,15 +8241,31 @@ label {
       .App .calendar-view .react-calendar .react-calendar__tile.response-start.active svg.calendar-dotline circle,
       .App .calendar-view .react-calendar .react-calendar__tile.response-due.active svg.calendar-dotline circle {
         fill: #60d600; }
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start.active svg.calendar-dotline line.after {
+        stroke: #60d600; }
+      .App .calendar-view .react-calendar .react-calendar__tile.response-due.active svg.calendar-dotline line.before {
+        stroke: #60d600; }
       .App .calendar-view .react-calendar .react-calendar__tile.response-start.future svg.calendar-dotline circle,
       .App .calendar-view .react-calendar .react-calendar__tile.response-due.future svg.calendar-dotline circle {
         fill: #b0ff70; }
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start.future svg.calendar-dotline line.after {
+        stroke: #b0ff70; }
+      .App .calendar-view .react-calendar .react-calendar__tile.response-due.future svg.calendar-dotline line.before {
+        stroke: #b0ff70; }
       .App .calendar-view .react-calendar .react-calendar__tile.rating-start.active svg.calendar-dotline circle,
       .App .calendar-view .react-calendar .react-calendar__tile.rating-due.active svg.calendar-dotline circle {
         fill: #2b91e9; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.active svg.calendar-dotline line.after {
+        stroke: #2b91e9; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-due.active svg.calendar-dotline line.before {
+        stroke: #2b91e9; }
       .App .calendar-view .react-calendar .react-calendar__tile.rating-start.future svg.calendar-dotline circle,
       .App .calendar-view .react-calendar .react-calendar__tile.rating-due.future svg.calendar-dotline circle {
         fill: #b6d9f7; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.future svg.calendar-dotline line.after {
+        stroke: #b6d9f7; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-due.future svg.calendar-dotline line.before {
+        stroke: #b6d9f7; }
       .App .calendar-view .react-calendar .react-calendar__tile.published.active svg.calendar-dotline circle {
         fill: #ae1963; }
       .App .calendar-view .react-calendar .react-calendar__tile.published.future svg.calendar-dotline circle {

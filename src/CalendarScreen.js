@@ -57,40 +57,26 @@ class CalendarScreen extends React.Component {
   }
 
   getTileContent(date, view) {
-    /*const bgBlue = '#6A82AD';
-    const bgBrightBlue = 'rgb(104, 153, 201)';
-    const darkGrayText = 'rgb(105, 112, 120)';*/
-
-    /*const a = <div className="bg-el">
-          <time dateTime={date.date.toISOString()}></time>
-          </div>;*/
-
-    //const cls = this.getTileClass(date, view);
-    //const drawCircle = cls.includes('start') || cls.includes('end');
-
-    /*const svg = (
-      <svg height="40" width="40">
-          <circle
-              cx="20" cy="20" r="17" strokeWidth="0"
-              fill="transparent" />
-          <text
-              x="19.5" y="25"
-              fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
-              textAnchor="middle"
-              fontWeight="bold"
-              fill={darkGrayText}
-              fontSize="14">
-              {date.date.getDate()}
-          </text>
-      </svg>
-      );*/
-
     return (
       <React.Fragment>
-          <svg className="calendar-dotline" height="14" width="14">
+          <svg className="calendar-dotline" height="14" width="50">
               <circle
-                  cx="5" cy="5" r="4" strokeWidth="0"
+                  cx="27" cy="5" r="5" strokeWidth="0"
                   fill="transparent" />
+              <line
+                  className="before"
+                  x1="0" y1="5"
+                  x2="28" y2="5"
+                  stroke="transparent"
+                  strokeWidth="3"
+                  />
+              <line
+                  className="after"
+                  x1="28" y1="5"
+                  x2="50" y2="5"
+                  stroke="transparent"
+                  strokeWidth="3"
+                  />
           </svg>
           <div className="d-flex">
               <time dateTime={date.date.toISOString()}>

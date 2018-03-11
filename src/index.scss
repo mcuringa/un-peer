@@ -636,29 +636,81 @@ label
           left: 10px;
         }
 
-        &.response-start.active svg.calendar-dotline circle,
-        &.response-due.active svg.calendar-dotline circle {
-          fill: $cal-green;
+        &.response-start.active svg.calendar-dotline,
+        &.response-due.active svg.calendar-dotline {
+          circle {
+            fill: $cal-green;
+          }
         }
-        &.response-start.future svg.calendar-dotline circle,
-        &.response-due.future svg.calendar-dotline circle {
-          fill: lighten($cal-green, 30%);
+        &.response-start.active svg.calendar-dotline {
+          line.after {
+            stroke: $cal-green;
+          }
+        }
+        &.response-due.active svg.calendar-dotline {
+          line.before {
+            stroke: $cal-green;
+          }
+        }
+        &.response-start.future svg.calendar-dotline,
+        &.response-due.future svg.calendar-dotline {
+          circle {
+            fill: lighten($cal-green, 30%);
+          }
+        }
+        &.response-start.future svg.calendar-dotline {
+          line.after {
+            stroke: lighten($cal-green, 30%);
+          }
+        }
+        &.response-due.future svg.calendar-dotline {
+          line.before {
+            stroke: lighten($cal-green, 30%);
+          }
         }
 
-        &.rating-start.active svg.calendar-dotline circle,
-        &.rating-due.active svg.calendar-dotline circle {
-          fill: $cal-blue;
+        &.rating-start.active svg.calendar-dotline,
+        &.rating-due.active svg.calendar-dotline {
+          circle {
+            fill: $cal-blue;
+          }
         }
-        &.rating-start.future svg.calendar-dotline circle,
-        &.rating-due.future svg.calendar-dotline circle {
-          fill: lighten($cal-blue, 30%);
+        &.rating-start.active svg.calendar-dotline {
+          line.after {
+            stroke: $cal-blue;
+          }
+        }
+        &.rating-due.active svg.calendar-dotline {
+          line.before {
+            stroke: $cal-blue;
+          }
+        }
+        &.rating-start.future svg.calendar-dotline,
+        &.rating-due.future svg.calendar-dotline {
+          circle {
+            fill: lighten($cal-blue, 30%);
+          }
+        }
+        &.rating-start.future svg.calendar-dotline {
+          line.after {
+            stroke: lighten($cal-blue, 30%);
+          }
+        }
+        &.rating-due.future svg.calendar-dotline {
+          line.before {
+            stroke: lighten($cal-blue, 30%);
+          }
         }
 
-        &.published.active svg.calendar-dotline circle {
-          fill: $cal-purple;
+        &.published.active svg.calendar-dotline {
+          circle {
+            fill: $cal-purple;
+          }
         }
-        &.published.future svg.calendar-dotline circle {
-          fill: lighten($cal-purple, 30%);
+          &.published.future svg.calendar-dotline {
+          circle {
+            fill: lighten($cal-purple, 30%);
+          }
         }
       }
 
