@@ -8229,6 +8229,18 @@ label {
         background: transparent; }
       .App .calendar-view .react-calendar .react-calendar__tile .d-flex {
         height: 14px; }
+      .App .calendar-view .react-calendar .react-calendar__tile svg.calendar-dotline {
+        position: relative;
+        top: 10px;
+        left: 10px; }
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start svg.calendar-dotline circle,
+      .App .calendar-view .react-calendar .react-calendar__tile.response-due svg.calendar-dotline circle {
+        fill: #60d600; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-start svg.calendar-dotline circle,
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-due svg.calendar-dotline circle {
+        fill: #2b91e9; }
+      .App .calendar-view .react-calendar .react-calendar__tile.published svg.calendar-dotline circle {
+        fill: #ae1963; }
     .App .calendar-view .react-calendar .react-calendar__tile > time {
       display: none; }
     .App .calendar-view .react-calendar .react-calendar__tile .d-flex time {

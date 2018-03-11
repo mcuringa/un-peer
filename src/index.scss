@@ -599,7 +599,27 @@ label
         }
 
         .d-flex {
-            height: 14px;
+          height: 14px;
+        }
+
+        svg.calendar-dotline {
+          position: relative;
+          top: 10px;
+          left: 10px;
+        }
+
+        &.response-start svg.calendar-dotline circle,
+        &.response-due svg.calendar-dotline circle {
+          fill: $cal-green;
+        }
+
+        &.rating-start svg.calendar-dotline circle,
+        &.rating-due svg.calendar-dotline circle {
+          fill: $cal-blue;
+        }
+
+        &.published svg.calendar-dotline circle {
+          fill: $cal-purple;
         }
       }
 

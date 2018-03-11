@@ -35,17 +35,20 @@ class CalendarScreen extends React.Component {
 
     for (let i = 0; i < this.state.challenges.length; i++) {
       let challenge = this.state.challenges[i];
-      /*console.log(date.date, challenge.start, challenge.end,
-                  isDateWithin(date.date, challenge.start, challenge.end));*/
       if (isDateWithin(date.date, challenge.start, challenge.end)) {
-
         if (isSameDay(date.date, challenge.start)) {
-          s += ` start ${challenge.stage} `;
+          s += ` start response-start ${challenge.stage} `;
         } else if (isSameDay(date.date, challenge.end)) {
-          s += ` end ${challenge.stage} `;
+          s += ` end published ${challenge.stage} `;
         }
 
-        s = s === '' ? `cont ${challenge.stage}` : s;
+        if (isSameDay(date.date, challenge.ratingDue)) {
+          s += ` cont ${challenge.stage} rating-due `;
+        } else if (isSameDay(date.date, challenge.responseDue)) {
+          s += ` cont ${challenge.stage} response-due `;
+        }
+
+        s = (s === '') ? `cont ${challenge.stage}` : s;
         return s;
       }
     }
@@ -80,12 +83,25 @@ class CalendarScreen extends React.Component {
               {date.date.getDate()}
           </text>
       </svg>
-    );*/
+      );*/
+
+    const calGreen = '#60d600';
+    const calBlue = '#2b91e9';
+    const calPurple = '#ae1963';
 
     return (
-      <div className="d-flex">
-          <time dateTime={date.date.toISOString()}>{date.date.getDate()}</time>
-      </div>
+      <React.Fragment>
+          <svg className="calendar-dotline" height="14" width="14">
+              <circle
+                  cx="5" cy="5" r="4" strokeWidth="0"
+                  fill="transparent" />
+          </svg>
+          <div className="d-flex">
+              <time dateTime={date.date.toISOString()}>
+                  {date.date.getDate()}
+              </time>
+          </div>
+      </React.Fragment>
     );
   }
 
