@@ -5,11 +5,12 @@ import df from "../DateUtil.js";
 import {ChallengeDB} from "./Challenge.js";
 import ChallengeHeader from "./ChallengeHeader.js";
 
-import {StarIcon, DashIcon, ChevronDownIcon, ChevronLeftIcon} from 'react-octicons';
+import {StarIcon, ChevronDownIcon, ChevronRightIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import Modal from "../Modal";
 import Snackbar from "../Snackbar";
-import {LoadingSpinner} from "../FormUtil";
+import LoadingModal from "../LoadingModal";
+import Accordion from "../LoadingModal";
 
 class ResponseRatings extends React.Component {
   constructor(props) {
@@ -20,7 +21,6 @@ class ResponseRatings extends React.Component {
     this.state = {
       loadingChallenge: true,
       loadingResponses: true,
-      loading: false,
       challenge: {},
       showThankYou: false,
       thankYouShown: false,
@@ -29,13 +29,50 @@ class ResponseRatings extends React.Component {
     this.loadAssignments = this.loadAssignments.bind(this);
     this.isLoading = this.isLoading.bind(this);
     this.countRatings = this.countRatings.bind(this);
+    this.snack = _.bind(this.snack, this);
+    this.snack = _.throttle(this.snack, this.snackTime);
+
   }
 
+  snack(msg, showUndo) {
+
+    const p = (resolve, reject)=>
+    {
+      const clear = ()=> {
+        this.setState({
+          showSnack: false,
+          snackMsg: "",
+          snackUndo: null
+        });
+      }
+      const over = ()=> {
+        clear();
+        resolve();
+      }
+
+      const undo = ()=> {
+        clear();
+        reject();
+      }
+
+      this.setState({
+        showSnack: true,
+        snackMsg: msg,
+        showUndo: showUndo,
+        snackUndo: undo,
+        snackOver: over
+      });      
+    }
+
+    return new Promise(p);
+
+  }
   componentWillMount() {
 
     const setRatings = (c)=>{ this.setState({challenge: c, loadingChallenge: false}); };
     const noAssignments = ()=>{console.log("no assignments");};
     const noResponses = ()=>{console.log("no responses");};
+    
     ChallengeDB.get(this.challengeId)
       .then(ChallengeDB.assignRatings, noAssignments)
       .then(setRatings);
@@ -75,7 +112,7 @@ class ResponseRatings extends React.Component {
   render() {
 
     if(this.isLoading())
-      return <LoadingSpinner status="Loading assignments" show={true} />
+      return <LoadingModal status="Loading assignments" show={true} />
 
     if(new Date() < this.state.challenge.responseDue)
       return (<TooEarly challenge={this.state.challenge} />);
@@ -89,14 +126,16 @@ class ResponseRatings extends React.Component {
     const makeValFunction = (r, i)=> {
       const f = (val)=> {
         const oldCount =  this.countRatings();
+        this.snack("saving rating");
         
         const updateResponseState = (savedResponse)=> {
           let t = this.state.responses;
-          t[i] = savedResponse;
+          t[this.props.user.uid] = savedResponse;
           this.setState({responses: t, 
             loading: false,
             ratingSaved: true
           });
+          this.snack("rating recorded");
           const newCount = this.countRatings();
           if(oldCount === 2 && newCount === 3)
             this.setState({showThankYou: true});
@@ -132,11 +171,7 @@ class ResponseRatings extends React.Component {
         <ChallengeHeader challenge={this.state.challenge} 
           owner={this.state.challenge.owner} 
           user={this.props.user} />
-
-        <Link className="text-dark mb-2"
-          to={`/challenge/${this.state.challenge.id}`}>
-          <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back</Link>
-        
+       
         <Modal id="ratingsDone"
           show={this.state.showThankYou && !this.state.thankYouShown}
           closeHandler={()=>{this.setState({thankYouShown: true})}}
@@ -156,49 +191,57 @@ class ResponseRatings extends React.Component {
             of the three responses above by clicking on the stars.
           </small>
         </p>
-        <Snackbar show={this.state.ratingSaved} 
-          msg="Rating recorded"
-          wait={1500}
-          onClose={()=>{this.setState({ratingSaved: false});}} />
+        <Snackbar show={this.state.showSnack} 
+          msg={this.state.snackMsg}
+          showUndo={this.state.showUndo}
+          undo={this.state.snackUndo}
+          onClose={this.state.snackOver} />
       </div>
     );
   }
 }
 
-const ToggleIcon = (props) => {
-    if(props.open)
-      return <DashIcon className="icon-secondary pt-1" />
-    return <ChevronDownIcon className="icon-secondary pt-1" />
-}
+class ResponseRater extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {open: props.open}
+  }
 
+  render() {
+    const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
+    const toggleCss = (this.state.open)?"show":"";
+    const toggleFunction = ()=> {
+      this.setState({open: !this.state.open})
+    }
 
-const ResponseRater = (props) => {
-
-    const r = props.response;
+    const r = this.props.response;
     let rating = 0;
-    if(props.response.ratings && props.response.ratings[props.user.uid]){
-      rating = props.response.ratings[props.user.uid];
+    if(this.props.response.ratings && this.props.response.ratings[this.props.user.uid]){
+      rating = this.props.response.ratings[this.props.user.uid];
     }
 
     return (
       <div className="card">
-        <div className="card-header" id={`head_${props.keyIndex}`}>
+        <div className="card-header" id={`head_${this.props.keyIndex}`}>
 
-          <div className="row clickable" data-toggle="collapse" data-target={`#body_${props.keyIndex}`}>
+          <div className="row clickable"
+            onClick={toggleFunction}
+            data-toggle="collapse" 
+            data-target={`#body_${this.props.keyIndex}`}>
             <div className="col-11">
-              Response {props.letter}: {r.title} 
+              Response {this.props.letter}: {r.title} 
             </div>
-            <div className="col-1"><ToggleIcon open={r.open} /></div>
+            <div className="col-1">{ToggleIcon}</div>
           </div>
 
           <StarRatings 
-            challengeId={props.challenge.id} 
+            challengeId={this.props.challenge.id} 
             rating={rating} 
-            user={props.user} 
+            user={this.props.user} 
             responseId={r.id} 
-            rateFunction={props.rateFunction} />
+            rateFunction={this.props.rateFunction} />
         </div>
-        <div id={`body_${props.keyIndex}`} className="collapse" data-parent="#ResponseList">
+        <div id={`body_${this.props.keyIndex}`} className="collapse" data-parent="#ResponseList">
           <div className="card-body">
             <Video video={r.video} />
             {r.text}
@@ -207,9 +250,8 @@ const ResponseRater = (props) => {
       </div>
 
     );
+  }
 }
-
-
 
 const StarRatings = (props)=>{
   const stars = _.map([0,0,0,0,0], (n, i, t)=>{
