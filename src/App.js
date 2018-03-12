@@ -50,7 +50,6 @@ export default class App extends Component {
 
   userListener(authUser) {
     console.log("user listener called");
-    console.log(authUser)
 
     if(!authUser) {
       this.setState({user: {}, loading: false, userLoaded: true});
@@ -129,21 +128,21 @@ const Header = (props)=>{
     <header className="App-header container fixed-top">
       <div className="row">
         <div className="App-home col-2">
-            <NavLink to="/" exact={true}>
-                <div className="outer-circle"></div>
-                <img src="/img/header/Home_unclicked_btn.png"
-                     width="31" height="28"
-                     alt="Home icon" />
+          <NavLink to="/" exact={true} activeclass="active">
+            <div className="home-icon"></div>
           </NavLink>
         </div>
         <div className="App-title col-8">UN Peer Challenges</div>
         <div className="App-notifications col-2 d-none">
-            <NavLink to="/notifications">
-                <div className="outer-circle">
-                </div>
-                <img src="/img/header/Notification_unclicked_btn.png"
-                     width="25" height="28"
-                     alt="Notification icon" />
+          <NavLink to="/notifications">
+                <svg width="25" height="28">
+                  <g>
+                    <circle cx="12.5" cy="14" fill="red" r="25" />
+                  </g>
+                </svg>
+
+              <img src="/img/header/Notification_unclicked_btn.png"
+                   alt="Notification icon" />
           </NavLink>
         </div>
       </div>
@@ -227,7 +226,7 @@ const Footer = (props)=>{
             </NavLink>
             <NavLink
                 to="/bookmarks"
-                className={`btn btn-btn-light bookmarks-icon btn-block${disabled}`}>
+                className={`btn btn-btn-light bookmarks-icon btn-block${disabled} d-none`}>
                 <div className="icon-box">
                     <img src="/img/footer/Bookmarks_unclicked_btn.png"
                          width="20" height="18"
