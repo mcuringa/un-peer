@@ -390,7 +390,7 @@ const FormHeader = (props)=>
   const c = props.challenge;
   return (
     <div>
-      <div className="row">
+      <div className="ChallengeEditHeader row">
         <div className="col-11 d-flex align-items-baseline justify-content-between pr-2">
           <h4>{c.title}</h4>
           <div><Link to={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></Link></div>
@@ -399,9 +399,11 @@ const FormHeader = (props)=>
           <StatusIndicator dirty={props.dirty} loading={props.loading} />
         </div>
       </div>
-      <div className="small text-muted">Owner: {props.owner.firstName} {props.owner.lastName}</div>
-      <small className="text-muted"><tt>created: {df.ts(c.created)} | </tt></small>
-      <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>
+      <div>
+        <div className="small text-muted">Owner: {props.owner.firstName} {props.owner.lastName}</div>
+        <small className="text-muted"><tt>created: {df.ts(c.created)} | </tt></small>
+        <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>
+      </div>
     </div> );
 }
 
