@@ -350,9 +350,9 @@ class Response  extends React.Component {
         return null;
 
       return (
-        <div className="badge badge-primary">
-          <div className="icon-light ml-1"><FlameIcon /></div>
-          <strong>Owner's Choice</strong>
+        <div className="d-flex align-content-center badge badge-primary">
+          <div className="icon-light mr-1"><FlagIcon /></div>
+          <div style={{fontSize: "20px", lineHeight: "32px"}}>Owner's Choice</div>
         </div>
       )  
     }
@@ -473,6 +473,18 @@ const TooEarly = (props)=> {
       </div>
     </div>
   );
+}
+
+const FlagIcon = (props)=> {
+  return (
+    <svg height="32px" width="32px">
+      <g>
+        <rect fill="white" width="4" height="32" x="0" y="0" />
+        <rect fill="white" width="19" height="19" x="0" y="0" />
+        <rect fill="white" width="14" height="18" x="16" y="4" />
+      </g>
+    </svg>
+  )
 }
 
 
