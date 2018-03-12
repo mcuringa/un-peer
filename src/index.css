@@ -4,6 +4,7 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -7817,6 +7818,9 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   width: 100%;
   height: 100%; }
 
+body {
+  font-family: "Source Sans Pro", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
+
 .badge-primary, .btn-primary {
   background-color: #6999c9;
   border-color: #6999c9; }
@@ -7854,7 +7858,7 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   color: #17a2b8;
   fill: #17a2b8; }
 
-svg.icon-light {
+.icon-light {
   color: #f8f9fa;
   fill: #f8f9fa;
   stroke: #f8f9fa; }
@@ -7897,18 +7901,24 @@ small tt {
   text-align: center;
   line-height: 62px;
   font-size: 18px; }
-  .App-header .active .outer-circle {
-    border-radius: 50%;
-    background-color: #6999c9;
-    width: 44px;
-    height: 44px;
-    position: absolute;
-    z-index: -1;
-    margin-left: 5px;
-    margin-top: 9px; }
-  .App-header .App-home .active img {
-    content: url("/img/header/Home_white.png"); }
-  .App-header .App-notifications .active img {
+  .App-header .App-home a.active {
+    background-image: url("/img/home-circle.png");
+    background-position: center center;
+    background-repeat: no-repeat; }
+  .App-header .App-home a {
+    display: block;
+    width: 100%;
+    height: 100%; }
+  .App-header .App-home .active .home-icon {
+    background-image: url("/img/header/Home_white.png"); }
+  .App-header .App-home .home-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/header/Home_unclicked_btn.png");
+    background-position: center;
+    background-repeat: no-repeat; }
+  .App-header .App-notifications .active .home-icon {
     content: url("/img/header/Notification_white.png"); }
 
 .App-footer-toolbar .btn-block, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .ChallengeItem, .App-footer-toolbar .NewChallengeButton {

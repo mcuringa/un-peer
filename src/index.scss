@@ -1,6 +1,10 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "./loaders.min";
 
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+
+$font-family-sans-serif: "Source Sans Pro", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
 $bg-blue: #6A82AD;
 $bg-bright-blue: rgb(104.55, 153, 201.45);
 $top-header-height: 62px;
@@ -14,6 +18,11 @@ $cal-green: #60d600;
 $cal-blue: #2b91e9;
 $cal-purple: #ae1963;
 $blue: green;
+
+
+body {
+  font-family: $font-family-sans-serif,
+}
 
 //override bootstrap defaults
 .badge-primary, .btn-primary {
@@ -78,7 +87,7 @@ img {
   fill: theme-color("info");
 }
 
-svg.icon-light {
+.icon-light {
   color: theme-color("light");
   fill: theme-color("light");
   stroke: theme-color("light");
@@ -128,6 +137,7 @@ small tt {
 
 
 .App-header {
+
   @extend .bg-white;
   @extend .text-dark;
   @extend .border-light;
@@ -136,20 +146,35 @@ small tt {
   text-align: center;
   line-height: $top-header-height;
   font-size: 18px;
-  .active .outer-circle {
-    border-radius: 50%;
-    background-color: $bg-bright-blue;
-    width: 44px;
-    height: 44px;
-    position: absolute;
-    z-index: -1;
-    margin-left: 5px;
-    margin-top: 9px;
+  
+  .App-home a.active {
+    background-image: url("/img/home-circle.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+
   }
-  .App-home .active img {
-    content: url("/img/header/Home_white.png");
+  .App-home a {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+
   }
-  .App-notifications .active img {
+
+  .App-home .active .home-icon {
+    background-image: url("/img/header/Home_white.png");
+  }
+  .App-home .home-icon{
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/header/Home_unclicked_btn.png");
+    background-position: center;
+    background-repeat: no-repeat;
+
+  }
+
+  .App-notifications .active .home-icon {
     content: url("/img/header/Notification_white.png");
   }
 }
@@ -273,6 +298,18 @@ small tt {
   width: 100%;
 }
 
+// .ChallengeEditHeader
+// {
+//   background: white;
+//   border-bottom: 1px solid $gray-400;
+//   z-index: 200;
+//   width: 100%;
+//   max-width: $full-screen-width;
+//   margin-top: 0;
+//   padding-top: 0;
+//   top: 0;
+
+// }
 
 .NewChallengeButton
 {
