@@ -85,7 +85,6 @@ const ChallengeDB = {
     return new Promise((resolve, reject)=>{
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((challenges)=>{
-          console.log(challenges);
           const now = new Date();
           let active = _.filter(challenges, (c)=> {return c.start < now && c.end > now});
           if(active.length === 0)
