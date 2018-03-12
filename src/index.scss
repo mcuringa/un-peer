@@ -148,9 +148,12 @@ small tt {
   font-size: 18px;
   
   .App-home a.active {
-    background-image: url("/img/home-circle.png");
-    background-position: center center;
-    background-repeat: no-repeat;
+    // background-color: $bg-bright-blue;
+    // border-radius: 50%;
+    // margin: 6px;
+    // background-image: url("/img/home-circle.png");
+    // background-position: center center;
+    // background-repeat: no-repeat;
 
   }
   .App-home a {
@@ -162,7 +165,7 @@ small tt {
   }
 
   .App-home .active .home-icon {
-    background-image: url("/img/header/Home_white.png");
+    background-image: url("/img/header/Home_clicked_btn.png");
   }
   .App-home .home-icon{
     display: block;

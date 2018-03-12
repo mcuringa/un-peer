@@ -7901,16 +7901,12 @@ small tt {
   text-align: center;
   line-height: 62px;
   font-size: 18px; }
-  .App-header .App-home a.active {
-    background-image: url("/img/home-circle.png");
-    background-position: center center;
-    background-repeat: no-repeat; }
   .App-header .App-home a {
     display: block;
     width: 100%;
     height: 100%; }
   .App-header .App-home .active .home-icon {
-    background-image: url("/img/header/Home_white.png"); }
+    background-image: url("/img/header/Home_clicked_btn.png"); }
   .App-header .App-home .home-icon {
     display: block;
     width: 100%;

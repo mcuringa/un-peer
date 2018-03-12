@@ -127,21 +127,15 @@ const Header = (props)=>{
   return (
     <header className="App-header container fixed-top">
       <div className="row">
-        <div className="App-home col-2">
+        <div className="App-home col-3">
           <NavLink to="/" exact={true} activeclass="active">
             <div className="home-icon"></div>
           </NavLink>
         </div>
-        <div className="App-title col-8">UN Peer Challenges</div>
-        <div className="App-notifications col-2 d-none">
+        <div className="App-title col-6">UN Peer Challenges</div>
+        <div className="App-notifications col-3 d-none">
           <NavLink to="/notifications">
-                <svg width="25" height="28">
-                  <g>
-                    <circle cx="12.5" cy="14" fill="red" r="25" />
-                  </g>
-                </svg>
-
-              <img src="/img/header/Notification_unclicked_btn.png"
+                <img src="/img/header/Notification_unclicked_btn.png"
                    alt="Notification icon" />
           </NavLink>
         </div>
