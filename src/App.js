@@ -22,7 +22,8 @@ import ChallengeReviewScreen from './challenges/ChallengeReviewScreen.js';
 import ProfessorResponseForm from './challenges/ProfessorResponseForm.js';
 
 import BookmarkDetailScreen from './BookmarkDetail.js';
-import BookmarksScreen from './BookmarksScreen.js';
+import BookmarkScreen from './users/BookmarkScreen.js';
+// import BookmarksScreen from './BookmarksScreen.js';
 import CalendarScreen from './CalendarScreen.js';
 
 import Login from './users/Login.js';
@@ -157,8 +158,7 @@ const SecureScreens = (props)=>{
         <PropsRoute exact path="/archive" {...props} component={ChallengeListScreen} />
 
         <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
-        <PropsRoute  user={props.user} path="/bookmarks"  component={BookmarksScreen} />
-        <PropsRoute  user={props.user} path="/bookmark/:id"  component={BookmarkDetailScreen} />
+        <PropsRoute  user={props.user} path="/bookmarks"  component={BookmarkScreen} />
         
         <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
         <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
@@ -226,7 +226,7 @@ const Footer = (props)=>{
             </NavLink>
             <NavLink
                 to="/bookmarks"
-                className={`btn btn-btn-light bookmarks-icon btn-block${disabled} d-none`}>
+                className={`btn btn-btn-light bookmarks-icon btn-block${disabled}`}>
                 <div className="icon-box">
                     <img src="/img/footer/Bookmarks_unclicked_btn.png"
                          width="20" height="18"
