@@ -41,11 +41,8 @@ export default class App extends Component {
     };
     this.setAppClass = this.setAppClass.bind(this);
     this.userListener = this.userListener.bind(this);
+    this.getAppClass = this.getAppClass.bind(this);
 
-  }
-
-  childLoaded() {
-    this.setState({childLoaded: true});
   }
 
   userListener(authUser) {
@@ -63,6 +60,8 @@ export default class App extends Component {
   }
 
   componentWillMount() {
+    this.setState({appClass: null});
+
     FBUtil.getAuthUser(this.userListener)
       .then(()=>{
         console.log("auth promise resolved");
@@ -80,7 +79,14 @@ export default class App extends Component {
   }
 
   setAppClass(clazz) {
+    console.log("setting app class");
     this.setState({appClass: clazz});
+  }
+
+  getAppClass() {
+    if(!this.state.appClass)
+      return "";
+    return this.state.appClass;
   }
 
   render() {
@@ -88,7 +94,7 @@ export default class App extends Component {
     if(!this.state.userLoaded || !this.state.challengesLoaded) {
       return (
         <Router>
-          <div className={`App container`}>
+          <div className={`App container ${this.getAppClass()}`}>
             <Header user={this.state.user} />
             <section id="main" className="">
               <LoadingModal show={true} status="Loading assets" />
@@ -109,7 +115,7 @@ export default class App extends Component {
 
     return (
       <Router>
-        <div className={`App container`}>
+        <div className={`App container ${this.getAppClass()}`}>
           <Header user={this.state.user} />
           <section id="main" className="">
             <SecureScreens user={this.state.user} setAppClass={this.setAppClass} />
@@ -144,12 +150,11 @@ const Header = (props)=>{
   );
 }
 
-
 const SecureScreens = (props)=>{
   return (
       <Switch>
         <PropsRoute exact path="/" setAppClass={props.setAppClass} component={Home} />
-        <PropsRoute exact path="/archive" user={props.user} component={ChallengeListScreen} />
+        <PropsRoute exact path="/archive" {...props} component={ChallengeListScreen} />
 
         <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
         <PropsRoute  user={props.user} path="/bookmarks"  component={BookmarksScreen} />
@@ -161,7 +166,7 @@ const SecureScreens = (props)=>{
         <PropsRoute  user={props.user} path="/challenge/:id/prof" component={ProfessorResponseForm}/>
         <PropsRoute  user={props.user} path="/challenge/:id/rate" component={ResponseRatings}/>
         <PropsRoute  user={props.user} path="/challenge/:id/review" component={ChallengeReviewScreen}/>
-        <PropsRoute path="/challenge/:id/" user={props.user} component={ChallengeDetailScreen}/>
+        <PropsRoute path="/challenge/:id" user={props.user} component={ChallengeDetailScreen}/>
 
         <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
         <PropsRoute path="/users" user={props.user} component={ManageUsersScreen} />
@@ -177,6 +182,7 @@ const renderMergedProps = (component, ...rest) => {
 }
 
 const PropsRoute = ({ component, ...rest }) => {
+
   return (
     <Route {...rest} render={routeProps => {
       return renderMergedProps(component, routeProps, rest);
