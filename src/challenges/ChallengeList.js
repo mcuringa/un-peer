@@ -26,8 +26,13 @@ class ChallengeListScreen extends React.Component {
         this.setState({challenges: t});
       });
     }
-
+    this.props.setAppClass("hands");
   }
+
+  componentWillUnmount() {
+    this.props.setAppClass("");
+  }
+
   render() {
     let t = this.state.challenges;
     t = t.map((challenge) => {
