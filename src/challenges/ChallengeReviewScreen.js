@@ -78,13 +78,19 @@ class ChallengeReviewScreen extends React.Component {
 
     db.findAll(`/challenges/${this.challengeId}/responses`).then((t)=>{
       this.setState({responses: t, loadingResponses: false});
-    });
+      
+      let bookmarks = _.keyBy(t, (r)=>{return r.id});
+      _.each(_.keys(bookmarks), (k)=>{bookmarks[k] = false});
 
-    const path = `/users/${this.props.user.uid}/bookmarks`;
-    db.findAll(path).then((bookmarks)=>{
-      let t = _.keyBy(bookmarks, (b)=>{return b.id});
-      t = _.map(t, (b)=>{ return {[b.id]: true}; });
-      this.setState({bookmarks: t});
+      const path = `/users/${this.props.user.uid}/bookmarks`;
+      db.findAll(path).then((t)=> {
+        _.each(t, (b)=>{
+          bookmarks[b.id] = true;
+        });
+
+        this.setState({bookmarks: bookmarks});
+      });
+
     });
 
   }
