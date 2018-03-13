@@ -133,19 +133,20 @@ class ChallengeReviewScreen extends React.Component {
     }
   }
 
-// <svg>
-//     <linearGradient id="grad" x1="0" x2="0" y1="0" y2="100%">
-//         <stop offset="50%" stop-color="grey"/>
-//         <stop offset="50%" stop-color="white"/>
-//     </linearGradient>
-// </svg>
-
   render() {
     if(this.isLoading())
       return <LoadingModal status="Loading responses" show={true} />
 
-    if(new Date() < this.state.challenge.ratingDue && !(this.state.isOwner || this.state.isProfessor))
-      return (<TooEarly challenge={this.state.challenge} />);
+    if(new Date() < this.state.challenge.ratingDue && !(this.state.isOwner || this.state.isProfessor ||this.props.user.su))
+      return (
+        <div className="ResponseReviewScreen screen">
+          <ChallengeHeader challenge={this.state.challenge} 
+            screenTitle="Challenge Review"
+            owner={this.state.challenge.owner} 
+            user={this.props.user} />
+            <TooEarly challenge={this.state.challenge} />
+        </div>
+      );
 
     const makeToggleFunction = (r)=> {
       const f = ()=> {
@@ -155,10 +156,18 @@ class ChallengeReviewScreen extends React.Component {
     }
 
     const profFeatId = this.state.professorChoice.id || "";
-    const ownerFeatId = this.state.professorChoice.id || "";
+    const ownerFeatId = this.state.ownerChoice.id || "";
     const filterFeatures = (r)=>{ return r.id !== profFeatId && r.id !== ownerFeatId };
     
-    const responses = _.filter(this.state.responses, filterFeatures);
+    let responses = _.filter(this.state.responses, filterFeatures);
+    responses = _.reverse(_.sortBy(responses, r=>r.avgRating||-1));
+    const highestRating = responses[0].avgRating;
+    responses = _.map(responses, (r)=> {
+      if(r.avgRating === highestRating)
+        r.topRated = true;
+      return r;
+    });
+
 
     let ResponseList = _.map(responses, (r, i)=>{
 
@@ -173,6 +182,7 @@ class ChallengeReviewScreen extends React.Component {
           featureResponse={this.featureResponse}
           challenge={this.state.challenge}
           toggleBookmark={makeToggleFunction(r)} 
+          open={false}
           bookmarked={this.state.bookmarks[r.id]} />
       );
     });
@@ -180,6 +190,7 @@ class ChallengeReviewScreen extends React.Component {
 
     return (
       <div className="ResponseReviewScreen screen">
+        <StarGradient />
         <ChallengeHeader challenge={this.state.challenge} 
           screenTitle="Challenge Review"
           owner={this.state.challenge.owner} 
@@ -206,17 +217,17 @@ class ChallengeReviewScreen extends React.Component {
           user={this.props.user} 
         />
 
-      <Response
-        open={true}
-        response={this.state.challenge.ownerChoice}
-        challenge={this.state.challenge}
-        key="ownerResponseKey"
-        keyIndex="ownerResponseKey"
-        user={this.props.user} 
-        toggleBookmark={makeToggleFunction(this.state.challenge.ownerChoice)} 
-        bookmarked={this.state.bookmarks[this.state.ownerChoice.id]}
-        ownerChoice={true}
-      />
+        <Response
+          open={true}
+          response={this.state.challenge.ownerChoice}
+          challenge={this.state.challenge}
+          key="ownerResponseKey"
+          keyIndex="ownerResponseKey"
+          user={this.props.user} 
+          toggleBookmark={makeToggleFunction(this.state.challenge.ownerChoice)} 
+          bookmarked={this.state.bookmarks[this.state.ownerChoice.id]}
+          ownerChoice={true}
+        />
 
         {ResponseList}
         <Snackbar show={this.state.showSnack} 
@@ -328,7 +339,7 @@ class Response  extends React.Component {
       return null;
 
     const feature = ()=>{ this.props.featureResponse(r); };
-    const toggleCss = (this.state.open)?"show":"";
+    const toggleCss = (this.state.open)?"show":"collapse";
     const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
     
     const setToggle = () => {this.setState({open: !this.state.open})};
@@ -358,8 +369,21 @@ class Response  extends React.Component {
     }
 
 
+    const TopRated = ()=> {
+      if(!r.topRated)
+        return null;
+
+      return (
+        <div className="d-flex align-content-center badge badge-primary">
+          <div className="p-1 mr-1"><img src="/img/CircleStar.svg" style={{width:"24px"}} alt="star icon" /></div>
+          <div style={{fontSize: "20px", lineHeight: "32px"}}>Top Ranked</div>
+        </div>
+      )  
+    }
+
+
     const AuthorInfo = ()=> {
-      if(!this.props.profChoice && !this.props.ownerChoice)
+      if(!this.props.profChoice && !this.props.ownerChoice && !r.topRated)
         return null;
       return (
         <p><small>Submitted by: {r.user.firstName} {r.user.lastName}</small></p>
@@ -380,6 +404,7 @@ class Response  extends React.Component {
         </button>
       )
     };
+
     return (
       <div className="card mb-3">
         <div id={`head_${this.props.keyIndex}`} className="card-header" aria-expanded={this.props.open}>
@@ -393,10 +418,7 @@ class Response  extends React.Component {
             <div className="col-5 clickable" data-toggle="collapse" 
               onClick={setToggle}
               data-target={`#body_${this.props.keyIndex}`}>
-              <StarRatings 
-                rating={r.avgRating} 
-                user={this.props.user} 
-                responseId={r.id} />
+              <StarRatings rating={r.avgRating} />
             </div>
             <div className="col-1 clickable" data-toggle="collapse"
               onClick={setToggle} 
@@ -410,6 +432,7 @@ class Response  extends React.Component {
           <div className="d-flex flex-row-reverse">
             <ProfFeature />
             <OwnerFeature />
+            <TopRated />
           </div>
         </div>
         <div id={`body_${this.props.keyIndex}`} className={toggleCss} data-parent="#ResponseList">
@@ -426,7 +449,34 @@ class Response  extends React.Component {
   }
 }
 
+const StarGradient = (props)=> {
+  const angles = {
+    x1:"0%",
+    y1:"50%",
+    x2:"100%",
+    y2:"50%"
+  }
+  return (
+    <div style={{height: 0}}>
+    <svg>
+      <linearGradient id="QuarterFull" {...angles}>
+        <stop offset="40%" stopColor="#6c757d"/>
+        <stop offset="40%" stopColor="white"/>
+      </linearGradient>
+      <linearGradient id="HalfFull" {...angles}>
+        <stop offset="50%" stopColor="#6c757d"/>
+        <stop offset="50%" stopColor="white"/>
+      </linearGradient>
+      <linearGradient id="ThreeQuartersFull" {...angles}>
+        <stop offset="60%" stopColor="#6c757d"/>
+        <stop offset="60%" stopColor="white"/>
+      </linearGradient>
 
+    </svg>
+    </div>
+  )
+
+}
 
 const StarRatings = (props)=>{
 
@@ -445,7 +495,37 @@ const StarRatings = (props)=>{
 }
 
 const Star = (props)=> {
-  const fill = (props.val<=props.rating)?"filled":"";
+
+  const fillStyle = (v, rating)=> {
+    if(!rating)
+      return "not-rated";
+
+    const roundToQuartile = (n)=> {
+      n = Math.round(n*4)/4;
+      return _.round(n,2);
+    }
+
+    rating = roundToQuartile(rating);
+    const pct = rating - Math.floor(rating);
+
+    if(props.val < Math.floor(rating))
+      return "filled";
+    
+    if(props.val > rating)
+      return "";
+
+
+    if(pct === .25)
+      return "quarter";
+    if(pct === .50)
+      return "half";
+    if(pct === .75)
+      return "three-quarters";
+
+    return "filled";
+  }
+
+  let fill = fillStyle(props.val, props.rating);
 
   return (
     <div className={`Star ${fill}`}><StarIcon /></div>
@@ -477,8 +557,8 @@ const TooEarly = (props)=> {
 
 const FlagIcon = (props)=> {
   return (
-    <svg height="32px" width="32px">
-      <g>
+    <svg height="32px" width="32px" className="pt-1 pl-1" style={{fill:"#StarGradient"}}>
+      <g transform="scale(.8)">
         <rect fill="white" width="4" height="32" x="0" y="0" />
         <rect fill="white" width="19" height="19" x="0" y="0" />
         <rect fill="white" width="14" height="18" x="16" y="4" />
@@ -486,7 +566,5 @@ const FlagIcon = (props)=> {
     </svg>
   )
 }
-
-
 
 export default ChallengeReviewScreen;

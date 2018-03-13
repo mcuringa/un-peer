@@ -7889,7 +7889,7 @@ small tt {
   margin: 0;
   padding: 4px 8px 2px 8px; }
 
-.Home, .ChallengeListScreen {
+.hands {
   background-image: url("/img/hands.jpg");
   background-size: cover;
   background-repeat: no-repeat;
@@ -8062,6 +8062,15 @@ label {
 
 .Star.filled svg {
   fill: #7d87a3; }
+
+.Star.quarter svg {
+  fill: url("#QuarterFull"); }
+
+.Star.half svg {
+  fill: url("#HalfFull"); }
+
+.Star.three-quarters svg {
+  fill: url("#ThreeQuartersFull"); }
 
 /*============================== LOGIN */
 .App.login {

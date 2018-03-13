@@ -127,7 +127,7 @@ small tt {
   padding: 4px 8px 2px 8px;
 }
 
-.Home, .ChallengeListScreen
+.hands
 {
   background-image: url('/img/hands.jpg');
   background-size: cover;
@@ -301,18 +301,6 @@ small tt {
   width: 100%;
 }
 
-// .ChallengeEditHeader
-// {
-//   background: white;
-//   border-bottom: 1px solid $gray-400;
-//   z-index: 200;
-//   width: 100%;
-//   max-width: $full-screen-width;
-//   margin-top: 0;
-//   padding-top: 0;
-//   top: 0;
-
-// }
 
 .NewChallengeButton
 {
@@ -408,10 +396,12 @@ label
   stroke-width: 1.1px;
 }
 
-.Star.filled svg
-{
+.Star.filled svg {
   fill: $gray-text;
 }
+.Star.quarter svg { fill: url("#QuarterFull"); }
+.Star.half svg { fill: url("#HalfFull"); }
+.Star.three-quarters svg { fill: url("#ThreeQuartersFull"); }
 
 /*============================== LOGIN */
 

@@ -10,7 +10,6 @@ import { Video } from "../FormUtil";
 import Modal from "../Modal";
 import Snackbar from "../Snackbar";
 import LoadingModal from "../LoadingModal";
-import Accordion from "../LoadingModal";
 
 class ResponseRatings extends React.Component {
   constructor(props) {
