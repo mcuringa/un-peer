@@ -21,9 +21,7 @@ import ResponseRatings from './challenges/ResponseRatings.js';
 import ChallengeReviewScreen from './challenges/ChallengeReviewScreen.js';
 import ProfessorResponseForm from './challenges/ProfessorResponseForm.js';
 
-import BookmarkDetailScreen from './BookmarkDetail.js';
 import BookmarkScreen from './users/BookmarkScreen.js';
-// import BookmarksScreen from './BookmarksScreen.js';
 import CalendarScreen from './CalendarScreen.js';
 
 import Login from './users/Login.js';
@@ -133,17 +131,17 @@ export default class App extends Component {
 const Header = (props)=>{
   return (
     <header className="App-header container fixed-top">
-      <div className="row">
-        <div className="App-home col-3">
+      <div className="d-flex align-items-center justify-content-around">
+        <div className="App-home">
           <NavLink to="/" exact={true} activeclass="active">
             <div className="home-icon"></div>
           </NavLink>
         </div>
-        <div className="App-title col-6">UN Peer Challenges</div>
-        <div className="App-notifications col-3 d-none">
+        <div className="App-title">UN Peer Challenges</div>
+        <div className="App-notifications">
           <NavLink to="/notifications">
-                <img src="/img/header/Notification_unclicked_btn.png"
-                   alt="Notification icon" />
+            <img src="/img/header/Notification_unclicked_btn.png"
+               alt="Notification icon" />
           </NavLink>
         </div>
       </div>
