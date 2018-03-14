@@ -127,6 +127,11 @@ small tt {
   padding: 4px 8px 2px 8px;
 }
 
+.no-Screen-padding {
+  margin: -4px -8px -2px -8px;
+
+}
+
 .hands
 {
   background-image: url('/img/hands.jpg');
@@ -158,8 +163,8 @@ small tt {
   }
   .App-home a {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 44px;
+    height: 44px;
 
 
   }
@@ -172,12 +177,14 @@ small tt {
     width: 100%;
     height: 100%;
     background-image: url("/img/header/Home_unclicked_btn.png");
-    background-position: center;
+    background-position: left bottom;
     background-repeat: no-repeat;
 
   }
 
   .App-notifications .active .home-icon {
+    width: 28px;
+    height: 44px;
     content: url("/img/header/Notification_white.png");
   }
 }
@@ -362,6 +369,26 @@ small tt {
 }
 
 /*Form Styles */
+.ChallengeEditHeader {
+  width:100%;
+  max-width: $full-screen-width;
+  margin: 0 auto;
+  position: fixed;
+  z-index: 200;
+}
+
+.ChallengeEditHeader .inner {
+  @extend .no-Screen-padding;
+  background: $gray-200;
+  box-shadow: $gray-400 0px 2px 4px;
+
+}
+
+.ChallengeEditHeader h4{
+  font-size: 16px;
+  font-weight: bold;
+}
+
 
 label
 {
@@ -402,6 +429,7 @@ label
 .Star.quarter svg { fill: url("#QuarterFull"); }
 .Star.half svg { fill: url("#HalfFull"); }
 .Star.three-quarters svg { fill: url("#ThreeQuartersFull"); }
+.Star.not-rated svg { fill: url("#UnratedHash"); }
 
 /*============================== LOGIN */
 

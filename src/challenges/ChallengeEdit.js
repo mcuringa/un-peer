@@ -42,15 +42,15 @@ class ChallengeEditScreen extends React.Component {
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
-    this.save = this.save.bind(this);
-    this.save = _.debounce(this.save, 2000);
+    this.autoSave = this.autoSave.bind(this);
+    this.autoSave = _.debounce(this.autoSave, 2000);
     this.clearField = this.clearField.bind(this);
     this.selectProfessor = _.bind(this.selectProfessor, this);
     this.selectOwner = _.bind(this.selectOwner, this);
     this.submitForReview = _.bind(this.submitForReview, this);
     this.snack = _.bind(this.snack, this);
     this.snack = _.throttle(this.snack, this.snackTime);
-
+    this.save = _.bind(this.save, this);
   }
 
   snack(msg, showUndo) {
@@ -90,7 +90,7 @@ class ChallengeEditScreen extends React.Component {
     let c = this.state.challenge;
     c[key] = "";
     this.setState({ challenge: c, dirty: true });
-    this.save();
+    this.autoSave();
   }
 
   componentWillMount() {
@@ -105,7 +105,13 @@ class ChallengeEditScreen extends React.Component {
     });
   }
 
+  autoSave() {
+    // not enabled
+    return;
+  }
+
   save() {
+    console.log("saving");
 
     this.setState({loading: true});
     this.snack("saving...");
@@ -117,7 +123,7 @@ class ChallengeEditScreen extends React.Component {
   }
 
   handleSubmit(e) {
-    this.save();
+    this.autoSave();
     e.preventDefault();
   }
 
@@ -143,12 +149,13 @@ class ChallengeEditScreen extends React.Component {
       this.snack("Upload complete");
       this.setState({
         [pctKey]: "",
-        [msgKey]: 0
+        [msgKey]: 0,
+        loading: false
       });
 
       c[key] = task.snapshot.downloadURL;
       this.setState({challenge: c});
-      this.save();
+      // this.autoSave();
     }
 
     const watch = (snapshot)=> {
@@ -178,14 +185,14 @@ class ChallengeEditScreen extends React.Component {
     let c = this.state.challenge;
     c.professor = u;
     this.setState({ challenge: c, dirty: true });
-    this.save();
+    this.autoSave();
   }
 
   selectOwner(u) {
     let c = this.state.challenge;
     c.owner = u;
     this.setState({ challenge: c, dirty: true, owner: u });
-    this.save();
+    this.autoSave();
   }
 
   handleChange(e) {
@@ -193,7 +200,7 @@ class ChallengeEditScreen extends React.Component {
     let c = this.state.challenge;
     c[e.target.id] = e.target.value;
     this.setState({ challenge: c, dirty: true });
-    this.save();
+    this.autoSave();
   }
 
   handleDateChange(e) {
@@ -201,12 +208,12 @@ class ChallengeEditScreen extends React.Component {
     const date = ChallengeDB.parseDateControlToUTC(e.target.value);
     c[e.target.id] = date;
 
-    if(date> this.state.challenge.endDate)
+    if(date > c.endDate)
       c.endDate = date;
 
     this.setState({ challenge: c, dirty: true });
 
-    this.save();
+    this.autoSave();
   }
 
   handleStartDateChange(e) {
@@ -221,7 +228,7 @@ class ChallengeEditScreen extends React.Component {
 
     this.setState({ challenge: c, dirty: true });
 
-    this.save();
+    this.autoSave();
   }
 
   submitForReview() {
@@ -249,7 +256,7 @@ class ChallengeEditScreen extends React.Component {
     return (
       <div className="ChallengeEdit screen">
         <FormHeader challenge={c} owner={this.state.owner} loading={this.state.loading} dirty={this.state.dirty} />
-        <form className="mt-2">
+        <form className="mt-2" onSubmit={(e)=>{e.preventDefault();}}>
           
           <BasicFields 
             user={this.props.user}
@@ -318,11 +325,14 @@ class ChallengeEditScreen extends React.Component {
                 onChange={this.handleDateChange} />
           </Accordion>
 
-          <SubmitChallengeButtons 
-            user={this.props.user} 
-            saveDraft={()=>{this.save()}} 
-            sendForReview={()=>{this.setState({confirmReview:true})}}
-          />
+          <div className="d-flex justify-content-end mt-2 mb-2">
+            <SaveButton user={this.props.user} loading={this.state.loading} save={this.save} />
+            <SubmitChallengeButtons 
+              user={this.props.user} 
+              saveDraft={()=>{this.save()}} 
+              sendForReview={()=>{this.setState({confirmReview:true})}}/>
+          </div>
+
 
         </form>
         <Snackbar show={this.state.showSnack} 
@@ -334,7 +344,7 @@ class ChallengeEditScreen extends React.Component {
         <Modal id="confirmRemoveVideo" 
           title="Remove video" 
           show={this.state.confirmClearVideo}
-          onConfirm={()=>{this.clearField("video");this.save();}}
+          onConfirm={()=>{this.clearField("video");this.autoSave();}}
           closeHandler={()=>{this.setState({confirmClearVideo:false})}}
           >
           Really remove the challenge video? This cannot be undone.
@@ -363,6 +373,24 @@ class ChallengeEditScreen extends React.Component {
   }
 }
 
+const SaveButton = (props)=> {
+
+  let disabled = "";
+  let label = "Save"
+  if(props.loading) {
+    disabled = "disabled";
+    label = "saving..."
+  }
+  return (
+    <button type="button" 
+      disabled={disabled} 
+      className={`btn btn-secondary mr-1 ${disabled}`} 
+      style={{minWidth: "120px"}} onClick={props.save}>
+      {label}
+    </button>
+  )
+}
+
 
 const SubmitChallengeButtons = (props)=> {
   if(props.user.admin)
@@ -389,17 +417,26 @@ const FormHeader = (props)=>
 {
   const c = props.challenge;
   return (
-    <div>
-      <div className="ChallengeEditHeader row">
-        <div className="col-11 d-flex align-items-baseline justify-content-between pr-2">
-          <h4>{c.title}</h4>
-          <div><Link to={`/challenge/${c.id}`} className="p1-1 icon-primary" title="view challenge"><EyeIcon /></Link></div>
-        </div>
-        <div className="col-1 d-flex pt-1">
-          <StatusIndicator dirty={props.dirty} loading={props.loading} />
+    <div className="position-relative">
+      <div className="ChallengeEditHeader">
+        <div className="inner d-flex align-items-baseline justify-content-between">
+          <h4 className="pl-2">
+            {c.title}
+            <span className="pl-2 pt-2 icon-primary">
+            <Link to={`/challenge/${c.id}`} 
+              title="view challenge">
+              <EyeIcon />
+            </Link>
+            </span>
+          </h4>
+          <div className="pt-1 mr-4">
+            <StatusIndicator dirty={props.dirty} loading={props.loading} />
+          </div>
+
         </div>
       </div>
-      <div>
+
+      <div className="ChallengeMetaData" style={{paddingTop: "34px"}}>
         <div className="small text-muted">Owner: {props.owner.firstName} {props.owner.lastName}</div>
         <small className="text-muted"><tt>created: {df.ts(c.created)} | </tt></small>
         <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>

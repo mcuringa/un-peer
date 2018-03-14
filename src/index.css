@@ -7889,6 +7889,9 @@ small tt {
   margin: 0;
   padding: 4px 8px 2px 8px; }
 
+.no-Screen-padding, .ChallengeEditHeader .inner {
+  margin: -4px -8px -2px -8px; }
+
 .hands {
   background-image: url("/img/hands.jpg");
   background-size: cover;
@@ -7903,8 +7906,8 @@ small tt {
   font-size: 18px; }
   .App-header .App-home a {
     display: block;
-    width: 100%;
-    height: 100%; }
+    width: 44px;
+    height: 44px; }
   .App-header .App-home .active .home-icon {
     background-image: url("/img/header/Home_clicked_btn.png"); }
   .App-header .App-home .home-icon {
@@ -7912,9 +7915,11 @@ small tt {
     width: 100%;
     height: 100%;
     background-image: url("/img/header/Home_unclicked_btn.png");
-    background-position: center;
+    background-position: left bottom;
     background-repeat: no-repeat; }
   .App-header .App-notifications .active .home-icon {
+    width: 28px;
+    height: 44px;
     content: url("/img/header/Notification_white.png"); }
 
 .App-footer-toolbar .btn-block, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .ChallengeItem, .App-footer-toolbar .NewChallengeButton {
@@ -8038,6 +8043,21 @@ small tt {
   padding: 1em; }
 
 /*Form Styles */
+.ChallengeEditHeader {
+  width: 100%;
+  max-width: 512px;
+  margin: 0 auto;
+  position: fixed;
+  z-index: 200; }
+
+.ChallengeEditHeader .inner {
+  background: #e9ecef;
+  box-shadow: #ced4da 0px 2px 4px; }
+
+.ChallengeEditHeader h4 {
+  font-size: 16px;
+  font-weight: bold; }
+
 label {
   font-weight: bold; }
 
@@ -8071,6 +8091,9 @@ label {
 
 .Star.three-quarters svg {
   fill: url("#ThreeQuartersFull"); }
+
+.Star.not-rated svg {
+  fill: url("#UnratedHash"); }
 
 /*============================== LOGIN */
 .App.login {
