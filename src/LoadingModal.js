@@ -9,16 +9,22 @@ const LoadingModal = (props)=> {
     <div className={`LoadingModal ${showSomeClass}`} id="LoadingModal"
       tabIndex="-1" role="dialog"
       aria-labelledby="loadingModalMessagePane" aria-hidden="true">
-        <div className="LoadingModalContent">
-          <div className="loader-inner ball-pulse">
-              <div></div>
-              <div></div>
-              <div></div>
-          </div>
-          <div className="LoadingStatusMsg text-muted">{props.status}</div>
-        </div>
+      <div className="LoadingModalContent">
+        <Spinner />
+        <div className="LoadingStatusMsg text-muted">{props.status}</div>
+      </div>
     </div>
   );
+}
+
+
+const Spinner = (props)=> {
+
+  return (
+    <div className="loader-inner ball-pulse">
+      <div></div><div></div><div></div>
+    </div>
+  )
 }
 
 
