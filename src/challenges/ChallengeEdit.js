@@ -31,6 +31,7 @@ class ChallengeEditScreen extends React.Component {
       challenge: Challenge, 
       owner: {displayName: props.user.displayName, email: props.user.email, id: props.user.uid},
       loading: true,
+      uploading: false,
       dirty: false,
       uploadStatus: "no upload running",
       showSnack: false,
@@ -140,7 +141,7 @@ class ChallengeEditScreen extends React.Component {
       this.snack("Uploading thumbnail image");
 
 
-    this.setState({dirty: true, loading: true});
+    this.setState({dirty: true, loading: true, uploading: true});
 
     const pctKey = key+"Pct";
     const msgKey = key+"Status";
@@ -150,7 +151,8 @@ class ChallengeEditScreen extends React.Component {
       this.setState({
         [pctKey]: "",
         [msgKey]: 0,
-        loading: false
+        loading: false,
+        uploading: false
       });
 
       c[key] = task.snapshot.downloadURL;
@@ -208,8 +210,8 @@ class ChallengeEditScreen extends React.Component {
     const date = ChallengeDB.parseDateControlToUTC(e.target.value);
     c[e.target.id] = date;
 
-    if(date > c.endDate)
-      c.endDate = date;
+    if(date > c.end)
+      c.end = date;
 
     this.setState({ challenge: c, dirty: true });
 
@@ -319,14 +321,19 @@ class ChallengeEditScreen extends React.Component {
               label="rating due"
               onChange={this.handleDateChange} />
             
-            <DatePicker id="endDate"
+            <DatePicker id="end"
               value={c.end}
               label="challenge end"
                 onChange={this.handleDateChange} />
           </Accordion>
 
           <div className="d-flex justify-content-end mt-2 mb-2">
-            <SaveButton user={this.props.user} loading={this.state.loading} save={this.save} />
+            <SaveButton 
+              user={this.props.user}
+              loading={this.state.loading}
+              uploading={this.state.uploading}
+              save={this.save} />
+
             <SubmitChallengeButtons 
               user={this.props.user} 
               saveDraft={()=>{this.save()}} 
@@ -381,6 +388,9 @@ const SaveButton = (props)=> {
     disabled = "disabled";
     label = "saving..."
   }
+  if(props.uploading)
+    label = "uploading...";
+
   return (
     <button type="button" 
       disabled={disabled} 
@@ -419,24 +429,23 @@ const FormHeader = (props)=>
   return (
     <div className="position-relative">
       <div className="ChallengeEditHeader">
-        <div className="inner d-flex align-items-baseline justify-content-between">
-          <h4 className="pl-2">
+        <div className="inner d-flex align-items-center justify-content-between">
+          <h4 className="p-2">
             {c.title}
-            <span className="pl-2 pt-2 icon-primary">
-            <Link to={`/challenge/${c.id}`} 
-              title="view challenge">
+          </h4>
+          <div className="d-flex align-items-center" style={{minWidth: "40px", marginRight: "8px"}}>
+            <Link  className="pr-2  icon-secondary" to={`/challenge/${c.id}`} 
+                title="view challenge">
               <EyeIcon />
             </Link>
-            </span>
-          </h4>
-          <div className="pt-1 mr-4">
-            <StatusIndicator dirty={props.dirty} loading={props.loading} />
+
+            <StatusIndicator dirty={props.dirty} loading={false} />
           </div>
 
         </div>
       </div>
 
-      <div className="ChallengeMetaData" style={{paddingTop: "34px"}}>
+      <div className="ChallengeMetaData" style={{paddingTop: "40px"}}>
         <div className="small text-muted">Owner: {props.owner.firstName} {props.owner.lastName}</div>
         <small className="text-muted"><tt>created: {df.ts(c.created)} | </tt></small>
         <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>
