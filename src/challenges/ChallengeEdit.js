@@ -521,9 +521,7 @@ const ChallengeVideo = (props)=> {
        poster={poster}
        onChange={props.handleUpload} 
        label=""
-       progressBar={progress}
-       />
-      {clearBtn}     
+       progressBar={progress} />
     </div>
 
   );

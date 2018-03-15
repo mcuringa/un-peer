@@ -1,5 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import _ from "lodash";
+
 import { ChallengeDB } from "./Challenge.js"
 import FBUtil from "../FBUtil.js";
 
@@ -10,13 +12,11 @@ import {UploadProgress, formatFileSize} from "../MediaManager";
 import {
   TextGroup,
   TextAreaGroup,
+  Checkbox,
   VideoUploadImproved
 } from "../FormUtil";
 
 import ChallengeHeader from "./ChallengeHeader";
-
-
-require("firebase/storage");
 
 class ChallengeResponseForm extends React.Component {
   constructor(props) {
@@ -28,6 +28,7 @@ class ChallengeResponseForm extends React.Component {
       title:"",
       text:"",
       video:"",
+      videoOptOut: false
     }
 
     this.state = {
@@ -38,22 +39,16 @@ class ChallengeResponseForm extends React.Component {
       choose: true,
       showConfirm: false,
       showVideo: false,
+      validated: false,
       uploadStatus: "select a video to upload"
-
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
     this.publish = this.publish.bind(this);
-    this.chooseText = this.chooseText.bind(this);
-    this.chooseVideo = this.chooseVideo.bind(this);
     this.confirmUpload = this.confirmUpload.bind(this);
     this.clearVideo = this.clearVideo.bind(this);
   }
-
-  chooseText() { this.setState({showText: true, showVideo: false})}
-  chooseVideo() { this.setState({showText: false, showVideo: true})}
-
   componentDidMount() {
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
@@ -62,7 +57,9 @@ class ChallengeResponseForm extends React.Component {
 
     ChallengeDB.getResponse(id, this.props.user.uid)
       .then((r)=>{
-          this.setState({response: r});
+        if(!r.videoOptOut)
+          r.videoOptOut = false;
+        this.setState({response: r});
       },()=>{console.log("no response");});
   }
 
@@ -159,11 +156,11 @@ class ChallengeResponseForm extends React.Component {
         </div>
       );
 
-    
-    const showVideo = this.state.response.video || this.state.showVideo;
-    const showText = !showVideo && (this.state.response.text || this.state.showText);
-    const showMediaPicker = !showVideo && !showText;
-
+    const toggleOptOut = ()=> {
+      let r = this.state.response;
+      r.videoOptOut = !r.videoOptOut;
+      this.setState({response: r});
+    }
 
     return (
       <div className="ChallengeResponseForm screen">
@@ -172,24 +169,15 @@ class ChallengeResponseForm extends React.Component {
           owner={this.props.user}
           user={this.props.user} />
 
-      <form onSubmit={(e)=>{e.preventDefault();}}>
-
-        <MediaPicker show={showMediaPicker} 
-          chooseVideo={this.chooseVideo} chooseText={this.chooseText} />
-    
-        <TextResponse show={showText}
-          response={this.state.response}
-          onChange={this.handleChange} 
-          onSubmit={this.confirmUpload} />
-
-        <VideoResponse show={showVideo}
+        <ResponseForm
           response={this.state.response}
           onChange={this.handleChange} 
           handleUpload={this.handleUpload}
           pct={this.state.uploadPct} 
           msg={this.state.uploadStatus}
           onSubmit={this.confirmUpload} 
-          clearVideo={this.clearVideo} />
+          clearVideo={this.clearVideo} 
+          toggleOptOut={toggleOptOut} />
 
         <Modal id="SubmitResponseModal"
           show={this.state.showConfirm} 
@@ -201,96 +189,129 @@ class ChallengeResponseForm extends React.Component {
           show={this.state.showNextChoice} 
           body="Submitted!"
           footer={NextChoice} />
-
-      </form>
-    </div>);
+      </div>
+    )
   }
 }
 
 
-const VideoResponse = (props) => {
-  const empty = (s)=> !s || !s.trim();
 
-  if(!props.show)
-    return null;
 
-  const progress = (<UploadProgress pct={props.pct} msg={props.msg} />);
-  const clearBtn = (props.response.video)?(
-    <button className="btn btn-block btn-sm btn-secondary float-right" onClick={props.clearVideo}>
-      Remove video
-    </button>
-    ) : "";
+class ResponseForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {isValidated: false}
+    this.submit = _.bind(this.submit, this);
+  }
 
-  return (
-    <div>
-      <TextGroup id="title"
-        value={props.response.title}
-        label="Response title"
-        onChange={props.onChange} />
 
-      <VideoUploadImproved id="video" 
-       video={props.response.video}
-       poster="/img/poster.png"
-       onChange={props.handleUpload} 
-       label=""
-       progressBar={progress}
-       />
-       <div className="row">
-        <div className="col-8">
-          <small className="text-muted">Upload a short (~1 minute) video with your response.</small>
+  submit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let form = document.getElementById("ResponseForm");
+    
+    let valid =  form.checkValidity();
+    this.setState({ isValidated: true});
+
+    if(!valid)
+      return;
+
+    this.props.onSubmit();
+  }
+
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if(this.state.isValidated && document.getElementById(ResponseForm).checkValidity())
+  //     this.setState({ isValidated: false });
+  // }
+
+  render() {
+    const props = this.props;
+    let textRows = 3;
+    let textError = "Please provide a short description of your response."
+    
+    if(props.response.videoOptOut) {
+      textRows = 6;
+      textError = "You must provide a written response to the challenge."
+    }
+
+    const VideoErrMsg = ()=> {
+      // if(!this.state.isValidated || this.state.videoOptOut)
+      //   return null;
+
+      if(props.pct > 0 && props.pct < 100)
+        return (
+          <div className="invalid-feedback">
+            You must wait until your video upload
+            completes before submitting your response.
+          </div>
+        )
+
+      if(props.response.video.trim().length > 0)
+        return null;
+
+      return (
+        <div className="invalid-feedback">
+          You must either <em>upload a video</em>
+          or <em>check <tt>Do not include a video in my response</tt></em>
+          before you can submit your response.
         </div>
-        <div className="col">{clearBtn}</div>
-      </div>
+      )
+    }
 
-      <TextAreaGroup id="text"
-        value={props.response.text}
-        placeholder="Write a short description of your video."
-        rows="3"
-        onChange={props.onChange} />
+    const validationClass = (this.state.isValidated)?"was-validated":"needs-validation";
 
-      <SubmitButton
-        update={props.response.id}
-        onSubmit={props.onSubmit}
-        disabled={empty(props.response.text) || empty(props.response.text) || empty(props.response.video)}
-        disabledMsg="Title & description are required. You can submit after your video uploads." />
-    </div>
-  );
+    console.log();
 
+    return (
+      <form id="ResponseForm" className={validationClass} noValidate onSubmit={this.submit}>
+        <TextGroup id="title"
+          required={true}
+          validationErrorMsg="Please enter a title for your response."
+          value={props.response.title}
+          label="Response title"
+          onChange={props.onChange} />
+
+        <div className="d-flex justify-content-end">
+          <div className="font-weight-bold text-right"><small>Upload a short (1-2 minute) video with your response.</small></div>
+        </div>
+
+        <VideoUploadImproved id="video" 
+          video={props.response.video}
+          poster="/img/poster.png"
+          onChange={props.handleUpload} 
+          label=""
+          validationErrorMsg={VideoErrMsg}
+          clearVideo={props.clearVideo}
+          progressBar={(<UploadProgress pct={props.pct} msg={props.msg} />)} />
+        <VideoErrMsg />
+
+        <Checkbox
+          id="videoOptOut"
+          checked={props.response.videoOptOut}
+          onClick={props.toggleOptOut}
+          required={props.response.video.trim().length === 0}
+          validationErrorMsg="Check this box if your response does not include a video."
+          label="Do not include a video in my response" />
+          
+        <TextAreaGroup id="text"
+          value={props.response.text}
+          placeholder="Write a short description of your video."
+          rows={textRows}
+          required={true}
+          validationErrorMsg={textError}
+          onChange={props.onChange} />
+
+        <button type="submit" 
+          className={`btn btn-block btn-secondary mt-2`}>
+          Save
+        </button>
+      </form>
+    )
+  }
 }
 
 
-const TextResponse = (props) => {
-
-  const empty = (s)=> !s || !s.trim();
-
-  if(!props.show)
-    return null;
-
-  return (
-    <div>
-      <TextGroup id="title"
-        value={props.response.title}
-        label="Response title"
-        onChange={props.onChange} 
-        requrired={true} />
-
-      <TextAreaGroup id="text"
-        value={props.response.text}
-        label="Your written response"
-        rows="6"
-        requrired={true}
-        onChange={props.onChange} />
-      
-      <SubmitButton
-        update={props.response.id}
-        onSubmit={props.onSubmit} 
-        disabled={empty(props.response.text) || empty(props.response.title)}
-        disabledMsg="Please enter a title and response before submitting."
-      />
-    </div>
-  );
-
-}
 
 class SubmitButton extends React.Component {
   constructor(props) {
@@ -318,37 +339,6 @@ class SubmitButton extends React.Component {
       </div>
     );
   }
-}
-
-const MediaPicker = (props)=> {
-
-  if(!props.show)
-    return null;
-
-  return (
-    <div className="row mt-3">
-      <div className="col-6">
-        <div className="card pt-2 pb-2">
-          <button type="button" className="btn btn-link d-block mt-4 mb-4"
-            onClick={props.chooseVideo}>
-            <img src="/img/video-response_btn.png" alt="text response icon" />
-            <h5 className="pt-2 text-dark text-center">video</h5>
-          </button>
-        </div>
-      </div>
-      <div className="col-4 offset-sm-1">
-        <div className="card">
-          <button type="button" className="btn btn-link"
-            onClick={props.chooseText}>
-            <img src="/img/text-response_btn.png" alt="text response icon" />
-            <h5 className="pt-2 text-dark text-center">text</h5>
-          </button>
-        </div>
-      </div>
-    </div>
-  
-  );
-
 }
 
 export default ChallengeResponseForm;

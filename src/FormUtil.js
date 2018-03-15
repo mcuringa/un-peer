@@ -7,10 +7,10 @@ import {UploadProgress} from "./MediaManager";
 const LoadingSpinner = (props)=> {
   return (
     <span className="LoadingSpinner">
-        <img className={`${(props.loading)?"":"d-none"}`}
-             alt="Loading"
-             style={{maxHeight: "16px"}}
-             src="/img/puff.svg" />
+      <img className={`${(props.loading)?"":"d-none"}`}
+           alt="Loading"
+           style={{maxHeight: "16px"}}
+           src="/img/puff.svg" />
     </span>
     );
 }
@@ -28,6 +28,31 @@ const StatusIndicator = (props)=> {
   );
 }
 
+
+const Checkbox = (props)=> {
+  if(props.hide)
+    return null;
+  const extraCss = props.className || "";
+
+  return (
+    <div className="form-group">
+      <div className="form-check">
+        <input type="checkbox"
+          value={props.value}
+          className={`form-check-input ${extraCss}`}
+          id={props.id}
+          name={props.id}
+          checked={props.checked}
+          required={props.required}
+          onChange={props.onClick} />
+        <label className="form-check-label font-weight-normal" htmlFor={props.id}>{props.label}</label>
+        <InvalidMsg msg={props.validationErrorMsg} />
+        <ValidMsg msg={props.validatinPassedMsg} />
+      </div>
+    </div>
+  )
+}
+
 const TextGroup = (props)=> {
 
   if(props.hide)
@@ -37,29 +62,37 @@ const TextGroup = (props)=> {
     <div className="form-group">
       <label htmlFor={props.id}>{props.label}</label>
       <TextInput type={props.type||'text'}
-             value={props.value}
-             className="form-control"
-             id={props.id}
-             placeholder={props.placeholder}
-             onChange={props.onChange}
-             readOnly={props.readOnly}
-             plaintext={props.plaintext}
-             required={props.required}
-             autofocus={props.autoFocus} />
+        value={props.value}
+        className="form-control"
+        id={props.id}
+        placeholder={props.placeholder}
+        onChange={props.onChange}
+        readOnly={props.readOnly}
+        plaintext={props.plaintext}
+        required={props.required}
+        autofocus={props.autoFocus} />
       <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
-      <ErrorMessage msg={props.validationErrorMsg} show={props.showError} />
+      <InvalidMsg msg={props.validationErrorMsg} />
+      <ValidMsg msg={props.validatinPassedMsg} />
 
     </div>
   );
 };
 
-const ErrorMessage = (props)=>{
-  if(!props.show || !props.msg || props.msg.length === 0)
+const InvalidMsg = (props)=>{
+  if(!props.msg || props.msg.length === 0)
     return null;
-  console.log("error");
   return (      
-    <div className="text-danger"><small>{props.msg}</small></div>
-  );
+      <div className="invalid-feedback">{props.msg}</div>
+  )
+}
+
+const ValidMsg = (props)=>{
+  if(!props.msg || props.msg.length === 0)
+    return null;
+  return (      
+      <div className="valid-feedback">{props.msg}</div>
+  )
 }
 
 const TextInput = (props)=> {
@@ -143,6 +176,33 @@ const VideoUploadImproved = (props)=> {
   if(props.hide)
     return null;
 
+  const vidFileName = (path)=> {
+    let start = path.lastIndexOf("/");
+    let end = path.lastIndexOf("?")
+    let fileName = (end === -1)?path.slice(start): path.slice(start,end);
+    fileName = fileName.replace("%2F","/");
+    return fileName;
+  }
+
+  const ClearVideo = ()=> {
+
+    if(!props.clearVideo)
+      return <Video {...props} />
+
+    return (
+      <div>
+        <Video {...props} />
+        <div className="d-flex justify-content-end text-light bg-dark m-0 p-0">
+          <div><small>{vidFileName(props.video)}</small></div>
+          <button type="button" className="btn btn-link p-0 ml-2 mr-1 mt-1"
+           onClick={props.clearVideo}>
+            <XIcon className="icon-danger" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   const uploadBtn = (
     <div className="VideoUploadButton d-block">
       <input type="file" className="d-none"
@@ -154,7 +214,7 @@ const VideoUploadImproved = (props)=> {
     </div>
   );
 
-  const VideoEl = (props.video)?<Video {...props} /> : uploadBtn;
+  const VideoEl = (props.video)?<ClearVideo /> : uploadBtn;
 
   return (
     <div className="p-0">
@@ -264,6 +324,8 @@ const TextAreaGroup = (props)=> {
         readOnly={props.readonly}
         required={props.required} />
       <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
+      <InvalidMsg msg={props.validationErrorMsg} />
+      <ValidMsg msg={props.validatinPassedMsg} />
     </div>
   );
 };
@@ -333,5 +395,6 @@ export {
   Video,
   VideoUpload,
   ImageUpload,
-  VideoUploadImproved
+  VideoUploadImproved,
+  Checkbox
 };
