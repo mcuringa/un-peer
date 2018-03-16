@@ -47,7 +47,7 @@ const Checkbox = (props)=> {
           onChange={props.onClick} />
         <label className="form-check-label font-weight-normal" htmlFor={props.id}>{props.label}</label>
         <InvalidMsg msg={props.validationErrorMsg} />
-        <ValidMsg msg={props.validatinPassedMsg} />
+        <ValidMsg msg={props.validationPassedMsg} />
       </div>
     </div>
   )
@@ -73,7 +73,7 @@ const TextGroup = (props)=> {
         autofocus={props.autoFocus} />
       <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
       <InvalidMsg msg={props.validationErrorMsg} />
-      <ValidMsg msg={props.validatinPassedMsg} />
+      <ValidMsg msg={props.validationPassedMsg} />
 
     </div>
   );
@@ -160,8 +160,9 @@ const VideoUpload = (props)=> {
     <div className="mb-2">
       <Video {...props} />
       <div className="custom-file">
-        <input type="file" className="d-none"
-        accept="video/*" id={props.id} onChange={props.onChange} />
+        <input type="file" required={props.required}
+          className="d-none"
+          accept="video/*" id={props.id} onChange={props.onChange} />
         <label className="btn btn-link text-dark pb-2" htmlFor={props.id}>
             <div className="btn btn-secondary">{props.label}</div>
             <img className="ml-1" src="/img/video-response_btn.png"
@@ -180,7 +181,7 @@ const VideoUploadImproved = (props)=> {
     let start = path.lastIndexOf("/");
     let end = path.lastIndexOf("?")
     let fileName = (end === -1)?path.slice(start): path.slice(start,end);
-    fileName = fileName.replace("%2F","/");
+    fileName = fileName.replace(/\%2F/g,"/");
     return fileName;
   }
 
@@ -214,13 +215,18 @@ const VideoUploadImproved = (props)=> {
     </div>
   );
 
-  const VideoEl = (props.video)?<ClearVideo /> : uploadBtn;
+  const validCss = (!props.required || (props.video && props.video.length > 0))?
+    "is-valid" :
+    "is-invalid";
 
+  const VideoEl = (props.video)?<ClearVideo /> : uploadBtn;
   return (
-    <div className="p-0">
-      {VideoEl}
-      {props.progressBar}
-    </div>
+      <div className={`p-0 ${validCss}`}>
+        {VideoEl}
+        {props.progressBar}
+        <div className="invalid-feedback">{props.validationErrorMsg} </div>
+        <div className="valid-feedback">{props.validationPassedMsg} </div>
+      </div>
   );
 };
 

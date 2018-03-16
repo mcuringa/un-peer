@@ -8,8 +8,11 @@ const db = {
     let p = new Promise((resolve, reject)=>{
         db.collection(path).doc(id).get()
           .then( (doc)=>{
-            if(doc.exists)
-              resolve(doc.data());
+            if(doc.exists) {
+              let record = doc.data();
+              record.id = id;
+              resolve(record);
+            }
             else
               reject();
           });

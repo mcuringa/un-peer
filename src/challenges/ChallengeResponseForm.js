@@ -6,6 +6,7 @@ import { ChallengeDB } from "./Challenge.js"
 import FBUtil from "../FBUtil.js";
 
 import Modal from "../Modal";
+import {snack, SnackMaker} from "../Snackbar";
 import {UploadProgress, formatFileSize} from "../MediaManager";
 
 
@@ -24,7 +25,6 @@ class ChallengeResponseForm extends React.Component {
     this.challengeId = this.props.match.params.id;
 
     const emptyR = {
-      id:"",
       title:"",
       text:"",
       video:"",
@@ -48,7 +48,10 @@ class ChallengeResponseForm extends React.Component {
     this.publish = this.publish.bind(this);
     this.confirmUpload = this.confirmUpload.bind(this);
     this.clearVideo = this.clearVideo.bind(this);
+    this.snack = _.bind(snack, this);
+    this.Snackbar = _.bind(SnackMaker, this);
   }
+
   componentDidMount() {
     const id = this.props.match.params.id;
     ChallengeDB.get(id).then((c)=>{
@@ -82,9 +85,8 @@ class ChallengeResponseForm extends React.Component {
 
       this.setState({
         response: r,
-        dirty: false, 
+        dirty: true, 
         loading: false,
-        showVideo: true,
         uploadStatus: "",
         uploadPct: 0
       });
@@ -116,27 +118,57 @@ class ChallengeResponseForm extends React.Component {
   }
 
   publish() {
-    this.setState({showConfirm: false, loading: true});
+    this.setState({loading: true});
+    let savingMsg, savedMsg;
+    if(!this.state.response.id) {
+      savingMsg = "Publishing response";
+      savedMsg = "Thank you! Response published";
+    }
+    else {
+      savingMsg = "Updating response";
+      savedMsg = "Response saved";
+    }
+    this.snack(savingMsg);
 
     const challengeId = this.challengeId;
     let r = this.state.response;
     r.user = this.props.user;
     ChallengeDB.addResponse(challengeId, r).then(()=>{
-      this.setState({showNextChoice: true});
+      this.setState({
+        response: r,
+        dirty: false, 
+        loading: false,
+        isValidated: false
+
+      });
+      this.snack(savedMsg);
     });
   }
 
   handleChange(e) {
+    e.preventDefault();
     const r = this.state.response;
     r[e.target.id] = e.target.value;
 
-    this.setState({response: r, showConfirm: false});
+    this.setState({response: r});
   }
 
   clearVideo() {
     let r = this.state.response;
+    const oldVideoPath = r.video;
+    const wasDirty = this.state.dirty;
     r.video = "";
-    this.setState({response: r, showVideo: true });
+
+    const commit = ()=> {
+      this.setState({response: r, dirty: true});
+    }
+
+    const rollback = ()=> {
+      r.video = oldVideoPath;
+      this.setState({response: r, dirty: wasDirty});
+    }
+
+    this.snack("Video removed", true).then(commit, rollback);
   }
 
   render() {
@@ -158,6 +190,8 @@ class ChallengeResponseForm extends React.Component {
 
     const toggleOptOut = ()=> {
       let r = this.state.response;
+      if(r.video && r.video.length > 0)
+        this.clearVideo();
       r.videoOptOut = !r.videoOptOut;
       this.setState({response: r});
     }
@@ -175,27 +209,15 @@ class ChallengeResponseForm extends React.Component {
           handleUpload={this.handleUpload}
           pct={this.state.uploadPct} 
           msg={this.state.uploadStatus}
-          onSubmit={this.confirmUpload} 
+          onSubmit={this.publish} 
           clearVideo={this.clearVideo} 
           toggleOptOut={toggleOptOut} />
 
-        <Modal id="SubmitResponseModal"
-          show={this.state.showConfirm} 
-          title="Submit Response"
-          body="Tap OK to submit your response fo this challenge."
-          onConfirm={this.publish} />
-
-        <Modal id="ShowNextModal"
-          show={this.state.showNextChoice} 
-          body="Submitted!"
-          footer={NextChoice} />
+          <this.Snackbar />
       </div>
     )
   }
 }
-
-
-
 
 class ResponseForm extends React.Component {
   constructor(props) {
@@ -219,12 +241,6 @@ class ResponseForm extends React.Component {
     this.props.onSubmit();
   }
 
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if(this.state.isValidated && document.getElementById(ResponseForm).checkValidity())
-  //     this.setState({ isValidated: false });
-  // }
-
   render() {
     const props = this.props;
     let textRows = 3;
@@ -236,32 +252,25 @@ class ResponseForm extends React.Component {
     }
 
     const VideoErrMsg = ()=> {
-      // if(!this.state.isValidated || this.state.videoOptOut)
-      //   return null;
-
       if(props.pct > 0 && props.pct < 100)
         return (
-          <div className="invalid-feedback">
+          <div className="mb-1">
             You must wait until your video upload
             completes before submitting your response.
           </div>
         )
 
-      if(props.response.video.trim().length > 0)
-        return null;
-
       return (
-        <div className="invalid-feedback">
-          You must either <em>upload a video</em>
-          or <em>check <tt>Do not include a video in my response</tt></em>
-          before you can submit your response.
+        <div className="mb-1">
+          You must either <strong>upload a
+          video</strong> or <strong>check, "Do not include 
+          a video in my response,"</strong> before
+          you can submit your response.
         </div>
       )
     }
 
     const validationClass = (this.state.isValidated)?"was-validated":"needs-validation";
-
-    console.log();
 
     return (
       <form id="ResponseForm" className={validationClass} noValidate onSubmit={this.submit}>
@@ -281,10 +290,10 @@ class ResponseForm extends React.Component {
           poster="/img/poster.png"
           onChange={props.handleUpload} 
           label=""
-          validationErrorMsg={VideoErrMsg}
+          required={props.response.videoOptOut === false}
+          validationErrorMsg={<VideoErrMsg />}
           clearVideo={props.clearVideo}
           progressBar={(<UploadProgress pct={props.pct} msg={props.msg} />)} />
-        <VideoErrMsg />
 
         <Checkbox
           id="videoOptOut"
@@ -302,43 +311,38 @@ class ResponseForm extends React.Component {
           validationErrorMsg={textError}
           onChange={props.onChange} />
 
-        <button type="submit" 
-          className={`btn btn-block btn-secondary mt-2`}>
-          Save
-        </button>
+        <SaveButtons response={props.response} />
       </form>
     )
   }
 }
 
+const SaveButtons = (props)=> {
 
-
-class SubmitButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showError: false
-    }
-  }
-
-  render() {
-    const label = (this.props.update)?"Update my response":"Submit my response";
-    const disabled = (this.props.disabled)?"disabled":"";
-    const help = (this.props.disabled)?this.props.disabledMsg:"";
-    const showErr = ()=>{ this.setState( { showError: true }) };
-    const submitAction = (this.props.disabled) ? showErr : this.props.onSubmit;
-    const errCss = (this.state.showErr)? "text-small text-bold":"text-small text-muted";
-    
+  const saveWidth = "240px";
+  if(props.response.id) {
     return (
-      <div>
-        <button type="button"  onClick={submitAction} 
-          className={`btn btn-block btn-secondary mt-2 ${disabled}`}>
-          {label}
+      <div className="d-flex justify-content-end">
+        <button type="submit" style={{width: saveWidth}}
+          className={`btn btn-secondary mt-2`}>
+          Update my response
         </button>
-        <small className={errCss}>{help}</small>
+        <button type="button" 
+          className={`btn btn-secondary mt-2 ml-2`}>
+          Go home
+        </button>
       </div>
-    );
+    )
   }
+
+  return (
+    <div className="d-flex justify-content-end mb-2">
+      <button type="submit" style={{width: saveWidth}}
+        className={`btn btn-secondary mt-2`}>
+        Submit my response
+      </button>
+    </div>
+  )
 }
 
 export default ChallengeResponseForm;

@@ -6,15 +6,16 @@ class Snackbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {active: false};
-    this.wait = props.wait || 4000;
+    this.wait = props.wait || 2000;
     this.hide = _.bind(this.hide, this);
   }
 
   componentWillReceiveProps(nextProps)
   {
     if(nextProps.show) {
+      const waitTime = (this.props.showUndo) ? this.wait + 500 : this.wait;
       this.setState({ active: true });
-      _.delay(this.hide, this.wait);
+      _.delay(this.hide, waitTime);
     }
   }
 
@@ -56,4 +57,52 @@ const Undo = (props)=> {
     className=".SnackUndo btn btn-link text-danger">UNDO</button>);
 }
 
+function snack(msg, showUndo) {
+
+  const p = (resolve, reject)=>
+  {
+    const clear = ()=> {
+      console.log("clear caleld");
+      this.setState({
+        showSnack: false,
+        snackMsg: "",
+        snackOver: null,
+        snackUndo: null
+      });
+    }
+    const over = ()=> {
+      clear();
+      resolve();
+    }
+
+    const undo = ()=> {
+      clear();
+      reject();
+    }
+
+    this.setState({
+      showSnack: true,
+      snackMsg: msg,
+      showUndo: showUndo,
+      snackUndo: undo,
+      snackOver: over
+    });      
+  }
+
+  return new Promise(p);
+}
+
+function SnackMaker() {
+  return(
+    <Snackbar show={this.state.showSnack} 
+      msg={this.state.snackMsg}
+      showUndo={this.state.showUndo}
+      undo={this.state.snackUndo}
+      snackOver={this.state.snackOver}
+      wait={this.timeout} />
+  )
+}
+
+
 export default Snackbar;
+export {SnackMaker, snack};

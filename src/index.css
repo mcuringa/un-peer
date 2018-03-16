@@ -8043,6 +8043,12 @@ small tt {
   padding: 1em; }
 
 /*Form Styles */
+.was-validated .is-invalid .invalid-feedback {
+  display: block; }
+
+.was-validated .is-valid .valid-feedback {
+  display: block; }
+
 .ChallengeEditHeader {
   width: 100%;
   max-width: 512px;
@@ -8074,6 +8080,14 @@ label {
 .VideoUploadButton label:hover {
   opacity: .8;
   background-color: black; }
+
+.was-validated .is-invalid .VideoUploadButton img {
+  border: 2px solid #dc3545;
+  border-radius: 18px; }
+
+.was-validated .is-valid .VideoUploadButton img {
+  border: 2px solid #28a745;
+  border-radius: 18px; }
 
 /*============================== Ratings */
 .Star svg {
