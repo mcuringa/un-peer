@@ -707,23 +707,16 @@ label
         }
 
         .d-flex {
-          height: 14px;
+          height: 24px;
         }
 
         svg.calendar-dotline {
           position: relative;
-          top: 10px;
         }
         svg.calendar-dotline-below {
           position: relative;
         }
 
-        &.response-start.active svg.calendar-dotline,
-        &.response-due.active svg.calendar-dotline {
-          circle {
-            fill: $cal-green;
-          }
-        }
         &.response-start.active svg.calendar-dotline {
           line.after {
             stroke: $cal-green;
@@ -737,12 +730,6 @@ label
         &.response-due.active svg.calendar-dotline {
           line.before {
             stroke: $cal-green;
-          }
-        }
-        &.response-start.future:not(.active) svg.calendar-dotline,
-        &.response-due.future:not(.active) svg.calendar-dotline {
-          circle {
-            fill: lighten($cal-green, 30%);
           }
         }
         &.response-start.future:not(.active) svg.calendar-dotline {
@@ -761,12 +748,6 @@ label
           }
         }
 
-        &.rating-start.active svg.calendar-dotline,
-        &.rating-due.active svg.calendar-dotline {
-          circle {
-            fill: $cal-blue;
-          }
-        }
         &.rating-start.active:not(.hideline) svg.calendar-dotline {
           line.after {
             stroke: $cal-blue;
@@ -782,12 +763,6 @@ label
             stroke: $cal-blue;
           }
         }
-        &.rating-start.future:not(.active) svg.calendar-dotline,
-        &.rating-due.future:not(.active) svg.calendar-dotline {
-          circle {
-            fill: lighten($cal-blue, 30%);
-          }
-        }
         &.rating-start.future:not(.active):not(.hideline) svg.calendar-dotline {
           line.after {
             stroke: lighten($cal-blue, 30%);
@@ -799,12 +774,6 @@ label
           }
         }
 
-        &.response-start-below svg.calendar-dotline-below,
-        &.response-due-below svg.calendar-dotline-below {
-          circle {
-            fill: lighten($cal-green, 30%);
-          }
-        }
         &.response-start-below svg.calendar-dotline-below {
           line.after {
             stroke: lighten($cal-green, 30%);
@@ -820,17 +789,6 @@ label
             stroke: lighten($cal-green, 30%);
           }
         }
-
-        &.published.active svg.calendar-dotline {
-          circle {
-            fill: $cal-purple;
-          }
-        }
-          &.published.future:not(.active) svg.calendar-dotline {
-          circle {
-            fill: lighten($cal-purple, 30%);
-          }
-        }
       }
 
       .react-calendar__tile>time {
@@ -842,7 +800,7 @@ label
       }
 
       .react-calendar__tile.active .d-flex {
-        background-color: $gray-400;
+        background-color: $gray-300;
       }
 
       .react-calendar__tile.start:not(.cont) .d-flex {
@@ -855,7 +813,7 @@ label
       }
 
       .react-calendar__tile.future:not(.active) .d-flex {
-        background-color: lighten($gray-400, 11%);
+        background-color: lighten($gray-300, 11%);
       }
     }
   }

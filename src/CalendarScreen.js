@@ -11,10 +11,15 @@ class CalendarScreen extends React.Component {
       challenges: this.props.challenges,
       loading: !this.props.challenges
     };
+
+    this.now = new Date();
+    this.tileWidth = 50;
   }
 
   componentWillMount() {
     if (!this.state.challenges) {
+      // If challenges aren't already there, supplied through props,
+      // then load them from firebase.
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((t) => {
           this.setState({
@@ -42,10 +47,10 @@ class CalendarScreen extends React.Component {
         // If we've already added classes for an event in this tile,
         // append -below to these classes, to tell CSS to use the SVG
         // element below the date, for overlaps.
-        const below = (line === 0)? '' : '-below';
+        //const below = (line === 0)? '' : '-below';
 
         if (df.isSameDay(date.date, challenge.start)) {
-          s += ` start response-start${below} ${challenge.stage} `;
+          s += ` start response-start ${challenge.stage} `;
         } else if (df.isSameDay(date.date, challenge.end)) {
           s += ` end published ${challenge.stage} `;
         } else if (s === '') {
@@ -61,41 +66,29 @@ class CalendarScreen extends React.Component {
           df.isSameDay(date.date, challenge.ratingDue) &&
             !df.isSameDay(date.date, challenge.end)
         ) {
-          s += ` rating-due${below} `;
+          s += ` rating-due `;
         } else if (df.isSameDay(yesterday, challenge.responseDue)) {
           if (df.isSameDay(tomorrow, challenge.end)) {
             // If the challenge end date is tomorrow, just hide the
             // connecting line, becaue there is only one day for
             // rating the challenge.
-            s += ` rating-start${below} hideline`;
+            s += ` rating-start hideline`;
           } else {
-            s += ` rating-start${below} `;
+            s += ` rating-start `;
           }
         } else if (df.isSameDay(date.date, challenge.responseDue)) {
-          if (challenge.stage === 'future') {
-            // If it's happening in the future, just assume a
-            // response-due line is below.
-            s += ' response-due-below ';
-          } else {
-            s += ` response-due${below} `;
-          }
+          s += ` response-due `;
         } else if (
           date.date < challenge.responseDue &&
             !df.isSameDay(date.date, challenge.start)
         ) {
-          if (challenge.stage === 'future') {
-            // If it's happening in the future, just assume a
-            // response-cont line is below.
-            s += ' response-cont-below ';
-          } else {
-            s += ` response-cont${below} `;
-          }
+          s += ` response-cont `;
         } else if (
           date.date < challenge.ratingDue &&
             !df.isSameDay(date.date, challenge.start) &&
             !df.isSameDay(date.date, challenge.end)
         ) {
-          s += ` rating-cont${below} `;
+          s += ` rating-cont `;
         }
 
         line++;
@@ -108,21 +101,18 @@ class CalendarScreen extends React.Component {
   getTileContent(date, view) {
     return (
       <React.Fragment>
-          <svg className="calendar-dotline" height="14" width="50">
-              <circle
-                  cx="35" cy="5" r="5" strokeWidth="0"
-                  fill="transparent" />
+          <svg className="calendar-dotline" height="2" width={this.tileWidth}>
               <line
                   className="before"
-                  x1="0" y1="5"
-                  x2="36" y2="5"
+                  x1="0" y1="1"
+                  x2="36" y2="1"
                   stroke="transparent"
                   strokeWidth="2"
                   />
               <line
                   className="after"
-                  x1="36" y1="5"
-                  x2="50" y2="5"
+                  x1="36" y1="1"
+                  x2={this.tileWidth} y2="1"
                   stroke="transparent"
                   strokeWidth="2"
                   />
@@ -132,21 +122,19 @@ class CalendarScreen extends React.Component {
                   {date.date.getDate()}
               </time>
           </div>
-          <svg className="calendar-dotline-below" height="14" width="50">
-              <circle
-                  cx="35" cy="5" r="5" strokeWidth="0"
-                  fill="transparent" />
+          <svg className="calendar-dotline-below" height="9"
+               width={this.tileWidth}>
               <line
                   className="before"
-                  x1="0" y1="5"
-                  x2="36" y2="5"
+                  x1="0" y1="1"
+                  x2="36" y2="1"
                   stroke="transparent"
                   strokeWidth="2"
                   />
               <line
                   className="after"
-                  x1="36" y1="5"
-                  x2="50" y2="5"
+                  x1="36" y1="1"
+                  x2={this.tileWidth} y2="1"
                   stroke="transparent"
                   strokeWidth="2"
                   />
