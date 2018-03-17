@@ -9,21 +9,38 @@ class CalendarScreen extends React.Component {
     super(props);
     this.state = {
       challenges: this.props.challenges,
+      currentChallenge: null,
       loading: !this.props.challenges
     };
 
     this.now = new Date();
     this.tileWidth = 50;
+
+    if (this.props.challenges) {
+      this.state.currentChallenge = this.getCurrentChallenge(
+        this.state.challenges);
+    }
+  }
+
+  getCurrentChallenge(challenges) {
+    // TODO: make this dynamic
+    return challenges[3];
   }
 
   componentWillMount() {
+    const me = this;
+
     if (!this.state.challenges) {
-      // If challenges aren't already there, supplied through props,
-      // then load them from firebase.
+      // If challenges aren't already there, supplied through this
+      // component's props, then load them from firebase.
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((t) => {
+
+          const currentChallenge = me.getCurrentChallenge(t);
+
           this.setState({
             challenges: t,
+            currentChallenge: currentChallenge,
             loading: false
           });
         });
@@ -38,61 +55,51 @@ class CalendarScreen extends React.Component {
   getTileClass(date, view) {
     let s = '';
 
-    let line = 0;
-    for (let i = 0; i < this.state.challenges.length; i++) {
+    const challenge = this.state.currentChallenge;
 
-      let challenge = this.state.challenges[i];
-
-      if (df.isDayWithin(date.date, challenge.start, challenge.end)) {
-        // If we've already added classes for an event in this tile,
-        // append -below to these classes, to tell CSS to use the SVG
-        // element below the date, for overlaps.
-        //const below = (line === 0)? '' : '-below';
-
-        if (df.isSameDay(date.date, challenge.start)) {
-          s += ` start response-start ${challenge.stage} `;
-        } else if (df.isSameDay(date.date, challenge.end)) {
-          s += ` end published ${challenge.stage} `;
-        } else if (s === '') {
-          s = ` cont ${challenge.stage} `;
-        }
-
-        let yesterday = new Date(date.date);
-        yesterday.setDate(yesterday.getDate() - 1);
-        let tomorrow = new Date(date.date);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-
-        if (
-          df.isSameDay(date.date, challenge.ratingDue) &&
-            !df.isSameDay(date.date, challenge.end)
-        ) {
-          s += ` rating-due `;
-        } else if (df.isSameDay(yesterday, challenge.responseDue)) {
-          if (df.isSameDay(tomorrow, challenge.end)) {
-            // If the challenge end date is tomorrow, just hide the
-            // connecting line, becaue there is only one day for
-            // rating the challenge.
-            s += ` rating-start hideline`;
-          } else {
-            s += ` rating-start `;
-          }
-        } else if (df.isSameDay(date.date, challenge.responseDue)) {
-          s += ` response-due `;
-        } else if (
-          date.date < challenge.responseDue &&
-            !df.isSameDay(date.date, challenge.start)
-        ) {
-          s += ` response-cont `;
-        } else if (
-          date.date < challenge.ratingDue &&
-            !df.isSameDay(date.date, challenge.start) &&
-            !df.isSameDay(date.date, challenge.end)
-        ) {
-          s += ` rating-cont `;
-        }
-
-        line++;
+    if (df.isDayWithin(date.date, challenge.start, challenge.end)) {
+      if (df.isSameDay(date.date, challenge.start)) {
+        s += ` start response-start active ${challenge.stage} `;
+      } else if (df.isSameDay(date.date, challenge.end)) {
+        s += ` end published active ${challenge.stage} `;
+      } else if (s === '') {
+        s = ` cont active ${challenge.stage} `;
       }
+
+      let yesterday = new Date(date.date);
+      yesterday.setDate(yesterday.getDate() - 1);
+      let tomorrow = new Date(date.date);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      if (
+        df.isSameDay(date.date, challenge.ratingDue) &&
+          !df.isSameDay(date.date, challenge.end)
+      ) {
+        s += ' rating-due ';
+      } else if (df.isSameDay(yesterday, challenge.responseDue)) {
+        if (df.isSameDay(tomorrow, challenge.end)) {
+          // If the challenge end date is tomorrow, just hide the
+          // connecting line, because there is only one day for
+          // rating the challenge.
+          s += ' rating-start hideline';
+        } else {
+          s += ' rating-start ';
+        }
+      } else if (df.isSameDay(date.date, challenge.responseDue)) {
+        s += ' response-due ';
+      } else if (
+        date.date < challenge.responseDue &&
+          !df.isSameDay(date.date, challenge.start)
+      ) {
+        s += ' response-cont ';
+      } else if (
+        date.date < challenge.ratingDue &&
+          !df.isSameDay(date.date, challenge.start) &&
+          !df.isSameDay(date.date, challenge.end)
+      ) {
+        s += ' rating-cont ';
+      }
+
     }
 
     return s;
@@ -101,44 +108,11 @@ class CalendarScreen extends React.Component {
   getTileContent(date, view) {
     return (
       <React.Fragment>
-          <svg className="calendar-dotline" height="2" width={this.tileWidth}>
-              <line
-                  className="before"
-                  x1="0" y1="1"
-                  x2="36" y2="1"
-                  stroke="transparent"
-                  strokeWidth="2"
-                  />
-              <line
-                  className="after"
-                  x1="36" y1="1"
-                  x2={this.tileWidth} y2="1"
-                  stroke="transparent"
-                  strokeWidth="2"
-                  />
-          </svg>
-          <div className="d-flex">
+          <div className="dayDisplay">
               <time dateTime={date.date.toISOString()}>
                   {date.date.getDate()}
               </time>
           </div>
-          <svg className="calendar-dotline-below" height="9"
-               width={this.tileWidth}>
-              <line
-                  className="before"
-                  x1="0" y1="1"
-                  x2="36" y2="1"
-                  stroke="transparent"
-                  strokeWidth="2"
-                  />
-              <line
-                  className="after"
-                  x1="36" y1="1"
-                  x2={this.tileWidth} y2="1"
-                  stroke="transparent"
-                  strokeWidth="2"
-                  />
-          </svg>
       </React.Fragment>
     );
   }

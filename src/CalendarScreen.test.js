@@ -92,7 +92,7 @@ it('displays challenges correctly', () => {
     className: 'react-calendar__month-view__days'
   });
 
-  console.log(days);
+  //console.log(days);
   //expect(days.children).toEqual(['1']);
 
   expect(cal.toJSON().type).toBe('div');

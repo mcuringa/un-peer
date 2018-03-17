@@ -8285,53 +8285,36 @@ label {
       .App .calendar-view .react-calendar .react-calendar__tile:hover, .App .calendar-view .react-calendar .react-calendar__tile.react-calendar__tile--active {
         cursor: default;
         background: transparent; }
-      .App .calendar-view .react-calendar .react-calendar__tile .d-flex {
-        height: 24px; }
-      .App .calendar-view .react-calendar .react-calendar__tile svg.calendar-dotline {
-        position: relative; }
-      .App .calendar-view .react-calendar .react-calendar__tile svg.calendar-dotline-below {
-        position: relative; }
+      .App .calendar-view .react-calendar .react-calendar__tile .dayDisplay {
+        height: 50px;
+        padding-top: 16px; }
+        .App .calendar-view .react-calendar .react-calendar__tile .dayDisplay time {
+          margin: 0 auto; }
       .App .calendar-view .react-calendar .react-calendar__tile.response-start.active svg.calendar-dotline line.after {
         stroke: #60d600; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-cont.active svg.calendar-dotline line {
-        stroke: #60d600; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-due.active svg.calendar-dotline line.before {
-        stroke: #60d600; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-start.future:not(.active) svg.calendar-dotline line.after {
-        stroke: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-cont.future:not(.active) svg.calendar-dotline line {
-        stroke: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-due.future:not(.active) svg.calendar-dotline line.before {
-        stroke: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.active:not(.hideline) svg.calendar-dotline line.after {
-        stroke: #2b91e9; }
-      .App .calendar-view .react-calendar .react-calendar__tile.rating-cont.active svg.calendar-dotline line {
-        stroke: #2b91e9; }
-      .App .calendar-view .react-calendar .react-calendar__tile.rating-due.active svg.calendar-dotline line.before {
-        stroke: #2b91e9; }
-      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.future:not(.active):not(.hideline) svg.calendar-dotline line.after {
-        stroke: #b6d9f7; }
-      .App .calendar-view .react-calendar .react-calendar__tile.rating-due.future:not(.active) svg.calendar-dotline line.before {
-        stroke: #b6d9f7; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-start-below svg.calendar-dotline-below line.after {
-        stroke: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-cont-below svg.calendar-dotline-below line {
-        stroke: #b0ff70; }
-      .App .calendar-view .react-calendar .react-calendar__tile.response-due-below svg.calendar-dotline-below line.before {
-        stroke: #b0ff70; }
+      .App .calendar-view .react-calendar .react-calendar__tile.response-cont.active {
+        border-top: 2px solid #60d600;
+        border-bottom: 2px solid #60d600; }
+      .App .calendar-view .react-calendar .react-calendar__tile.response-start.future:not(.active) {
+        border-top: 2px solid #b0ff70;
+        border-bottom: 2px solid #b0ff70; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.active, .App .calendar-view .react-calendar .react-calendar__tile.rating-due.active, .App .calendar-view .react-calendar .react-calendar__tile.rating-cont.active {
+        border-top: 2px solid #2b91e9;
+        border-bottom: 2px solid #2b91e9; }
+      .App .calendar-view .react-calendar .react-calendar__tile.rating-start.future:not(.active) {
+        border-top: 2px solid #b6d9f7;
+        border-bottom: 2px solid #b6d9f7; }
     .App .calendar-view .react-calendar .react-calendar__tile > time {
       display: none; }
-    .App .calendar-view .react-calendar .react-calendar__tile .d-flex time {
-      margin: 0 auto; }
-    .App .calendar-view .react-calendar .react-calendar__tile.active .d-flex {
+    .App .calendar-view .react-calendar .react-calendar__tile.active .dayDisplay {
       background-color: #dee2e6; }
-    .App .calendar-view .react-calendar .react-calendar__tile.start:not(.cont) .d-flex {
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px; }
-    .App .calendar-view .react-calendar .react-calendar__tile.end:not(.cont) .d-flex {
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px; }
-    .App .calendar-view .react-calendar .react-calendar__tile.future:not(.active) .d-flex {
+    .App .calendar-view .react-calendar .react-calendar__tile.start:not(.cont) .dayDisplay {
+      border: 2px solid #60d600;
+      border-radius: 25px; }
+    .App .calendar-view .react-calendar .react-calendar__tile.end:not(.cont) .dayDisplay {
+      border: 2px solid #ae1963;
+      border-radius: 25px; }
+    .App .calendar-view .react-calendar .react-calendar__tile.future:not(.active) .dayDisplay {
       background-color: #fefefe; }
 
 .App .accordion {

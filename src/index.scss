@@ -706,15 +706,12 @@ label
           background: transparent;
         }
 
-        .d-flex {
-          height: 24px;
-        }
-
-        svg.calendar-dotline {
-          position: relative;
-        }
-        svg.calendar-dotline-below {
-          position: relative;
+        .dayDisplay {
+          height: 50px;
+          padding-top: 16px;          
+          time {
+            margin: 0 auto;
+          }
         }
 
         &.response-start.active svg.calendar-dotline {
@@ -722,97 +719,45 @@ label
             stroke: $cal-green;
           }
         }
-        &.response-cont.active svg.calendar-dotline {
-          line {
-            stroke: $cal-green;
-          }
+        &.response-cont.active {
+          border-top: 2px solid $cal-green;
+          border-bottom: 2px solid $cal-green;          
         }
-        &.response-due.active svg.calendar-dotline {
-          line.before {
-            stroke: $cal-green;
-          }
-        }
-        &.response-start.future:not(.active) svg.calendar-dotline {
-          line.after {
-            stroke: lighten($cal-green, 30%);
-          }
-        }
-        &.response-cont.future:not(.active) svg.calendar-dotline {
-          line {
-            stroke: lighten($cal-green, 30%);
-          }
-        }
-        &.response-due.future:not(.active) svg.calendar-dotline {
-          line.before {
-            stroke: lighten($cal-green, 30%);
-          }
+        &.response-start.future:not(.active) {
+          border-top: 2px solid lighten($cal-green, 30%);
+          border-bottom: 2px solid lighten($cal-green, 30%);          
         }
 
-        &.rating-start.active:not(.hideline) svg.calendar-dotline {
-          line.after {
-            stroke: $cal-blue;
-          }
+        &.rating-start.active,
+        &.rating-due.active,                 
+        &.rating-cont.active {
+          border-top: 2px solid $cal-blue;
+          border-bottom: 2px solid $cal-blue;          
         }
-        &.rating-cont.active svg.calendar-dotline {
-          line {
-            stroke: $cal-blue;
-          }
-        }
-        &.rating-due.active svg.calendar-dotline {
-          line.before {
-            stroke: $cal-blue;
-          }
-        }
-        &.rating-start.future:not(.active):not(.hideline) svg.calendar-dotline {
-          line.after {
-            stroke: lighten($cal-blue, 30%);
-          }
-        }
-        &.rating-due.future:not(.active) svg.calendar-dotline {
-          line.before {
-            stroke: lighten($cal-blue, 30%);
-          }
-        }
-
-        &.response-start-below svg.calendar-dotline-below {
-          line.after {
-            stroke: lighten($cal-green, 30%);
-          }
-        }
-        &.response-cont-below svg.calendar-dotline-below {
-          line {
-            stroke: lighten($cal-green, 30%);
-          }
-        }
-        &.response-due-below svg.calendar-dotline-below {
-          line.before {
-            stroke: lighten($cal-green, 30%);
-          }
-        }
+        &.rating-start.future:not(.active) {
+          border-top: 2px solid lighten($cal-blue, 30%);
+          border-bottom: 2px solid lighten($cal-blue, 30%);          
+        }        
       }
 
       .react-calendar__tile>time {
         display: none;
       }
 
-      .react-calendar__tile .d-flex time {
-          margin: 0 auto;
-      }
-
-      .react-calendar__tile.active .d-flex {
+      .react-calendar__tile.active .dayDisplay {
         background-color: $gray-300;
       }
 
-      .react-calendar__tile.start:not(.cont) .d-flex {
-          border-top-left-radius: 10px;
-          border-bottom-left-radius: 10px;
+      .react-calendar__tile.start:not(.cont) .dayDisplay {
+        border: 2px solid $cal-green;
+        border-radius: 25px;
       }
-      .react-calendar__tile.end:not(.cont) .d-flex {
-          border-top-right-radius: 10px;
-          border-bottom-right-radius: 10px;
+      .react-calendar__tile.end:not(.cont) .dayDisplay {
+        border: 2px solid $cal-purple;        
+        border-radius: 25px;
       }
 
-      .react-calendar__tile.future:not(.active) .d-flex {
+      .react-calendar__tile.future:not(.active) .dayDisplay {
         background-color: lighten($gray-300, 11%);
       }
     }
