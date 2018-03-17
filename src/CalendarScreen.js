@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js";
 import df from "./DateUtil";
@@ -7,19 +8,21 @@ class CalendarScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      challenges: [],
-      loading: true
+      challenges: this.props.challenges,
+      loading: !this.props.challenges
     };
   }
 
   componentWillMount() {
-    ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
-      .then((t) => {
-        this.setState({
-          challenges: t,
-          loading: false
+    if (!this.state.challenges) {
+      ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
+        .then((t) => {
+          this.setState({
+            challenges: t,
+            loading: false
+          });
         });
-      });
+    }
   }
 
   formatDayName(value) {
@@ -212,5 +215,9 @@ class CalendarScreen extends React.Component {
     );
   }
 }
+
+CalendarScreen.propTypes = {
+  challenges: PropTypes.array
+};
 
 export default CalendarScreen;
