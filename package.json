@@ -5,19 +5,19 @@
   "dependencies": {
     "bootstrap": "^4.0.0",
     "dateformat": "^3.0.3",
-    "firebase": "^4.10.1",
+    "firebase": "^4.11.0",
     "jquery": "^3.3.1",
-    "localforage": "^1.5.7",
+    "localforage": "^1.6.0",
     "lodash": "^4.17.5",
     "node-sass-chokidar": "0.0.3",
     "npm-run-all": "^4.1.2",
-    "popper.js": "^1.13.0",
+    "popper.js": "^1.14.1",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
     "react-accessible-accordion": "^2.2.1",
-    "react-calendar": "^2.13.1",
+    "react-calendar": "^2.13.5",
     "react-dom": "^16.2.0",
-    "react-modal": "^3.3.1",
+    "react-modal": "^3.3.2",
     "react-modal-dialog": "^4.0.7",
     "react-octicons": "^0.2.0",
     "react-router": "^4.2.0",
@@ -37,9 +37,9 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.8.2",
     "postcss-loader": "^2.1.1",
-    "sass-loader": "^6.0.6",
+    "sass-loader": "^6.0.7",
     "webpack": "^3.11.0"
   }
 }
