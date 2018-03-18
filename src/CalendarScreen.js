@@ -108,10 +108,11 @@ class CalendarScreen extends React.Component {
   getTileContent(date, view) {
     return (
       <React.Fragment>
+          <div className="d-flex">
+              <div className="left"></div>
+              <div className="right"></div>
+          </div>
           <div className="dayDisplay">
-              <time dateTime={date.date.toISOString()}>
-                  {date.date.getDate()}
-              </time>
           </div>
       </React.Fragment>
     );
