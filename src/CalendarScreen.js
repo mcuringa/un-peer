@@ -30,7 +30,6 @@ class CalendarScreen extends React.Component {
       // component's props, then load them from firebase.
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((t) => {
-          console.log('hi', t);
           const currentChallenge = df.getChallengeForDate(t, me.now);
 
           this.setState({
