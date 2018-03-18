@@ -7883,7 +7883,8 @@ small tt {
   padding-top: 62px;
   padding-bottom: 54px;
   padding-left: 0;
-  padding-right: 0; }
+  padding-right: 0;
+  color: #687077; }
 
 .App .screen {
   margin: 0;
@@ -8246,7 +8247,7 @@ label {
   font-size: .9rem; }
 
 .App .calendar-view {
-  color: #667179; }
+  color: #687077; }
   .App .calendar-view .challenge-area {
     background-color: #f8f9fa; }
     .App .calendar-view .challenge-area .dot-text {
@@ -8264,7 +8265,7 @@ label {
   .App .calendar-view .react-calendar {
     border: none;
     margin: 0 auto;
-    color: #667179; }
+    color: #687077; }
     .App .calendar-view .react-calendar .react-calendar__navigation__prev2-button,
     .App .calendar-view .react-calendar .react-calendar__navigation__next2-button {
       display: none; }
@@ -8274,10 +8275,10 @@ label {
     .App .calendar-view .react-calendar .react-calendar__navigation__label,
     .App .calendar-view .react-calendar .react-calendar__month-view__days__day--weekend,
     .App .calendar-view .react-calendar .react-calendar__month-view__days__day {
-      color: #667179; }
+      color: #687077; }
     .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
     .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
-      color: #a8b0b6; }
+      color: #aab0b5; }
     .App .calendar-view .react-calendar .react-calendar__tile {
       padding: 0;
       height: 50px;
@@ -8326,7 +8327,7 @@ label {
 
 .App .accordion__title,
 .App .accordion__title:hover {
-  color: #7d87a3;
+  color: #687077;
   background-color: transparent; }
 
 .App .back-button {
@@ -8339,7 +8340,7 @@ label {
 
 .App .BookmarkItem {
   margin-top: 10px;
-  color: #7d87a3;
+  color: #687077;
   border-bottom: 1px solid #e9ecef; }
   .App .BookmarkItem:hover {
     text-decoration: none; }
