@@ -284,7 +284,7 @@ class ResponseForm extends React.Component {
           onChange={props.onChange} />
 
         <div className="d-flex justify-content-end">
-          <div className="font-weight-bold text-right"><small>Upload a short (1-2 minute) video with your response.</small></div>
+          <div className="font-weight-bold text-right"><small>Upload a short video (1-2 minutes).</small></div>
         </div>
 
         <VideoUploadImproved id="video" 
