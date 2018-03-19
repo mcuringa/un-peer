@@ -23,6 +23,7 @@ export default class Login extends Component {
     };
 
     this.reset = this.reset.bind(this);
+    this.AuthError = this.AuthError.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
 
   }
@@ -37,7 +38,8 @@ export default class Login extends Component {
       reset: false,
       sent: false,
       loading: false,
-      loadingStatus: null
+      loadingStatus: null,
+      isValidated: false
     });
   }
 
@@ -57,12 +59,31 @@ export default class Login extends Component {
 
     let form = document.getElementById("LoginForm");
     let valid = form.checkValidity();
+    this.setState({isValidated: true});
+
     console.log(valid);
-    if(!valid)
+    if(!valid) {
+      //figure out why
+      let email = document.getElementById("email");
+      let password = document.getElementById("password");
+      let emailErr = "";
+      let passErr = "";
+      if(email.validity.typeMismatch)
+        emailErr = "Enter a valid email";
+      else if(email.validity.valueMissing)
+        emailErr = "You must enter an email address";
+
+      if(password.validity.valueMissing)
+        passErr = "Please enter your password.";
+
+      this.setState({emailErr: emailErr, passErr: passErr});
+
       return;
+    }
 
 
     this.setState({loading: true, loadingStatus: "Authenticating..."});
+    
 
     let email = this.state.email.trim();
     let pw = this.state.password.trim();
@@ -114,36 +135,54 @@ export default class Login extends Component {
       });
   }
 
+  AuthError() {
+    const code = this.state.loginErr;
+    const emailInvalid = code && code.length > 0;
+    let emailErr;
+
+    if(!emailInvalid)
+      return null;
+
+    if(code === "auth/user-not-found") {
+      emailErr = `There is no user with email ${this.state.email}.`;
+    }
+    else if(code === "auth/wrong-password") {
+      emailErr = (
+        <div>
+          You could not be logged in with that email/password
+          combination.<br/>
+          <button type="button" onClick={this.reset}
+            className="btn btn-link">Click here to reset 
+            your password.</button>
+        </div>
+        );
+    }
+    else if(code === "auth/too-many-requests") {
+      emailErr = "Your account has been temporarily blocked due becaue of too many failed login attempts. Try again later."
+    }
+    else if(emailInvalid) {
+      emailErr = (
+        <div>Could not log you in because of error code <tt>{code}</tt>.</div>
+      )
+    }
+
+    return (
+      <div className="alert alert-secondary alert-dismissible fade show" role="alert">
+        {emailErr}
+      </div>
+    )
+  }
+
+
   render() {
 
     const code = this.state.loginErr;
     const emailInvalid = code && code.length > 0;
-    const invalidCss = (emailInvalid)?"is-invalid":"";
-    let emailErr;
-      if(code === "auth/user-not-found")
-        emailErr = `There is no user with email ${this.state.email}.`;
-      else if(code === "auth/wrong-password") {
-        emailErr = (
-          <div>
-            You could not be logged in with that email/password
-            combination. <button type="button"
-              onCLick={this.reset}
-              className="btn btn-link">Click here</button> to reset 
-              your password.
-          </div>
-          );
-      }
-      else if(code === "auth/too-many-requests") {
-        emailErr = "Your account has been temporarily blocked due becaue of too many failed login attempts. Try again later."
-      }
-      else if(emailInvalid) {
-        emailErr = (
-          <div>Could not log you in because of error code <tt>{code}</tt>.</div>
-        )
-      }
+    const emailInvalidCss = (this.state.emailErr && this.state.emailErr.length > 0)?"is-invalid":"";
+    const passInvalidCss = (this.state.passErr && this.state.passErr.length > 0)?"is-invalid":"";
 
 
-
+    let validationClass = (this.state.isValidated)?"was-validated":"needs-validation";
 
     return (
       <div className="Login screen">
@@ -155,18 +194,34 @@ export default class Login extends Component {
              src="/img/unpc-logo.png" />
 
         <Modal id="ResetModal"
-          title="Email Sent"
+          title="Reset Email Sent"
           show={this.state.sent}
           closeHandler={this.handleModalClose}
           body="Please check your email for a link to reset your password."
         />
         <Modal id="ForgotPassModal"
+          title="Reset Email"
           show={this.state.forgotPass}
           closeHandler={this.handleModalClose}
-          body="Send an email to reset your password?"
-          onConfirm={this.reset} />
+          onConfirm={this.reset}>
 
-        <form id="LoginForm" className="LoginForm" onSubmit={this.handleSubmit}>
+          Enter your email and we will send a link with instructions
+          on how to reset your password.
+          <form onSubmit={this.reset}>
+            <TextInput
+              type="email"
+              validationCss={emailInvalidCss}
+              id="email"
+              autoFocus
+              value={this.state.email}
+              onChange={this.handleChange} />
+          </form>
+
+        </Modal>
+
+        <this.AuthError />
+
+        <form id="LoginForm" className={`LoginForm ${validationClass}`} onSubmit={this.handleSubmit} noValidate>
             <div className={`row`}>
                 <label htmlFor="email"
                        className="col-3 col-form-label">
@@ -175,7 +230,7 @@ export default class Login extends Component {
                 <div className="col-9">
                     <TextInput
                       type="email"
-                      validationCss={invalidCss}
+                      validationCss={emailInvalidCss}
                       id="email"
                       className=""
                       required={true}
@@ -184,23 +239,24 @@ export default class Login extends Component {
                       value={this.state.email}
                       onChange={this.handleChange} />
                 </div>
-                <div className="col-12 invalid-feedback">{emailErr}</div>
+                <div className="col-12 invalid-feedback">{this.state.emailErr}</div>
             </div>
 
             <div className="row">
-                <label htmlFor="password"
-                       className="col-3 col-form-label">
-                    Password
-                </label>
-                <div className="col-9">
-                    <TextInput
-                        id="password"
-                        className=""
-                        required={true}
-                        type="password"
-                        value={this.state.password}
-                        onChange={this.handleChange} />
-                </div>
+              <label htmlFor="password" className="col-3 col-form-label">
+                  Password
+              </label>
+              <div className="col-9">
+                <TextInput
+                    id="password"
+                    validationCss={passInvalidCss}
+                    className=""
+                    required={true}
+                    type="password"
+                    value={this.state.password}
+                    onChange={this.handleChange} />
+              </div>
+              <div className="col-12 invalid-feedback">{this.state.passErr}</div>
           </div>
 
           <div className="text-right">

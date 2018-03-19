@@ -38,9 +38,9 @@
   },
   "devDependencies": {
     "node-sass": "^4.8.2",
-    "postcss-loader": "^2.1.1",
-    "sass-loader": "^6.0.7",
+    "postcss-loader": "^2.1.2",
     "react-test-renderer": "^16.2.0",
+    "sass-loader": "^6.0.7",
     "webpack": "^3.11.0"
   }
 }

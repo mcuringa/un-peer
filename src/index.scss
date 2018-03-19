@@ -306,7 +306,7 @@ small tt {
   background-color: white;
   white-space: normal;
 
-  width: 60%;
+  width: 85%;
   margin: 0 auto;
   margin-top: 48px;
   text-center: left;
@@ -465,6 +465,15 @@ label
   margin-right: auto;
 }
 
+.LoginForm .invalid-feedback {
+  background-color: white;
+}
+
+.LoginForm.was-validated .invalid-feedback {
+  background-color: white;
+  display: block;
+}
+
 .LoginForm input, .LoginForm input:focus
 {
   padding: 0px;
@@ -478,6 +487,12 @@ label
   border-radius: 0;
   height: 100%
 }
+
+.LoginForm input.is-invalid
+{
+  background-color: rgba(220, 53, 69, .3);
+}
+
 
 .LoginForm
 {
