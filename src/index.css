@@ -1320,38 +1320,20 @@ select.form-control:focus::-ms-value {
   .form-control-plaintext.form-control-sm, .input-group-sm > .form-control-plaintext.form-control,
   .input-group-sm > .input-group-prepend > .form-control-plaintext.input-group-text,
   .input-group-sm > .input-group-append > .form-control-plaintext.input-group-text,
-  .input-group-sm > .input-group-prepend > .form-control-plaintext.btn,
-  .input-group-sm > .input-group-prepend > .form-control-plaintext.ActiveChallenge,
-  .input-group-sm > .input-group-prepend > .form-control-plaintext.ChallengeItem,
-  .input-group-sm > .input-group-prepend > .form-control-plaintext.NewChallengeButton,
-  .input-group-sm > .input-group-append > .form-control-plaintext.btn,
-  .input-group-sm > .input-group-append > .form-control-plaintext.ActiveChallenge,
-  .input-group-sm > .input-group-append > .form-control-plaintext.ChallengeItem,
-  .input-group-sm > .input-group-append > .form-control-plaintext.NewChallengeButton, .form-control-plaintext.form-control-lg, .input-group-lg > .form-control-plaintext.form-control,
+  .input-group-sm > .input-group-prepend > .form-control-plaintext.btn, .input-group-sm > .input-group-prepend > .form-control-plaintext.ActiveChallenge, .input-group-sm > .input-group-prepend > .form-control-plaintext.ChallengeItem, .input-group-sm > .input-group-prepend > .form-control-plaintext.NewChallengeButton,
+  .input-group-sm > .input-group-append > .form-control-plaintext.btn, .input-group-sm > .input-group-append > .form-control-plaintext.ActiveChallenge, .input-group-sm > .input-group-append > .form-control-plaintext.ChallengeItem, .input-group-sm > .input-group-append > .form-control-plaintext.NewChallengeButton, .form-control-plaintext.form-control-lg, .input-group-lg > .form-control-plaintext.form-control,
   .input-group-lg > .input-group-prepend > .form-control-plaintext.input-group-text,
   .input-group-lg > .input-group-append > .form-control-plaintext.input-group-text,
-  .input-group-lg > .input-group-prepend > .form-control-plaintext.btn,
-  .input-group-lg > .input-group-prepend > .form-control-plaintext.ActiveChallenge,
-  .input-group-lg > .input-group-prepend > .form-control-plaintext.ChallengeItem,
-  .input-group-lg > .input-group-prepend > .form-control-plaintext.NewChallengeButton,
-  .input-group-lg > .input-group-append > .form-control-plaintext.btn,
-  .input-group-lg > .input-group-append > .form-control-plaintext.ActiveChallenge,
-  .input-group-lg > .input-group-append > .form-control-plaintext.ChallengeItem,
-  .input-group-lg > .input-group-append > .form-control-plaintext.NewChallengeButton {
+  .input-group-lg > .input-group-prepend > .form-control-plaintext.btn, .input-group-lg > .input-group-prepend > .form-control-plaintext.ActiveChallenge, .input-group-lg > .input-group-prepend > .form-control-plaintext.ChallengeItem, .input-group-lg > .input-group-prepend > .form-control-plaintext.NewChallengeButton,
+  .input-group-lg > .input-group-append > .form-control-plaintext.btn, .input-group-lg > .input-group-append > .form-control-plaintext.ActiveChallenge, .input-group-lg > .input-group-append > .form-control-plaintext.ChallengeItem, .input-group-lg > .input-group-append > .form-control-plaintext.NewChallengeButton {
     padding-right: 0;
     padding-left: 0; }
 
 .form-control-sm, .input-group-sm > .form-control,
 .input-group-sm > .input-group-prepend > .input-group-text,
 .input-group-sm > .input-group-append > .input-group-text,
-.input-group-sm > .input-group-prepend > .btn,
-.input-group-sm > .input-group-prepend > .ActiveChallenge,
-.input-group-sm > .input-group-prepend > .ChallengeItem,
-.input-group-sm > .input-group-prepend > .NewChallengeButton,
-.input-group-sm > .input-group-append > .btn,
-.input-group-sm > .input-group-append > .ActiveChallenge,
-.input-group-sm > .input-group-append > .ChallengeItem,
-.input-group-sm > .input-group-append > .NewChallengeButton {
+.input-group-sm > .input-group-prepend > .btn, .input-group-sm > .input-group-prepend > .ActiveChallenge, .input-group-sm > .input-group-prepend > .ChallengeItem, .input-group-sm > .input-group-prepend > .NewChallengeButton,
+.input-group-sm > .input-group-append > .btn, .input-group-sm > .input-group-append > .ActiveChallenge, .input-group-sm > .input-group-append > .ChallengeItem, .input-group-sm > .input-group-append > .NewChallengeButton {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -1360,27 +1342,15 @@ select.form-control:focus::-ms-value {
 select.form-control-sm:not([size]):not([multiple]), .input-group-sm > select.form-control:not([size]):not([multiple]),
 .input-group-sm > .input-group-prepend > select.input-group-text:not([size]):not([multiple]),
 .input-group-sm > .input-group-append > select.input-group-text:not([size]):not([multiple]),
-.input-group-sm > .input-group-prepend > select.btn:not([size]):not([multiple]),
-.input-group-sm > .input-group-prepend > select.ActiveChallenge:not([size]):not([multiple]),
-.input-group-sm > .input-group-prepend > select.ChallengeItem:not([size]):not([multiple]),
-.input-group-sm > .input-group-prepend > select.NewChallengeButton:not([size]):not([multiple]),
-.input-group-sm > .input-group-append > select.btn:not([size]):not([multiple]),
-.input-group-sm > .input-group-append > select.ActiveChallenge:not([size]):not([multiple]),
-.input-group-sm > .input-group-append > select.ChallengeItem:not([size]):not([multiple]),
-.input-group-sm > .input-group-append > select.NewChallengeButton:not([size]):not([multiple]) {
+.input-group-sm > .input-group-prepend > select.btn:not([size]):not([multiple]), .input-group-sm > .input-group-prepend > select.ActiveChallenge:not([size]):not([multiple]), .input-group-sm > .input-group-prepend > select.ChallengeItem:not([size]):not([multiple]), .input-group-sm > .input-group-prepend > select.NewChallengeButton:not([size]):not([multiple]),
+.input-group-sm > .input-group-append > select.btn:not([size]):not([multiple]), .input-group-sm > .input-group-append > select.ActiveChallenge:not([size]):not([multiple]), .input-group-sm > .input-group-append > select.ChallengeItem:not([size]):not([multiple]), .input-group-sm > .input-group-append > select.NewChallengeButton:not([size]):not([multiple]) {
   height: calc(1.8125rem + 2px); }
 
 .form-control-lg, .input-group-lg > .form-control,
 .input-group-lg > .input-group-prepend > .input-group-text,
 .input-group-lg > .input-group-append > .input-group-text,
-.input-group-lg > .input-group-prepend > .btn,
-.input-group-lg > .input-group-prepend > .ActiveChallenge,
-.input-group-lg > .input-group-prepend > .ChallengeItem,
-.input-group-lg > .input-group-prepend > .NewChallengeButton,
-.input-group-lg > .input-group-append > .btn,
-.input-group-lg > .input-group-append > .ActiveChallenge,
-.input-group-lg > .input-group-append > .ChallengeItem,
-.input-group-lg > .input-group-append > .NewChallengeButton {
+.input-group-lg > .input-group-prepend > .btn, .input-group-lg > .input-group-prepend > .ActiveChallenge, .input-group-lg > .input-group-prepend > .ChallengeItem, .input-group-lg > .input-group-prepend > .NewChallengeButton,
+.input-group-lg > .input-group-append > .btn, .input-group-lg > .input-group-append > .ActiveChallenge, .input-group-lg > .input-group-append > .ChallengeItem, .input-group-lg > .input-group-append > .NewChallengeButton {
   padding: 0.5rem 1rem;
   font-size: 1.25rem;
   line-height: 1.5;
@@ -1389,14 +1359,8 @@ select.form-control-sm:not([size]):not([multiple]), .input-group-sm > select.for
 select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.form-control:not([size]):not([multiple]),
 .input-group-lg > .input-group-prepend > select.input-group-text:not([size]):not([multiple]),
 .input-group-lg > .input-group-append > select.input-group-text:not([size]):not([multiple]),
-.input-group-lg > .input-group-prepend > select.btn:not([size]):not([multiple]),
-.input-group-lg > .input-group-prepend > select.ActiveChallenge:not([size]):not([multiple]),
-.input-group-lg > .input-group-prepend > select.ChallengeItem:not([size]):not([multiple]),
-.input-group-lg > .input-group-prepend > select.NewChallengeButton:not([size]):not([multiple]),
-.input-group-lg > .input-group-append > select.btn:not([size]):not([multiple]),
-.input-group-lg > .input-group-append > select.ActiveChallenge:not([size]):not([multiple]),
-.input-group-lg > .input-group-append > select.ChallengeItem:not([size]):not([multiple]),
-.input-group-lg > .input-group-append > select.NewChallengeButton:not([size]):not([multiple]) {
+.input-group-lg > .input-group-prepend > select.btn:not([size]):not([multiple]), .input-group-lg > .input-group-prepend > select.ActiveChallenge:not([size]):not([multiple]), .input-group-lg > .input-group-prepend > select.ChallengeItem:not([size]):not([multiple]), .input-group-lg > .input-group-prepend > select.NewChallengeButton:not([size]):not([multiple]),
+.input-group-lg > .input-group-append > select.btn:not([size]):not([multiple]), .input-group-lg > .input-group-append > select.ActiveChallenge:not([size]):not([multiple]), .input-group-lg > .input-group-append > select.ChallengeItem:not([size]):not([multiple]), .input-group-lg > .input-group-append > select.NewChallengeButton:not([size]):not([multiple]) {
   height: calc(2.875rem + 2px); }
 
 .form-group {
@@ -2073,15 +2037,15 @@ fieldset:disabled a.NewChallengeButton {
   .btn-block + .btn-block, .ActiveChallenge + .btn-block, .ChallengeItem + .btn-block, .NewChallengeButton + .btn-block, .btn-block + .ActiveChallenge, .ActiveChallenge + .ActiveChallenge, .ChallengeItem + .ActiveChallenge, .NewChallengeButton + .ActiveChallenge, .btn-block + .ChallengeItem, .ActiveChallenge + .ChallengeItem, .ChallengeItem + .ChallengeItem, .NewChallengeButton + .ChallengeItem, .btn-block + .NewChallengeButton, .ActiveChallenge + .NewChallengeButton, .ChallengeItem + .NewChallengeButton, .NewChallengeButton + .NewChallengeButton {
     margin-top: 0.5rem; }
 
-input[type="submit"].btn-block, input[type="submit"].ActiveChallenge, input[type="submit"].ChallengeItem, input[type="submit"].NewChallengeButton,
+input[type="submit"].btn-block, input.ActiveChallenge[type="submit"], input.ChallengeItem[type="submit"], input.NewChallengeButton[type="submit"],
 input[type="reset"].btn-block,
-input[type="reset"].ActiveChallenge,
-input[type="reset"].ChallengeItem,
-input[type="reset"].NewChallengeButton,
+input.ActiveChallenge[type="reset"],
+input.ChallengeItem[type="reset"],
+input.NewChallengeButton[type="reset"],
 input[type="button"].btn-block,
-input[type="button"].ActiveChallenge,
-input[type="button"].ChallengeItem,
-input[type="button"].NewChallengeButton {
+input.ActiveChallenge[type="button"],
+input.ChallengeItem[type="button"],
+input.NewChallengeButton[type="button"] {
   width: 100%; }
 
 .fade {
@@ -4002,12 +3966,15 @@ button.close {
   .bs-popover-top .arrow, .bs-popover-auto[x-placement^="top"] .arrow {
     bottom: calc((0.5rem + 1px) * -1); }
   .bs-popover-top .arrow::before, .bs-popover-auto[x-placement^="top"] .arrow::before,
-  .bs-popover-top .arrow::after, .bs-popover-auto[x-placement^="top"] .arrow::after {
+  .bs-popover-top .arrow::after,
+  .bs-popover-auto[x-placement^="top"] .arrow::after {
     border-width: 0.5rem 0.5rem 0; }
   .bs-popover-top .arrow::before, .bs-popover-auto[x-placement^="top"] .arrow::before {
     bottom: 0;
     border-top-color: rgba(0, 0, 0, 0.25); }
-  .bs-popover-top .arrow::after, .bs-popover-auto[x-placement^="top"] .arrow::after {
+  
+  .bs-popover-top .arrow::after,
+  .bs-popover-auto[x-placement^="top"] .arrow::after {
     bottom: 1px;
     border-top-color: #fff; }
 
@@ -4019,12 +3986,15 @@ button.close {
     height: 1rem;
     margin: 0.3rem 0; }
   .bs-popover-right .arrow::before, .bs-popover-auto[x-placement^="right"] .arrow::before,
-  .bs-popover-right .arrow::after, .bs-popover-auto[x-placement^="right"] .arrow::after {
+  .bs-popover-right .arrow::after,
+  .bs-popover-auto[x-placement^="right"] .arrow::after {
     border-width: 0.5rem 0.5rem 0.5rem 0; }
   .bs-popover-right .arrow::before, .bs-popover-auto[x-placement^="right"] .arrow::before {
     left: 0;
     border-right-color: rgba(0, 0, 0, 0.25); }
-  .bs-popover-right .arrow::after, .bs-popover-auto[x-placement^="right"] .arrow::after {
+  
+  .bs-popover-right .arrow::after,
+  .bs-popover-auto[x-placement^="right"] .arrow::after {
     left: 1px;
     border-right-color: #fff; }
 
@@ -4033,12 +4003,15 @@ button.close {
   .bs-popover-bottom .arrow, .bs-popover-auto[x-placement^="bottom"] .arrow {
     top: calc((0.5rem + 1px) * -1); }
   .bs-popover-bottom .arrow::before, .bs-popover-auto[x-placement^="bottom"] .arrow::before,
-  .bs-popover-bottom .arrow::after, .bs-popover-auto[x-placement^="bottom"] .arrow::after {
+  .bs-popover-bottom .arrow::after,
+  .bs-popover-auto[x-placement^="bottom"] .arrow::after {
     border-width: 0 0.5rem 0.5rem 0.5rem; }
   .bs-popover-bottom .arrow::before, .bs-popover-auto[x-placement^="bottom"] .arrow::before {
     top: 0;
     border-bottom-color: rgba(0, 0, 0, 0.25); }
-  .bs-popover-bottom .arrow::after, .bs-popover-auto[x-placement^="bottom"] .arrow::after {
+  
+  .bs-popover-bottom .arrow::after,
+  .bs-popover-auto[x-placement^="bottom"] .arrow::after {
     top: 1px;
     border-bottom-color: #fff; }
   .bs-popover-bottom .popover-header::before, .bs-popover-auto[x-placement^="bottom"] .popover-header::before {
@@ -4059,12 +4032,15 @@ button.close {
     height: 1rem;
     margin: 0.3rem 0; }
   .bs-popover-left .arrow::before, .bs-popover-auto[x-placement^="left"] .arrow::before,
-  .bs-popover-left .arrow::after, .bs-popover-auto[x-placement^="left"] .arrow::after {
+  .bs-popover-left .arrow::after,
+  .bs-popover-auto[x-placement^="left"] .arrow::after {
     border-width: 0.5rem 0 0.5rem 0.5rem; }
   .bs-popover-left .arrow::before, .bs-popover-auto[x-placement^="left"] .arrow::before {
     right: 0;
     border-left-color: rgba(0, 0, 0, 0.25); }
-  .bs-popover-left .arrow::after, .bs-popover-auto[x-placement^="left"] .arrow::after {
+  
+  .bs-popover-left .arrow::after,
+  .bs-popover-auto[x-placement^="left"] .arrow::after {
     right: 1px;
     border-left-color: #fff; }
 

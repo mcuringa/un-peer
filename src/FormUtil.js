@@ -101,12 +101,13 @@ const TextInput = (props)=> {
     return null;
 
   const pt = (props.plaintext && props.readOnly)?"-plaintext":"";
+  const validationCss = props.validationCss || "";
 
   return (
 
     <input type={props.type||'text'}
            value={props.value}
-           className={`form-control${pt} ${props.className}`}
+           className={`form-control${pt} ${props.className} ${validationCss}`}
            id={props.id}
            placeholder={props.placeholder}
            onChange={props.onChange}
@@ -116,26 +117,26 @@ const TextInput = (props)=> {
   );
 };
 
-class NewTextInput extends React.Component {
-  render() {
-    const pt = (this.props.plaintext && this.props.readOnly) ?
-          "-plaintext" : "";
+// class NewTextInput extends React.Component {
+//   render() {
+//     const pt = (this.props.plaintext && this.props.readOnly) ?
+//           "-plaintext" : "";
 
-    // So, sorry for the awkward jsx formatting here - this is just
-    // how rjsx-mode in emacs formats it for me.
-    return (
-      <input type={this.props.type||'text'}
-             value={this.props.value}
-             className={`form-control${pt} ${this.props.className}`}
-             id={this.props.id}
-             placeholder={this.props.placeholder}
-             onChange={this.props.onChange}
-             readOnly={this.props.readOnly}
-             required={this.props.required}
-             autoFocus={this.props.autofocus} />
-    );
-  }
-}
+//     // So, sorry for the awkward jsx formatting here - this is just
+//     // how rjsx-mode in emacs formats it for me.
+//     return (
+//       <input type={this.props.type||'text'}
+//              value={this.props.value}
+//              className={`form-control${pt} ${this.props.className}`}
+//              id={this.props.id}
+//              placeholder={this.props.placeholder}
+//              onChange={this.props.onChange}
+//              readOnly={this.props.readOnly}
+//              required={this.props.required}
+//              autoFocus={this.props.autofocus} />
+//     );
+//   }
+// }
 
 
 
@@ -393,7 +394,6 @@ export {
   RadioButtonGroup,
   TextGroup,
   TextInput,
-  NewTextInput,
   DatePicker,
   TextAreaGroup,
   StatusIndicator,

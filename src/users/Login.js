@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import {NewTextInput} from '../FormUtil.js'
+import {NewTextInput, TextInput} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
 import Modal from "../Modal";
 import LoadingModal from "../LoadingModal";
@@ -50,7 +50,18 @@ export default class Login extends Component {
     });
   }
 
-  handleSubmit = event => {
+  handleSubmit = (e) => {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    let form = document.getElementById("LoginForm");
+    let valid = form.checkValidity();
+    console.log(valid);
+    if(!valid)
+      return;
+
+
     this.setState({loading: true, loadingStatus: "Authenticating..."});
 
     let email = this.state.email.trim();
@@ -73,26 +84,21 @@ export default class Login extends Component {
       console.log(user);
       this.setState({loading: false, loadingStatus: null});
       db.get("/users", user.uid).then(merge);
-
-      // UserDB.get(user.uid).then(add);
     }
 
     const err = (error)=> {
-      const code = error.code;
-      this.setState({loading: false, loadingStatus: null});
+      console.log(error);
+      this.setState({
+        loading: false,
+        loadingStatus: null,
+        loginErr: error.code
 
-      if(code === "auth/user-not-found")
-        this.setState({nouser: true});
-      else if(code === "auth/wrong-password")
-        this.setState({reset: true});
-      else
-        console.log(error);
+      });
     }
 
     firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, pw)
     .then(success, err);
 
-    event.preventDefault();
   }
 
   reset() {
@@ -109,15 +115,47 @@ export default class Login extends Component {
   }
 
   render() {
+
+    const code = this.state.loginErr;
+    const emailInvalid = code && code.length > 0;
+    const invalidCss = (emailInvalid)?"is-invalid":"";
+    let emailErr;
+      if(code === "auth/user-not-found")
+        emailErr = `There is no user with email ${this.state.email}.`;
+      else if(code === "auth/wrong-password") {
+        emailErr = (
+          <div>
+            You could not be logged in with that email/password
+            combination. <button type="button"
+              onCLick={this.reset}
+              className="btn btn-link">Click here</button> to reset 
+              your password.
+          </div>
+          );
+      }
+      else if(code === "auth/too-many-requests") {
+        emailErr = "Your account has been temporarily blocked due becaue of too many failed login attempts. Try again later."
+      }
+      else if(emailInvalid) {
+        emailErr = (
+          <div>Could not log you in because of error code <tt>{code}</tt>.</div>
+        )
+      }
+
+
+
+
     return (
       <div className="Login screen">
         <LoadingModal id="LoadingModal" show={this.state.loading}
           status={this.state.loadingStatus} />
+        
         <img className="LoginLogo d-block"
              alt="UN Peer Challenges logo"
              src="/img/unpc-logo.png" />
 
         <Modal id="ResetModal"
+          title="Email Sent"
           show={this.state.sent}
           closeHandler={this.handleModalClose}
           body="Please check your email for a link to reset your password."
@@ -128,33 +166,25 @@ export default class Login extends Component {
           body="Send an email to reset your password?"
           onConfirm={this.reset} />
 
-        <Modal id="WrongPassModal"
-          show={this.state.reset}
-          closeHandler={this.handleModalClose}
-          body="Incorrect password. Send an email to reset your password?"
-          onConfirm={this.reset} />
-
-        <Modal id="NoUserModal"
-          show={this.state.nouser}
-          closeHandler={this.handleModalClose}
-          body={`There is no user with email ${this.state.email}.`}
-          />
-
-        <form className="LoginForm" onSubmit={this.handleSubmit}>
-            <div className="row">
+        <form id="LoginForm" className="LoginForm" onSubmit={this.handleSubmit}>
+            <div className={`row`}>
                 <label htmlFor="email"
                        className="col-3 col-form-label">
                     Email
                 </label>
                 <div className="col-9">
-                    <NewTextInput
-                        id="email"
-                        className=""
-                        autoFocus
-                        type="email"
-                        value={this.state.email}
-                        onChange={this.handleChange} />
+                    <TextInput
+                      type="email"
+                      validationCss={invalidCss}
+                      id="email"
+                      className=""
+                      required={true}
+                      autoFocus
+                      type="email"
+                      value={this.state.email}
+                      onChange={this.handleChange} />
                 </div>
+                <div className="col-12 invalid-feedback">{emailErr}</div>
             </div>
 
             <div className="row">
@@ -163,9 +193,10 @@ export default class Login extends Component {
                     Password
                 </label>
                 <div className="col-9">
-                    <NewTextInput
+                    <TextInput
                         id="password"
                         className=""
+                        required={true}
                         type="password"
                         value={this.state.password}
                         onChange={this.handleChange} />
@@ -188,4 +219,20 @@ export default class Login extends Component {
     );
   }
 
+}
+
+const LoadingButton = (props) => {
+
+  const LoadingSpinner = null;
+
+  return (
+    <button
+      className="StartButton btn btn-light btn-block"
+      type="submit">
+      <div className="position-absolute" style={{width:"16px"}}>
+        {LoadingSpinner}
+      </div>
+      {props.children}
+    </button>
+  )
 }
