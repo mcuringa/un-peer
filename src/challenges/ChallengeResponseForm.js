@@ -213,7 +213,7 @@ class ChallengeResponseForm extends React.Component {
           clearVideo={this.clearVideo} 
           toggleOptOut={toggleOptOut} />
 
-          <this.Snackbar />
+          <this.Snackbar timeout={2000} />
       </div>
     )
   }
@@ -239,6 +239,8 @@ class ResponseForm extends React.Component {
       return;
 
     this.props.onSubmit();
+    this.setState({ isValidated: false});
+
   }
 
   render() {
@@ -322,7 +324,7 @@ const SaveButtons = (props)=> {
   const saveWidth = "240px";
   if(props.response.id) {
     return (
-      <div className="d-flex justify-content-end">
+      <div className="d-flex justify-content-end mb-2">
         <button type="submit" style={{width: saveWidth}}
           className={`btn btn-secondary mt-2`}>
           Update my response

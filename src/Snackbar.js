@@ -59,16 +59,23 @@ const Undo = (props)=> {
 
 function snack(msg, showUndo) {
 
+
+  showUndo = showUndo || false;
+
   const p = (resolve, reject)=>
   {
     const clear = ()=> {
-      console.log("clear caleld");
-      this.setState({
-        showSnack: false,
-        snackMsg: "",
-        snackOver: null,
-        snackUndo: null
-      });
+      console.log("clear called");
+
+      let snackConfig = {
+        show: false,
+        msg: "",
+        showUndo: false,
+        undo: null,
+        onClose: null
+      }
+
+      this.setState({snackConfig: snackConfig});
     }
     const over = ()=> {
       clear();
@@ -80,13 +87,15 @@ function snack(msg, showUndo) {
       reject();
     }
 
-    this.setState({
-      showSnack: true,
-      snackMsg: msg,
+    let snackConfig = {
+      show: true,
+      msg: msg,
       showUndo: showUndo,
-      snackUndo: undo,
-      snackOver: over
-    });      
+      undo: undo,
+      onClose: over
+    }
+  this.setState({snackConfig: snackConfig});
+
   }
 
   return new Promise(p);
@@ -94,12 +103,7 @@ function snack(msg, showUndo) {
 
 function SnackMaker() {
   return(
-    <Snackbar show={this.state.showSnack} 
-      msg={this.state.snackMsg}
-      showUndo={this.state.showUndo}
-      undo={this.state.snackUndo}
-      snackOver={this.state.snackOver}
-      wait={this.timeout} />
+    <Snackbar {...this.state.snackConfig} wait={this.timeout} />
   )
 }
 
