@@ -12,8 +12,8 @@ $bottom-footer-height: 54px;
 $full-screen-width: 512px;
 $gray-text: rgb(125, 135, 163);
 $dark-gray-text: rgb(104.55, 112.2, 119.85);
+$text-dark: #687077;
 
-$cal-text: #667179;
 $cal-green: #60d600;
 $cal-blue: #2b91e9;
 $cal-purple: #ae1963;
@@ -52,7 +52,7 @@ $colors: (
   fill: white;
 }
 .text-dark {
-  color: #687077;
+  color: $text-dark;
 }
 img {
   @extend .img-fluid;
@@ -113,14 +113,6 @@ small tt {
     margin: 0 auto;
 }
 
-
-.App {
-  padding-top: $top-header-height;
-  padding-bottom: $bottom-footer-height;
-  padding-left: 0;
-  padding-right: 0;
-}
-
 .App .screen
 {
   margin: 0;
@@ -151,7 +143,7 @@ small tt {
   text-align: center;
   line-height: $top-header-height;
   font-size: 18px;
-  
+
   .App-home a.active {
     // background-color: $bg-bright-blue;
     // border-radius: 50%;
@@ -297,10 +289,6 @@ small tt {
   background-color: white;
   text-align: left;
   border-radius: 0;
-
-  svg.octicon-chevron-right {
-    fill: $gray-text;
-  }
 }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group
@@ -642,8 +630,21 @@ label
 }
 
 .App {
+  padding-top: $top-header-height;
+  padding-bottom: $bottom-footer-height;
+  padding-left: 0;
+  padding-right: 0;
+  color: $text-dark;
+
+  svg {
+    &.octicon-chevron-right,
+    &.octicon-chevron-down {
+      fill: $text-dark;
+    }
+  }
+
   .calendar-view {
-    color: $cal-text;
+    color: $text-dark;
 
     .challenge-area {
 
@@ -672,7 +673,7 @@ label
     .react-calendar {
       border: none;
       margin: 0 auto;
-      color: $cal-text;
+      color: $text-dark;
 
       .react-calendar__navigation__prev2-button,
       .react-calendar__navigation__next2-button {
@@ -687,12 +688,12 @@ label
       .react-calendar__navigation__label,
       .react-calendar__month-view__days__day--weekend,
       .react-calendar__month-view__days__day {
-        color: $cal-text;
+        color: $text-dark;
       }
 
       .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
       .react-calendar__month-view__days__day--neighboringMonth {
-        color: lighten($cal-text, 25%);
+        color: lighten($text-dark, 25%);
       }
 
       .react-calendar__tile {
@@ -706,12 +707,20 @@ label
           background: transparent;
         }
 
+        .d-flex {
+          width: 50px;
+          height: 50px;
+          position: absolute;
+          .left, .right {
+            height: 50px;
+            width: 25px;
+          }
+        }
+
         .dayDisplay {
           height: 50px;
-          padding-top: 16px;          
-          time {
-            margin: 0 auto;
-          }
+          padding-top: 16px;
+          position: relative;
         }
 
         &.response-start.active svg.calendar-dotline {
@@ -721,40 +730,90 @@ label
         }
         &.response-cont.active {
           border-top: 2px solid $cal-green;
-          border-bottom: 2px solid $cal-green;          
+          border-bottom: 2px solid $cal-green;
         }
         &.response-start.future:not(.active) {
           border-top: 2px solid lighten($cal-green, 30%);
-          border-bottom: 2px solid lighten($cal-green, 30%);          
+          border-bottom: 2px solid lighten($cal-green, 30%);
         }
 
         &.rating-start.active,
-        &.rating-due.active,                 
         &.rating-cont.active {
           border-top: 2px solid $cal-blue;
-          border-bottom: 2px solid $cal-blue;          
+          border-bottom: 2px solid $cal-blue;
         }
         &.rating-start.future:not(.active) {
           border-top: 2px solid lighten($cal-blue, 30%);
-          border-bottom: 2px solid lighten($cal-blue, 30%);          
-        }        
+          border-bottom: 2px solid lighten($cal-blue, 30%);
+        }
       }
 
       .react-calendar__tile>time {
-        display: none;
+        position: relative;
+        float: left;
+        top: 17px;
+        left: 17px;
+        z-index: 9;
       }
 
       .react-calendar__tile.active .dayDisplay {
         background-color: $gray-300;
+        z-index: 7;
       }
 
-      .react-calendar__tile.start:not(.cont) .dayDisplay {
-        border: 2px solid $cal-green;
-        border-radius: 25px;
+      .react-calendar__tile.start:not(.cont) {
+        .right {
+          background-color: $gray-300;
+          border-top: 2px solid $cal-green;
+          border-bottom: 2px solid $cal-green;
+        }
+
+        .dayDisplay {
+          border: 2px solid $cal-green;
+          border-radius: 25px;
+        }
       }
-      .react-calendar__tile.end:not(.cont) .dayDisplay {
-        border: 2px solid $cal-purple;        
-        border-radius: 25px;
+      .react-calendar__tile.end:not(.cont) {
+        .left {
+          background-color: $gray-300;
+        }
+
+        .dayDisplay {
+          border: 2px solid $cal-purple;
+          border-radius: 25px;
+        }
+      }
+
+      .react-calendar__tile.response-due {
+        .left {
+          background-color: $gray-300;
+          border-top: 2px solid $cal-green;
+          border-bottom: 2px solid $cal-green;
+        }
+        .right {
+          background-color: $gray-300;
+          border-top: 2px solid $cal-blue;
+          border-bottom: 2px solid $cal-blue;
+        }
+        .dayDisplay {
+          border: 2px solid $cal-green;
+          border-radius: 25px;
+        }
+      }
+
+      .react-calendar__tile.rating-due {
+        .left {
+          background-color: $gray-300;
+          border-top: 2px solid $cal-blue;
+          border-bottom: 2px solid $cal-blue;
+        }
+        .right {
+          background-color: $gray-300;
+        }
+        .dayDisplay {
+          border: 2px solid $cal-blue;
+          border-radius: 25px;
+        }
       }
 
       .react-calendar__tile.future:not(.active) .dayDisplay {
@@ -775,7 +834,7 @@ label
 
   .accordion__title,
   .accordion__title:hover {
-    color: $gray-text;
+    color: $text-dark;
     background-color: transparent;
   }
 
@@ -791,7 +850,7 @@ label
 
   .BookmarkItem {
     margin-top: 10px;
-    color: $gray-text;
+    color: $text-dark;
     border-bottom: 1px solid $gray-200;
 
     &:hover {

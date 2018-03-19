@@ -33,7 +33,7 @@ const df = {
   getChallengeForDate: (challenges, d)=> {
     const match = (c)=> {
       return df.isDateWithin(d,c.start,c.end);
-    }
+    };
 
     const x = _.find(challenges, match);
     return x || null;

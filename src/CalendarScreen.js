@@ -17,14 +17,9 @@ class CalendarScreen extends React.Component {
     this.tileWidth = 50;
 
     if (this.props.challenges) {
-      this.state.currentChallenge = this.getCurrentChallenge(
-        this.state.challenges);
+      this.state.currentChallenge = df.getChallengeForDate(
+        this.props.challenges, this.now);
     }
-  }
-
-  getCurrentChallenge(challenges) {
-    // TODO: make this dynamic
-    return challenges[3];
   }
 
   componentWillMount() {
@@ -35,8 +30,7 @@ class CalendarScreen extends React.Component {
       // component's props, then load them from firebase.
       ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED)
         .then((t) => {
-
-          const currentChallenge = me.getCurrentChallenge(t);
+          const currentChallenge = df.getChallengeForDate(t, me.now);
 
           this.setState({
             challenges: t,
@@ -108,10 +102,11 @@ class CalendarScreen extends React.Component {
   getTileContent(date, view) {
     return (
       <React.Fragment>
+          <div className="d-flex">
+              <div className="left"></div>
+              <div className="right"></div>
+          </div>
           <div className="dayDisplay">
-              <time dateTime={date.date.toISOString()}>
-                  {date.date.getDate()}
-              </time>
           </div>
       </React.Fragment>
     );
