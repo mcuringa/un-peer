@@ -19,6 +19,10 @@ class ChallengeReviewScreen extends React.Component {
     super(props);
 
     this.challengeId = this.props.match.params.id;
+    let hash = window.decodeURIComponent(window.location.hash);
+    if(hash)
+      hash = hash.slice(1);
+
 
     this.state = {
       loadingChallenge: true,
@@ -30,7 +34,8 @@ class ChallengeReviewScreen extends React.Component {
       isOwner: false,
       isProfessor: false,
       professorChoice: {},
-      ownerChoice: {}
+      ownerChoice: {},
+      targetResponseId: hash
     };
 
     this.timeout = 1500;
@@ -139,6 +144,13 @@ class ChallengeReviewScreen extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+      const hash = window.decodeURIComponent(window.location.hash);
+      const target = document.querySelector(`${hash}`);
+      if(target)
+        target.scrollIntoView();
+  }
+
   render() {
     if(this.isLoading())
       return <LoadingModal status="Loading responses" show={true} />
@@ -188,7 +200,8 @@ class ChallengeReviewScreen extends React.Component {
           featureResponse={this.featureResponse}
           challenge={this.state.challenge}
           toggleBookmark={makeToggleFunction(r)} 
-          open={false}
+          open={r.id === this.state.targetResponseId}
+          targetResponseId={this.state.targetResponseId}
           bookmarked={this.state.bookmarks[r.id]} />
       );
     });
@@ -411,8 +424,10 @@ class Response  extends React.Component {
       )
     };
 
+    const targetCss = (this.props.targetResponseId === r.id)?"highlight":"";
+
     return (
-      <div className="card mb-3">
+      <div id={r.id} className={`card mb-3 ${targetCss}`}>
         <div id={`head_${this.props.keyIndex}`} className="card-header" aria-expanded={this.props.open}>
           <div className="row">
             <div className="col-5 clickable"
@@ -487,7 +502,6 @@ const StarGradient = (props)=> {
     </svg>
     </div>
   )
-
 }
 
 const StarRatings = (props)=>{
@@ -500,8 +514,9 @@ const StarRatings = (props)=>{
     );
   });
 
+  const css = props.className || "";
   return (
-    <div className="bg-light d-flex justify-content-between">{stars}</div>
+    <div className={`bg-light d-flex justify-content-between ${css}`}>{stars}</div>
   );
 
 }
@@ -509,7 +524,7 @@ const StarRatings = (props)=>{
 const Star = (props)=> {
 
   const fillStyle = (v, rating)=> {
-    if(!rating)
+    if(!rating || rating === -1)
       return "not-rated";
 
     const roundToQuartile = (n)=> {
@@ -580,3 +595,4 @@ const FlagIcon = (props)=> {
 }
 
 export default ChallengeReviewScreen;
+export {StarRatings, StarGradient};
