@@ -25,9 +25,6 @@ const ChallengeHeader = (props) => {
   else if(c.stage === "review")
     stageMsg = `Review until: ${df.day(c.end)}`;
 
-
-
-
   return (
     <div className="ChallengeDetailHeader">
       <BackButton hideBack={props.hideBack} challenge={props.challenge} />

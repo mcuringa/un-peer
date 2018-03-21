@@ -20,8 +20,6 @@ it("should load all of the Challenges from firebase", ()=>{
   );
 });
 
-
-
 it.skip("assigns responses to users for a challenge", async ()=>{
   // const cid = "what-about-the-careless-staff";
   const cid = "foo";
