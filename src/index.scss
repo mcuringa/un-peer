@@ -106,6 +106,10 @@ small tt {
   font-size: .65rem;
 }
 
+.highlight {
+  box-shadow: 0px 0px 10px $yellow;
+}
+
 /*============================ App.js styles*/
 .container
 {
@@ -267,10 +271,10 @@ small tt {
 
 }
 
-.ActiveChallenge h4, .ActiveChallenge h5
+.ActiveChallenge h4, .ActiveChallenge h5, .NewChallengeButton h4
 {
-    font-size: 18px;
-    font-weight: bold;
+  font-size: 26px;
+  font-weight: bold;
   white-space: normal;
 }
 
@@ -304,16 +308,11 @@ small tt {
   border-radius: 8px;
   color: $gray-600;
   background-color: white;
-  white-space: normal;
 
   width: 85%;
+  height: 100px;
   margin: 0 auto;
-  margin-top: 48px;
-  text-center: left;
-  font-size: 18px;
-  line-height: 1.1em;
-  padding-top: 1em;
-  padding-bottom: 1em;
+
 }
 
 .ChallengeListScreen.screen
@@ -916,4 +915,28 @@ label
   color: $gray-200;
   text-align: center;
   padding: 8px;
+}
+
+
+// ============================= profile page
+.Profile .ImageUploadImproved {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.Profile .ImageUploadImproved img {
+  border-radius: 6px;
+}
+
+.Profile .ImageUploadButtonImproved {
+  background-color: rgba(0,0,0,.8);
+  width: 40px;
+  height: 24px;
+  border-bottom-left-radius: 3px;
+  border-top-right-radius: 6px;
+}
+
+.Profile .octicon-device-camera {
+  padding-right: 3px;
+  fill: $gray-300;
 }
