@@ -63,8 +63,8 @@ const ActiveChallenge = (props) => {
 
 const ChallengeButton = (props)=> {
   return (
-    <Link to="/challenge/new" className="NewChallengeButton btn">
-      Submit a Challenge
+    <Link to="/challenge/new" className="NewChallengeButton d-flex align-items-center">
+      <h4 className="m-auto">Submit a Challenge</h4>
     </Link>
   );
 }
