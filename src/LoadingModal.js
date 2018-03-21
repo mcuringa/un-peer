@@ -29,6 +29,7 @@ const Spinner = (props)=> {
 
 
 export default LoadingModal;
+export {Spinner};
 
 LoadingModal.propTypes = {
   show: PropTypes.bool,
