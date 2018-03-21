@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
-import {XIcon, EyeIcon} from "react-octicons";
-import { Link, Redirect } from 'react-router-dom';
+import {XIcon} from "react-octicons";
+import { Redirect } from 'react-router-dom';
 
 
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
@@ -433,12 +433,7 @@ const FormHeader = (props)=>
           <h4 className="p-2">
             {c.title}
           </h4>
-          <div className="d-flex align-items-center" style={{minWidth: "40px", marginRight: "8px"}}>
-            <Link  className="pr-2  icon-secondary" to={`/challenge/${c.id}`} 
-                title="view challenge">
-              <EyeIcon />
-            </Link>
-
+          <div className="d-flex align-items-end mr-2">
             <StatusIndicator dirty={props.dirty} loading={false} />
           </div>
 
@@ -491,26 +486,8 @@ const BasicFields = (props)=>
 }
 
 const ChallengeVideo = (props)=> {
-  const vidFileName = (path)=> {
-    let start = path.lastIndexOf("/");
-    let end = path.lastIndexOf("?")
-    let fileName = (end === -1)?path.slice(start): path.slice(start,end);
-    fileName = fileName.replace("%2F","/");
-    return fileName;
-  }
 
   const progress = (<UploadProgress pct={props.pct} msg={props.msg} />);
-  const clearBtn = (props.video)?(
-    <div className="bg-dark text-right text-light m-0 p-0">
-      <small>
-        {vidFileName(props.video)}
-        <button type="button" className="btn btn-link mt-1 p-0 ml-2 mr-1" onClick={props.clearVideo}>
-          <XIcon className="icon-danger" />
-        </button>
-      </small>
-    </div>
-    ) : "";
-
   const poster = props.poster || "/img/poster.png";
 
   return (
