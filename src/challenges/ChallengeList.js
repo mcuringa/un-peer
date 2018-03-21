@@ -12,20 +12,12 @@ class ChallengeListScreen extends React.Component {
     this.state = {challenges: []};
   }
   componentWillMount() {
-    if(this.props.user.admin) {
-
-      ChallengeDB.findAll().then((challenges)=> {
-        let t = _.filter(challenges,(c)=>c.status !== ChallengeStatus.DRAFT);
-        t = _.sortBy(challenges, c=> c.start);
-        this.setState({challenges: t});
-      });
-    }
-    else {
-      ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
-        let t = _.sortBy(challenges, c=> c.start);
-        this.setState({challenges: t});
-      });
-    }
+    ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
+      const now = new Date();
+      let t = _.filter(challenges, c=> c.end < now);
+      t = _.sortBy(challenges, c=> c.start);
+      this.setState({challenges: t});
+    });
     this.props.setAppClass("hands");
   }
 
@@ -51,16 +43,6 @@ class ChallengeListScreen extends React.Component {
   }
 }
 
-const ChallengeButton = (props)=> {
-  if(!props.home)
-    return null;
-
-  return (
-    <Link to="/challenge/new" className="NewChallengeButton btn">
-      Submit a Challenge
-    </Link>
-  );
-}
 
 const ChallengeListItem = (props) => {
   const challenge = props.challenge;
@@ -69,18 +51,19 @@ const ChallengeListItem = (props) => {
 
   return (
     <Link to={`/challenge/${challenge.id}`}
-      className="ChallengeItem d-flex align-items-center flex-row justify-content-between">
+      className="ChallengeItem d-flex align-items-center justify-content-between">
       <div className="p2 m-0">
-        <div className="mb-2"><img className="mr-1" src="/img/calendar.png" alt="cal icon" />
-          {dates}<PrimitiveDotIcon className={`pt-1 ml-1 mr-1 icon-${challenge.stage}`} />
+        <div>
+          <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
+          {dates}
         </div>
-        <p className="ChallengeListTitle">{challenge.title}</p>
+        <h5 className="mt-3">{challenge.title}</h5>
         <p>Owner: {challenge.owner.firstName} {challenge.owner.lastName}</p>
       </div>
-      <div className="float-right"><ChevronRightIcon /></div>
+      <div><ChevronRightIcon /></div>
     </Link>
   );
 }
 
 
-export {ChallengeListScreen, ChallengeButton, ChallengeListItem};
+export {ChallengeListScreen};
