@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 import dateFormat from 'dateformat';
-import {XIcon, PrimitiveDotIcon } from 'react-octicons';
+import {XIcon, PrimitiveDotIcon, DeviceCameraIcon } from 'react-octicons';
 import {UploadProgress} from "./MediaManager";  
 
 const LoadingSpinner = (props)=> {
@@ -117,29 +117,6 @@ const TextInput = (props)=> {
   );
 };
 
-// class NewTextInput extends React.Component {
-//   render() {
-//     const pt = (this.props.plaintext && this.props.readOnly) ?
-//           "-plaintext" : "";
-
-//     // So, sorry for the awkward jsx formatting here - this is just
-//     // how rjsx-mode in emacs formats it for me.
-//     return (
-//       <input type={this.props.type||'text'}
-//              value={this.props.value}
-//              className={`form-control${pt} ${this.props.className}`}
-//              id={this.props.id}
-//              placeholder={this.props.placeholder}
-//              onChange={this.props.onChange}
-//              readOnly={this.props.readOnly}
-//              required={this.props.required}
-//              autoFocus={this.props.autofocus} />
-//     );
-//   }
-// }
-
-
-
 const Video = (props)=> {
 
   const extracss = (props.video)?"":"d-none";
@@ -182,7 +159,7 @@ const VideoUploadImproved = (props)=> {
     let start = path.lastIndexOf("/");
     let end = path.lastIndexOf("?")
     let fileName = (end === -1)?path.slice(start): path.slice(start,end);
-    fileName = fileName.replace(/\%2F/g,"/");
+    fileName = fileName.replace(/%2F/g,"/");
     return fileName;
   }
 
@@ -278,6 +255,53 @@ const ImageUpload = (props)=> {
       <ImageThumbnail />
       <UploadProgress pct={props.pct} msg={props.msg} hide={false} />
 
+    </div>
+  );
+};
+
+
+const ImageUploadImproved = (props)=> {
+
+  if(props.hide)
+    return null;
+
+  const UploadBtn = ()=> {
+    return (
+      <div className="ImageUploadButtonImproved p-0 m-0 position-absolute d-flex justify-content-end"
+        style={{top: 0, right: 0}}>
+        <input type="file" className="d-none"
+          accept="image/*" id={props.id} onChange={props.onChange} />
+        <label className="text-primary p-0 m-0" htmlFor={props.id}>
+          <div className="btn btn-link p-0 m-0 icon-secondary">
+            <DeviceCameraIcon />
+          </div>
+        </label>
+        <button type="button" className="btn btn-link p-0 m-0" onClick={clear}>
+           <XIcon className="icon-danger" />
+        </button>
+      </div>
+    )
+  }
+
+  const clear = ()=> {
+    props.clearImage(props.id);
+  }
+
+  const ImageThumbnail = ()=> {
+    
+    if(!props.img)
+      return null;
+
+    return (
+      <img src={props.img} alt="thumbnail" />
+    );
+  }
+  
+  return (
+    <div className={`ImageUploadImproved position-relative ${props.className}`}>
+      <UploadBtn />
+      <ImageThumbnail />
+      <UploadProgress pct={props.pct} msg={props.msg} hide={false} />
     </div>
   );
 };
@@ -402,5 +426,6 @@ export {
   VideoUpload,
   ImageUpload,
   VideoUploadImproved,
+  ImageUploadImproved,
   Checkbox
 };
