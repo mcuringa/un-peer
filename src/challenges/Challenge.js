@@ -108,6 +108,53 @@ const ChallengeDB = {
     });
   },
 
+  findResponsesByOwner(uid) {
+    
+
+    const getOwnerResponses = (c)=> {
+      const prepResponse = (r)=>{
+        r.challengeId = c.id;
+        r.challengeTitle = c.title;
+        return r;
+      };
+      return new Promise((resolve, reject)=> {
+
+        ChallengeDB.getResponses(c.id).then((responses)=> {
+          responses = _.filter(responses, r=>r.id === uid);
+          responses = _.map(responses, prepResponse);
+          resolve(responses);
+        });
+      });
+    }
+
+
+    return new Promise((resolve, reject)=> {
+      ChallengeDB.findAll().then((challenges)=> {
+        console.log("================ got challenges");
+       
+        const responsePromises = _.map(challenges, getOwnerResponses);
+        Promise.all(responsePromises).then((t)=>{
+          console.log("================ got responses");
+          console.log(t);
+          resolve(_.flatten(t));
+        });
+      });      
+    });
+  },
+
+  findByOwner(uid) {
+
+    return new Promise((resolve, reject)=> {
+
+      ChallengeDB.findAll().then((challenges)=>{
+
+        challenges = _.filter(challenges, c=>c.owner.uid === uid);
+        challenges = _.sortBy(challenges,c=>c.status);
+        resolve(challenges);
+      });      
+    });
+  },
+
   getStage(c) {
     const now = new Date();
     if(now < c.start)
@@ -231,7 +278,7 @@ const ChallengeDB = {
 
   calcAvgRating(r) {
     if(!r.ratings || !_.size(r.ratings)) {
-      return 0;
+      return -1;
     }
     const sum = _.reduce(r.ratings, (sum,i)=>sum+i );
     const size = _.size(r.ratings);
@@ -313,23 +360,17 @@ const ChallengeDB = {
   },
 
   getResponses(challengeId) {
-    //let db = FBUtil.connect();
-    let responses = [];
-    
-    return new Promise(
-      (resolve, reject)=>{
 
-        let db = FBUtil.connect();
-        db.collection(`challenges/${challengeId}/responses`).get()
-          .then((results)=>{
-              results.forEach((doc)=>{
-                let r = {id: doc.id, ratings: {}};
-                r = _.merge(r, doc.data());
-                r.avgRating = ChallengeDB.calcAvgRating(r);
-                responses.push(r);
-              });
+    const calcAverages = (r)=> {
+      r.ratings = r.ratings || {};
+      r.avgRating = ChallengeDB.calcAvgRating(r);
+      return r;
+    }
 
-          resolve(responses);
+    return new Promise((resolve, reject)=>{
+
+      db.findAll(`challenges/${challengeId}/responses`).then((results)=>{         
+          resolve(_.map(results, calcAverages));
         });
     });
   },
