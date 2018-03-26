@@ -20,6 +20,10 @@ import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
 import ChallengeReviewScreen from './challenges/ChallengeReviewScreen.js';
 import ProfessorResponseForm from './challenges/ProfessorResponseForm.js';
+import ManageChallengesScreen from './challenges/ManageChallenges.js';
+
+
+import AdminScreen from './admin/AdminScreen';
 
 import BookmarkScreen from './users/BookmarkScreen.js';
 import CalendarScreen from './CalendarScreen.js';
@@ -45,29 +49,25 @@ export default class App extends Component {
   }
 
   userListener(authUser) {
-    console.log("user listener called");
-
-    if(!authUser) {
-      this.setState({user: {}, loading: false, userLoaded: true});
-      return;
+    if(authUser && !this.state.userLoaded) {
+      db.get("/users", authUser.uid).then((u)=>{
+        this.setState({user: u, loading: false, userLoaded: true});
+      });
     }
-
-    db.get("/users", authUser.uid).then((u)=>{
-      this.setState({user: u, loading: false, userLoaded: true});
-    });
+    else if(!authUser) {
+      this.setState({user: {}, loading: false, userLoaded: true});
+    }
 
   }
 
   componentWillMount() {
     this.setState({appClass: null});
 
-    FBUtil.getAuthUser(this.userListener)
-      .then(()=>{
-        console.log("auth promise resolved");
-      });
+    FBUtil.getAuthUser(this.userListener);
     ChallengeDB.findAll().then((u)=>{
       this.setState({challengesLoaded: true});
-      // try to cache the active video and poser
+      // try to cache the active video and poster
+      
       const preload = (c)=> {
         let thumb = new Image();
         thumb.src = c.videoPoster;
@@ -78,7 +78,6 @@ export default class App extends Component {
   }
 
   setAppClass(clazz) {
-    console.log("setting app class");
     this.setState({appClass: clazz});
   }
 
@@ -104,13 +103,13 @@ export default class App extends Component {
       )
     }
 
-
-    if(!this.state.user.email)
+    if(!this.state.user.email){
       return (
         <div className={`App container login`}>
           <Login user={this.state.user} setAppClass={this.setAppClass} loadingHandler={this.loadingHandler} />
         </div>
       );
+    }
 
     return (
       <Router>
@@ -149,6 +148,7 @@ const Header = (props)=>{
   );
 }
 
+
 const SecureScreens = (props)=>{
   return (
       <Switch>
@@ -167,7 +167,14 @@ const SecureScreens = (props)=>{
         <PropsRoute path="/challenge/:id" user={props.user} component={ChallengeDetailScreen}/>
 
         <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
-        <PropsRoute path="/users" user={props.user} component={ManageUsersScreen} />
+        <PropsRoute path="/login" {...props} component={Login} />
+        <PropsRoute path="/signout" {...props} component={Login} />
+
+
+
+        <PropsRoute path="/admin/users" {...props} component={ManageUsersScreen} />
+        <PropsRoute path="/admin/challenges" {...props} component={ManageChallengesScreen} />
+        <PropsRoute path="/admin" {...props} component={AdminScreen} />
       </Switch>
   );
 }

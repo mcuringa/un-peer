@@ -5,7 +5,7 @@ import _ from "lodash";
 import { ChallengeDB } from "./Challenge.js"
 import FBUtil from "../FBUtil.js";
 
-import Modal from "../Modal";
+
 import {snack, SnackMaker} from "../Snackbar";
 import {UploadProgress, formatFileSize} from "../MediaManager";
 
@@ -175,18 +175,6 @@ class ChallengeResponseForm extends React.Component {
 
     if(this.state.goHome)
       return <Redirect push to="/" />
-    
-    const NextChoice = (
-        <div>
-          <button type="button" className="btn btn-secondary mr-2"
-            onClick={()=>{this.setState({showNextChoice: false})}}
-            data-dismiss="modal">View Response</button>
-          
-          <button type="button" data-dismiss="modal"
-            onClick={()=>{this.setState({goHome: true, showNextChoice: false})}}
-            className="btn btn-secondary">Home</button>
-        </div>
-      );
 
     const toggleOptOut = ()=> {
       let r = this.state.response;

@@ -53,14 +53,22 @@ const Checkbox = (props)=> {
   )
 }
 
+const Label = (props)=>{
+  if(!props.label)
+    return null;
+  return (<label htmlFor={props.id}>{props.label}</label>)
+}
+
+
 const TextGroup = (props)=> {
 
   if(props.hide)
     return null;
 
+
   return (
     <div className="form-group">
-      <label htmlFor={props.id}>{props.label}</label>
+      <Label id={props.id} label={props.label}/>
       <TextInput type={props.type||'text'}
         value={props.value}
         className="form-control"
@@ -128,40 +136,19 @@ const Video = (props)=> {
       <video controls="true" poster={poster} src={props.video} />
     </div>
   );
-
 }
 
-const VideoUpload = (props)=> {
-
-
-  return (
-    <div className="mb-2">
-      <Video {...props} />
-      <div className="custom-file">
-        <input type="file" required={props.required}
-          className="d-none"
-          accept="video/*" id={props.id} onChange={props.onChange} />
-        <label className="btn btn-link text-dark pb-2" htmlFor={props.id}>
-            <div className="btn btn-secondary">{props.label}</div>
-            <img className="ml-1" src="/img/video-response_btn.png"
-                 alt="Video response button"/>
-        </label>
-      </div>
-    </div>
-  );
-};
+const storageFileName = (path)=> {
+  let start = path.lastIndexOf("/");
+  let end = path.lastIndexOf("?")
+  let fileName = (end === -1)?path.slice(start): path.slice(start,end);
+  fileName = fileName.replace(/%2F/g,"/");
+  return fileName;
+}
 
 const VideoUploadImproved = (props)=> {
   if(props.hide)
     return null;
-
-  const vidFileName = (path)=> {
-    let start = path.lastIndexOf("/");
-    let end = path.lastIndexOf("?")
-    let fileName = (end === -1)?path.slice(start): path.slice(start,end);
-    fileName = fileName.replace(/%2F/g,"/");
-    return fileName;
-  }
 
   const ClearVideo = ()=> {
 
@@ -172,7 +159,7 @@ const VideoUploadImproved = (props)=> {
       <div>
         <Video {...props} />
         <div className="d-flex justify-content-end text-light bg-dark m-0 p-0">
-          <div><small>{vidFileName(props.video)}</small></div>
+          <div><small>{storageFileName(props.video)}</small></div>
           <button type="button" className="btn btn-link p-0 ml-2 mr-1 mt-1"
            onClick={props.clearVideo}>
             <XIcon className="icon-danger" />
@@ -197,70 +184,24 @@ const VideoUploadImproved = (props)=> {
     "is-valid" :
     "is-invalid";
 
+  const progress = props.progressBar || (<UploadProgress pct={props.pct} msg={props.msg} />);
+
+
+
   const VideoEl = (props.video)?<ClearVideo /> : uploadBtn;
   return (
       <div className={`p-0 ${validCss}`}>
         {VideoEl}
-        {props.progressBar}
+        {progress}
         <div className="invalid-feedback">{props.validationErrorMsg} </div>
         <div className="valid-feedback">{props.validationPassedMsg} </div>
       </div>
   );
 };
 
-const ImageUpload = (props)=> {
-
-  if(props.hide)
-    return null;
-
-  const UploadBtn = ()=> {
-    const btnLabel = (props.img && props.img.length)?"replace image":"choose image"
-    return (
-      <div className="ImageUploadButton">
-        <input type="file" className="d-none"
-          accept="image/*" id={props.id} onChange={props.onChange} />
-          <label className="text-primary d-block" htmlFor={props.id}>
-            <div className="btn btn-secondary btn-block">
-              {btnLabel}
-            </div>
-          </label>
-      </div>
-    )
-  }
-
-  const clear = ()=>{
-    props.clearImage(props.id);
-  }
-
-  const ImageThumbnail = ()=> {
-    
-    if(!props.img)
-      return null;
-
-    return (
-      <img src={props.img} alt="thumbnail" />
-    );
-  }
-  
-  return (
-    <div className="form-group">
-      <label htmlFor={props.id}>
-        {props.label}
-        <button type="button" className="btn btn-link mt-1 ml-1 pl-0" onClick={clear}>
-          <XIcon className="icon-danger" />
-        </button>
-      </label>
-      <small id={`${props.id}Help`} className="form-text text-muted">{props.help}</small>
-      <UploadBtn />
-      <ImageThumbnail />
-      <UploadProgress pct={props.pct} msg={props.msg} hide={false} />
-
-    </div>
-  );
-};
-
-
 const ImageUploadImproved = (props)=> {
+
+  console.log(props.placeholder);
 
   if(props.hide)
     return null;
@@ -287,16 +228,67 @@ const ImageUploadImproved = (props)=> {
     props.clearImage(props.id);
   }
 
-  const ImageThumbnail = ()=> {
-    
+
+  const FileNameLink = ()=> {
     if(!props.img)
-      return null;
+      return (
+        <span className="text-mute">{props.placeholder}</span>
+      )
+    return (
+      <button type="btn" className="btn btn-link p-0" 
+        data-toggle="collapse" 
+        data-target={`#ImgUpload_${props.id}`} 
+        aria-controls={`ImgUpload_${props.id}`} aria-expanded="false" aria-label="toggle image">
+        {storageFileName(props.img)}
+      </button>
+    )
+
+
+  }
+
+  const ImageLabel = ()=> {
+
 
     return (
-      <img src={props.img} alt="thumbnail" />
+      <div>
+        <Label label={props.label} htmlFor="" />
+        <div className="ImageUploadLabel d-flex justify-content-between bg-light p-2">
+          <FileNameLink />
+          <div className="ImageUploadButtonImproved p-0 m-0 d-flex justify-content-end">
+            <input type="file" className="d-none"
+              accept="image/*" id={props.id} onChange={props.onChange} />
+            <label className="text-primary p-0 m-0" htmlFor={props.id}>
+              <div className="btn btn-link p-0 m-0 icon-secondary">
+                <DeviceCameraIcon />
+              </div>
+            </label>
+            <button type="button" className="btn btn-link p-0 m-0" onClick={clear}>
+               <XIcon className="icon-danger" />
+            </button>
+          </div>
+        </div>
+        <div className="collapse bg-dark p-2" id={`ImgUpload_${props.id}`}>
+          <img src={props.img || props.placeholderImg} alt="upload preview" />
+        </div>
+        <UploadProgress pct={props.pct} msg={props.msg} hide={false} />
+      </div>
+    )
+  }
+
+  const ImageThumbnail = ()=> {
+    
+    if(!props.img && !props.placeholderImg)
+      return null;
+
+    const img = props.img || props.placeholderImg;
+    return (
+      <img src={img} alt="thumbnail" />
     );
   }
   
+  if(props.textOnly)
+    return <ImageLabel />
+
   return (
     <div className={`ImageUploadImproved position-relative ${props.className}`}>
       <UploadBtn />
@@ -318,7 +310,7 @@ const DatePicker = (props)=> {
 
   return (
     <div className="DatePicker form-group">
-      <label htmlFor={props.id}>{props.label}</label>
+      <Label id={props.id} label={props.label}/>
       <div className="input-group mb-3">
         <div className="input-group-prepend">
           <span className="input-group-text">{dFmt(props.value)}</span>
@@ -339,13 +331,12 @@ const DatePicker = (props)=> {
 };
 
 const TextAreaGroup = (props)=> {
-
   if(props.hide)
     return null;
 
   return (
     <div className="form-group">
-      <label htmlFor={props.id}>{props.label}</label>
+      <Label id={props.id} label={props.label}/>
       <textarea id={props.id}
         className="form-control"
         onChange={props.onChange}
@@ -423,8 +414,7 @@ export {
   StatusIndicator,
   LoadingSpinner,
   Video,
-  VideoUpload,
-  ImageUpload,
+  // ImageUpload,
   VideoUploadImproved,
   ImageUploadImproved,
   Checkbox

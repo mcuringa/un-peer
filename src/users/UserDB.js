@@ -76,24 +76,30 @@ getBookmarks(uid) {
   return db.findAll(path);
 },
 
-create(newUser) {
-  const user = newUser;
+create(user) {
+
 
   return new Promise((resolve,reject)=>{
-    let firebase = FBUtil.init();
+    let firebase = FBUtil.authContext();
 
-    const rp = ()=> {
-      const chars = _.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz _-!@$%^&*()[]{}';", "");
-      let pass = _.fill(new Array(16), false);
-      return _.map(pass,e=>_.sample(chars)).join("");
-    }
+    const createAuthUser = ()=> {
+      console.log("creating auth user");
+      const rp = ()=> {
+        const chars = _.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz _-!@$%^&*()[]{}';", "");
+        let pass = _.fill(new Array(16), false);
+        return _.map(pass,e=>_.sample(chars)).join("");
+      }
 
-    const sendPass = ()=>{ return firebase.auth().sendPasswordResetEmail(user.email) };
-    const save = (u)=>{ 
-
-      console.log("current user after create");
-      console.log(firebase.auth().currentUser);
-
+      return firebase.auth().createUserWithEmailAndPassword(user.email, rp());
+    };
+    
+    const sendPasswdReset = ()=>{ 
+      console.log("sending password reset");
+      return firebase.auth().sendPasswordResetEmail(user.email) 
+    };
+    
+    const addToFirestore = (u)=>{ 
+      console.log("adding to firestore with id: " + u.uid);
       user.uid = u.uid;
 
       const defaults = {
@@ -103,25 +109,24 @@ create(newUser) {
         created: new Date(),
         uid: u.uid
       };
+
       const newUser = _.merge(user, defaults);
+
       return db.save("/users", u.uid, newUser);
     };
 
-    const currentUser = firebase.auth().currentUser;
-    console.log(currentUser.email);
-
-    firebase.auth().createUserWithEmailAndPassword(user.email, rp())
-      .then(save)
-      .then(sendPass)
-      .then(()=>{resolve(user)})
-      .catch( (e)=> {
-          console.log(e);
-          if(reject)
-            reject(e);
-        });
-      
-
-    });
+    const err = (e)=> {console.log(e);};
+    const done = (user)=>{
+      console.log("done creating new user");
+      console.log(user);
+      resolve(user);
+    }
+    createAuthUser()
+      .then(addToFirestore)
+      .then(sendPasswdReset)
+      .then(done)
+      .catch(err);
+  });
 },
 
 save(u) {

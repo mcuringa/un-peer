@@ -14,6 +14,13 @@ const df = {
     return `${start} - ${end}`;
   },
 
+  shortRange: (a,b)=> {
+
+    const start = dateFormat(a, "d/m");
+    const end = dateFormat(b, "d/m/yy");
+    return `${start}-${end}`;
+  },
+
   isSameDay: (d1,d2)=>{
     return d1.getYear() === d2.getYear() &&
       d1.getMonth() === d2.getMonth() &&

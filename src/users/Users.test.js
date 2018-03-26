@@ -63,6 +63,13 @@ it("should delete a user's bookmarks",()=>{
 
 
 
+it.only("should add a user via cloud functions",()=>{
+  let addUser = FBUtil.getFunction("hello");
+  let x = addUser();
+  console.log(x);
+
+});
+
 
 it.skip("should create a new user in auth and DB",()=>{
   const user = {

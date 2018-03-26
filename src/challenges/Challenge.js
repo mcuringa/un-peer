@@ -129,14 +129,13 @@ const ChallengeDB = {
 
 
     return new Promise((resolve, reject)=> {
-      ChallengeDB.findAll().then((challenges)=> {
-        console.log("================ got challenges");
-       
+      ChallengeDB.findAll().then((challenges)=> {      
         const responsePromises = _.map(challenges, getOwnerResponses);
         Promise.all(responsePromises).then((t)=>{
-          console.log("================ got responses");
-          console.log(t);
-          resolve(_.flatten(t));
+          let flat = _.flatten(t);
+          flat = _.sortBy(flat, r=>r.created);
+          flat = _.reverse(flat);
+          resolve(flat);
         });
       });      
     });

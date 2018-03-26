@@ -65,7 +65,6 @@ function snack(msg, showUndo) {
   const p = (resolve, reject)=>
   {
     const clear = ()=> {
-      console.log("clear called");
 
       let snackConfig = {
         show: false,

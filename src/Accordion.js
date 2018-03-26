@@ -1,5 +1,5 @@
 import React from 'react';
-import {ChevronDownIcon, ChevronRightIcon} from 'react-octicons';
+import {ChevronDownIcon, ChevronUpIcon} from 'react-octicons';
 
 class Accordion extends React.Component {
   constructor(props) {
@@ -12,13 +12,14 @@ class Accordion extends React.Component {
     if(this.props.hide)
       return null;
 
-    const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
+    const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronUpIcon />);
     const toggleCss = (this.state.open)?"show":"";
     const toggleFunction = ()=> {
       this.setState({open: !this.state.open})
     }
+    const css = this.props.className || "";
     return (
-      <div className="Accordion card">
+      <div className={`Accordion card ${css}`}>
         <AccordionHeader 
           id={`${this.props.id}Header`} 
           toggleFunction={toggleFunction}
@@ -52,7 +53,7 @@ const AccordionHeader = (props)=> {
 
   return (
     <div id={`${props.id}Header`} 
-      className="AccordionHeader clickable d-flex justify-content-between card-header" 
+      className="AccordionHeader clickable d-flex justify-content-between icon-secondary p-2 bg-light" 
       data-toggle="collapse" 
       onClick={props.toggleFunction}
       data-target={`#${props.id}`}

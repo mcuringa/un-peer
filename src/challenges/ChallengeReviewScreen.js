@@ -20,7 +20,7 @@ class ChallengeReviewScreen extends React.Component {
 
     this.challengeId = this.props.match.params.id;
     let hash = window.decodeURIComponent(window.location.hash);
-    if(hash)
+    if(hash && hash.length>0)
       hash = hash.slice(1);
 
 
@@ -71,7 +71,12 @@ class ChallengeReviewScreen extends React.Component {
     this.clearSnack();
 
     ChallengeDB.get(this.challengeId)
-      .then((c)=> { 
+      .then((c)=> {
+        const empty = {firstName:"", lastName:"", uid: 0, email:""}
+        if(!c.owner)
+          c.owner = empty;
+        if(!c.professor)
+          c.professor = empty;
 
         this.setState({
           challenge: c, 
@@ -145,10 +150,13 @@ class ChallengeReviewScreen extends React.Component {
   }
 
   componentDidUpdate() {
-      const hash = window.decodeURIComponent(window.location.hash);
-      const target = document.querySelector(`${hash}`);
-      if(target)
-        target.scrollIntoView();
+    const hash = window.decodeURIComponent(window.location.hash);
+    if(!hash || !hash.length>0)
+      return;
+
+    const target = document.querySelector(`${hash}`);
+    if(target)
+      target.scrollIntoView();
   }
 
   render() {

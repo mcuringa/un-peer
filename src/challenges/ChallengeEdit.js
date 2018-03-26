@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
-import {XIcon} from "react-octicons";
-import { Redirect } from 'react-router-dom';
+import {XIcon, ChevronLeftIcon} from "react-octicons";
+import { Redirect, Link } from 'react-router-dom';
 
 
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
@@ -14,13 +14,13 @@ import {
   TextAreaGroup,
   StatusIndicator,
   VideoUploadImproved,
-  ImageUpload
+  ImageUploadImproved
 } from "../FormUtil";
 
-import {UploadProgress, formatFileSize} from "../MediaManager";
+import {formatFileSize} from "../MediaManager";
 import ChooseUser from "../users/ChooseUser";
 import Modal from "../Modal";
-import Snackbar from "../Snackbar";
+import {snack, SnackMaker} from "../Snackbar";
 import Accordion from "../Accordion";
 
 class ChallengeEditScreen extends React.Component {
@@ -49,44 +49,11 @@ class ChallengeEditScreen extends React.Component {
     this.selectProfessor = _.bind(this.selectProfessor, this);
     this.selectOwner = _.bind(this.selectOwner, this);
     this.submitForReview = _.bind(this.submitForReview, this);
-    this.snack = _.bind(this.snack, this);
-    this.snack = _.throttle(this.snack, this.snackTime);
+    this.snack = _.bind(snack, this);
+    this.Snackbar = _.bind(SnackMaker, this);
     this.save = _.bind(this.save, this);
   }
 
-  snack(msg, showUndo) {
-
-    const p = (resolve, reject)=>
-    {
-      const clear = ()=> {
-        this.setState({
-          showSnack: false,
-          snackMsg: "",
-          snackUndo: null
-        });
-      }
-      const over = ()=> {
-        clear();
-        resolve();
-      }
-
-      const undo = ()=> {
-        clear();
-        reject();
-      }
-
-      this.setState({
-        showSnack: true,
-        snackMsg: msg,
-        showUndo: showUndo,
-        snackUndo: undo,
-        snackOver: over
-      });      
-    }
-
-    return new Promise(p);
-
-  }
   clearField(key, msg) { 
     let c = this.state.challenge;
     c[key] = "";
@@ -201,6 +168,10 @@ class ChallengeEditScreen extends React.Component {
 
     let c = this.state.challenge;
     c[e.target.id] = e.target.value;
+    console.log("changing");
+    console.log(e.target.id);
+    console.log(e.target.value);
+
     this.setState({ challenge: c, dirty: true });
     this.autoSave();
   }
@@ -257,75 +228,68 @@ class ChallengeEditScreen extends React.Component {
 
     return (
       <div className="ChallengeEdit screen">
-        <FormHeader challenge={c} owner={this.state.owner} loading={this.state.loading} dirty={this.state.dirty} />
+        <h4><Link to="/admin/challenges"><ChevronLeftIcon /></Link> EDIT CHALLENGE</h4>
         <form className="mt-2" onSubmit={(e)=>{e.preventDefault();}}>
           
-          <BasicFields 
-            user={this.props.user}
-            challenge={c} 
-            onChange={this.handleChange}
-            pct={this.state.videoPct} 
-            msg={this.state.videoStatus} 
+          <TextGroup id="title"
+            value={c.title} 
+            placeholder="challenge title"
+            onChange={this.handleChange} 
+            required={true} />
+          
+          <TextAreaGroup id="prompt"
+            value={c.prompt}
+            rows="4"
+            placeholder="Describe the challenge..."
+            onChange={this.handleChange} />
+
+          <h5 className="border-bottom-1 text-right">Challenge Video</h5>
+          
+          <VideoUploadImproved id="video" 
+            className="m-0 p-0"
+            video={c.video}
+            poster={c.videoPoster || "/img/poster.png"}
             clearVideo={()=>{this.setState({confirmClearVideo:true})}}
-            handleUpload={this.handleUpload} />
+            handleUpload={this.handleUpload}
+            pct={this.state.videoPct} 
+            msg={this.state.videoStatus}
+          />
+          
+          <ImageUploadImproved 
+            id="videoPoster"
+            pct={this.state.videoPosterPct} 
+            img={c.videoPoster} 
+            label="challenge video thumbnail"
+            placeholderImg="/img/poster.png"
+            onChange={this.handleUpload}
+            textOnly
+            placeholder="upload a challenge video thumbnail image"
+            clearImage={()=>{this.clearField("videoPoster");}}
+          />
 
+          <h5 className="mr-2 text-right">Professor Video</h5>
+          <VideoUploadImproved id="professorVideo" 
+            className="m-0 p-0"
+            video={c.professorVideo}
+            poster={c.professorVideoPoster || "/img/poster.png"}
+            clearVideo={()=>{this.setState({confirmClearVideo:true})}}
+            handleUpload={this.handleUpload}
+            pct={this.state.professorVideoPct} 
+            msg={this.state.professorVideoStatus}
+          />
 
-
-          <Accordion id="AdvancedFields" hide={!this.props.user.admin} header="Advanced">
-            <ImageUpload 
-              id="videoPoster"
-              label="Video thumbnail"
-              pct={this.state.videoPosterPct} 
-              img={c.videoPoster} 
-              onChange={this.handleUpload}
-              clearImage={()=>{this.clearField("videoPoster");}}
-              help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
-            />
-
-            <ChooseProf challenge={this.state.challenge}
-              clearProfessor={()=>{this.clearField("professor");}}
-              selectUser={this.selectProfessor} />
-
-            <ChooseOwner challenge={this.state.challenge}
-              clearOwner={()=>{this.clearField("owner");}}
-              selectUser={this.selectOwner} />
-          </Accordion>
-
-          <Accordion id="ScheduleFields" hide={!this.props.user.admin} header="Schedule">
-            <div className="form-group">
-              <div className="input-group mb-3">
-                <div className="input-group-prepend">
-                  <span className="input-group-text">Set Status</span>
-                </div>
-                <select id="status" value={c.status} className="custom-select" onChange={this.handleChange}>
-                  <option value={ChallengeStatus.DRAFT}>draft</option>
-                  <option value={ChallengeStatus.REVIEW}>review</option>
-                  <option value={ChallengeStatus.PUBLISHED}>published</option>
-                  <option value={ChallengeStatus.ARCHIVED}>archive</option>
-                </select>
-              </div>
-            </div>
-            
-            <DatePicker id="start"
-              value={c.start}
-              label="challenge start"
-              onChange={this.handleStartDateChange} />
-
-            <DatePicker id="responseDue"
-              value={c.responseDue}
-              label="response due"
-              onChange={this.handleDateChange} />
-
-            <DatePicker id="ratingDue"
-              value={c.ratingDue}
-              label="rating due"
-              onChange={this.handleDateChange} />
-            
-            <DatePicker id="end"
-              value={c.end}
-              label="challenge end"
-                onChange={this.handleDateChange} />
-          </Accordion>
+          <ImageUploadImproved 
+            id="proessorVideoPoster"
+            pct={this.state.videoPosterPct} 
+            img={c.profVideoPoster} 
+            label="professor video thumbnail"
+            placeholder="upload a professor video thumbnail image"
+            placeholderImg="/img/poster.png"
+            onChange={this.handleUpload}
+            textOnly
+            clearImage={()=>{this.clearField("videoPoster");}}
+            help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
+          />
 
           <div className="d-flex justify-content-end mt-2 mb-2">
             <SaveButton 
@@ -342,11 +306,8 @@ class ChallengeEditScreen extends React.Component {
 
 
         </form>
-        <Snackbar show={this.state.showSnack} 
-          msg={this.state.snackMsg}
-          showUndo={this.state.showUndo}
-          undo={this.state.snackUndo}
-          onClose={this.state.snackOver} />
+        <this.Snackbar />
+
         
         <Modal id="confirmRemoveVideo" 
           title="Remove video" 
@@ -446,62 +407,6 @@ const FormHeader = (props)=>
         <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>
       </div>
     </div> );
-}
-
-const BasicFields = (props)=>
-{
-  const c = props.challenge;
-  const Fields = (
-    <div>
-      <TextGroup id="title"
-        value={c.title} 
-        label="Challenge Title" 
-        onChange={props.onChange} 
-        required={true} />
-      <ChallengeVideo 
-        id="video"
-        pct={props.pct} 
-        msg={props.msg}
-        video={c.video}
-        clearVideo={props.clearVideo}
-        poster={c.videoPoster}
-        handleUpload={props.handleUpload} 
-      />
-      <TextAreaGroup id="prompt"
-        value={c.prompt}
-        label="Description"
-        rows="4"
-        onChange={props.onChange} />
-    </div>
-  );
-
-  if(!props.user.admin)
-    return <div>{Fields}</div>;
-
-  return (
-    <Accordion id="BasicChallengeFieldsHeader" header="Basics" open={true}>
-       {Fields}
-    </Accordion>
-  )
-}
-
-const ChallengeVideo = (props)=> {
-
-  const progress = (<UploadProgress pct={props.pct} msg={props.msg} />);
-  const poster = props.poster || "/img/poster.png";
-
-  return (
-    <div className="mb-2">
-      <VideoUploadImproved id="video" 
-       className="m-0 p-0"
-       video={props.video}
-       poster={poster}
-       onChange={props.handleUpload} 
-       label=""
-       progressBar={progress} />
-    </div>
-
-  );
 }
 
 const ChooseOwner = (props)=> {

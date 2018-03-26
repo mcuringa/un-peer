@@ -1,24 +1,49 @@
 const functions = require('firebase-functions');
+let admin = null;
+let db = null;
 
-// The Firebase Admin SDK to access the Firebase Realtime Database.
-const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+if(!admin){
+  admin = require('firebase-admin');
 
+  admin.initializeApp({
+      credential: admin.credential.applicationDefault()
+  });
+}
 
+const getDB = ()=> {
+  return db = db || admin.firestore();
+}
 
+exports.deleteAuthUser = functions.firestore.document('users/{userID}').onDelete((event) => {
 
+  const data = event.data.previous.data();
 
-exports.deleteUser = functions.firestore
-  .document('users/{userId}')
-  .onCreate(event => {
-    // Get an object representing the document
-    // e.g. {'name': 'Marie', 'age': 66}
-    const user = event.data.data();
+  return admin.auth().deleteUser(data.uid)
+    .then(()=>{
+      return {
+        msg: "user deleted",
+        user: data
+      }
+    })
+});
 
-    firebase.auth().createUserWithEmailAndPassword(u.email, rp());
+exports.createUser = functions.https.onCall((user, context) => {
 
-    // access a particular field as you would any JS property
-    var name = newValue.name;
+  let db = getDB();
+  const createAuthUser = () =>{
 
-    // perform desired operations ...
+    return admin.auth().createUser({
+      email: user.email,
+      emailVerified: false,
+      displayName: user.firstName + " " + user.lastName,
+      disabled: false
+    }).then(u=>u);
+  };
+  const err = (e)=>{
+    throw new functions.https.HttpsError(e.code, "could not create a new user", e);
+    // return e;
+  }
+
+  return createAuthUser().catch(err);
+
 });

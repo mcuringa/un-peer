@@ -4562,7 +4562,7 @@ button.bg-dark:focus {
 .justify-content-start {
   justify-content: flex-start !important; }
 
-.justify-content-end {
+.justify-content-end, .Accordion.form-accordion .AccordionHeader {
   justify-content: flex-end !important; }
 
 .justify-content-center {
@@ -8008,6 +8008,9 @@ small tt {
   padding: 1em; }
 
 /*Form Styles */
+.Accordion.form-accordion.card {
+  border-radius: 0; }
+
 .was-validated .is-invalid .invalid-feedback {
   display: block; }
 

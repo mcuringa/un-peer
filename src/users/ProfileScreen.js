@@ -233,8 +233,11 @@ const MyResponses = (props)=>{
   const Response = (r)=> {
     return (
       <div className="" key={_.uniqueId("response_")}>
-        <div className="font-weight-bold"><Link to={`/challenge/${r.challengeId}/review#${r.id}`}>{r.challengeTitle}</Link></div>
-        <div className="d-flex align-content-start">
+        <div className="font-weight-bold d-flex bg-light align-items-baseline justify-content-between">
+          <Link className="d-block" to={`/challenge/${r.challengeId}/review#${r.id}`}>{r.challengeTitle}</Link>
+          <small className="d-block">{df.df(r.created)}</small>
+        </div>
+        <div className="d-flex align-content-start pl-3">
           <div style={{width:"100px"}}>
             <StarRatings className="pt-1 pr-2" rating={r.avgRating} />
           </div>

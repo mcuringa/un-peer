@@ -13,20 +13,27 @@ const FBUtil =
 
   init: ()=> {
     const config = fireBaseConfig;
-    console.log("Firebase Project: " + config.projectId);
 
     if(FBUtil._firebase)
       return FBUtil._firebase;
+
+    console.log("Firebase Project: " + config.projectId);
     
     FBUtil._firebase = require("firebase");
     require("firebase/auth");
     require("firebase/firestore");
     require("firebase/storage");
 
-
-
     FBUtil._firebase.initializeApp(config);
+    require("firebase/functions")
+
     return FBUtil._firebase;
+  },
+
+  sendPasswordResetEmail: (email)=> {
+    FBUtil.init();
+    console.log("sending email to: " + email);
+    return FBUtil._firebase.auth().sendPasswordResetEmail(email); 
   },
 
   uploadMedia: (file, path, progress, succ, err)=> {
@@ -73,7 +80,12 @@ const FBUtil =
 
     FBUtil.db = FBUtil._firebase.firestore();
     return FBUtil.db;
+  },
 
+  getCloudFunction: (f)=> {
+    FBUtil.init();
+    const functions = FBUtil._firebase.functions();
+    return functions.httpsCallable(f);
   }
 
 }

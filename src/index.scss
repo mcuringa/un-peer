@@ -357,6 +357,14 @@ small tt {
 
 /*Form Styles */
 
+.Accordion.form-accordion.card {
+  border-radius: 0;
+}
+
+.Accordion.form-accordion .AccordionHeader {
+  @extend .justify-content-end;
+}
+
 .was-validated .is-invalid .invalid-feedback {
   display: block;
 }
