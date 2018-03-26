@@ -12,7 +12,7 @@ $bottom-footer-height: 54px;
 $full-screen-width: 512px;
 $gray-text: rgb(125, 135, 163);
 $dark-gray-text: rgb(104.55, 112.2, 119.85);
-$text-dark: #687077;
+$text-dark: $gray-800;
 
 $cal-green: #60d600;
 $cal-blue: #2b91e9;
@@ -947,4 +947,24 @@ label
 .Profile .octicon-device-camera {
   padding-right: 3px;
   fill: $gray-300;
+}
+
+
+// ======================= dropdown menus
+.MoreMenu .dropdown-menu.show {
+	z-index: 1035;
+}
+
+
+
+.MoreMenu .MoreIcon {
+	font-size: 1.25em;	
+	text-decoration: none;
+	padding: auto 0;
+}
+.MoreMenu .MoreIcon .btn-link:hover,
+.MoreMenu .MoreIcon .btn-link:focus
+{
+	font-weight: bold;
+	text-decoration: none;
 }

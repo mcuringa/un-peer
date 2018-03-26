@@ -238,7 +238,7 @@ const Footer = (props)=>{
                          alt="Bookmarks icon" />
                 </div>
                 <div className="icon-box">
-                    Bookmarks
+                    Favourites
                 </div>
             </NavLink>
             <NavLink

@@ -7805,7 +7805,7 @@ body {
   fill: white; }
 
 .text-dark, .App-header {
-  color: #687077; }
+  color: #343a40; }
 
 .clickable {
   cursor: pointer; }
@@ -8228,11 +8228,11 @@ label {
   padding-bottom: 54px;
   padding-left: 0;
   padding-right: 0;
-  color: #687077; }
+  color: #343a40; }
   .App svg.octicon-chevron-right, .App svg.octicon-chevron-down {
-    fill: #687077; }
+    fill: #343a40; }
   .App .calendar-view {
-    color: #687077; }
+    color: #343a40; }
     .App .calendar-view .challenge-area {
       background-color: #f8f9fa; }
       .App .calendar-view .challenge-area .dot-text {
@@ -8250,7 +8250,7 @@ label {
     .App .calendar-view .react-calendar {
       border: none;
       margin: 0 auto;
-      color: #687077; }
+      color: #343a40; }
       .App .calendar-view .react-calendar .react-calendar__navigation__prev2-button,
       .App .calendar-view .react-calendar .react-calendar__navigation__next2-button {
         display: none; }
@@ -8260,10 +8260,10 @@ label {
       .App .calendar-view .react-calendar .react-calendar__navigation__label,
       .App .calendar-view .react-calendar .react-calendar__month-view__days__day--weekend,
       .App .calendar-view .react-calendar .react-calendar__month-view__days__day {
-        color: #687077; }
+        color: #343a40; }
       .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
       .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
-        color: #aab0b5; }
+        color: #6d7a86; }
       .App .calendar-view .react-calendar .react-calendar__tile {
         padding: 0;
         height: 50px;
@@ -8346,7 +8346,7 @@ label {
     animation: none; }
   .App .accordion__title,
   .App .accordion__title:hover {
-    color: #687077;
+    color: #343a40;
     background-color: transparent; }
   .App .back-button {
     height: 40px;
@@ -8357,7 +8357,7 @@ label {
       text-decoration: none; }
   .App .BookmarkItem {
     margin-top: 10px;
-    color: #687077;
+    color: #343a40;
     border-bottom: 1px solid #e9ecef; }
     .App .BookmarkItem:hover {
       text-decoration: none; }
@@ -8407,3 +8407,16 @@ label {
 .Profile .octicon-device-camera {
   padding-right: 3px;
   fill: #dee2e6; }
+
+.MoreMenu .dropdown-menu.show {
+  z-index: 1035; }
+
+.MoreMenu .MoreIcon {
+  font-size: 1.25em;
+  text-decoration: none;
+  padding: auto 0; }
+
+.MoreMenu .MoreIcon .btn-link:hover,
+.MoreMenu .MoreIcon .btn-link:focus {
+  font-weight: bold;
+  text-decoration: none; }

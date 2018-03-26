@@ -158,7 +158,7 @@ export default class Login extends Component {
         );
     }
     else if(code === "auth/too-many-requests") {
-      emailErr = "Your account has been temporarily blocked due becaue of too many failed login attempts. Try again later."
+      emailErr = "Your account has been temporarily blocked due because of too many failed login attempts. Try again later."
     }
     else if(emailInvalid) {
       emailErr = (
@@ -186,8 +186,6 @@ export default class Login extends Component {
 
     return (
       <div className="Login screen">
-        <LoadingModal id="LoadingModal" show={this.state.loading}
-          status={this.state.loadingStatus} />
         
         <img className="LoginLogo d-block"
              alt="UN Peer Challenges logo"
@@ -265,11 +263,7 @@ export default class Login extends Component {
               type="button">Forgot password?</button>
           </div>
 
-          <button
-            className="StartButton btn btn-light btn-block"
-            type="submit">
-            Start
-          </button>
+          <LoadingButton loading={this.state.loading} />
         </form>
       </div>
     );
@@ -279,16 +273,21 @@ export default class Login extends Component {
 
 const LoadingButton = (props) => {
 
-  const LoadingSpinner = null;
+  let label = "Start";
+  let css = "";
+  let extra = {};
+  if(props.loading) {
+    label = "Authorizing...";
+    css="disabled";
+    extra = {disable: true};
+  }
 
   return (
     <button
-      className="StartButton btn btn-light btn-block"
+      className={`StartButton btn btn-light btn-block ${css}`}
+      {...extra}
       type="submit">
-      <div className="position-absolute" style={{width:"16px"}}>
-        {LoadingSpinner}
-      </div>
-      {props.children}
+      {label}
     </button>
   )
 }
