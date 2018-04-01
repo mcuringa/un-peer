@@ -4,7 +4,7 @@ import _ from "lodash";
 import {ChevronDownIcon} from 'react-octicons';
 import db from "../DBTools";
 import df from "../DateUtil";
-
+import MoreMenu from "../MoreMenu";
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import Modal from "../Modal";
 import {snack, SnackMaker} from "../Snackbar";
@@ -19,11 +19,31 @@ class ManageChallengesScreen extends React.Component {
 
 
   componentWillMount() {
-    ChallengeDB.findAll().then((t)=>{
+    ChallengeDB.findAll().then((t)=> {
+
+      const stageWeight = {
+         active: 1, 
+         rating: 1, 
+          draft: 2,
+         review: 3,
+         future: 4,
+        archive: 5,
+        deleted: 6
+      }
+      const compareChallenges = (a,b)=>{
+        if(stageWeight[a.stage] < stageWeight[b.stage]) 
+          return -1;
+        if(stageWeight[a.stage] > stageWeight[b.stage]) 
+          return 1;
+        if(a.created < b.created)
+          return -1;
+        if(a.created > b.created)
+          return 1;
+        return 0;
+      }
 
       t = _.filter(t,c=>c.status !== ChallengeStatus.DRAFT);
-      t = _.sortBy(t, c=> c.start);
-      t = _.reverse(t);
+      t.sort(compareChallenges);
       this.setState({challenges: t});
     });
   }
@@ -45,25 +65,11 @@ class ManageChallengesScreen extends React.Component {
       <div className="ChallengeListScreen screen">
         <h5 className="">CHALLENGES</h5>
         {t}
-      <this.Snackbar />
+        <this.Snackbar />
       </div>
     )
   }
 }
-
-const StatusModal = (props)=> {
-  return (
-    <Modal id="changeStatusModal" 
-      title="Challenge status" 
-      show={this.props.show}
-      onConfirm={props.saveStatus}
-      closeHandler={props.close}
-      >
-      <h5>{props.challenge.title}</h5>
-    </Modal>
-  )
-}
-
 
 const ChallengeRow = (props) => {
   const challenge = props.challenge;
@@ -80,14 +86,16 @@ const ChallengeRow = (props) => {
 
   return (
     <div className="border-bottom border-light pb-1 mb-3">
-      <div className="d-flex align-items-baseline justify-content-between" style={{lineHeight: "1.1em"}}>
-        <h5 className="pl-0"><Link to={`/challenge/${challenge.id}/edit`}>{challenge.title}</Link></h5>
+      <div className="d-flex align-items-start justify-content-between" style={{lineHeight: "1.1em"}}>
+        <div className="d-flex align-items-start">
+          <div className={`rounded-0 badge badge-${challenge.stage}`}>
+            {challenge.stage}
+          </div>
+          <h6 className="pt-0 pb-0 pl-2"><Link to={`/challenge/${challenge.id}/edit`}>{challenge.title}</Link></h6>
+        </div>
         <div className="ChallengeItemMenu">
           <ChallengeMenu challenge={challenge} />
         </div>
-      </div>
-      <div>
-        <strong>Status: </strong><span className={`icon-${challenge.stage}`}>{challenge.stage}</span>
       </div>
       <div className="d-flex">
         <div className="mr-2"><strong>Owner: </strong>{challenge.owner.firstName} {challenge.owner.lastName}</div>
@@ -115,51 +123,44 @@ const ChallengeMenu = (props)=> {
     <MoreMenu>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}`}>View Challenge</Link>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit`}>Edit Challenge</Link>
+      <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit`}>Close Challenge</Link>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit/responses`}>Edit Responses</Link>
       <div className="dropdown-divider"></div>
-      <h6 className="dropdown-header">CHANGE STATUS</h6>
-      <button className="dropdown-item" type="button" {...unpubProps} onClick={props.unpublish}>Unpublish (review)</button>
-      <button className="dropdown-item" type="button" {...pubProps} onClick={props.publish}>Publish</button>
-      <button className="dropdown-item" type="button" onClick={props.remove}>Delete</button>
-      <div className="dropdown-divider"></div>
-      <button className="dropdown-item" type="button" onClick={props.changeOwner}>Change Owner</button>
-      <button className="dropdown-item" type="button" onClick={props.changeProf}>Change Professor</button>
-      <button className="dropdown-item" type="button" onClick={props.changeSchedule}>Change Schedule</button>
+      <StatusMenu {...props} />
     </MoreMenu>
   )
-
 }
 
-const MoreMenu = (props)=> {
-  const c = props.challenge;
+const StatusMenu = (props)=> {
+  
+  const s = props.challenge.status;
+  let status = {
+    reject: "",
+    publish: "",
+    delete: ""
+  }
+
+  if(s === ChallengeStatus.PUBLISHED)
+    status.publish = "disabled";
+  else if(s === ChallengeStatus.DELETE)
+    status.delete = "disabled";
+  else if(s === ChallengeStatus.REJECT)
+    status.reject = "disabled";
+
+
+  const reject = ()=> { props.setStatus(props.challenge, ChallengeStatus.REJECT); }
+  const publish = ()=> { props.setStatus(props.challenge, ChallengeStatus.PUBLISHED); }
+  const del = ()=> { props.setStatus(props.challenge, ChallengeStatus.DELETE); }
 
   return (
-    <div className="MoreMenu dropdown dropleft">
-      <button type="button" className="MoreIcon btn btn-link text-dark m-0 p-0 icon-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <KebabVerticalIcon />
-      </button>
-      <div className="dropdown-menu">
-        {props.children}
-      </div>
+    <div>
+      <h6 className="dropdown-header">CHANGE STATUS</h6>
+      <button className={`dropdown-item ${status.publish}`} type="button" onClick={publish}>Publish</button>
+      <button className={`dropdown-item ${status.reject}`} type="button" onClick={reject}>Reject</button>
+      <button className={`dropdown-item ${status.delete}`} type="button" onClick={del}>Delete</button>
     </div>
   )
-
 }
 
-
-const KebabVerticalIcon = ()=>{
-
-  const len = 32;
-  return (
-    <svg width={len} height={len} className="octicon octicon-kebab-vertical" viewBox={`0 0 ${len} ${len}`}>
-      <circle className="icon-bg icon-light" cx={len/2} cy={len/2} r={(len/2)} />
-      <circle cx={len/2} cy={len * .33} r={1.5} />
-      <circle cx={len/2} cy={len/2} r={1.5}  />
-      <circle cx={len/2} cy={len * .66} r={1.5} />
-    </svg>
-  )
-}
-
-      // <path fill-rule="evenodd" d="M0 2.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"></path>
 
 export default ManageChallengesScreen;

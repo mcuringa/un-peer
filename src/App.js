@@ -26,6 +26,7 @@ import ManageChallengesScreen from './challenges/ManageChallenges.js';
 import AdminScreen from './admin/AdminScreen';
 
 import BookmarkScreen from './users/BookmarkScreen.js';
+import BookmarkDetailScreen from './users/BookmarkDetailScreen.js';
 import CalendarScreen from './CalendarScreen.js';
 
 import Login from './users/Login.js';
@@ -41,69 +42,70 @@ export default class App extends Component {
     this.state = {user: {}, 
       loading: true,
       userLoaded: false,
+      loadingMsg: "Signing in..."
     };
     this.setAppClass = this.setAppClass.bind(this);
     this.userListener = this.userListener.bind(this);
-    this.getAppClass = this.getAppClass.bind(this);
+    this.updateAppUser = this.updateAppUser.bind(this);
+  }
 
+  updateAppUser(u) {
+    this.setState({user: u});
   }
 
   userListener(authUser) {
-    if(authUser && !this.state.userLoaded) {
-      db.get("/users", authUser.uid).then((u)=>{
-        this.setState({user: u, loading: false, userLoaded: true});
+
+    const loadChallenges = ()=> {
+      this.setState({loadingMsg: "Loading challenges..."})
+      ChallengeDB.findAll().then(()=>{
+        this.setState({challengesLoaded: true});
       });
     }
-    else if(!authUser) {
-      this.setState({user: {}, loading: false, userLoaded: true});
+
+    const loadBookmarks = ()=>{
+      let u = this.state.user;
+      const path = `/users/${u.uid}/bookmarks`;
+      return db.findAll(path).then((bookmarks)=>{
+        u.bookmarks = bookmarks;
+        this.setState({user: u});
+      });
     }
 
+    let loaduser = ()=>{
+      db.get("/users", authUser.uid).then((u)=>{
+        console.log("user loaded");
+        this.setState({user: u, loading: false, userLoaded: true, loadingMsg: "Loading assets..."});
+        loadChallenges();
+        loadBookmarks();
+        
+      });
+    }
+
+    loaduser = _.once(loaduser);
+    if(authUser && authUser.email) {
+      console.log("authUser.email");
+      console.log(authUser.email);
+      loaduser();
+    }
+    else {
+      this.setState({user: {}, loading: false, userLoaded: true});
+    }
   }
 
   componentWillMount() {
     this.setState({appClass: null});
-
     FBUtil.getAuthUser(this.userListener);
-    ChallengeDB.findAll().then((u)=>{
-      this.setState({challengesLoaded: true});
-      // try to cache the active video and poster
-      
-      const preload = (c)=> {
-        let thumb = new Image();
-        thumb.src = c.videoPoster;
-      }
-      
-      ChallengeDB.getActive().then(preload, _.noop);
-    });
+
   }
 
   setAppClass(clazz) {
+    console.log("updating app class");
     this.setState({appClass: clazz});
-  }
-
-  getAppClass() {
-    if(!this.state.appClass)
-      return "";
-    return this.state.appClass;
   }
 
   render() {
 
-    if(!this.state.userLoaded || !this.state.challengesLoaded) {
-      return (
-        <Router>
-          <div className={`App container ${this.getAppClass()}`}>
-            <Header user={this.state.user} />
-            <section id="main" className="">
-              <LoadingModal show={true} status="Loading assets" />
-            </section>
-            <Footer user={this.state.user} />
-          </div>
-        </Router>
-      )
-    }
-
-    if(!this.state.user.email){
+    if(this.state.userLoaded && !this.state.user.email){
       return (
         <div className={`App container login`}>
           <Login user={this.state.user} setAppClass={this.setAppClass} loadingHandler={this.loadingHandler} />
@@ -111,26 +113,50 @@ export default class App extends Component {
       );
     }
 
+
+    if(!this.state.userLoaded || !this.state.challengesLoaded) {
+
+      return (
+        <Router>
+          <div className={`App container`}>
+            <Header user={this.state.user} />
+            <section id="main" className="">
+              <LoadingModal show={true} status={this.state.loadingMsg} />
+            </section>
+            <Footer user={this.state.user} />
+          </div>
+        </Router>
+      )
+    }
+
+
+
     return (
       <Router>
-        <div className={`App container ${this.getAppClass()}`}>
-          <Header user={this.state.user} />
-          <section id="main" className="">
-            <SecureScreens user={this.state.user} setAppClass={this.setAppClass} />
-          </section>
-          <Footer user={this.state.user} />
-        </div>
+        <SecureScreens 
+          user={this.state.user}
+          updateAppUser={this.updateAppUser}
+          setAppClass={this.setAppClass} />
       </Router>
     );
-  
   }
+}
+
+const AppContainer = (props)=> {
+  return (
+    <div id={props.id} className={`App container ${props.appClass||""}`}>
+      <Header user={props.user} />
+      <section id="main">{props.children}</section>
+      <Footer user={props.user} />
+    </div>
+  )
 }
 
 
 const Header = (props)=>{
   return (
     <header className="App-header container fixed-top">
-      <div className="d-flex align-items-center justify-content-around">
+      <div className="d-flex align-items-center justify-content-between">
         <div className="App-home">
           <NavLink to="/" exact={true} activeclass="active">
             <div className="home-icon"></div>
@@ -152,29 +178,26 @@ const Header = (props)=>{
 const SecureScreens = (props)=>{
   return (
       <Switch>
-        <PropsRoute exact path="/" setAppClass={props.setAppClass} component={Home} />
-        <PropsRoute exact path="/archive" {...props} component={ChallengeListScreen} />
-
-        <PropsRoute  user={props.user} path="/calendar"  component={CalendarScreen} />
-        <PropsRoute  user={props.user} path="/bookmarks"  component={BookmarkScreen} />
+        <ScreenRoute  id="Home" {...props} exact path="/" component={Home} />
+        <ScreenRoute  id="ChallengeListScreen" {...props} exact path="/archive"   component={ChallengeListScreen} />
+        <ScreenRoute  id="CalendarScreen" {...props} path="/calendar"  component={CalendarScreen} />
+        <ScreenRoute  id="BookmarkDetailScreen" {...props} path="/bookmarks/:id"  component={BookmarkDetailScreen} />
+        <ScreenRoute  id="BookmarkScreen" {...props} path="/bookmarks"  component={BookmarkScreen} />
+        <ScreenRoute  id="NewChallengeScreen" {...props} exact path="/challenge/new" component={NewChallengeScreen} />
+        <ScreenRoute  id="ChallengeEditScreen" {...props} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
+        <ScreenRoute  id="ChallengeResponseForm" {...props} path="/challenge/:id/respond" component={ChallengeResponseForm}/>
+        <ScreenRoute  id="ProfessorResponseForm" {...props} path="/challenge/:id/prof" component={ProfessorResponseForm} />
+        <ScreenRoute  id="ResponseRatings" {...props} path="/challenge/:id/rate" component={ResponseRatings} />
+        <ScreenRoute  id="ChallengeReviewScreen" {...props} path="/challenge/:id/review" component={ChallengeReviewScreen} />
+        <ScreenRoute  id="ChallengeDetailScreen" {...props} path="/challenge/:id" component={ChallengeDetailScreen} />
+        <ScreenRoute  id="ProfileScreen" {...props} path="/profile"  component={ProfileScreen} />
+        <ScreenRoute  id="Login" {...props} path="/login" component={Login} />
+        <ScreenRoute  id="Login" {...props} path="/signout" component={Login} />
+        <ScreenRoute  id="ManageUsersScreen" {...props} path="/admin/users" component={ManageUsersScreen} />
+        <ScreenRoute  id="ManageChallengesScreen" {...props} path="/admin/challenges" component={ManageChallengesScreen} />
+        <ScreenRoute  id="AdminScreen" {...props} path="/admin" component={AdminScreen} />
         
-        <PropsRoute  user={props.user} exact path="/challenge/new" component={NewChallengeScreen} />
-        <PropsRoute  user={props.user} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
-        <PropsRoute  user={props.user} path="/challenge/:id/respond" component={ChallengeResponseForm}/>
-        <PropsRoute  user={props.user} path="/challenge/:id/prof" component={ProfessorResponseForm}/>
-        <PropsRoute  user={props.user} path="/challenge/:id/rate" component={ResponseRatings}/>
-        <PropsRoute  user={props.user} path="/challenge/:id/review" component={ChallengeReviewScreen}/>
-        <PropsRoute path="/challenge/:id" user={props.user} component={ChallengeDetailScreen}/>
 
-        <PropsRoute path="/profile" user={props.user} component={ProfileScreen} />
-        <PropsRoute path="/login" {...props} component={Login} />
-        <PropsRoute path="/signout" {...props} component={Login} />
-
-
-
-        <PropsRoute path="/admin/users" {...props} component={ManageUsersScreen} />
-        <PropsRoute path="/admin/challenges" {...props} component={ManageChallengesScreen} />
-        <PropsRoute path="/admin" {...props} component={AdminScreen} />
       </Switch>
   );
 }
@@ -186,12 +209,14 @@ const renderMergedProps = (component, ...rest) => {
   );
 }
 
-const PropsRoute = ({ component, ...rest }) => {
+const ScreenRoute = ({ component, ...rest }) => {
 
   return (
-    <Route {...rest} render={routeProps => {
-      return renderMergedProps(component, routeProps, rest);
-    }}/>
+    <AppContainer id={rest.id} appClass={rest.appClass||""} user={rest.user}>
+      <Route {...rest} render={routeProps => {
+        return renderMergedProps(component, routeProps, rest);
+      }}/>
+    </AppContainer>
   );
 }
 

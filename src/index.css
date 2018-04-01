@@ -1773,27 +1773,29 @@ fieldset:disabled a.NewChallengeButton {
     .show > .btn-danger.dropdown-toggle:focus {
       box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5); }
 
-.btn-light {
+.btn-light, .ChallengeItem {
   color: #212529;
   background-color: #f8f9fa;
   border-color: #f8f9fa; }
-  .btn-light:hover {
+  .btn-light:hover, .ChallengeItem:hover {
     color: #212529;
     background-color: #e2e6ea;
     border-color: #dae0e5; }
-  .btn-light:focus, .btn-light.focus {
+  .btn-light:focus, .ChallengeItem:focus, .btn-light.focus, .focus.ChallengeItem {
     box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5); }
-  .btn-light.disabled, .btn-light:disabled {
+  .btn-light.disabled, .disabled.ChallengeItem, .btn-light:disabled, .ChallengeItem:disabled {
     color: #212529;
     background-color: #f8f9fa;
     border-color: #f8f9fa; }
-  .btn-light:not(:disabled):not(.disabled):active, .btn-light:not(:disabled):not(.disabled).active,
-  .show > .btn-light.dropdown-toggle {
+  .btn-light:not(:disabled):not(.disabled):active, .ChallengeItem:not(:disabled):not(.disabled):active, .btn-light:not(:disabled):not(.disabled).active, .ChallengeItem:not(:disabled):not(.disabled).active,
+  .show > .btn-light.dropdown-toggle,
+  .show > .dropdown-toggle.ChallengeItem {
     color: #212529;
     background-color: #dae0e5;
     border-color: #d3d9df; }
-    .btn-light:not(:disabled):not(.disabled):active:focus, .btn-light:not(:disabled):not(.disabled).active:focus,
-    .show > .btn-light.dropdown-toggle:focus {
+    .btn-light:not(:disabled):not(.disabled):active:focus, .ChallengeItem:not(:disabled):not(.disabled):active:focus, .btn-light:not(:disabled):not(.disabled).active:focus, .ChallengeItem:not(:disabled):not(.disabled).active:focus,
+    .show > .btn-light.dropdown-toggle:focus,
+    .show > .dropdown-toggle.ChallengeItem:focus {
       box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5); }
 
 .btn-dark {
@@ -2031,20 +2033,18 @@ fieldset:disabled a.NewChallengeButton {
   line-height: 1.5;
   border-radius: 0.2rem; }
 
-.btn-block, .ActiveChallenge, .ChallengeItem, .NewChallengeButton {
+.btn-block, .ActiveChallenge, .NewChallengeButton {
   display: block;
   width: 100%; }
-  .btn-block + .btn-block, .ActiveChallenge + .btn-block, .ChallengeItem + .btn-block, .NewChallengeButton + .btn-block, .btn-block + .ActiveChallenge, .ActiveChallenge + .ActiveChallenge, .ChallengeItem + .ActiveChallenge, .NewChallengeButton + .ActiveChallenge, .btn-block + .ChallengeItem, .ActiveChallenge + .ChallengeItem, .ChallengeItem + .ChallengeItem, .NewChallengeButton + .ChallengeItem, .btn-block + .NewChallengeButton, .ActiveChallenge + .NewChallengeButton, .ChallengeItem + .NewChallengeButton, .NewChallengeButton + .NewChallengeButton {
+  .btn-block + .btn-block, .ActiveChallenge + .btn-block, .NewChallengeButton + .btn-block, .btn-block + .ActiveChallenge, .ActiveChallenge + .ActiveChallenge, .NewChallengeButton + .ActiveChallenge, .btn-block + .NewChallengeButton, .ActiveChallenge + .NewChallengeButton, .NewChallengeButton + .NewChallengeButton {
     margin-top: 0.5rem; }
 
-input[type="submit"].btn-block, input.ActiveChallenge[type="submit"], input.ChallengeItem[type="submit"], input.NewChallengeButton[type="submit"],
+input[type="submit"].btn-block, input.ActiveChallenge[type="submit"], input.NewChallengeButton[type="submit"],
 input[type="reset"].btn-block,
 input.ActiveChallenge[type="reset"],
-input.ChallengeItem[type="reset"],
 input.NewChallengeButton[type="reset"],
 input[type="button"].btn-block,
 input.ActiveChallenge[type="button"],
-input.ChallengeItem[type="button"],
 input.NewChallengeButton[type="button"] {
   width: 100%; }
 
@@ -4268,12 +4268,14 @@ button.bg-danger:hover,
 button.bg-danger:focus {
   background-color: #bd2130 !important; }
 
-.bg-light {
+.bg-light, .ProfileChallenge {
   background-color: #f8f9fa !important; }
 
-a.bg-light:hover, a.bg-light:focus,
+a.bg-light:hover, a.ProfileChallenge:hover, a.bg-light:focus, a.ProfileChallenge:focus,
 button.bg-light:hover,
-button.bg-light:focus {
+button.ProfileChallenge:hover,
+button.bg-light:focus,
+button.ProfileChallenge:focus {
   background-color: #dae0e5 !important; }
 
 .bg-dark {
@@ -4284,7 +4286,7 @@ button.bg-dark:hover,
 button.bg-dark:focus {
   background-color: #1d2124 !important; }
 
-.bg-white, .App-header, .App-footer-toolbar {
+.bg-white, .App-header, .App-footer-toolbar, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
   background-color: #fff !important; }
 
 .bg-transparent {
@@ -4299,7 +4301,7 @@ button.bg-dark:focus {
 .border-right {
   border-right: 1px solid #dee2e6 !important; }
 
-.border-bottom {
+.border-bottom, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
   border-bottom: 1px solid #dee2e6 !important; }
 
 .border-left {
@@ -4308,16 +4310,16 @@ button.bg-dark:focus {
 .border-0 {
   border: 0 !important; }
 
-.border-top-0 {
+.border-top-0, .ChallengeItem, .RatedResponse {
   border-top: 0 !important; }
 
-.border-right-0 {
+.border-right-0, .ChallengeItem {
   border-right: 0 !important; }
 
 .border-bottom-0 {
   border-bottom: 0 !important; }
 
-.border-left-0 {
+.border-left-0, .ChallengeItem {
   border-left: 0 !important; }
 
 .border-primary {
@@ -4338,7 +4340,7 @@ button.bg-dark:focus {
 .border-danger {
   border-color: #dc3545 !important; }
 
-.border-light, .App-header {
+.border-light, .App-header, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
   border-color: #f8f9fa !important; }
 
 .border-dark {
@@ -4369,7 +4371,7 @@ button.bg-dark:focus {
 .rounded-circle {
   border-radius: 50% !important; }
 
-.rounded-0 {
+.rounded-0, .ChallengeItem {
   border-radius: 0 !important; }
 
 .clearfix::after {
@@ -4398,7 +4400,7 @@ button.bg-dark:focus {
 .d-table-cell {
   display: table-cell !important; }
 
-.d-flex {
+.d-flex, .ChallengeItem, .StaticChallengeItem, .ChallengeItemHeader, .ChallengeItemBody, .RatedResponseHeader {
   display: flex !important; }
 
 .d-inline-flex {
@@ -4541,7 +4543,7 @@ button.bg-dark:focus {
 .flex-row {
   flex-direction: row !important; }
 
-.flex-column {
+.flex-column, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
   flex-direction: column !important; }
 
 .flex-row-reverse {
@@ -4568,13 +4570,13 @@ button.bg-dark:focus {
 .justify-content-center {
   justify-content: center !important; }
 
-.justify-content-between {
+.justify-content-between, .ChallengeItem, .StaticChallengeItem, .ChallengeItemHeader, .ChallengeItemBody, .RatedResponse, .RatedResponseHeader {
   justify-content: space-between !important; }
 
 .justify-content-around {
   justify-content: space-around !important; }
 
-.align-items-start {
+.align-items-start, .ChallengeItemBody {
   align-items: flex-start !important; }
 
 .align-items-end {
@@ -4586,7 +4588,7 @@ button.bg-dark:focus {
 .align-items-baseline {
   align-items: baseline !important; }
 
-.align-items-stretch {
+.align-items-stretch, .ChallengeItem, .StaticChallengeItem, .ChallengeItemHeader, .RatedResponse {
   align-items: stretch !important; }
 
 .align-content-start {
@@ -4991,7 +4993,7 @@ button.bg-dark:focus {
 .mh-100 {
   max-height: 100% !important; }
 
-.m-0 {
+.m-0, .ChallengeItemHeader {
   margin: 0 !important; }
 
 .mt-0,
@@ -5032,7 +5034,7 @@ button.bg-dark:focus {
 .m-2 {
   margin: 0.5rem !important; }
 
-.mt-2,
+.mt-2, .ChallengeItemBody,
 .my-2 {
   margin-top: 0.5rem !important; }
 
@@ -5135,7 +5137,7 @@ button.bg-dark:focus {
 .px-1 {
   padding-right: 0.25rem !important; }
 
-.pb-1,
+.pb-1, .ChallengeItem, .StaticChallengeItem, .RatedResponse,
 .py-1 {
   padding-bottom: 0.25rem !important; }
 
@@ -5146,26 +5148,26 @@ button.bg-dark:focus {
 .p-2 {
   padding: 0.5rem !important; }
 
-.pt-2,
+.pt-2, .ChallengeItem, .StaticChallengeItem, .RatedResponseHeader,
 .py-2 {
   padding-top: 0.5rem !important; }
 
-.pr-2,
+.pr-2, .StaticChallengeItem,
 .px-2 {
   padding-right: 0.5rem !important; }
 
-.pb-2,
+.pb-2, .RatedResponseHeader,
 .py-2 {
   padding-bottom: 0.5rem !important; }
 
-.pl-2,
+.pl-2, .StaticChallengeItem, .RatedResponse,
 .px-2 {
   padding-left: 0.5rem !important; }
 
 .p-3 {
   padding: 1rem !important; }
 
-.pt-3,
+.pt-3, .ChallengeItemBody,
 .py-3 {
   padding-top: 1rem !important; }
 
@@ -5985,7 +5987,7 @@ button.bg-dark:focus {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-.text-left {
+.text-left, .ChallengeItem, .StaticChallengeItem {
   text-align: left !important; }
 
 .text-right {
@@ -7794,6 +7796,9 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   width: 100%;
   height: 100%; }
 
+.border-light, .App-header, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
+  border-color: #e3e3e3 !important; }
+
 body {
   font-family: "Source Sans Pro", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
 
@@ -7834,14 +7839,28 @@ body {
   color: #17a2b8;
   fill: #17a2b8; }
 
-.icon-light {
-  color: #f8f9fa;
-  fill: #f8f9fa;
-  stroke: #f8f9fa; }
+.badge-archive {
+  background-color: #6c757d;
+  color: #f8f9fa; }
 
-.icon-dark {
-  color: #343a40;
-  fill: #343a40; }
+.badge-draft {
+  background-color: #ced4da; }
+
+.badge-active {
+  background-color: #28a745;
+  color: #f8f9fa; }
+
+.badge-review {
+  background-color: #dc3545;
+  color: #f8f9fa; }
+
+.badge-future {
+  background-color: #ffc107;
+  color: #f8f9fa; }
+
+.badge-rating {
+  background-color: #17a2b8;
+  color: #f8f9fa; }
 
 svg.hidden {
   display: none;
@@ -7852,6 +7871,10 @@ small tt {
 
 .highlight {
   box-shadow: 0px 0px 10px #ffc107; }
+
+.icon-lg .octicon-chevron-right {
+  height: 22px !important;
+  width: 11px !important; }
 
 /*============================ App.js styles*/
 .container {
@@ -7865,7 +7888,7 @@ small tt {
 .no-Screen-padding, .ChallengeEditHeader .inner {
   margin: -4px -8px -2px -8px; }
 
-.hands {
+.hands, #Home, #ChallengeListScreen, #BookmarkScreen, #BookmarkDetailScreen {
   background-image: url("/img/hands.jpg");
   background-size: cover;
   background-repeat: no-repeat;
@@ -7895,14 +7918,14 @@ small tt {
     height: 44px;
     content: url("/img/header/Notification_white.png"); }
 
-.App-footer-toolbar .btn-block, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .ChallengeItem, .App-footer-toolbar .NewChallengeButton {
+.App-footer-toolbar .btn-block, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .NewChallengeButton {
   display: flex;
   flex-direction: column;
   justify-content: center;
   border-top: solid 1px #ced4da; }
-  .App-footer-toolbar .btn-block .icon-box img, .App-footer-toolbar .ActiveChallenge .icon-box img, .App-footer-toolbar .ChallengeItem .icon-box img, .App-footer-toolbar .NewChallengeButton .icon-box img {
+  .App-footer-toolbar .btn-block .icon-box img, .App-footer-toolbar .ActiveChallenge .icon-box img, .App-footer-toolbar .NewChallengeButton .icon-box img {
     margin-bottom: 5px; }
-  .App-footer-toolbar .btn-block.active, .App-footer-toolbar .active.ActiveChallenge, .App-footer-toolbar .active.ChallengeItem, .App-footer-toolbar .active.NewChallengeButton {
+  .App-footer-toolbar .btn-block.active, .App-footer-toolbar .active.ActiveChallenge, .App-footer-toolbar .active.NewChallengeButton {
     border-top: solid 6px #6999c9;
     color: #6999c9; }
 
@@ -7963,12 +7986,21 @@ small tt {
   font-size: 16px; }
 
 .ChallengeItem {
-  margin: 0 !important;
-  border-bottom: 1px solid #e9ecef;
-  color: #6c757d;
-  background-color: white;
-  text-align: left;
-  border-radius: 0; }
+  color: #6c757d; }
+
+.StaticChallengeItem {
+  color: #6c757d; }
+
+.ChallengeItem svg, .StaticChallengeItem svg {
+  fill: #adb5bd !important;
+  stroke: #adb5bd !important; }
+
+.RatedResponse {
+  color: #6c757d; }
+
+.RatedResponseHeader svg.octicon-chevron-up, .RatedResponseHeader svg.octicon-chevron-down {
+  fill: #adb5bd !important;
+  stroke: #adb5bd !important; }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group {
   width: 100%; }
@@ -8271,11 +8303,11 @@ label {
         .App .calendar-view .react-calendar .react-calendar__tile:hover, .App .calendar-view .react-calendar .react-calendar__tile.react-calendar__tile--active {
           cursor: default;
           background: transparent; }
-        .App .calendar-view .react-calendar .react-calendar__tile .d-flex {
+        .App .calendar-view .react-calendar .react-calendar__tile .d-flex, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader {
           width: 50px;
           height: 50px;
           position: absolute; }
-          .App .calendar-view .react-calendar .react-calendar__tile .d-flex .left, .App .calendar-view .react-calendar .react-calendar__tile .d-flex .right {
+          .App .calendar-view .react-calendar .react-calendar__tile .d-flex .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .left, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .d-flex .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .right, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .right {
             height: 50px;
             width: 25px; }
         .App .calendar-view .react-calendar .react-calendar__tile .dayDisplay {
@@ -8408,8 +8440,29 @@ label {
   padding-right: 3px;
   fill: #dee2e6; }
 
+.ProfileChallenge {
+  box-shadow: 1px 0px 4px #6c757d;
+  padding: .5em;
+  margin-bottom: 8px; }
+
+.ProfileChallenge.active {
+  box-shadow: 1px 0px 4px #28a745; }
+
+.ProfileChallenge.draft {
+  box-shadow: 1px 0px 4px #ffc107; }
+
+.ProfileChallenge.review {
+  box-shadow: 1px 0px 4px #007bff; }
+
+.ProfileChallenge.future {
+  box-shadow: 1px 0px 4px #17a2b8; }
+
 .MoreMenu .dropdown-menu.show {
   z-index: 1035; }
+
+.MoreMenu {
+  margin-top: -4px !important;
+  margin-bottom: -16px !important; }
 
 .MoreMenu .MoreIcon {
   font-size: 1.25em;

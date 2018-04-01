@@ -13,7 +13,8 @@ const ChallengeStatus = Object.freeze({
   DRAFT: 1,
   REVIEW: 2,
   PUBLISHED: 3,
-  DELETE: 4
+  DELETE: 4,
+  REJECT: 5
 });
 
 
@@ -109,7 +110,6 @@ const ChallengeDB = {
   },
 
   findResponsesByOwner(uid) {
-    
 
     const getOwnerResponses = (c)=> {
       const prepResponse = (r)=>{
@@ -127,7 +127,6 @@ const ChallengeDB = {
       });
     }
 
-
     return new Promise((resolve, reject)=> {
       ChallengeDB.findAll().then((challenges)=> {      
         const responsePromises = _.map(challenges, getOwnerResponses);
@@ -141,21 +140,20 @@ const ChallengeDB = {
     });
   },
 
-  findByOwner(uid) {
-
-    return new Promise((resolve, reject)=> {
-
-      ChallengeDB.findAll().then((challenges)=>{
-
-        challenges = _.filter(challenges, c=>c.owner.uid === uid);
-        challenges = _.sortBy(challenges,c=>c.status);
-        resolve(challenges);
-      });      
-    });
-  },
-
   getStage(c) {
     const now = new Date();
+    if(c.status === ChallengeStatus.DRAFT)
+      return "draft";
+    if(c.status === ChallengeStatus.REVIEW)
+      return "review";
+
+    if(c.status === ChallengeStatus.DELETE)
+      return "deleted";
+
+    if(c.status === ChallengeStatus.REJECT)
+      return "rejected";
+
+    // now figure out the published stage
     if(now < c.start)
       return "future";
     if(now > c.end)
@@ -165,11 +163,123 @@ const ChallengeDB = {
     if(now < c.ratingDue)
       return "rating";
 
-    return "review";
+    return "unknown stage";
   },
 
+
+
+  filterDrafts(t, uid) {
+    const f = (c)=> {
+      return c.status === ChallengeStatus.DRAFT && c.owner.uid !== uid;
+    }
+
+    return _.filter(t, f);
+  },
+
+
+  // DRAFT: 1,
+  // REVIEW: 2,
+  // PUBLISHED: 3,
+  // DELETE: 4
+
+  findAllSecure() {
+    const now = new Date();
+
+    const loadChallenges = (u)=> {
+      let db = FBUtil.connect();
+      let promises = [];
+      let challenges = [];
+
+      const prep = (c)=>{
+        const status = Number.parseInt(c.status, 10);
+        const stage = ChallengeDB.getStage(c);
+        return _.merge(c, {stage: stage, status: status})
+      }
+
+      const addChallenges = (snapshot)=>{
+        snapshot.forEach((doc)=>{
+          let c = doc.data();
+          c.id = doc.id;
+          challenges.push(prep(c));
+        });
+        
+      };
+
+      const mine = ()=> {
+        return db.collection("challenges")
+          .where("owner.uid", "==", u.uid)
+          .get()
+          .then(addChallenges);
+      }
+
+      const published = ()=> {
+        const afterPublished = (snapshot)=> {
+          snapshot.forEach((doc)=> {
+            let c = doc.data();
+            c.id = doc.id;
+            if(c.start < now || u.admin || (c.professor.uid === u.id))
+              challenges.push( prep(c) );
+          });
+        }
+        return db.collection("challenges")
+          .where("status", "==", ChallengeStatus.PUBLISHED)
+          .get()
+          .then(afterPublished);
+      }
+
+      const scheduled = ()=> {
+        return db.collection("challenges")
+          .where("status", "==", ChallengeStatus.PUBLISHED)
+          .where("start", ">", now)
+          .get()
+          .then(addChallenges);
+      }
+
+      const review = ()=> {
+        return db.collection("challenges")
+          .where("status", "==", ChallengeStatus.REVIEW)
+          .get()
+          .then(addChallenges);
+      }
+
+      const afterAll = (resolve, reject)=>{
+        Promise.all(promises).then(()=>{
+          challenges = _.uniqBy(challenges, c=>c.id);
+          resolve(challenges);
+        })
+
+      }
+
+      let myP = mine();
+      let publishedP = published();
+      promises = [myP, publishedP];
+      if(u.admin) {
+        let reviewP = review();
+        promises.push(reviewP);
+      }
+
+      return new Promise(afterAll);
+    }
+
+    const loadUser = (u)=> { 
+      return db.get("/users", u.uid) 
+    };
+
+    const promiseToFindAll = (resolve, reject)=> {
+      let user = FBUtil._firebase.auth().currentUser;
+
+      loadUser(user)
+        .then(loadChallenges)
+        .then(resolve)
+        .catch(reject)
+    }
+
+    return new Promise(promiseToFindAll);
+  },
+
+
   findAll() {
-    let db = FBUtil.connect();
+
     let challenges = [];
     let ids = [];
     
@@ -186,13 +296,9 @@ const ChallengeDB = {
           resolve(challenges);
           return;
         }
-        db.collection("challenges").get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            let c = doc.data();
-            c.id = doc.id;
-            c.status = Number.parseInt(c.status, 10);
-            c.stage = ChallengeDB.getStage(c);
-
+        
+        ChallengeDB.findAllSecure().then((t) => {
+          t.forEach((c) => {
             ChallengeDB.cache[c.id] = c;
             challenges.push(c);
             ids.push(c.id);

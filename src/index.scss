@@ -19,6 +19,9 @@ $cal-blue: #2b91e9;
 $cal-purple: #ae1963;
 $blue: green;
 
+.border-light {
+  border-color: #e3e3e3 !important;
+}
 
 body {
   font-family: $font-family-sans-serif,
@@ -86,16 +89,34 @@ img {
   color: theme-color("info");
   fill: theme-color("info");
 }
+// ======================================== badge status colors
 
-.icon-light {
-  color: theme-color("light");
-  fill: theme-color("light");
-  stroke: theme-color("light");
+.badge-archive {
+  background-color: theme-color("secondary");
+  color: theme-color("light")
 }
-.icon-dark {
-  color: theme-color("dark");
-  fill: theme-color("dark");
+
+.badge-draft {
+  background-color: $gray-400;
 }
+
+.badge-active {
+  background-color: theme-color("success");
+  color: theme-color("light")
+}
+.badge-review {
+  background-color: theme-color("danger");
+  color: theme-color("light")
+}
+.badge-future {
+  background-color: theme-color("warning");
+  color: theme-color("light")
+}
+.badge-rating {
+  background-color: theme-color("info");
+    color: theme-color("light")
+}
+
 
 svg.hidden {
   display: none;
@@ -109,6 +130,12 @@ small tt {
 .highlight {
   box-shadow: 0px 0px 10px $yellow;
 }
+
+.icon-lg .octicon-chevron-right {
+  height: 22px !important;
+  width: 11px !important;
+}
+
 
 /*============================ App.js styles*/
 .container
@@ -135,6 +162,40 @@ small tt {
   background-repeat: no-repeat;
   min-height: 100vh;
 }
+
+#Home { @extend .hands;} 
+#ChallengeListScreen { @extend .hands;} 
+#BookmarkScreen { @extend .hands;} 
+#BookmarkDetailScreen { @extend .hands;} 
+
+
+
+// Home
+// ChallengeListScreen
+// CalendarScreen
+// BookmarkDetailScreen
+// BookmarkScreen
+// NewChallengeScreen
+// ChallengeEditScreen
+// ChallengeResponseForm
+// ProfessorResponseForm
+// ResponseRatings
+// ChallengeReviewScreen
+// ChallengeDetailScreen
+// ProfileScreen
+// Login
+// Login
+// ManageUsersScreen
+// AdminScreen
+
+
+
+
+
+
+
+
+
 
 
 .App-header {
@@ -283,16 +344,90 @@ small tt {
   font-size: 16px;
 }
 
-.ChallengeItem
-{
+.ChallengeItem {
+  @extend .text-left;
   @extend .btn;
-  @extend .btn-block;
-  margin: 0 !important;
-  border-bottom: 1px solid $gray-200;
+  @extend .btn-light;
+  @extend .rounded-0;
+  @extend .pt-2;
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .justify-content-between;
+  @extend .align-items-stretch;
+  @extend .border-top-0;
+  @extend .border-left-0;
+  @extend .border-right-0;
+  @extend .border-bottom;
+  @extend .border-light;
+  @extend .pb-1;
+  @extend .bg-white;
   color: $gray-600;
-  background-color: white;
-  text-align: left;
-  border-radius: 0;
+
+}
+
+.StaticChallengeItem {
+  @extend .text-left;
+  @extend .pt-2;
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .justify-content-between;
+  @extend .align-items-stretch;
+  @extend .border-bottom;
+  @extend .border-light;
+  @extend .pb-1;
+  @extend .pl-2;
+  @extend .pr-2;
+  @extend .bg-white;
+  color: $gray-600;
+
+}
+
+
+.ChallengeItem svg, .StaticChallengeItem svg {
+  fill: $gray-500 !important;
+  stroke: $gray-500 !important;
+}
+
+.ChallengeItemHeader {
+  @extend .m-0;
+  @extend .d-flex;
+  @extend .justify-content-between;
+  @extend .align-items-stretch;
+}
+
+.ChallengeItemBody {
+  @extend .mt-2;
+  @extend .pt-3;
+  @extend .d-flex;
+  @extend .justify-content-between;
+  @extend .align-items-start;
+}
+
+
+.RatedResponse {
+  @extend .pb-1;
+  @extend .pl-2;
+  @extend .bg-white;
+  @extend .border-bottom;
+  @extend .border-light;
+  @extend .flex-column;
+  @extend .justify-content-between;
+  @extend .align-items-stretch;
+  @extend .border-top-0;
+  color: $gray-600;
+}
+
+
+.RatedResponseHeader {
+  @extend .d-flex;
+  @extend .justify-content-between;
+  @extend .pt-2;
+  @extend .pb-2;
+}
+
+.RatedResponseHeader svg.octicon-chevron-up, .RatedResponseHeader svg.octicon-chevron-down {
+  fill: $gray-500 !important;
+  stroke: $gray-500 !important;
 }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group
@@ -949,22 +1084,65 @@ label
   fill: $gray-300;
 }
 
+.ProfileChallenge {
+  @extend .bg-light;
+  // border: 1px solid $gray-600;
+  box-shadow: 1px 0px 4px theme-color("secondary");
+  padding: .5em;
+  margin-bottom: 8px;
+}
+
+.ProfileChallenge.active {
+  box-shadow: 1px 0px 4px theme-color("success");
+}
+
+.ProfileChallenge.draft {
+  box-shadow: 1px 0px 4px theme-color("warning");
+}
+
+.ProfileChallenge.review {
+  box-shadow: 1px 0px 4px theme-color("primary");
+}
+
+
+.ProfileChallenge.future {
+  box-shadow: 1px 0px 4px theme-color("info");
+}
+
+
+
+
+// .icon-secondary, .icon-archive {
+//   color: theme-color("secondary");
+//   fill: theme-color("secondary");
+// }
+
 
 // ======================= dropdown menus
 .MoreMenu .dropdown-menu.show {
 	z-index: 1035;
 }
 
-
+.MoreMenu {
+  margin-top: -4px !important;
+  margin-bottom: -16px !important;
+}
 
 .MoreMenu .MoreIcon {
 	font-size: 1.25em;	
 	text-decoration: none;
 	padding: auto 0;
 }
+.MoreMenu.show.dropleft .MoreIcon {
+  // margin-left: -22px !important;
+}
+
+
 .MoreMenu .MoreIcon .btn-link:hover,
 .MoreMenu .MoreIcon .btn-link:focus
 {
 	font-weight: bold;
 	text-decoration: none;
 }
+
+

@@ -25,6 +25,7 @@ export default class Login extends Component {
     this.reset = this.reset.bind(this);
     this.AuthError = this.AuthError.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
+    props.setAppClass(" ");
 
   }
 
@@ -61,7 +62,6 @@ export default class Login extends Component {
     let valid = form.checkValidity();
     this.setState({isValidated: true});
 
-    console.log(valid);
     if(!valid) {
       //figure out why
       let email = document.getElementById("email");
@@ -86,25 +86,13 @@ export default class Login extends Component {
     
 
     let email = this.state.email.trim();
-    let pw = this.state.password.trim();
+    let pw = this.state.password;
 
     const firebase = FBUtil.init();
 
-    let user = null;
-    const merge = (u)=>{
-      console.log("merging");
-      console.log(u);
-      return _.merge(user, u);
-    };
-
     const success = (auth)=> {
-
-      console.log("successful sign in...");
-      user = firebase.auth().currentUser;
-      console.log("got user: ")
-      console.log(user);
-      this.setState({loading: false, loadingStatus: null});
-      db.get("/users", user.uid).then(merge);
+      this.props.setAppClass("");
+      this.setState({loading: false, loadingStatus: false});
     }
 
     const err = (error)=> {
@@ -117,7 +105,7 @@ export default class Login extends Component {
       });
     }
 
-    firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, pw)
+    firebase.auth().signInWithEmailAndPassword(email, pw)
     .then(success, err);
 
   }
@@ -149,8 +137,7 @@ export default class Login extends Component {
     else if(code === "auth/wrong-password") {
       emailErr = (
         <div>
-          You could not be logged in with that email/password
-          combination.<br/>
+          The password you entered is incorrect.<br/>
           <button type="button" onClick={this.reset}
             className="btn btn-link">Click here to reset 
             your password.</button>
@@ -279,7 +266,7 @@ const LoadingButton = (props) => {
   if(props.loading) {
     label = "Authorizing...";
     css="disabled";
-    extra = {disable: true};
+    extra = {disabled: "disabled"};
   }
 
   return (

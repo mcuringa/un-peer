@@ -14,20 +14,14 @@ class Home  extends React.Component {
 
 
   componentWillMount() {
-    console.log("mounting home");
-
     const activate = (c)=>{ this.active = true; this.setState({challenge: c}); };
     const noActiveChallenge = ()=>{ console.log("no active challenge"); };
     ChallengeDB.getActive().then(activate, noActiveChallenge);
-    this.props.setAppClass("hands");
 
-  }
-
-  componentWillUnmount() {
-    this.props.setAppClass("");
   }
 
   render() {
+
     if(!this.state.challenge.id) {
       return (
         <div className="Home screen">

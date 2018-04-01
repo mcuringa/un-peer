@@ -25,19 +25,17 @@ const FBUtil =
     require("firebase/storage");
 
     FBUtil._firebase.initializeApp(config);
-    require("firebase/functions")
+    require("firebase/functions");
 
     return FBUtil._firebase;
   },
 
   sendPasswordResetEmail: (email)=> {
     FBUtil.init();
-    console.log("sending email to: " + email);
     return FBUtil._firebase.auth().sendPasswordResetEmail(email); 
   },
 
   uploadMedia: (file, path, progress, succ, err)=> {
-    console.log("uploading media");
     let firebase = FBUtil.init();
     let storageRef = firebase.storage().ref();
     const name = ChallengeDB.slug(file.name);
@@ -54,8 +52,6 @@ const FBUtil =
 
   getAuthUser: (listener)=>
   {
-    
-
     const auth = (resolve,reject)=> {
       FBUtil.init();
       

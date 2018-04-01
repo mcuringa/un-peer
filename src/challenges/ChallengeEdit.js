@@ -267,29 +267,77 @@ class ChallengeEditScreen extends React.Component {
             clearImage={()=>{this.clearField("videoPoster");}}
           />
 
-          <h5 className="mr-2 text-right">Professor Video</h5>
-          <VideoUploadImproved id="professorVideo" 
-            className="m-0 p-0"
-            video={c.professorVideo}
-            poster={c.professorVideoPoster || "/img/poster.png"}
-            clearVideo={()=>{this.setState({confirmClearVideo:true})}}
-            handleUpload={this.handleUpload}
-            pct={this.state.professorVideoPct} 
-            msg={this.state.professorVideoStatus}
-          />
+          <div className="d-none">
+            <h5 className="mr-2 text-right">Professor Video</h5>
+            <VideoUploadImproved id="professorVideo" 
+              className="m-0 p-0"
+              video={c.professorVideo}
+              poster={c.professorVideoPoster || "/img/poster.png"}
+              clearVideo={()=>{this.setState({confirmClearVideo:true})}}
+              handleUpload={this.handleUpload}
+              pct={this.state.professorVideoPct} 
+              msg={this.state.professorVideoStatus}
+            />
 
-          <ImageUploadImproved 
-            id="proessorVideoPoster"
-            pct={this.state.videoPosterPct} 
-            img={c.profVideoPoster} 
-            label="professor video thumbnail"
-            placeholder="upload a professor video thumbnail image"
-            placeholderImg="/img/poster.png"
-            onChange={this.handleUpload}
-            textOnly
-            clearImage={()=>{this.clearField("videoPoster");}}
-            help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
-          />
+            <ImageUploadImproved 
+              id="proessorVideoPoster"
+              pct={this.state.videoPosterPct} 
+              img={c.profVideoPoster} 
+              label="professor video thumbnail"
+              placeholder="upload a professor video thumbnail image"
+              placeholderImg="/img/poster.png"
+              onChange={this.handleUpload}
+              textOnly
+              clearImage={()=>{this.clearField("videoPoster");}}
+              help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
+            />
+          </div>
+
+          <ChooseProf challenge={this.state.challenge}
+            clearProfessor={()=>{this.clearField("professor");}}
+            selectUser={this.selectProfessor} />
+
+          <ChooseOwner challenge={this.state.challenge}
+            clearOwner={()=>{this.clearField("owner");}}
+            selectUser={this.selectOwner} />
+
+
+          <div id="ScheduleFields">
+            <div className="form-group">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text">Set Status</span>
+                </div>
+                <select id="status" value={c.status} className="custom-select" onChange={this.handleChange}>
+                  <option value={ChallengeStatus.DRAFT}>draft</option>
+                  <option value={ChallengeStatus.REVIEW}>review</option>
+                  <option value={ChallengeStatus.PUBLISHED}>published</option>
+                  <option value={ChallengeStatus.ARCHIVED}>archive</option>
+                </select>
+              </div>
+            </div>
+            
+            <DatePicker id="start"
+              value={c.start}
+              label="challenge start"
+              onChange={this.handleStartDateChange} />
+
+            <DatePicker id="responseDue"
+              value={c.responseDue}
+              label="response due"
+              onChange={this.handleDateChange} />
+
+            <DatePicker id="ratingDue"
+              value={c.ratingDue}
+              label="rating due"
+              onChange={this.handleDateChange} />
+            
+            <DatePicker id="end"
+              value={c.end}
+              label="challenge end"
+                onChange={this.handleDateChange} />
+          </div>
+
 
           <div className="d-flex justify-content-end mt-2 mb-2">
             <SaveButton 

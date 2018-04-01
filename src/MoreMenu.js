@@ -25,7 +25,7 @@ const MoreMenu = (props)=> {
 
   return (
     <div className={`MoreMenu dropdown ${dir}`}>
-      <button type="button" className="MoreIcon btn btn-link text-dark m-0 p-0 icon-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button type="button" className="MoreIcon btn btn-link m-0 p-0 bg-none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <MenuLabel /><MenuIcon />
       </button>
       <div className="dropdown-menu mt-0 pt-0 dropdown-menu-right">
@@ -42,10 +42,10 @@ const KebabVerticalIcon = ()=> {
   const len = 32;
   return (
     <svg width={len} height={len} className="octicon octicon-kebab-vertical" viewBox={`0 0 ${len} ${len}`}>
-      <circle className="icon-bg icon-light" cx={len/2} cy={len/2} r={(len/2)} />
-      <circle cx={len/2} cy={len * .33} r={1.5} />
-      <circle cx={len/2} cy={len/2} r={1.5}  />
-      <circle cx={len/2} cy={len * .66} r={1.5} />
+      <circle fill="#efefef" cx={len/2} cy={len/2} r={(len/2)} />
+      <circle fill="gray" cx={len/2} cy={len * .33} r={1.5} />
+      <circle fill="gray" cx={len/2} cy={len/2} r={1.5}  />
+      <circle fill="gray" cx={len/2} cy={len * .66} r={1.5} />
     </svg>
   )
 }

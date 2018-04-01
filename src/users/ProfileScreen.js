@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 
 
 import Modal from "../Modal";
+import MoreMenu from "../MoreMenu";
 import {Spinner} from "../LoadingModal"
 
 import db from "../DBTools";
@@ -51,15 +52,45 @@ class ProfileScreen extends React.Component {
     let fbu = firebase.auth().currentUser;
     this.setState({lastLogin:fbu.metadata.lastSignInTime});
     
-    ChallengeDB.findByOwner(this.props.user.uid).then((t)=>{
-      this.setState({ challenges: t, loadingChallenges: false });
-    });
+
+    const sortChallenges = (t)=> {
+      const now = new Date();
+      const uid = this.props.user.uid;
+
+      const activeF = (c)=> {
+        return c.status === ChallengeStatus.PUBLISHED && c.start < now && c.end > now;
+      }
+      const futureF = (c)=> {
+        return c.start > now && c.status === ChallengeStatus.PUBLISHED;
+      }
+
+      const statusF = (status)=> {
+        return (c)=>{return c.status === status};
+      }
+
+      const pastF = (c)=>{ return c.status===ChallengeStatus.PUBLISHED && c.end < now; }
+
+      const st = {
+        active: _.filter(t, activeF),
+        drafts: _.filter(t,statusF(ChallengeStatus.DRAFT)),
+        deleted: _.filter(t,statusF(ChallengeStatus.DELETE)),
+        pending: _.filter(t,statusF(ChallengeStatus.REVIEW)),
+        past: _.filter(t,pastF),
+        future: _.filter(t,futureF),
+        loadingChallenges: false
+      };
+      this.setState(st);
+    }
+
+    const ownerP = ChallengeDB.findAll().then(sortChallenges);
 
     ChallengeDB.findResponsesByOwner(this.props.user.uid).then((t)=>{
       this.setState({ responses: t, loadingResponses: false });
     });
 
   }
+
+
 
   clearImage() {
     const oldImage = this.state.profileImg;
@@ -82,7 +113,6 @@ class ProfileScreen extends React.Component {
   handleUpload(e) {
 
     let file = e.target.files[0];
-    const key = e.target.id;
     if(file.size > this.uploadSizeLimit) {
       this.snack("Image not saved.");
       this.setState({fileSizeExceeded: true});
@@ -186,36 +216,57 @@ class ProfileScreen extends React.Component {
 
     }
 
+    const ManageUsers = ()=> {
+      if(!this.props.user.admin)
+        return null;
+      return (
+        <Link to="/admin/users" className="btn dropdown-item">
+          Manage Users
+        </Link> 
+      )
+    }
 
     return (
       <div className="ProfileScreen screen">
         <StarGradient />
-        <div className="mt-2 d-flex justify-content-end">
-          <button type="button" onClick={this.sendPass} className="btn btn-secondary btn-sm mr-2">Reset Password</button>         
-          <button type="button" onClick={this.signout} className="btn btn-secondary btn-sm">
-              Sign Out
-          </button>
-        </div>
+        <div className="d-flex justify-content-between mb-2">
+          <div className="Profile d-flex mt-3 mb-2 justify-content-start align-content-center">
+            <ImageUploadImproved 
+              id="profileImg"
+              className="ProfileImage"
+              label=""
+              img={profileImg}
+              onChange={this.handleUpload}
+              progressBar={progress}
+              clearImage={this.clearImage} />
 
-        <div className="Profile d-flex mt-3 mb-2 justify-content-start align-content-center">
-
-          <ImageUploadImproved 
-            id="profileImg"
-            className="ProfileImage"
-            label=""
-            img={profileImg}
-            onChange={this.handleUpload}
-            progressBar={progress}
-            clearImage={this.clearImage} />
-
-          <div className="ml-3 text-left">
-            <div className="font-weight-bold">{`${this.props.user.firstName} ${this.props.user.lastName}`}</div>
-            <div className="">{this.props.user.email}</div>
-            <div className="">{df.ts(this.state.lastLogin)}</div>
+            <div className="ml-3 text-left">
+              <div className="font-weight-bold">{`${this.props.user.firstName} ${this.props.user.lastName}`}</div>
+              <div className="">{this.props.user.email}</div>
+              <div className="">{df.ts(this.state.lastLogin)}</div>
+            </div>
           </div>
+          <MoreMenu menuIcon="bars" direction="dropdown">
+            <ManageUsers />
+            <button type="button" onClick={this.sendPass} className="btn dropdown-item">
+              Reset Password
+            </button>         
+            <button type="button" onClick={this.signout} className="btn dropdown-item">
+                Sign Out
+            </button>
+          </MoreMenu>
         </div>
+
         <UploadError />
-        <MyChallenges challenges={this.state.challenges} loading={this.state.loadingChallenges} />
+        <MyChallenges 
+          user={this.props.user}
+          drafts={this.state.drafts} 
+          active={this.state.active}
+          pending={this.state.pending}
+          past={this.state.past}
+          future={this.state.future}
+          deleted={this.state.deleted}
+          loading={this.state.loadingChallenges} />
         <MyResponses responses={this.state.responses} loading={this.state.loadingResponses} />
 
         <this.Snackbar />
@@ -252,65 +303,171 @@ const MyResponses = (props)=>{
     CardBody = _.map(props.responses, Response);
 
   return (
-    <div className="card mt-2">
-      <div className="card-body">
-        <h5 className="card-title">My Responses</h5>
-        {CardBody}
-      </div>
+    <div className="ProfileResponses mt-3">
+        <h3 className="border-light border-bottom-1">My Responses</h3>
+        <div className="p-2">{CardBody}</div>
     </div>
   )
 }
 
-
-
-
 const MyChallenges = (props)=>{
 
-  const Challenge = (c)=>{
+
+  const header = (<h3 className="border-light border-bottom-1">My Challenges</h3>);
+  if(props.loading) {
     return (
-      <div className="" key={_.uniqueId("challenge_")}>
-        <ChallengeLink challenge={c} />
-        <ChallengeMsg challenge={c} />
+      <div className="ProfileChallenges mb-2">
+        {header}
+        <Spinner />
       </div>
     )
   }
 
-  let CardBody = <Spinner />
-  if(!props.loading)
-    CardBody = _.map(props.challenges, Challenge);
+  const Challenge = (c)=>{
+    return (
+      <div className={`ProfileChallenge`} key={_.uniqueId("challenge_")}>
+        <div className="d-flex justify-content-between">
+          <div>
+            <div className={`badge badge-${c.stage}`}>{c.stage}</div>
+            <h6 className="font-weight-bold pb-0">{c.title}</h6>
+          </div>
+          <div className="d-flex align-items-top">
+            <ViewLink challenge={c} {...props} />
+            <MoreMenu>
+              <EditLink challenge={c} {...props} />
+              <DeleteLink challenge={c} {...props} />
+              <EditLink challenge={c} {...props} />
+            </MoreMenu>
+          </div>
+        </div>
+          <ChallengeMsg challenge={c} />
+      </div>
+    )
+  }
+
+  const drafts = _.map(props.drafts, Challenge);
+  const pending = _.map(props.pending, Challenge);
+  const active = _.map(props.active, Challenge);
+  const past = _.map(props.past, Challenge);
+  const future = _.map(props.future, Challenge);
+  const deleted = _.map(props.deleted, Challenge);
 
   return (
-    <div className="card">
-      <div className="card-body">
-        <h5 className="card-title">My Challenges</h5>
-        {CardBody}
+    <div className="ProfileChallenges mb-2">
+      <div className="p-2">
+        {header}
+        {active}
+        {drafts}
+        {pending}
+        {future}
+        {past}
+        {deleted}
       </div>
     </div>
   )
 }
 
-const ChallengeLink = (props) => {
-  if(props.challenge.status === ChallengeStatus.DRAFT)
-    return <strong><Link to={`/challenge/${props.challenge.id}/edit`}>{props.challenge.title}</Link></strong>
+const ViewLink = (props) => {
+  return <Link className="d-block" to={`/challenge/${props.challenge.id}`}>View</Link>
+}
 
-  return <strong><Link to={`/challenge/${props.challenge.id}/review`}>{props.challenge.title}</Link></strong>
+const EditLink = (props) => {
+  if(props.challenge.status === ChallengeStatus.DRAFT || props.user.admin)
+    return <Link className={`btn btn-link dropdown-item`} to={`/challenge/${props.challenge.id}/edit`}>Edit</Link>
+  return null;
+}
+
+const DeleteLink = (props) => {
+  let params = {};
+  let css = "";
+  if(props.challenge.stage === "active") {
+    params.disabled = "disabled"
+    css = "disabled"
+  }
+
+  const delChallenge = ()=> {
+    props.deleteChallenge(props.challenge.id);
+  }
+
+  if(props.challenge.status === ChallengeStatus.DRAFT || props.user.admin) {
+    return (
+      <button type="button" onClick={delChallenge} className={`btn dropdown-item ${css}`}>
+        Delete
+      </button> 
+    )
+  
+  }
+  
+  return null;
 }
 
 const ChallengeMsg = (props) => {
+  const now = new Date();
   if(props.challenge.status === ChallengeStatus.DRAFT) {
     return (
-      <div className="text-muted">Draft created on: {df.ts(props.challenge.created)}</div>
+      <small><strong>Draft</strong> {df.ts(props.challenge.created)}</small>
     )
   }
 
   if(props.challenge.status === ChallengeStatus.REVIEW) {
     return (
-      <div className="text-muted"><em>Under review.</em> Last modified: {df.ts(props.challenge.modified)}</div>
+      <small className=""><strong>Under review</strong> {df.ts(props.challenge.modified)}</small>
     )
   }
 
+  if(props.challenge.stage === "active" && now < props.challenge.responseDue) {
+    return (
+      <small><strong>Current Challenge</strong> {df.range(props.challenge.start, props.challenge.end)}</small>
+    )
+  }
+
+  if(props.challenge.stage.review === "rating") {
+    
+    let responseLink = "";
+    if(props.challenge.owner.uid === props.user.uid) {
+      responseLink = (
+        <Link to={`/challenges/${props.challenge.id}/review`}>
+          Review resonses and pick owner's choice.
+        </Link>
+      )
+    }
+    else if(props.challenge.professor.uid === props.user.uid) {
+      responseLink = (
+        <Link to={`/challenges/${props.challenge.id}/review`}>
+          Review resonses and pick owner's choice.
+        </Link>
+      )
+    }
+    else if(!props.user.admin) {
+      responseLink = (
+        <Link to={`/challenges/${props.challenge.id}/respond`}>Go to my response</Link>
+      )
+    }
+
+    return (
+      <div>
+        <small className="d-block"><strong>Current challenge</strong> <em>response due {df.day(props.responseDue)}</em></small>
+        {responseLink}
+      </div>
+      
+    )
+  }
+
+  if(props.challenge.stage === "future") {
+    return (
+      <small><strong>Scheduled Challenge</strong> {df.day(props.challenge.start)}</small>
+    )
+  }
+
+  if(props.challenge.stage === "archive") {
+    return (
+      <small><strong>Past Challenge</strong> {df.range(props.challenge.start, props.challenge.end)}</small>
+    )
+  }
+
+
   return (
-      <div className="text-muted"><strong>Published.</strong> {df.range(props.challenge.start, props.challenge.end, )}</div>
+      <small className="text-muted">{props.challenge.stage} {df.range(props.challenge.start, props.challenge.end )}</small>
     )
 }
 

@@ -201,8 +201,6 @@ const VideoUploadImproved = (props)=> {
 
 const ImageUploadImproved = (props)=> {
 
-  console.log(props.placeholder);
-
   if(props.hide)
     return null;
 

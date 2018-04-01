@@ -18,11 +18,6 @@ class ChallengeListScreen extends React.Component {
       t = _.sortBy(challenges, c=> c.start);
       this.setState({challenges: t});
     });
-    this.props.setAppClass("hands");
-  }
-
-  componentWillUnmount() {
-    this.props.setAppClass("");
   }
 
   render() {
@@ -45,22 +40,24 @@ class ChallengeListScreen extends React.Component {
 
 
 const ChallengeListItem = (props) => {
-  const challenge = props.challenge;
-  const dates = df.range(challenge.start, challenge.end);
+  const c = props.challenge;
 
 
   return (
-    <Link to={`/challenge/${challenge.id}`}
-      className="ChallengeItem d-flex align-items-center justify-content-between">
-      <div className="p2 m-0">
+    <Link to={`/challenge/${c.id}`} className="ChallengeItem">
+      <div className="ChallengeItemHeader">
         <div>
-          <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
-          {dates}
+          <img src="/img/calendar.png" className="mr-2" alt="calendar" />
+          {df.range(c.start, c.end)}
         </div>
-        <h5 className="mt-3">{challenge.title}</h5>
-        <p>Owner: {challenge.owner.firstName} {challenge.owner.lastName}</p>
       </div>
-      <div><ChevronRightIcon /></div>
+      <div className="ChallengeItemBody">
+        <div>
+          <h5 className="">{c.title}</h5>
+          <div>Submitted by {c.owner.firstName} {c.owner.lastName}</div>
+        </div>
+        <div className="icon-lg"><ChevronRightIcon /></div>
+      </div>
     </Link>
   );
 }

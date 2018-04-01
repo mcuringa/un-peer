@@ -225,11 +225,9 @@ class ManageUsersScreen extends React.Component {
     
     return (
       <div className="ManageUsersScreen screen" style={{marginBottom: "60px"}}>
-        <div className="row m-auto">
-          <div className="col-11">
-            <h4>User Manager</h4>
-          </div>
-          <div className="col-1">
+        <div className="d-flex justify-content-between align-items-center">
+          <h4>User Manager</h4>
+          <div className="pr-1">
             <StatusIndicator dirty={this.state.dirty} loading={this.state.loading} />
           </div>
         </div>

@@ -141,11 +141,22 @@ class ChallengeReviewScreen extends React.Component {
       const msg = this.snack("bookmark deleted");
       const path = `/users/${uid}/bookmarks`;
 
+      let u = this.props.user;
+      let t = _.filter(u.bookmarks, b=>b.id!==response.id);
+      u.bookmarks = t;
+      this.props.updateAppUser(u);
+
       db.delete(path, response.id).then(msg);
     }
     else {
-      const msg = this.snack("bookmark added");
-      UserDB.addBookmark(uid, response, c).then(msg);
+      UserDB.addBookmark(uid, response, c).then((b)=>{
+        this.snack("bookmark added");
+  
+        let u = this.props.user;
+        u.bookmarks = _.concat(u.bookmarks, b);
+        this.props.updateAppUser(u);
+
+      });
     }
   }
 

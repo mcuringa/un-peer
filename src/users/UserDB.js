@@ -59,8 +59,10 @@ addBookmark(uid, response, challenge) {
   const rKeys = ["title", "video", "avgRating","text"];
   let bookmark = _.pick(response, rKeys);
   bookmark.challengeId = challenge.id;
+  bookmark.challengeOwner = challenge.owner;
   bookmark.challengeTitle = challenge.title;
   bookmark.challengeStart = challenge.start;
+  bookmark.challengeEnd = challenge.challengeEnd;
   bookmark.created = new Date();
 
   const path = `/users/${uid}/bookmarks`;
