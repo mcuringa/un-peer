@@ -8,8 +8,9 @@ class Modal  extends React.Component {
   }
 
   componentDidUpdate() {
-    if(this.props.show)
+    if(this.props.show) {
       $(`#${this.props.id}`).modal("show");
+    }
     else {
       $(`#${this.props.id}`).modal("hide");
     }
@@ -17,9 +18,7 @@ class Modal  extends React.Component {
 
 
   propsWillChange(nextProps) {
-    console.log(this.props.closeHandler);
     if(this.props.closeHandler && !nextProps.show && this.props.show) {
-      console.log("calling close handler");
       this.props.closeHandler();
     }
   }
@@ -28,7 +27,7 @@ class Modal  extends React.Component {
   render() {
     const ModalBody = this.props.body || this.props.children;
     return (
-      <div className={`modal fade`} id={this.props.id} tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div className={`modal fade`} id={this.props.id} tabIndex="-1" role="dialog" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
             <ModalHeader title={this.props.title} />
@@ -44,9 +43,6 @@ class Modal  extends React.Component {
 
 const ModalHeader = (props)=> {
 
-  // if(!props.title)
-  //   return null;
-
   return (
     <div className="modal-header">
       <h5 className="modal-title">{props.title}</h5>
@@ -55,10 +51,8 @@ const ModalHeader = (props)=> {
       </button>
     </div>
 
-  );
-
-
-};
+  )
+}
 
 const ModalFooter = (props)=> {
 
@@ -69,8 +63,8 @@ const ModalFooter = (props)=> {
     <div className="modal-footer">
       {props.footer}
     </div>
-  );
-};
+  )
+}
 
 const ConfirmFooter = (props)=> {
 
@@ -89,8 +83,8 @@ const ConfirmFooter = (props)=> {
         onClick={ok}
         className="btn btn-primary">{label}</button>
     </div>
-  );
-};
+  )
+}
 
 
 

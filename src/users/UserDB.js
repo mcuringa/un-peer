@@ -62,7 +62,7 @@ addBookmark(uid, response, challenge) {
   bookmark.challengeOwner = challenge.owner;
   bookmark.challengeTitle = challenge.title;
   bookmark.challengeStart = challenge.start;
-  bookmark.challengeEnd = challenge.challengeEnd;
+  bookmark.challengeEnd = challenge.end;
   bookmark.created = new Date();
 
   const path = `/users/${uid}/bookmarks`;

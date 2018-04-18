@@ -17,6 +17,9 @@ import {
   VideoUploadImproved
 } from "../FormUtil";
 
+
+import {MediaUpload} from "../MediaManager";
+
 import ChallengeHeader from "./ChallengeHeader";
 
 class ChallengeResponseForm extends React.Component {
@@ -66,7 +69,23 @@ class ChallengeResponseForm extends React.Component {
       },()=>{console.log("no response");});
   }
 
-  handleUpload(e) {
+  handleUpload(src, key) {
+
+    let r = this.state.response;
+    r.video = src;
+    r.videoOptOut = false;
+
+    this.setState({
+      response: r,
+      dirty: true, 
+      loading: false,
+      uploadStatus: "",
+      uploadPct: 0
+    }); 
+    
+  }
+
+  _handleUpload(e) {
 
     const challengeId = this.challengeId;
 
@@ -274,16 +293,17 @@ class ResponseForm extends React.Component {
         <div className="d-flex justify-content-end">
           <div className="font-weight-bold text-right"><small>Upload a short video (1-2 minutes).</small></div>
         </div>
-
-        <VideoUploadImproved id="video" 
-          video={props.response.video}
-          poster="/img/poster.png"
-          onChange={props.handleUpload} 
-          label=""
+        
+        <MediaUpload id="video" 
+          media="video"
+          url={props.response.video}
           required={props.response.videoOptOut === false}
+          handleUpload={props.handleUpload}
+          clearMedia={props.clearVideo}
+          maxFileSize={80*1000*1000}
           validationErrorMsg={<VideoErrMsg />}
-          clearVideo={props.clearVideo}
-          progressBar={(<UploadProgress pct={props.pct} msg={props.msg} />)} />
+        />
+
 
         <Checkbox
           id="videoOptOut"

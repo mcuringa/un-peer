@@ -14,7 +14,7 @@ import LoadingModal from './LoadingModal.js';
 
 import {ChallengeListScreen} from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
-import {ChallengeEditScreen} from './challenges/ChallengeEdit.js';
+import {CloseChallengeScreen} from './challenges/CloseChallenge.js';
 import NewChallengeScreen from './challenges/NewChallenge.js';
 import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
@@ -24,6 +24,8 @@ import ManageChallengesScreen from './challenges/ManageChallenges.js';
 
 
 import AdminScreen from './admin/AdminScreen';
+import MainMenu from './MainMenu';
+import {StarGradient} from './StarRatings';
 
 import BookmarkScreen from './users/BookmarkScreen.js';
 import BookmarkDetailScreen from './users/BookmarkDetailScreen.js';
@@ -31,6 +33,8 @@ import CalendarScreen from './CalendarScreen.js';
 
 import Login from './users/Login.js';
 import ProfileScreen from './users/ProfileScreen.js';
+import MyChallengesScreen from './users/MyChallenges.js';
+import MyResponsesScreen from './users/MyResponses.js';
 import ManageUsersScreen from './users/ManageUsersScreen';
 import db from "./DBTools";
 import {ChallengeDB} from "./challenges/Challenge";
@@ -44,7 +48,6 @@ export default class App extends Component {
       userLoaded: false,
       loadingMsg: "Signing in..."
     };
-    this.setAppClass = this.setAppClass.bind(this);
     this.userListener = this.userListener.bind(this);
     this.updateAppUser = this.updateAppUser.bind(this);
   }
@@ -93,22 +96,16 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    this.setState({appClass: null});
     FBUtil.getAuthUser(this.userListener);
 
-  }
-
-  setAppClass(clazz) {
-    console.log("updating app class");
-    this.setState({appClass: clazz});
   }
 
   render() {
 
     if(this.state.userLoaded && !this.state.user.email){
       return (
-        <div className={`App container login`}>
-          <Login user={this.state.user} setAppClass={this.setAppClass} loadingHandler={this.loadingHandler} />
+        <div id="LoginScreen" className={`App container login`}>
+          <Login user={this.state.user} loadingHandler={this.loadingHandler} />
         </div>
       );
     }
@@ -135,8 +132,7 @@ export default class App extends Component {
       <Router>
         <SecureScreens 
           user={this.state.user}
-          updateAppUser={this.updateAppUser}
-          setAppClass={this.setAppClass} />
+          updateAppUser={this.updateAppUser} />
       </Router>
     );
   }
@@ -144,7 +140,8 @@ export default class App extends Component {
 
 const AppContainer = (props)=> {
   return (
-    <div id={props.id} className={`App container ${props.appClass||""}`}>
+    <div id={props.id} className={`App container`}>
+      <StarGradient />
       <Header user={props.user} />
       <section id="main">{props.children}</section>
       <Footer user={props.user} />
@@ -155,20 +152,15 @@ const AppContainer = (props)=> {
 
 const Header = (props)=>{
   return (
-    <header className="App-header container fixed-top">
-      <div className="d-flex align-items-center justify-content-between">
+    <header className="App-header container fixed-top pt-1">
+      <div className="d-flex justify-content-between pr-0">
         <div className="App-home">
           <NavLink to="/" exact={true} activeclass="active">
-            <div className="home-icon"></div>
+            <img src="/img/home.png" alt="logo" />
           </NavLink>
         </div>
-        <div className="App-title">UN Peer Challenges</div>
-        <div className="App-notifications">
-          <NavLink to="/notifications">
-            <img src="/img/header/Notification_unclicked_btn.png"
-               alt="Notification icon" />
-          </NavLink>
-        </div>
+        <div className="App-title">UN Peer Challenge</div>
+        <MainMenu user={props.user} />
       </div>
     </header>
   );
@@ -184,13 +176,18 @@ const SecureScreens = (props)=>{
         <ScreenRoute  id="BookmarkDetailScreen" {...props} path="/bookmarks/:id"  component={BookmarkDetailScreen} />
         <ScreenRoute  id="BookmarkScreen" {...props} path="/bookmarks"  component={BookmarkScreen} />
         <ScreenRoute  id="NewChallengeScreen" {...props} exact path="/challenge/new" component={NewChallengeScreen} />
-        <ScreenRoute  id="ChallengeEditScreen" {...props} path="/challenge/:id/edit"  component={ChallengeEditScreen} />
+        <ScreenRoute  id="ChallengeEditScreen" {...props} path="/challenge/:id/edit"  component={NewChallengeScreen} />
+        <ScreenRoute  id="CloseChallengeScreen" {...props} path="/challenge/:id/close"  component={CloseChallengeScreen} />
         <ScreenRoute  id="ChallengeResponseForm" {...props} path="/challenge/:id/respond" component={ChallengeResponseForm}/>
         <ScreenRoute  id="ProfessorResponseForm" {...props} path="/challenge/:id/prof" component={ProfessorResponseForm} />
         <ScreenRoute  id="ResponseRatings" {...props} path="/challenge/:id/rate" component={ResponseRatings} />
         <ScreenRoute  id="ChallengeReviewScreen" {...props} path="/challenge/:id/review" component={ChallengeReviewScreen} />
         <ScreenRoute  id="ChallengeDetailScreen" {...props} path="/challenge/:id" component={ChallengeDetailScreen} />
-        <ScreenRoute  id="ProfileScreen" {...props} path="/profile"  component={ProfileScreen} />
+        
+        <ScreenRoute  id="ProfileScreen" {...props} exact path="/profile"  component={ProfileScreen} />
+        <ScreenRoute  id="MyChallengesScreen" {...props} exact path="/my/challenges"  component={MyChallengesScreen} />
+        <ScreenRoute  id="MyResponsesScreen" {...props} exact path="/my/responses"  component={MyResponsesScreen} />
+        
         <ScreenRoute  id="Login" {...props} path="/login" component={Login} />
         <ScreenRoute  id="Login" {...props} path="/signout" component={Login} />
         <ScreenRoute  id="ManageUsersScreen" {...props} path="/admin/users" component={ManageUsersScreen} />
@@ -212,7 +209,7 @@ const renderMergedProps = (component, ...rest) => {
 const ScreenRoute = ({ component, ...rest }) => {
 
   return (
-    <AppContainer id={rest.id} appClass={rest.appClass||""} user={rest.user}>
+    <AppContainer id={rest.id} user={rest.user}>
       <Route {...rest} render={routeProps => {
         return renderMergedProps(component, routeProps, rest);
       }}/>

@@ -9,10 +9,11 @@ import UserDB from "../users/UserDB.js";
 import {ChallengeDB} from "./Challenge.js";
 import ChallengeHeader from "./ChallengeHeader.js";
 
-import {StarIcon, FlameIcon, ChevronDownIcon, ChevronRightIcon, BookmarkIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import LoadingModal from "../LoadingModal";
 import Snackbar from "../Snackbar";
+
+import Response from "./Response"
 
 class ChallengeReviewScreen extends React.Component {
   constructor(props) {
@@ -22,7 +23,6 @@ class ChallengeReviewScreen extends React.Component {
     let hash = window.decodeURIComponent(window.location.hash);
     if(hash && hash.length>0)
       hash = hash.slice(1);
-
 
     this.state = {
       loadingChallenge: true,
@@ -46,7 +46,8 @@ class ChallengeReviewScreen extends React.Component {
     this.earlyAccess = this.props.user.admin;
     this.toggleBookmark = _.bind(this.toggleBookmark, this);
     this.isLoading = this.isLoading.bind(this);
-    this.featureResponse = this.featureResponse.bind(this);
+    this.setProfChoice = this.setProfChoice.bind(this);
+    this.setOwnerChoice = this.setOwnerChoice.bind(this);
 
   }
 
@@ -105,18 +106,21 @@ class ChallengeReviewScreen extends React.Component {
 
   }
 
-  featureResponse(response) {
+  setOwnerChoice(response) {
     let c = this.state.challenge;
-    let msg = "";
-    if(this.state.isProfessor){
-      c.professorChoice = response;
-      msg = "Professor's Choice saved";
-    }
-    else{
-      c.ownerChoice = response;
-      msg = "Owner's Choice saved";
-    }
+    const msg = "Owner's Choice saved";
+    c.ownerChoice = response;
     
+    ChallengeDB.save(c).then(()=>{
+      this.setState({challenge: c});
+      this.snack(msg);       
+    });
+  }
+
+  setProfChoice(response) {
+    let c = this.state.challenge;
+    const msg = "Expert's Choice saved";
+    c.professorChoice = response;
     ChallengeDB.save(c).then(()=>{
       this.setState({challenge: c});
       this.snack(msg);       
@@ -192,43 +196,98 @@ class ChallengeReviewScreen extends React.Component {
       return f;
     }
 
-    const profFeatId = this.state.professorChoice.id || "";
-    const ownerFeatId = this.state.ownerChoice.id || "";
-    const filterFeatures = (r)=>{ return r.id !== profFeatId && r.id !== ownerFeatId };
-    
-    let responses = _.filter(this.state.responses, filterFeatures);
-    responses = _.reverse(_.sortBy(responses, r=>r.avgRating||-1));
-    const highestRating = responses[0].avgRating;
-    responses = _.map(responses, (r)=> {
-      if(r.avgRating === highestRating)
-        r.topRated = true;
+    const compProf = (a,b)=>{
+      if(a.profChoice && !b.profChoice)
+        return -1;
+
+      if(b.profChoice && !a.profChoice)
+        return 1;
+
+      return 0;
+    }
+
+    const compOwner = (a,b)=>{
+      if(a.ownerChoice && !b.ownerChoice)
+        return -1;
+
+      if(b.ownerChoice && !a.ownerChoice)
+        return 1;
+
+      return 0;
+    }
+
+    const highestRatingEarliestDateComp = (a, b)=>{
+      const p = compProf(a,b);
+      if(p)
+        return p;
+
+      const o = compOwner(a,b);
+      if(o)
+        return o;
+
+      if (a.avgRating < b.avgRating) {
+        return 1;
+      }
+      if (a.avgRating > b.avgRating) {
+        return -1;
+      }
+
+      if (a.created < b.created) {
+        return -1;
+      }
+      if (a.created > b.created) {
+        return 1;
+      }
+      return 0;
+    }
+
+    const ownerFeatId = (this.state.challenge.ownerChoice)?this.state.challenge.ownerChoice.id : "";
+    const profFeatId = (this.state.challenge.professorChoice)?this.state.challenge.professorChoice.id : "";
+
+    let responses = _.map(this.state.responses, (r)=> {
+      r.avgRating = r.avgRating||0;
+      r.ownerChoice = (r.id === ownerFeatId);
+      r.profChoice = (r.id === profFeatId);
       return r;
     });
+
+    responses.sort(highestRatingEarliestDateComp);
+
+    // const highestRating = responses[0].avgRating;
+    // responses = _.map(responses, (r)=> {
+    //   r.topRated = (r.avgRating === highestRating);
+    //   return r;
+    // });
 
 
     let ResponseList = _.map(responses, (r, i)=>{
 
       return (
         <Response 
+          key={_.uniqueId("resp_")}
+          challenge={this.state.challenge}
           response={r} 
-          keyIndex={i}
-          key={`resp_${i}`}
-          user={this.props.user} 
+          profChoice={r.profChoice}
+          ownerChoice={r.ownerChoice}
+          open={r.profChoice || r.ownerChoice || r.id === this.state.targetResponseId}
+          user={this.props.user}
           isOwner={this.state.isOwner}
           isProfessor={this.state.isProfessor}
-          featureResponse={this.featureResponse}
-          challenge={this.state.challenge}
           toggleBookmark={makeToggleFunction(r)} 
-          open={r.id === this.state.targetResponseId}
           targetResponseId={this.state.targetResponseId}
-          bookmarked={this.state.bookmarks[r.id]} />
+          bookmarked={this.state.bookmarks[r.id]}
+          editable={true}
+          bookmarkable={true}
+          setOwnerChoice={this.setOwnerChoice}
+          setProfChoice={this.setProfChoice} />
+
       );
     });
 
 
     return (
       <div className="ResponseReviewScreen screen">
-        <StarGradient />
+
         <ChallengeHeader challenge={this.state.challenge} 
           screenTitle="Challenge Review"
           owner={this.state.challenge.owner} 
@@ -243,29 +302,14 @@ class ChallengeReviewScreen extends React.Component {
           isOwner={this.state.isOwner} 
           user={this.props.user} />
 
-        <ProfessorResponse
-          response={this.state.challenge.professorChoice}
-          key="profRespKey"
-          keyIndex="profRespKey"
-          challenge={this.state.challenge}
-          isProfessor={this.state.isProfessor} 
-          isOwner={this.state.isOwner}
-          bookmarked={this.state.bookmarks[this.state.professorChoice.id]}
-          toggleBookmark={makeToggleFunction(this.state.challenge.professorChoice)} 
-          user={this.props.user} 
-        />
-
-        <Response
-          open={true}
-          response={this.state.challenge.ownerChoice}
-          challenge={this.state.challenge}
-          key="ownerResponseKey"
-          keyIndex="ownerResponseKey"
-          user={this.props.user} 
-          toggleBookmark={makeToggleFunction(this.state.challenge.ownerChoice)} 
-          bookmarked={this.state.bookmarks[this.state.ownerChoice.id]}
-          ownerChoice={true}
-        />
+        <Video 
+          video={this.state.challenge.professorVideo}
+          poster={this.state.challenge.professorPoster} />
+        
+        <blockquote className="blockquote">
+          <p className="mb-0">{this.state.challenge.professorResponse}</p>
+          <footer className="blockquote-footer text-right">Professor {this.state.challenge.professor.lastName}</footer>
+        </blockquote>
 
         {ResponseList}
         <Snackbar show={this.state.showSnack} 
@@ -275,32 +319,6 @@ class ChallengeReviewScreen extends React.Component {
       </div>
     );
   }
-}
-
-
-const ProfessorResponse = (props) => {
-  return (
-    <div>
-      <Video 
-        video={props.challenge.professorVideo}
-        poster={props.challenge.professorPoster} />
-      <div>
-        <small><strong>Response from Professor {props.challenge.professor.lastName}</strong></small>
-      </div>
-
-      <Response
-        open={true}
-        response={props.response}
-        challenge={props.challenge}
-        keyIndex="profRespKey"
-        key="profRespKey"
-        user={props.user} 
-        toggleBookmark={props.toggleBookmark} 
-        bookmarked={props.bookmarked}
-        profChoice={true}
-      />
-    </div>
-  )
 }
 
 const WelcomeProfessor = (props) => {
@@ -314,7 +332,9 @@ const WelcomeProfessor = (props) => {
       <p>
         As the professor for this challenge, please review the responses as
         they become available. After you have chosen the response you would like to feature,
-        click the <span className="badge badge-primary">★ set feature ★</span> button
+        click the <span className="badge badge-sm badge-secondary">
+          Make expert's choice
+        </span> button
         for that response.
       </p>
       <small>
@@ -340,8 +360,9 @@ const WelcomeOwner = (props) => {
       <p>
         As the creator of this challenge, please review the responses as
         they become available. After you have chosen the response you would like to feature,
-        click the <span className="badge badge-primary">★ set feature ★</span> button
-        for that response.
+        click the <span className="badge badge-sm badge-secondary">
+          Make owners's choice
+        </span> button for that response.
       </p>
       <small>
         All responses to this challenge will be
@@ -353,231 +374,6 @@ const WelcomeOwner = (props) => {
     </div>
   );
 }
-
-const Bookmark = (props) => {
-
-  const fillClass = (props.bookmarked)?"icon-primary":"icon-secondary";
-
-  return(
-    <div className={`clickable ${fillClass}`} onClick={props.toggleBookmark}>
-      <BookmarkIcon />
-    </div>
-  );
-}
-
-class Response  extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {open: props.open}
-  }
-
-  render() {
-    const r = this.props.response;
-    if(!r)
-      return null;
-
-    const feature = ()=>{ this.props.featureResponse(r); };
-    const toggleCss = (this.state.open)?"show":"collapse";
-    const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
-    
-    const setToggle = () => {this.setState({open: !this.state.open})};
-
-    const ProfFeature = ()=> {
-      if(!this.props.profChoice)
-        return null;
-
-      return (
-        <div className="badge badge-primary">
-          <div className="icon-light badge badge-primary ml-1"><FlameIcon /></div>
-          <strong>Professor's Choice</strong>
-        </div>
-      )  
-    }
-
-    const OwnerFeature = ()=> {
-      if(!this.props.ownerChoice)
-        return null;
-
-      return (
-        <div className="d-flex align-content-center badge badge-primary">
-          <div className="icon-light mr-1"><FlagIcon /></div>
-          <div style={{fontSize: "18px", lineHeight: "32px"}}>Owner's Choice</div>
-        </div>
-      )  
-    }
-
-
-    const TopRated = ()=> {
-      if(!r.topRated)
-        return null;
-
-      return (
-        <div className="d-flex align-content-center badge badge-primary">
-          <div className="p-1 mr-1"><img src="/img/CircleStar.svg" style={{width:"24px"}} alt="star icon" /></div>
-          <div style={{fontSize: "20px", lineHeight: "32px"}}>Top Ranked</div>
-        </div>
-      )  
-    }
-
-
-    const AuthorInfo = ()=> {
-      if(!this.props.profChoice && !this.props.ownerChoice && !r.topRated)
-        return null;
-      return (
-        <p><small>Submitted by: {r.user.firstName} {r.user.lastName}</small></p>
-      )
-    }
-
-    const FeatureButton = ()=>{
-      if(!this.props.isProfessor && !this.props.isOwner)
-        return null;
-
-      return (
-        <button 
-          className="btn btn-sm btn-block btn-primary mb-2" 
-          style={{marginTop:"-1rem"}}
-          type="button"
-          onClick={feature}>
-          ★ set feature ★
-        </button>
-      )
-    };
-
-    const targetCss = (this.props.targetResponseId === r.id)?"highlight":"";
-
-    return (
-      <div id={r.id} className={`card mb-3 ${targetCss}`}>
-        <div id={`head_${this.props.keyIndex}`} className="card-header" aria-expanded={this.props.open}>
-          <div className="row">
-            <div className="col-5 clickable"
-              onClick={setToggle}
-              data-toggle="collapse" 
-              data-target={`#body_${this.props.keyIndex}`}>
-              <strong>{r.title}</strong>
-            </div>
-            <div className="col-5 clickable" data-toggle="collapse" 
-              onClick={setToggle}
-              data-target={`#body_${this.props.keyIndex}`}>
-              <StarRatings rating={r.avgRating} />
-            </div>
-            <div className="col-1 clickable" data-toggle="collapse"
-              onClick={setToggle} 
-              data-target={`#body_${this.props.keyIndex}`}>
-              {ToggleIcon}
-            </div>
-            <div className="col-1">
-              <Bookmark {...this.props} />
-            </div>
-          </div>
-          <div className="d-flex flex-row-reverse">
-            <ProfFeature />
-            <OwnerFeature />
-            <TopRated />
-          </div>
-        </div>
-        <div id={`body_${this.props.keyIndex}`} className={toggleCss} data-parent="#ResponseList">
-          <div className="card-body">
-            <FeatureButton />
-            <Video video={r.video} />
-            <AuthorInfo />
-            {r.text}
-          </div>
-        </div>
-      </div>
-
-    );
-  }
-}
-
-const StarGradient = (props)=> {
-  const angles = {
-    x1:"0%",
-    y1:"50%",
-    x2:"100%",
-    y2:"50%"
-  }
-  return (
-    <div style={{height: 0}}>
-    <svg>
-      <pattern id="UnratedHash" patternUnits="userSpaceOnUse" width="4" height="4">
-        <path d="M-1,1 l2,-2
-                 M0,4 l4,-4
-                 M3,5 l2,-2" 
-              style={{stroke:"black", strokeWidth:1}} />
-      </pattern>
-      <linearGradient id="QuarterFull" {...angles}>
-        <stop offset="40%" stopColor="#6c757d"/>
-        <stop offset="40%" stopColor="white"/>
-      </linearGradient>
-      <linearGradient id="HalfFull" {...angles}>
-        <stop offset="50%" stopColor="#6c757d"/>
-        <stop offset="50%" stopColor="white"/>
-      </linearGradient>
-      <linearGradient id="ThreeQuartersFull" {...angles}>
-        <stop offset="60%" stopColor="#6c757d"/>
-        <stop offset="60%" stopColor="white"/>
-      </linearGradient>
-
-    </svg>
-    </div>
-  )
-}
-
-const StarRatings = (props)=>{
-
-  const stars = _.map([true,true,true,true,true], (n, i, t)=>{
-    return (
-      <Star key={`star_${props.responseId}_${i}`} 
-        val={i+1} 
-        rating={props.rating} />
-    );
-  });
-
-  const css = props.className || "";
-  return (
-    <div className={`bg-light d-flex justify-content-between ${css}`}>{stars}</div>
-  );
-
-}
-
-const Star = (props)=> {
-
-  const fillStyle = (v, rating)=> {
-    if(!rating || rating === -1)
-      return "not-rated";
-
-    const roundToQuartile = (n)=> {
-      n = Math.round(n*4)/4;
-      return _.round(n,2);
-    }
-
-    rating = roundToQuartile(rating);
-    const pct = rating - Math.floor(rating);
-
-    if(props.val < Math.floor(rating))
-      return "filled";
-    
-    if(props.val > rating)
-      return "";
-
-
-    if(pct === .25)
-      return "quarter";
-    if(pct === .50)
-      return "half";
-    if(pct === .75)
-      return "three-quarters";
-
-    return "filled";
-  }
-
-  let fill = fillStyle(props.val, props.rating);
-
-  return (
-    <div className={`Star ${fill}`}><StarIcon /></div>
-    );
-}
-
 
 const TooEarly = (props)=> {
 
@@ -601,17 +397,6 @@ const TooEarly = (props)=> {
   );
 }
 
-const FlagIcon = (props)=> {
-  return (
-    <svg height="32px" width="32px" className="pt-2 pl-2">
-      <g transform="scale(.65)">
-        <rect fill="white" width="4" height="32" x="0" y="0" />
-        <rect fill="white" width="19" height="19" x="0" y="0" />
-        <rect fill="white" width="14" height="18" x="16" y="4" />
-      </g>
-    </svg>
-  )
-}
+
 
 export default ChallengeReviewScreen;
-export {StarRatings, StarGradient};

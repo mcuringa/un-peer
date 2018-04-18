@@ -6,13 +6,12 @@ import { Redirect, Link } from 'react-router-dom';
 
 import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import FBUtil from "../FBUtil";
-import df from "../DateUtil";
+// import df from "../DateUtil";
 
 import {
   TextGroup,
   DatePicker,
   TextAreaGroup,
-  StatusIndicator,
   VideoUploadImproved,
   ImageUploadImproved
 } from "../FormUtil";
@@ -21,7 +20,6 @@ import {formatFileSize} from "../MediaManager";
 import ChooseUser from "../users/ChooseUser";
 import Modal from "../Modal";
 import {snack, SnackMaker} from "../Snackbar";
-import Accordion from "../Accordion";
 
 class ChallengeEditScreen extends React.Component {
   constructor(props) {
@@ -267,31 +265,7 @@ class ChallengeEditScreen extends React.Component {
             clearImage={()=>{this.clearField("videoPoster");}}
           />
 
-          <div className="d-none">
-            <h5 className="mr-2 text-right">Professor Video</h5>
-            <VideoUploadImproved id="professorVideo" 
-              className="m-0 p-0"
-              video={c.professorVideo}
-              poster={c.professorVideoPoster || "/img/poster.png"}
-              clearVideo={()=>{this.setState({confirmClearVideo:true})}}
-              handleUpload={this.handleUpload}
-              pct={this.state.professorVideoPct} 
-              msg={this.state.professorVideoStatus}
-            />
 
-            <ImageUploadImproved 
-              id="proessorVideoPoster"
-              pct={this.state.videoPosterPct} 
-              img={c.profVideoPoster} 
-              label="professor video thumbnail"
-              placeholder="upload a professor video thumbnail image"
-              placeholderImg="/img/poster.png"
-              onChange={this.handleUpload}
-              textOnly
-              clearImage={()=>{this.clearField("videoPoster");}}
-              help="Upload a custom thumbnail image that users will see while your video loads, before they press play."
-            />
-          </div>
 
           <ChooseProf challenge={this.state.challenge}
             clearProfessor={()=>{this.clearField("professor");}}
@@ -311,6 +285,7 @@ class ChallengeEditScreen extends React.Component {
                 <select id="status" value={c.status} className="custom-select" onChange={this.handleChange}>
                   <option value={ChallengeStatus.DRAFT}>draft</option>
                   <option value={ChallengeStatus.REVIEW}>review</option>
+                  <option value={ChallengeStatus.REJECT}>rejected</option>
                   <option value={ChallengeStatus.PUBLISHED}>published</option>
                   <option value={ChallengeStatus.ARCHIVED}>archive</option>
                 </select>
@@ -432,30 +407,30 @@ const SubmitChallengeButtons = (props)=> {
 }
 
 
-const FormHeader = (props)=>
-{
-  const c = props.challenge;
-  return (
-    <div className="position-relative">
-      <div className="ChallengeEditHeader">
-        <div className="inner d-flex align-items-center justify-content-between">
-          <h4 className="p-2">
-            {c.title}
-          </h4>
-          <div className="d-flex align-items-end mr-2">
-            <StatusIndicator dirty={props.dirty} loading={false} />
-          </div>
+// const FormHeader = (props)=>
+// {
+//   const c = props.challenge;
+//   return (
+//     <div className="position-relative">
+//       <div className="ChallengeEditHeader">
+//         <div className="inner d-flex align-items-center justify-content-between">
+//           <h4 className="p-2">
+//             {c.title}
+//           </h4>
+//           <div className="d-flex align-items-end mr-2">
+//             <StatusIndicator dirty={props.dirty} loading={false} />
+//           </div>
 
-        </div>
-      </div>
+//         </div>
+//       </div>
 
-      <div className="ChallengeMetaData" style={{paddingTop: "40px"}}>
-        <div className="small text-muted">Owner: {props.owner.firstName} {props.owner.lastName}</div>
-        <small className="text-muted"><tt>created: {df.ts(c.created)} | </tt></small>
-        <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>
-      </div>
-    </div> );
-}
+//       <div className="ChallengeMetaData" style={{paddingTop: "40px"}}>
+//         <div className="small text-muted">Owner: {props.owner.firstName} {props.owner.lastName}</div>
+//         <small className="text-muted"><tt>created: {df.ts(c.created)} | </tt></small>
+//         <small className="text-muted"><tt>modified: {df.ts(c.modified)}</tt></small>
+//       </div>
+//     </div> );
+// }
 
 const ChooseOwner = (props)=> {
   const c = props.challenge;

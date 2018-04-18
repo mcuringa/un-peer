@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import _ from "lodash";
-import {PrimitiveDotIcon, ChevronRightIcon} from 'react-octicons';
+import {ChevronRightIcon} from 'react-octicons';
 import df from "../DateUtil";
 
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"

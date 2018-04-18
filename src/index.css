@@ -4286,7 +4286,7 @@ button.bg-dark:hover,
 button.bg-dark:focus {
   background-color: #1d2124 !important; }
 
-.bg-white, .App-header, .App-footer-toolbar, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
+.bg-white, .App-footer-toolbar, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .RatedResponse {
   background-color: #fff !important; }
 
 .bg-transparent {
@@ -4301,7 +4301,7 @@ button.bg-dark:focus {
 .border-right {
   border-right: 1px solid #dee2e6 !important; }
 
-.border-bottom, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
+.border-bottom, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .RatedResponse {
   border-bottom: 1px solid #dee2e6 !important; }
 
 .border-left {
@@ -4340,7 +4340,7 @@ button.bg-dark:focus {
 .border-danger {
   border-color: #dc3545 !important; }
 
-.border-light, .App-header, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
+.border-light, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .RatedResponse {
   border-color: #f8f9fa !important; }
 
 .border-dark {
@@ -4368,7 +4368,7 @@ button.bg-dark:focus {
   border-top-left-radius: 0.25rem !important;
   border-bottom-left-radius: 0.25rem !important; }
 
-.rounded-circle {
+.rounded-circle, .ProfileImage img {
   border-radius: 50% !important; }
 
 .rounded-0, .ChallengeItem {
@@ -4400,7 +4400,7 @@ button.bg-dark:focus {
 .d-table-cell {
   display: table-cell !important; }
 
-.d-flex, .ChallengeItem, .StaticChallengeItem, .ChallengeItemHeader, .ChallengeItemBody, .RatedResponseHeader {
+.d-flex, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .ChallengeItemHeader, .ChallengeItemBody, .RatedResponseHeader {
   display: flex !important; }
 
 .d-inline-flex {
@@ -4570,7 +4570,7 @@ button.bg-dark:focus {
 .justify-content-center {
   justify-content: center !important; }
 
-.justify-content-between, .ChallengeItem, .StaticChallengeItem, .ChallengeItemHeader, .ChallengeItemBody, .RatedResponse, .RatedResponseHeader {
+.justify-content-between, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .ChallengeItemHeader, .ChallengeItemBody, .RatedResponse, .RatedResponseHeader {
   justify-content: space-between !important; }
 
 .justify-content-around {
@@ -4582,7 +4582,7 @@ button.bg-dark:focus {
 .align-items-end {
   align-items: flex-end !important; }
 
-.align-items-center {
+.align-items-center, .ProfileMenuItem {
   align-items: center !important; }
 
 .align-items-baseline {
@@ -5137,7 +5137,7 @@ button.bg-dark:focus {
 .px-1 {
   padding-right: 0.25rem !important; }
 
-.pb-1, .ChallengeItem, .StaticChallengeItem, .RatedResponse,
+.pb-1, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .RatedResponse,
 .py-1 {
   padding-bottom: 0.25rem !important; }
 
@@ -5148,11 +5148,11 @@ button.bg-dark:focus {
 .p-2 {
   padding: 0.5rem !important; }
 
-.pt-2, .ChallengeItem, .StaticChallengeItem, .RatedResponseHeader,
+.pt-2, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .RatedResponseHeader,
 .py-2 {
   padding-top: 0.5rem !important; }
 
-.pr-2, .StaticChallengeItem,
+.pr-2, .StaticChallengeItem, .ProfileMenuItem,
 .px-2 {
   padding-right: 0.5rem !important; }
 
@@ -5160,7 +5160,7 @@ button.bg-dark:focus {
 .py-2 {
   padding-bottom: 0.5rem !important; }
 
-.pl-2, .StaticChallengeItem, .RatedResponse,
+.pl-2, .StaticChallengeItem, .ProfileMenuItem, .RatedResponse,
 .px-2 {
   padding-left: 0.5rem !important; }
 
@@ -5987,7 +5987,7 @@ button.bg-dark:focus {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-.text-left, .ChallengeItem, .StaticChallengeItem {
+.text-left, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem {
   text-align: left !important; }
 
 .text-right {
@@ -6094,10 +6094,10 @@ a.text-danger:hover, a.text-danger:focus {
 a.text-light:hover, a.text-light:focus {
   color: #dae0e5 !important; }
 
-.text-dark, .App-header {
+.text-dark {
   color: #343a40 !important; }
 
-a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
+a.text-dark:hover, a.text-dark:focus {
   color: #1d2124 !important; }
 
 .text-muted {
@@ -7796,24 +7796,28 @@ a.text-dark:hover, a.App-header:hover, a.text-dark:focus, a.App-header:focus {
   width: 100%;
   height: 100%; }
 
-.border-light, .App-header, .ChallengeItem, .StaticChallengeItem, .RatedResponse {
+.border-light, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .RatedResponse {
   border-color: #e3e3e3 !important; }
 
 body {
-  font-family: "Source Sans Pro", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
+  font-family: "Helvetica Neue", "Source Sans Pro", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
 
 .badge-primary, .btn-primary {
-  background-color: #6999c9;
-  border-color: #6999c9; }
+  background-color: #0071bb;
+  border-color: #0071bb; }
 
 .text-white {
   fill: white; }
 
-.text-dark, .App-header {
+.text-dark {
   color: #343a40; }
 
 .clickable {
   cursor: pointer; }
+
+.icon-menu svg {
+  color: #697078;
+  fill: #697078; }
 
 .icon-primary {
   color: #007bff;
@@ -7840,17 +7844,24 @@ body {
   fill: #17a2b8; }
 
 .badge-archive {
-  background-color: #6c757d;
-  color: #f8f9fa; }
+  background-color: #ffc107; }
 
 .badge-draft {
   background-color: #ced4da; }
+
+.badge-rejected {
+  background-color: #6f42c1;
+  color: #f8f9fa; }
 
 .badge-active {
   background-color: #28a745;
   color: #f8f9fa; }
 
 .badge-review {
+  background-color: #007bff;
+  color: #f8f9fa; }
+
+.badge-pending {
   background-color: #dc3545;
   color: #f8f9fa; }
 
@@ -7860,6 +7871,10 @@ body {
 
 .badge-rating {
   background-color: #17a2b8;
+  color: #f8f9fa; }
+
+.badge-deleted {
+  background-color: #000;
   color: #f8f9fa; }
 
 svg.hidden {
@@ -7872,9 +7887,30 @@ small tt {
 .highlight {
   box-shadow: 0px 0px 10px #ffc107; }
 
-.icon-lg .octicon-chevron-right {
+svg.icon-lg {
+  height: 160%;
+  width: 160%; }
+
+.chevron-lg, .icon-lg .octicon-chevron-right, .icon-lg .octicon-chevron-left {
   height: 22px !important;
   width: 11px !important; }
+
+.icon-lg .octicon-three-bars {
+  height: 24px !important;
+  width: 32px !important; }
+
+.toggle-icons .octicon {
+  margin-top: 3px;
+  margin-right: .25em; }
+
+.toggle-icons .octicon-chevron-up {
+  display: none; }
+
+.collapsed .toggle-icons .octicon-chevron-up {
+  display: block; }
+
+.collapsed .toggle-icons .octicon-chevron-down {
+  display: none; }
 
 /*============================ App.js styles*/
 .container {
@@ -7885,7 +7921,7 @@ small tt {
   margin: 0;
   padding: 4px 8px 2px 8px; }
 
-.no-Screen-padding, .ChallengeEditHeader .inner {
+.no-Screen-padding {
   margin: -4px -8px -2px -8px; }
 
 .hands, #Home, #ChallengeListScreen, #BookmarkScreen, #BookmarkDetailScreen {
@@ -7895,28 +7931,18 @@ small tt {
   min-height: 100vh; }
 
 .App-header {
-  border-bottom: 2px solid #010101;
-  height: 62px;
+  background-color: #0071bb;
+  color: white;
+  fill: white;
+  height: 42px;
   text-align: center;
-  line-height: 62px;
-  font-size: 18px; }
-  .App-header .App-home a {
-    display: block;
-    width: 44px;
-    height: 44px; }
-  .App-header .App-home .active .home-icon {
-    background-image: url("/img/header/Home_clicked_btn.png"); }
-  .App-header .App-home .home-icon {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-image: url("/img/header/Home_unclicked_btn.png");
-    background-position: left bottom;
-    background-repeat: no-repeat; }
-  .App-header .App-notifications .active .home-icon {
-    width: 28px;
-    height: 44px;
-    content: url("/img/header/Notification_white.png"); }
+  font-size: 18px;
+  padding-right: 0;
+  font-weight: bold; }
+  .App-header svg {
+    fill: white; }
+  .App-header .App-title {
+    font-variant: small-caps; }
 
 .App-footer-toolbar .btn-block, .App-footer-toolbar .ActiveChallenge, .App-footer-toolbar .NewChallengeButton {
   display: flex;
@@ -7926,8 +7952,8 @@ small tt {
   .App-footer-toolbar .btn-block .icon-box img, .App-footer-toolbar .ActiveChallenge .icon-box img, .App-footer-toolbar .NewChallengeButton .icon-box img {
     margin-bottom: 5px; }
   .App-footer-toolbar .btn-block.active, .App-footer-toolbar .active.ActiveChallenge, .App-footer-toolbar .active.NewChallengeButton {
-    border-top: solid 6px #6999c9;
-    color: #6999c9; }
+    border-top: solid 6px #0071bb;
+    color: #0071bb; }
 
 .App-footer-toolbar .active.calendar-icon img {
   content: url("/img/footer/Calendar_clicked_btn.png"); }
@@ -7991,7 +8017,10 @@ small tt {
 .StaticChallengeItem {
   color: #6c757d; }
 
-.ChallengeItem svg, .StaticChallengeItem svg {
+.ProfileMenuItem {
+  color: #6c757d; }
+
+.ChallengeItem svg, .StaticChallengeItem svg, .ProfileMenuItem svg {
   fill: #adb5bd !important;
   stroke: #adb5bd !important; }
 
@@ -7999,8 +8028,8 @@ small tt {
   color: #6c757d; }
 
 .RatedResponseHeader svg.octicon-chevron-up, .RatedResponseHeader svg.octicon-chevron-down {
-  fill: #adb5bd !important;
-  stroke: #adb5bd !important; }
+  fill: #adb5bd;
+  stroke: #adb5bd; }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group {
   width: 100%; }
@@ -8053,12 +8082,12 @@ small tt {
   width: 100%;
   max-width: 512px;
   margin: 0 auto;
+  margin-top: -4px;
   position: fixed;
   z-index: 200; }
 
 .ChallengeEditHeader .inner {
-  background: #e9ecef;
-  box-shadow: #ced4da 0px 2px 4px; }
+  background: #e9ecef; }
 
 .ChallengeEditHeader h4 {
   font-size: 16px;
@@ -8072,6 +8101,28 @@ label {
 .DatePicker input {
   font-size: 12px;
   line-height: auto; }
+
+.was-validated .MediaUploader.is-invalid label {
+  border: 1px solid #dc3545; }
+
+.error-msg {
+  font-size: 80%;
+  color: #dc3545; }
+
+.was-validated .error-msg {
+  display: none; }
+
+label.VideoUploadButton {
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #0071bb;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.3rem; }
+
+label:hover.VideoUploadButton {
+  opacity: .8; }
 
 .VideoUploadButton label {
   border-radius: 14px;
@@ -8112,7 +8163,7 @@ label {
 
 /*============================== LOGIN */
 .App.login {
-  background-color: #6999C9;
+  background-color: #0071bb;
   padding: 0;
   min-height: 100vh; }
 
@@ -8122,7 +8173,7 @@ label {
   padding-top: 26px; }
 
 .LoginLogo {
-  margin-bottom: 64px;
+  margin-bottom: 2px;
   margin-left: auto;
   margin-right: auto; }
 
@@ -8192,7 +8243,7 @@ label {
 
 .LoadingModal .LoadingModalContent {
   margin: 0 auto;
-  margin-top: 82px;
+  margin-top: 62px;
   max-width: 512px;
   text-align: center; }
 
@@ -8256,13 +8307,11 @@ label {
   font-size: .9rem; }
 
 .App {
-  padding-top: 62px;
+  padding-top: 42px;
   padding-bottom: 54px;
   padding-left: 0;
   padding-right: 0;
   color: #343a40; }
-  .App svg.octicon-chevron-right, .App svg.octicon-chevron-down {
-    fill: #343a40; }
   .App .calendar-view {
     color: #343a40; }
     .App .calendar-view .challenge-area {
@@ -8303,11 +8352,11 @@ label {
         .App .calendar-view .react-calendar .react-calendar__tile:hover, .App .calendar-view .react-calendar .react-calendar__tile.react-calendar__tile--active {
           cursor: default;
           background: transparent; }
-        .App .calendar-view .react-calendar .react-calendar__tile .d-flex, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader {
+        .App .calendar-view .react-calendar .react-calendar__tile .d-flex, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem, .App .calendar-view .react-calendar .react-calendar__tile .ProfileMenuItem, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader {
           width: 50px;
           height: 50px;
           position: absolute; }
-          .App .calendar-view .react-calendar .react-calendar__tile .d-flex .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .left, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .d-flex .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .right, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .right {
+          .App .calendar-view .react-calendar .react-calendar__tile .d-flex .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .ProfileMenuItem .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .left, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .d-flex .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .ProfileMenuItem .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .right, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .right {
             height: 50px;
             width: 25px; }
         .App .calendar-view .react-calendar .react-calendar__tile .dayDisplay {
@@ -8410,7 +8459,14 @@ label {
   text-align: center; }
 
 .loader-inner.ball-pulse > div {
-  background-color: #6999c9; }
+  background-color: #0071bb; }
+
+.spinner-sm.loader-inner.ball-pulse {
+  margin-top: 0; }
+
+.spinner-sm.loader-inner.ball-pulse > div {
+  height: 10px;
+  width: 10px; }
 
 .Snackbar {
   background-color: rgba(0, 0, 0, 0.85);
@@ -8422,40 +8478,23 @@ label {
   text-align: center;
   padding: 8px; }
 
-.Profile .ImageUploadImproved {
-  max-width: 150px;
-  max-height: 150px; }
-
-.Profile .ImageUploadImproved img {
-  border-radius: 6px; }
+.ProfileImage {
+  margin: auto !important;
+  max-width: 200px;
+  max-height: 200px; }
 
 .Profile .ImageUploadButtonImproved {
-  background-color: rgba(0, 0, 0, 0.8);
-  width: 40px;
-  height: 24px;
-  border-bottom-left-radius: 3px;
-  border-top-right-radius: 6px; }
+  background-color: rgba(0, 0, 0, 0.7);
+  height: 22px;
+  width: 100%; }
 
-.Profile .octicon-device-camera {
-  padding-right: 3px;
-  fill: #dee2e6; }
+.Profile .octicon-device-camera, .Profile .octicon-trashcan {
+  fill: #adb5bd; }
 
 .ProfileChallenge {
   box-shadow: 1px 0px 4px #6c757d;
   padding: .5em;
   margin-bottom: 8px; }
-
-.ProfileChallenge.active {
-  box-shadow: 1px 0px 4px #28a745; }
-
-.ProfileChallenge.draft {
-  box-shadow: 1px 0px 4px #ffc107; }
-
-.ProfileChallenge.review {
-  box-shadow: 1px 0px 4px #007bff; }
-
-.ProfileChallenge.future {
-  box-shadow: 1px 0px 4px #17a2b8; }
 
 .MoreMenu .dropdown-menu.show {
   z-index: 1035; }

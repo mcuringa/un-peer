@@ -10,7 +10,7 @@ const LoadingModal = (props)=> {
       tabIndex="-1" role="dialog"
       aria-labelledby="loadingModalMessagePane" aria-hidden="true">
       <div className="LoadingModalContent">
-        <Spinner />
+        <Spinner show={true} />
         <div className="LoadingStatusMsg text-muted">{props.status}</div>
       </div>
     </div>
@@ -19,9 +19,11 @@ const LoadingModal = (props)=> {
 
 
 const Spinner = (props)=> {
+  if(!props.show)
+    return null;
 
   return (
-    <div className="loader-inner ball-pulse">
+    <div className={`loader-inner ball-pulse ${props.className}`}>
       <div></div><div></div><div></div>
     </div>
   )

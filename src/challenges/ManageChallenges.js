@@ -1,55 +1,58 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import _ from "lodash";
-import {ChevronDownIcon} from 'react-octicons';
-import db from "../DBTools";
 import df from "../DateUtil";
 import MoreMenu from "../MoreMenu";
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
-import Modal from "../Modal";
 import {snack, SnackMaker} from "../Snackbar";
 
 class ManageChallengesScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {challenges: []};
+    this.sortChallenges = _.bind(this.sortChallenges, this);
+    this.setStatus = _.bind(this.setStatus, this);
+    
     this.snack = _.bind(snack, this);
     this.Snackbar = _.bind(SnackMaker, this);
   }
 
 
   componentWillMount() {
-    ChallengeDB.findAll().then((t)=> {
-
-      const stageWeight = {
-         active: 1, 
-         rating: 1, 
-          draft: 2,
-         review: 3,
-         future: 4,
-        archive: 5,
-        deleted: 6
-      }
-      const compareChallenges = (a,b)=>{
-        if(stageWeight[a.stage] < stageWeight[b.stage]) 
-          return -1;
-        if(stageWeight[a.stage] > stageWeight[b.stage]) 
-          return 1;
-        if(a.created < b.created)
-          return -1;
-        if(a.created > b.created)
-          return 1;
-        return 0;
-      }
-
-      t = _.filter(t,c=>c.status !== ChallengeStatus.DRAFT);
-      t.sort(compareChallenges);
+   ChallengeDB.findAll().then((t)=> {
+      t = _.filter(t,c=>c.status !== ChallengeStatus.DRAFT && c.status !== ChallengeStatus.DELETE);
+      t = this.sortChallenges(t);
       this.setState({challenges: t});
     });
   }
 
-  componentWillUnmount() {
-    this.props.setAppClass("");
+  sortChallenges(t) {
+    const stageWeight = {
+       active: 1, 
+       rating: 1, 
+       review: 1,
+      pending: 2,
+        draft: 3,
+       future: 4,
+      archive: 5,
+     rejected: 6,
+      deleted: 7
+    }
+
+    return _.orderBy(t, [c=>stageWeight[c.stage],"created"]);
+  }
+
+  setStatus(challenge, status) {   
+    challenge.status = status;
+    challenge.stage = ChallengeDB.getStage(challenge);
+    ChallengeDB.save(challenge).then(()=>{this.snack("status change saved")});
+
+    let challenges = this.state.challenges;
+    const i = _.findIndex(challenges,c=>c.id === challenge.id );
+    challenges[i] = challenge;
+    challenges = this.sortChallenges(challenges);
+    this.setState({challenges: challenges});
+
   }
 
   render() {
@@ -58,7 +61,8 @@ class ManageChallengesScreen extends React.Component {
       return (
         <ChallengeRow 
           key={challenge.id} 
-          challenge={challenge} />
+          challenge={challenge}
+          setStatus={this.setStatus} />
       );
     });
     return (
@@ -73,10 +77,6 @@ class ManageChallengesScreen extends React.Component {
 
 const ChallengeRow = (props) => {
   const challenge = props.challenge;
-  const dates = df.range(challenge.start, challenge.end);
-  const changeStatus = (status)=> {
-    return db.update("/challenges", challenge.id, {status: status} );
-  }
 
   const ProfName = ()=> {
     if(challenge.professor)
@@ -94,7 +94,7 @@ const ChallengeRow = (props) => {
           <h6 className="pt-0 pb-0 pl-2"><Link to={`/challenge/${challenge.id}/edit`}>{challenge.title}</Link></h6>
         </div>
         <div className="ChallengeItemMenu">
-          <ChallengeMenu challenge={challenge} />
+          <ChallengeMenu {...props}/>
         </div>
       </div>
       <div className="d-flex">
@@ -116,14 +116,14 @@ const ChallengeRow = (props) => {
 const ChallengeMenu = (props)=> {
   const c = props.challenge;
 
-  const pubProps = {disabled: (c.status == ChallengeStatus.PUBLISHED)?null: true};
-  const unpubProps = {disabled: (c.status == ChallengeStatus.REVIEW)?null: true};
+  // const pubProps = {disabled: (c.status === ChallengeStatus.PUBLISHED)?null: true};
+  // const unpubProps = {disabled: (c.status === ChallengeStatus.REVIEW)?null: true};
 
   return (
     <MoreMenu>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}`}>View Challenge</Link>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit`}>Edit Challenge</Link>
-      <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit`}>Close Challenge</Link>
+      <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/close`}>Close Challenge</Link>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit/responses`}>Edit Responses</Link>
       <div className="dropdown-divider"></div>
       <StatusMenu {...props} />

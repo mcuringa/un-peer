@@ -1,16 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import _ from "lodash";
-import fp from "lodash/fp";
 
 import df from "../DateUtil.js";
 import db from "../DBTools.js";
 
-import {ChevronDownIcon, ChevronUpIcon, ChevronLeftIcon, TrashcanIcon} from 'react-octicons';
+import {ChevronDownIcon, ChevronUpIcon, ChevronLeftIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import LoadingModal from "../LoadingModal";
 import {snack, SnackMaker} from "../Snackbar";
-import {StarRatings, StarGradient} from "../StarRatings";
+import {StarRatings} from "../StarRatings";
 
 class BookmarkDetailScreen extends React.Component {
   constructor(props) {
@@ -71,7 +69,7 @@ class BookmarkDetailScreen extends React.Component {
       db.delete(path, id).then(delMsg);
     };
 
-    bookmarks = _.filter(bookmarks, b=>b.id != id);
+    bookmarks = _.filter(bookmarks, b=>b.id !== id);
     this.setState({bookmarks: bookmarks});
     updateUser();
 
@@ -97,8 +95,6 @@ class BookmarkDetailScreen extends React.Component {
       return c;
     }
 
-
-    let main;
     if(this.state.loading)
       return  (<LoadingModal status="Loading favourites..." show={true} />)
 
@@ -117,7 +113,6 @@ class BookmarkDetailScreen extends React.Component {
 
     return (
       <div className="ResponseReviewScreen screen p-0">
-        <StarGradient />
         <Challenge challenge={challenge} user={this.props.user} back={this.props.history.goBack} />
         {blist}
         <this.Snackbar />
@@ -213,21 +208,6 @@ class Bookmark  extends React.Component {
 
     );
   }
-}
-
-const NoBookmarks = (props)=> {
-
-  return (
-    <div id="NoBookmarks" className="card border-dark mt-3">
-      <div className="card-header"><h4>No Bookmarks Found</h4></div>
-      <div className="card-body">
-        <p className="card-text">
-          You do not have any responses bookmarked. You can add bookmarks while
-          reading responses from the challenge review screen.
-        </p>
-      </div>
-    </div>
-  );
 }
 
 export default BookmarkDetailScreen;

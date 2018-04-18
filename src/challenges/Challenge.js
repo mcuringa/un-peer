@@ -19,19 +19,22 @@ const ChallengeStatus = Object.freeze({
 
 
 const dayInMillis = 1000 * 60 * 60 * 24;
-const Challenge = {
-  id:"",
-  title:"",
-  tags:"",
-  prompt:"",
-  status: ChallengeStatus.DRAFT,
-  start: new Date(),
-  responseDue: new Date(_.now() + dayInMillis * 3),
-  ratingDue: new Date(_.now() + dayInMillis * 5),
-  end: new Date(_.now() + dayInMillis * 7),
-  created: new Date(),
-  modified: new Date()
-};
+function Challenge() {
+
+  return {
+    id:"",
+    title:"",
+    tags:"",
+    prompt:"",
+    status: ChallengeStatus.DRAFT,
+    start: new Date(),
+    responseDue: new Date(_.now() + dayInMillis * 3),
+    ratingDue: new Date(_.now() + dayInMillis * 5),
+    end: new Date(_.now() + dayInMillis * 7),
+    created: new Date(),
+    modified: new Date()
+  }
+}
 
 const Response = {
   text:"",
@@ -145,7 +148,7 @@ const ChallengeDB = {
     if(c.status === ChallengeStatus.DRAFT)
       return "draft";
     if(c.status === ChallengeStatus.REVIEW)
-      return "review";
+      return "pending";
 
     if(c.status === ChallengeStatus.DELETE)
       return "deleted";
@@ -162,6 +165,8 @@ const ChallengeDB = {
       return "active"
     if(now < c.ratingDue)
       return "rating";
+    if(now < c.end)
+      return "review";
 
     return "unknown stage";
   },
@@ -177,10 +182,6 @@ const ChallengeDB = {
   },
 
 
-  // DRAFT: 1,
-  // REVIEW: 2,
-  // PUBLISHED: 3,
-  // DELETE: 4
 
   findAllSecure() {
     const now = new Date();
@@ -212,35 +213,30 @@ const ChallengeDB = {
           .then(addChallenges);
       }
 
+      const prof = ()=> {
+        return db.collection("challenges")
+          .where("professor.uid", "==", u.uid)
+          .get()
+          .then(addChallenges);
+      }
+
+      const adminAll  = ()=> {
+        return db.collection("challenges")
+          .where("status", ">", ChallengeStatus.DRAFT)
+          .get()
+          .then(addChallenges);
+      }
+
+
+
       const published = ()=> {
-        const afterPublished = (snapshot)=> {
-          snapshot.forEach((doc)=> {
-            let c = doc.data();
-            c.id = doc.id;
-            if(c.start < now || u.admin || (c.professor.uid === u.id))
-              challenges.push( prep(c) );
-          });
-        }
         return db.collection("challenges")
           .where("status", "==", ChallengeStatus.PUBLISHED)
-          .get()
-          .then(afterPublished);
-      }
-
-      const scheduled = ()=> {
-        return db.collection("challenges")
-          .where("status", "==", ChallengeStatus.PUBLISHED)
-          .where("start", ">", now)
+          .where("start", "<", now)
           .get()
           .then(addChallenges);
       }
 
-      const review = ()=> {
-        return db.collection("challenges")
-          .where("status", "==", ChallengeStatus.REVIEW)
-          .get()
-          .then(addChallenges);
-      }
 
       const afterAll = (resolve, reject)=>{
         Promise.all(promises).then(()=>{
@@ -251,11 +247,16 @@ const ChallengeDB = {
       }
 
       let myP = mine();
-      let publishedP = published();
-      promises = [myP, publishedP];
+      promises = [myP];
       if(u.admin) {
-        let reviewP = review();
-        promises.push(reviewP);
+        let adminAllP = adminAll();
+        promises.push(adminAllP);
+      }
+      else {
+        let publishedP = published();
+        let profP = prof();
+        promises.push(publishedP, profP);
+
       }
 
       return new Promise(afterAll);

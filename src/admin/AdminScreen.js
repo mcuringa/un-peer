@@ -1,6 +1,5 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import FBUtil from "../FBUtil";
 
 class AdminScreen  extends React.Component {
   constructor(props) {
@@ -10,7 +9,6 @@ class AdminScreen  extends React.Component {
 
 
   componentWillMount() {
-    this.props.setAppClass("admin");
     // const hello = FBUtil.getFunction("hello");
     // // console.log(hello);
     
@@ -32,10 +30,6 @@ class AdminScreen  extends React.Component {
     // },(e)=>{console.log(e);});
 
 
-  }
-
-  componentWillUnmount() {
-    this.props.setAppClass("");
   }
 
   render() {

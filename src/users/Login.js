@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import _ from "lodash";
-import {NewTextInput, TextInput} from '../FormUtil.js'
+import {TextInput} from '../FormUtil.js'
 import FBUtil from "../FBUtil";
 import Modal from "../Modal";
-import LoadingModal from "../LoadingModal";
-import db from "../DBTools";
-
 
 export default class Login extends Component {
 
@@ -25,8 +21,6 @@ export default class Login extends Component {
     this.reset = this.reset.bind(this);
     this.AuthError = this.AuthError.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
-    props.setAppClass(" ");
-
   }
 
   validateForm() {
@@ -91,7 +85,6 @@ export default class Login extends Component {
     const firebase = FBUtil.init();
 
     const success = (auth)=> {
-      this.props.setAppClass("");
       this.setState({loading: false, loadingStatus: false});
     }
 
@@ -163,8 +156,8 @@ export default class Login extends Component {
 
   render() {
 
-    const code = this.state.loginErr;
-    const emailInvalid = code && code.length > 0;
+    // const code = this.state.loginErr;
+    // const emailInvalid = code && code.length > 0;
     const emailInvalidCss = (this.state.emailErr && this.state.emailErr.length > 0)?"is-invalid":"";
     const passInvalidCss = (this.state.passErr && this.state.passErr.length > 0)?"is-invalid":"";
 
@@ -176,7 +169,9 @@ export default class Login extends Component {
         
         <img className="LoginLogo d-block"
              alt="UN Peer Challenges logo"
-             src="/img/unpc-logo.png" />
+             src="/img/UNSSC_logo.png" />
+
+        <h5 className="text-white text-center font-weight-bold mb-3" style={{fontVariant: "small-caps"}}>UN Peer Challenge</h5>
 
         <Modal id="ResetModal"
           title="Reset Email Sent"
@@ -206,7 +201,7 @@ export default class Login extends Component {
 
         <this.AuthError />
 
-        <form id="LoginForm" className={`LoginForm ${validationClass}`} onSubmit={this.handleSubmit} noValidate>
+        <form id="LoginForm" className={`LoginForm pt-2 ${validationClass}`} onSubmit={this.handleSubmit} noValidate>
             <div className={`row`}>
                 <label htmlFor="email"
                        className="col-3 col-form-label">
@@ -220,7 +215,6 @@ export default class Login extends Component {
                       className=""
                       required={true}
                       autoFocus
-                      type="email"
                       value={this.state.email}
                       onChange={this.handleChange} />
                 </div>
@@ -264,7 +258,7 @@ const LoadingButton = (props) => {
   let css = "";
   let extra = {};
   if(props.loading) {
-    label = "Authorizing...";
+    label = "Authourizing...";
     css="disabled";
     extra = {disabled: "disabled"};
   }

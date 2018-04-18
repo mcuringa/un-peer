@@ -27,8 +27,8 @@ const ChallengeHeader = (props) => {
 
   return (
     <div className="ChallengeDetailHeader">
-      <BackButton hideBack={props.hideBack} challenge={props.challenge} />
-      <div className="StartDate">
+      <div className="StartDate d-flex align-items-center">
+        <BackButton hideBack={props.hideBack} challenge={props.challenge} />
         <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
         {stageMsg}
       </div>
@@ -44,8 +44,8 @@ const BackButton = (props)=>{
   if(props.hideBack)
     return null;
   return (
-    <Link className="text-dark mb-2" to={`/challenge/${props.challenge.id}`}>
-      <ChevronLeftIcon className="icon-dark pt-1 mr-1" />Back
+    <Link className="icon-lg" to={`/challenge/${props.challenge.id}`}>
+      <ChevronLeftIcon className="icon-secondary pt-1 mr-3" />
     </Link>
   )
 }

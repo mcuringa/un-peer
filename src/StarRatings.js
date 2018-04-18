@@ -2,25 +2,39 @@ import React from "react";
 import _ from "lodash";
 import {StarIcon} from "react-octicons";
 
+
 const StarGradient = (props)=> {
+  const angles = {
+    x1:"0%",
+    y1:"50%",
+    x2:"100%",
+    y2:"50%"
+  }
   return (
+    <div style={{height: 0}}>
+    <svg>
+      <pattern id="UnratedHash" patternUnits="userSpaceOnUse" width="4" height="4">
+        <path d="M-1,1 l2,-2
+                 M0,4 l4,-4
+                 M3,5 l2,-2" 
+              style={{stroke:"black", strokeWidth:1}} />
+      </pattern>
+      <linearGradient id="QuarterFull" {...angles}>
+        <stop offset="40%" stopColor="#6c757d"/>
+        <stop offset="40%" stopColor="white"/>
+      </linearGradient>
+      <linearGradient id="HalfFull" {...angles}>
+        <stop offset="50%" stopColor="#6c757d"/>
+        <stop offset="50%" stopColor="white"/>
+      </linearGradient>
+      <linearGradient id="ThreeQuartersFull" {...angles}>
+        <stop offset="60%" stopColor="#6c757d"/>
+        <stop offset="60%" stopColor="white"/>
+      </linearGradient>
 
-    <svg className="d-none">
-      <linearGradient id="QuarterFull">
-        <stop offset="25%" stopColor="#6c757d"/>
-        <stop offset="75%" stopColor="white"/>
-      </linearGradient>
-      <linearGradient id="HalfFull">
-        <stop offset="52%" stopColor="#6c757d"/>
-        <stop offset="48%" stopColor="white"/>
-      </linearGradient>
-      <linearGradient id="ThreeQuartersFull">
-        <stop offset="75%" stopColor="#6c757d"/>
-        <stop offset="25%" stopColor="white"/>
-      </linearGradient>
     </svg>
+    </div>
   )
-
 }
 
 const StarRatings = (props)=>{
@@ -34,7 +48,9 @@ const StarRatings = (props)=>{
   });
 
   return (
-    <div className="d-flex justify-content-between">{stars}</div>
+    <div className="d-flex justify-content-between">
+      {stars}
+    </div>
   );
 
 }
@@ -43,7 +59,7 @@ const Star = (props)=> {
 
   const fillStyle = (v, rating)=> {
 
-    if(!rating)
+    if(!rating || rating <= 0)
       return "not-rated";
 
     if(props.val<=props.rating)

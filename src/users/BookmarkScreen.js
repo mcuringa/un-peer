@@ -24,10 +24,7 @@ class BookmarkScreen extends React.Component {
   componentWillMount() {
 
     const sortBookmarks = (bookmarks)=> {
-      
-      const keyBookmarks = (t)=> {
-        return _.keyBy(t, "id")
-      }
+
       let challenges = _.sortBy(bookmarks, "challengeStart");
       let index = _.map(challenges, "challengeId");
       index = _.uniq(index);

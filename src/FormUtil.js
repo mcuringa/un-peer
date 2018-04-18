@@ -21,7 +21,7 @@ const StatusIndicator = (props)=> {
     clazz += " hidden";
 
   return (
-    <div className="">
+    <div className={props.className}>
       <PrimitiveDotIcon className={clazz} />
       <LoadingSpinner loading={props.loading} />
     </div>
@@ -189,6 +189,7 @@ const VideoUploadImproved = (props)=> {
 
 
   const VideoEl = (props.video)?<ClearVideo /> : uploadBtn;
+
   return (
       <div className={`p-0 ${validCss}`}>
         {VideoEl}
@@ -412,8 +413,10 @@ export {
   StatusIndicator,
   LoadingSpinner,
   Video,
-  // ImageUpload,
+  Label,
   VideoUploadImproved,
   ImageUploadImproved,
+  ValidMsg,
+  InvalidMsg,
   Checkbox
 };

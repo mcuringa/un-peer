@@ -3,21 +3,22 @@
 
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
-$font-family-sans-serif: "Source Sans Pro", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$font-family-sans-serif: "Helvetica Neue", "Source Sans Pro", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 $bg-blue: #6A82AD;
-$bg-bright-blue: rgb(104.55, 153, 201.45);
-$top-header-height: 62px;
+// $bg-bright-blue: rgb(26, 78, 159); Pantone color
+$bg-bright-blue: rgb(0, 113, 187); // matches the logo
+$top-header-height: 42px;
 $bottom-footer-height: 54px;
 $full-screen-width: 512px;
 $gray-text: rgb(125, 135, 163);
 $dark-gray-text: rgb(104.55, 112.2, 119.85);
 $text-dark: $gray-800;
+$menu-gray: $dark-gray-text;
 
 $cal-green: #60d600;
 $cal-blue: #2b91e9;
 $cal-purple: #ae1963;
-$blue: green;
 
 .border-light {
   border-color: #e3e3e3 !important;
@@ -65,6 +66,11 @@ img {
   cursor: pointer;
 }
 
+.icon-menu svg {
+  color: $menu-gray;
+  fill: $menu-gray;
+}
+
 .icon-primary {
   color: theme-color("primary");
   fill: theme-color("primary");;
@@ -92,12 +98,17 @@ img {
 // ======================================== badge status colors
 
 .badge-archive {
-  background-color: theme-color("secondary");
-  color: theme-color("light")
+  background-color: theme-color("warning");
+  // color: theme-color("light")
 }
 
 .badge-draft {
   background-color: $gray-400;
+}
+
+.badge-rejected {
+  background-color: $purple;
+  color: theme-color("light")
 }
 
 .badge-active {
@@ -105,6 +116,10 @@ img {
   color: theme-color("light")
 }
 .badge-review {
+  background-color: theme-color("primary");
+  color: theme-color("light")
+}
+.badge-pending {
   background-color: theme-color("danger");
   color: theme-color("light")
 }
@@ -115,6 +130,10 @@ img {
 .badge-rating {
   background-color: theme-color("info");
     color: theme-color("light")
+}
+.badge-deleted {
+  background-color: $black;
+    color: theme-color("light");
 }
 
 
@@ -131,9 +150,43 @@ small tt {
   box-shadow: 0px 0px 10px $yellow;
 }
 
-.icon-lg .octicon-chevron-right {
+svg.icon-lg {
+  height: 160%;
+  width: 160%;
+}
+
+.chevron-lg {
   height: 22px !important;
   width: 11px !important;
+}
+.icon-lg .octicon-chevron-right {
+  @extend .chevron-lg;
+}
+
+.icon-lg .octicon-chevron-left {
+  @extend .chevron-lg;
+}
+.icon-lg .octicon-three-bars {
+  height: 24px !important;
+  width: 32px !important;
+}
+
+
+.toggle-icons .octicon {
+  margin-top: 3px;
+  margin-right: .25em;
+}
+
+.toggle-icons .octicon-chevron-up {
+  display: none;
+}
+
+.collapsed .toggle-icons .octicon-chevron-up {
+  display: block;
+}
+
+.collapsed .toggle-icons .octicon-chevron-down {
+  display: none;
 }
 
 
@@ -148,9 +201,11 @@ small tt {
 {
   margin: 0;
   padding: 4px 8px 2px 8px;
+  // padding: 4px 0px 2px 0px;
 }
 
 .no-Screen-padding {
+  // margin: -4px 0px -2px 0px;
   margin: -4px -8px -2px -8px;
 
 }
@@ -189,61 +244,27 @@ small tt {
 // AdminScreen
 
 
-
-
-
-
-
-
-
-
-
 .App-header {
 
-  @extend .bg-white;
-  @extend .text-dark;
-  @extend .border-light;
-  border-bottom: 2px solid rgb(0.89, 0.89, 0.89);
+  background-color: $bg-bright-blue;
+  color: white;
+  fill: white;
+  // border-bottom: 2px solid rgb(0.89, 0.89, 0.89);
   height: $top-header-height;
   text-align: center;
-  line-height: $top-header-height;
+  // line-height: $top-header-height;
   font-size: 18px;
+  padding-right: 0;
+  font-weight: bold;
 
-  .App-home a.active {
-    // background-color: $bg-bright-blue;
-    // border-radius: 50%;
-    // margin: 6px;
-    // background-image: url("/img/home-circle.png");
-    // background-position: center center;
-    // background-repeat: no-repeat;
-
-  }
-  .App-home a {
-    display: block;
-    width: 44px;
-    height: 44px;
-
-
+  svg {
+    fill: white;
   }
 
-  .App-home .active .home-icon {
-    background-image: url("/img/header/Home_clicked_btn.png");
-  }
-  .App-home .home-icon{
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-image: url("/img/header/Home_unclicked_btn.png");
-    background-position: left bottom;
-    background-repeat: no-repeat;
-
+  .App-title {
+    font-variant: small-caps;
   }
 
-  .App-notifications .active .home-icon {
-    width: 28px;
-    height: 44px;
-    content: url("/img/header/Notification_white.png");
-  }
 }
 
 .App-footer-toolbar {
@@ -382,8 +403,22 @@ small tt {
 
 }
 
+.ProfileMenuItem {
+  @extend .text-left;
+  @extend .pt-2;
+  @extend .d-flex;
+  @extend .justify-content-between;
+  @extend .align-items-center;
+  @extend .border-bottom;
+  @extend .border-light;
+  @extend .pb-1;
+  @extend .pl-2;
+  @extend .pr-2;
+  @extend .bg-white;
+  color: $gray-600;
+}
 
-.ChallengeItem svg, .StaticChallengeItem svg {
+.ChallengeItem svg, .StaticChallengeItem svg, .ProfileMenuItem svg {
   fill: $gray-500 !important;
   stroke: $gray-500 !important;
 }
@@ -426,8 +461,8 @@ small tt {
 }
 
 .RatedResponseHeader svg.octicon-chevron-up, .RatedResponseHeader svg.octicon-chevron-down {
-  fill: $gray-500 !important;
-  stroke: $gray-500 !important;
+  fill: $gray-500;
+  stroke: $gray-500;
 }
 
 .ChallengeButtons .btn-toolbar, .ChallengeButtons .btn-group
@@ -513,14 +548,15 @@ small tt {
   width:100%;
   max-width: $full-screen-width;
   margin: 0 auto;
+  margin-top: -4px;
   position: fixed;
   z-index: 200;
 }
 
 .ChallengeEditHeader .inner {
-  @extend .no-Screen-padding;
+  // @extend .no-Screen-padding;
   background: $gray-200;
-  box-shadow: $gray-400 0px 2px 4px;
+  // box-shadow: $gray-400 0px 2px 4px;
 
 }
 
@@ -542,6 +578,36 @@ label
   font-size: 12px;
   line-height: auto;
 }
+
+.was-validated .MediaUploader.is-invalid label {
+  border: 1px solid $red;
+}
+
+.error-msg {
+  font-size: 80%;
+  color: $red;
+}
+
+.was-validated .error-msg {
+  display: none;
+}
+
+label.VideoUploadButton
+{
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: $bg-bright-blue;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+label:hover.VideoUploadButton
+{
+  opacity: .8;
+}
+
 
 .VideoUploadButton label
 {
@@ -588,7 +654,7 @@ label
 
 .App.login
 {
-  background-color: #6999C9;
+  background-color: $bg-bright-blue;
   padding: 0;
   min-height: 100vh;
 }
@@ -602,7 +668,7 @@ label
 
 .LoginLogo
 {
-  margin-bottom: 64px;
+  margin-bottom: 2px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -793,12 +859,12 @@ label
   padding-right: 0;
   color: $text-dark;
 
-  svg {
-    &.octicon-chevron-right,
-    &.octicon-chevron-down {
-      fill: $text-dark;
-    }
-  }
+  // svg {
+  //   &.octicon-chevron-right,
+  //   &.octicon-chevron-down {
+  //     fill: $text-dark;
+  //   }
+  // }
 
   .calendar-view {
     color: $text-dark;
@@ -1047,6 +1113,13 @@ label
   background-color: $bg-bright-blue;
 }
 
+.spinner-sm.loader-inner.ball-pulse {
+  margin-top: 0;
+}
+.spinner-sm.loader-inner.ball-pulse > div {
+  height: 10px;
+  width: 10px;
+}
 
 // ======================= snackbar
 .Snackbar {
@@ -1062,26 +1135,25 @@ label
 
 
 // ============================= profile page
-.Profile .ImageUploadImproved {
-  max-width: 150px;
-  max-height: 150px;
+
+.ProfileImage img {
+  @extend .rounded-circle;
 }
 
-.Profile .ImageUploadImproved img {
-  border-radius: 6px;
+.ProfileImage {
+  margin: auto !important;
+  max-width: 200px;
+  max-height: 200px;
 }
 
 .Profile .ImageUploadButtonImproved {
-  background-color: rgba(0,0,0,.8);
-  width: 40px;
-  height: 24px;
-  border-bottom-left-radius: 3px;
-  border-top-right-radius: 6px;
+  background-color: rgba(0, 0, 0, .7);
+  height: 22px;
+  width: 100%;
 }
 
-.Profile .octicon-device-camera {
-  padding-right: 3px;
-  fill: $gray-300;
+.Profile .octicon-device-camera, .Profile .octicon-trashcan {
+  fill: $gray-500;
 }
 
 .ProfileChallenge {
@@ -1091,24 +1163,6 @@ label
   padding: .5em;
   margin-bottom: 8px;
 }
-
-.ProfileChallenge.active {
-  box-shadow: 1px 0px 4px theme-color("success");
-}
-
-.ProfileChallenge.draft {
-  box-shadow: 1px 0px 4px theme-color("warning");
-}
-
-.ProfileChallenge.review {
-  box-shadow: 1px 0px 4px theme-color("primary");
-}
-
-
-.ProfileChallenge.future {
-  box-shadow: 1px 0px 4px theme-color("info");
-}
-
 
 
 

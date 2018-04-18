@@ -208,7 +208,6 @@ class ResponseRater extends React.Component {
 
   render() {
     const ToggleIcon = (this.state.open)?(<ChevronDownIcon />):(<ChevronRightIcon />);
-    const toggleCss = (this.state.open)?"show":"";
     const toggleFunction = ()=> {
       this.setState({open: !this.state.open})
     }
