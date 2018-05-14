@@ -193,6 +193,7 @@ const ChallengeDB = {
 
       const prep = (c)=>{
         const status = Number.parseInt(c.status, 10);
+        c.status = status;
         const stage = ChallengeDB.getStage(c);
         return _.merge(c, {stage: stage, status: status})
       }

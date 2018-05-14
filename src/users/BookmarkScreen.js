@@ -14,7 +14,7 @@ class BookmarkScreen extends React.Component {
     super(props);
 
     this.state = {
-      loading: true
+      loading: true,
     };
 
     this.snack = _.bind(snack, this);
@@ -24,7 +24,7 @@ class BookmarkScreen extends React.Component {
   componentWillMount() {
 
     const sortBookmarks = (bookmarks)=> {
-
+      
       let challenges = _.sortBy(bookmarks, "challengeStart");
       let index = _.map(challenges, "challengeId");
       index = _.uniq(index);
@@ -46,8 +46,10 @@ class BookmarkScreen extends React.Component {
     let main;
     if(this.state.loading)
       main =  (<LoadingModal status="Loading favourites" show={true} />)
-    else if(this.state.challenges.length === 0)
+    else if(this.state.challengeStartIndex.length === 0) {
+      console.log("no bookmarks");
       main = <NoBookmarks />
+    }
     else {
       main = (
         <ChallengeList
@@ -128,11 +130,12 @@ const Challenge =(props)=> {
 const NoBookmarks = (props)=> {
 
   return (
-    <div id="NoBookmarks" className="card border-dark mt-3">
-      <div className="card-header"><h4>No Bookmarks Found</h4></div>
+    <div id="NoBookmarks" className="card border-dark m-3">
+      <div className="card-header"><h5>No Favourites</h5></div>
       <div className="card-body">
         <p className="card-text">
-          You do not have any responses bookmarked. You can add bookmarks while
+          You do not have any responses bookmarked. You can add bookmarks
+          to your list of favourites while
           reading responses from the challenge review screen.
         </p>
       </div>

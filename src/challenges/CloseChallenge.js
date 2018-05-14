@@ -107,6 +107,7 @@ class CloseChallengeScreen extends React.Component {
           
           <MediaUpload id="professorVideo" 
             media="video"
+            path={c.id}
             url={c.professorVideo}
             poster={c.professorVideoPoster}
             handleUpload={this.handleUpload}
@@ -118,6 +119,7 @@ class CloseChallengeScreen extends React.Component {
           <label className="mt-2 pb-0 mb-0">Video thumbnail</label>
           <MediaUpload id="professorVideoPoster" 
             media="img"
+            path={c.id}
             textOnly
             url={c.profVideoPoster}
             handleUpload={this.handleUpload}

@@ -321,8 +321,8 @@ const UserList = (props) => {
   return (
     <form className="CurrentUserList" onSubmit={(e)=>{e.preventDefault();}}>
       <div className="row text-center bg-dark text-light m-auto">
-        <div className="col-2 text-strong">First name</div>
-        <div className="col-3 text-strong">Last name</div>
+        <div className="col-2 text-strong">First</div>
+        <div className="col-3 text-strong">Last</div>
         <div className="col-5 text-strong">Email</div>
         <div className="col-2 text-strong">Admin</div>
       </div>

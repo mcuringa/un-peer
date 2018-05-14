@@ -2,19 +2,14 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import _ from "lodash";
 
-import { ChallengeDB } from "./Challenge.js"
-import FBUtil from "../FBUtil.js";
-
+import { ChallengeDB, User } from "./Challenge.js"
 
 import {snack, SnackMaker} from "../Snackbar";
-import {UploadProgress, formatFileSize} from "../MediaManager";
-
 
 import {
   TextGroup,
   TextAreaGroup,
-  Checkbox,
-  VideoUploadImproved
+  Checkbox
 } from "../FormUtil";
 
 
@@ -26,11 +21,14 @@ class ChallengeResponseForm extends React.Component {
   constructor(props) {
     super(props);
     this.challengeId = this.props.match.params.id;
+    this.responseId = this.props.match.params.rid;
+    this.adminEdit = (this.responseId)?true:false;
 
     const emptyR = {
       title:"",
       text:"",
       video:"",
+      user: User,
       videoOptOut: false
     }
 
@@ -57,11 +55,12 @@ class ChallengeResponseForm extends React.Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
+    const uid = this.responseId || this.props.user.uid;
     ChallengeDB.get(id).then((c)=>{
         this.setState({challenge: c});
     });
 
-    ChallengeDB.getResponse(id, this.props.user.uid)
+    ChallengeDB.getResponse(id, uid)
       .then((r)=>{
         if(!r.videoOptOut)
           r.videoOptOut = false;
@@ -85,53 +84,6 @@ class ChallengeResponseForm extends React.Component {
     
   }
 
-  _handleUpload(e) {
-
-    const challengeId = this.challengeId;
-
-    let file = e.target.files[0];
-    const path = `${challengeId}/${this.props.user.uid}`;
-    this.setState({dirty: true, loading: true});
-
-    const succ = (task)=> {
-      this.setState({
-        uploadStatus: "Upload complete!"
-      });
-
-      const filePath = task.snapshot.downloadURL;
-      let r = this.state.response;
-      r.video = filePath;
-
-      this.setState({
-        response: r,
-        dirty: true, 
-        loading: false,
-        uploadStatus: "",
-        uploadPct: 0
-      });
-    }
-
-    const watch = (snapshot)=> {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      const xfer = formatFileSize(snapshot.bytesTransferred, true);
-      const total = formatFileSize(snapshot.totalBytes, true);
-
-      this.setState( {
-        uploadPct: progress, 
-        uploadStatus: `${xfer} of ${total}`
-      });
-    }
-
-    const err = (e)=>{
-      console.log(e);
-      this.setState({
-        uploadStatus: "Upload failed: " + e
-      });
-    }
-
-    FBUtil.uploadMedia(file, path, watch, succ, err);
-  }
-
   confirmUpload() {
     this.setState({showConfirm: true});
   }
@@ -151,7 +103,8 @@ class ChallengeResponseForm extends React.Component {
 
     const challengeId = this.challengeId;
     let r = this.state.response;
-    r.user = this.props.user;
+    if(!this.adminEdit)
+      r.user = this.props.user;
     ChallengeDB.addResponse(challengeId, r).then(()=>{
       this.setState({
         response: r,
@@ -192,6 +145,12 @@ class ChallengeResponseForm extends React.Component {
 
   render() {
 
+    const isNewResponse = !this.responseId;
+    const isOwner = isNewResponse || this.responseId !== this.props.user.uid;
+
+    if(!this.props.user.admin && !isOwner)
+      return null;
+
     if(this.state.goHome)
       return <Redirect push to="/" />
 
@@ -203,6 +162,16 @@ class ChallengeResponseForm extends React.Component {
       this.setState({response: r});
     }
 
+    const AdminEdit = ()=> {
+      if(!this.adminEdit)
+        return null;
+      return (
+        <div className="alert alert-secondary p-1" role="alert">
+          <small>Admin edit of response from <strong>{this.state.response.user.firstName} {this.state.response.user.lastName}</strong></small>
+        </div>
+      )
+    }
+
     return (
       <div className="ChallengeResponseForm screen">
         <ChallengeHeader id={this.state.challenge.id} 
@@ -210,7 +179,9 @@ class ChallengeResponseForm extends React.Component {
           owner={this.props.user}
           user={this.props.user} />
 
+        <AdminEdit />
         <ResponseForm
+          challenge={this.state.challenge}
           response={this.state.response}
           onChange={this.handleChange} 
           handleUpload={this.handleUpload}
@@ -218,7 +189,8 @@ class ChallengeResponseForm extends React.Component {
           msg={this.state.uploadStatus}
           onSubmit={this.publish} 
           clearVideo={this.clearVideo} 
-          toggleOptOut={toggleOptOut} />
+          toggleOptOut={toggleOptOut}
+          adminEdit={this.adminEdit} />
 
           <this.Snackbar timeout={2000} />
       </div>
@@ -232,7 +204,6 @@ class ResponseForm extends React.Component {
     this.state = {isValidated: false}
     this.submit = _.bind(this.submit, this);
   }
-
 
   submit(e) {
     e.preventDefault();
@@ -279,6 +250,8 @@ class ResponseForm extends React.Component {
       )
     }
 
+    const path = `${props.challenge.id}/${props.response.user.uid}`;
+
     const validationClass = (this.state.isValidated)?"was-validated":"needs-validation";
 
     return (
@@ -296,6 +269,7 @@ class ResponseForm extends React.Component {
         
         <MediaUpload id="video" 
           media="video"
+          path={path}
           url={props.response.video}
           required={props.response.videoOptOut === false}
           handleUpload={props.handleUpload}
@@ -303,7 +277,6 @@ class ResponseForm extends React.Component {
           maxFileSize={80*1000*1000}
           validationErrorMsg={<VideoErrMsg />}
         />
-
 
         <Checkbox
           id="videoOptOut"
@@ -321,7 +294,7 @@ class ResponseForm extends React.Component {
           validationErrorMsg={textError}
           onChange={props.onChange} />
 
-        <SaveButtons response={props.response} />
+        <SaveButtons response={props.response} adminEdit={props.adminEdit} />
       </form>
     )
   }
@@ -330,6 +303,17 @@ class ResponseForm extends React.Component {
 const SaveButtons = (props)=> {
 
   const saveWidth = "240px";
+  if(props.adminEdit) {
+    return (
+      <div className="d-flex justify-content-end mb-2">
+        <button type="submit" style={{width: saveWidth}}
+          className={`btn btn-secondary mt-2`}>
+          Save edits
+        </button>
+      </div>
+    )
+  }
+
   if(props.response.id) {
     return (
       <div className="d-flex justify-content-end mb-2">

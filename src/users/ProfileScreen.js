@@ -75,10 +75,14 @@ class ProfileScreen extends React.Component {
   save() {
 
     this.snack("saving image");
+    let u = this.props.user;
+    u.profileImg = this.state.profileImg;
     const data = { profileImg: this.state.profileImg };
     db.update("/users", this.props.user.uid, data).then(()=>{
       this.snack("profile updated");
+      this.props.updateAppUser(u);
     });
+
 
   } 
 

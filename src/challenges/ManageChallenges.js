@@ -5,11 +5,13 @@ import df from "../DateUtil";
 import MoreMenu from "../MoreMenu";
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import {snack, SnackMaker} from "../Snackbar";
+import LoadingModal from "../LoadingModal";
+
 
 class ManageChallengesScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {challenges: []};
+    this.state = {challenges: [], loading: true};
     this.sortChallenges = _.bind(this.sortChallenges, this);
     this.setStatus = _.bind(this.setStatus, this);
     
@@ -22,7 +24,7 @@ class ManageChallengesScreen extends React.Component {
    ChallengeDB.findAll().then((t)=> {
       t = _.filter(t,c=>c.status !== ChallengeStatus.DRAFT && c.status !== ChallengeStatus.DELETE);
       t = this.sortChallenges(t);
-      this.setState({challenges: t});
+      this.setState({challenges: t, loading: false});
     });
   }
 
@@ -56,23 +58,36 @@ class ManageChallengesScreen extends React.Component {
   }
 
   render() {
-    let t = this.state.challenges;
-    t = t.map((challenge) => {
-      return (
-        <ChallengeRow 
-          key={challenge.id} 
-          challenge={challenge}
-          setStatus={this.setStatus} />
-      );
-    });
+    if(!this.props.user.admin)
+      return null;
+
     return (
       <div className="ChallengeListScreen screen">
         <h5 className="">CHALLENGES</h5>
-        {t}
+        <ChallengeList challenges={this.state.challenges} setStatus={this.setStatus} loading={this.state.loading} />
         <this.Snackbar />
       </div>
     )
   }
+}
+
+
+const ChallengeList = (props)=> {
+  if(props.loading)
+    return <LoadingModal show={true} />
+
+  let t = props.challenges;
+  
+
+  t = t.map((challenge) => {
+    return (
+      <ChallengeRow 
+        key={challenge.id} 
+        challenge={challenge}
+        setStatus={props.setStatus} />
+    )
+  })
+  return t;
 }
 
 const ChallengeRow = (props) => {
@@ -140,8 +155,11 @@ const StatusMenu = (props)=> {
     delete: ""
   }
 
-  if(s === ChallengeStatus.PUBLISHED)
+  if(s === ChallengeStatus.PUBLISHED) {
     status.publish = "disabled";
+    status.delete = "disabled";
+    status.reject = "disabled";
+  }
   else if(s === ChallengeStatus.DELETE)
     status.delete = "disabled";
   else if(s === ChallengeStatus.REJECT)

@@ -15,7 +15,7 @@ class ChallengeListScreen extends React.Component {
     ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
       const now = new Date();
       let t = _.filter(challenges, c=> c.end < now);
-      t = _.sortBy(challenges, c=> c.start);
+      t = _.sortBy(challenges, "start");
       this.setState({challenges: t});
     });
   }
@@ -41,10 +41,13 @@ class ChallengeListScreen extends React.Component {
 
 const ChallengeListItem = (props) => {
   const c = props.challenge;
-
+  const detailPath = {
+    pathname: `/challenge/${c.id}`, 
+    state: { fromArchives: true }
+  }
 
   return (
-    <Link to={`/challenge/${c.id}`} className="ChallengeItem">
+    <Link to={detailPath} className="ChallengeItem">
       <div className="ChallengeItemHeader">
         <div>
           <img src="/img/calendar.png" className="mr-2" alt="calendar" />

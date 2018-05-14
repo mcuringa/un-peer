@@ -22,9 +22,10 @@ const MoreMenu = (props)=> {
   }
 
   const dir = props.direction || "dropleft";
+  const css = props.className || "";
 
   return (
-    <div className={`MoreMenu dropdown ${dir}`}>
+    <div className={`MoreMenu dropdown ${dir} ${css}`}>
       <button type="button" className="MoreIcon btn btn-link m-0 p-0 bg-none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <MenuLabel /><MenuIcon />
       </button>

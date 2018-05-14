@@ -68,7 +68,10 @@ class NewChallengeScreen extends React.Component {
 
   mountExistingChallenge(id) {
     console.log("mounting existing challenge");
-    ChallengeDB.get(id).then((c)=>{
+    ChallengeDB.get(id).then((c)=> {
+      if(c.status === ChallengeStatus.REJECT && c.owner && this.props.user.uid === c.owner.uid)
+        c.status = ChallengeStatus.DRAFT;
+
       const underReview = c.status !== ChallengeStatus.DRAFT && !this.props.user.admin;
       this.setState({
         challenge: c,
@@ -294,6 +297,7 @@ class NewChallengeScreen extends React.Component {
             <label className="mt-2 pb-0 mb-0">Video thumbnail</label>
             <MediaUpload id="challengeVideoPoster" 
               media="img"
+              path={c.id}
               url={c.challengeVideoPoster}
               handleUpload={this.handleUpload}
               placeholder="upload challenge video thumbnail"
@@ -441,12 +445,15 @@ const BasicFields = (props)=> {
 
 const ChallengeVideoFields = (props)=> {
   const c = props.challenge;
+  if(_.isNil(c.id) || !c.id)
+    return null;
 
   return (
     <div>      
       <label className="d-block pb-0 mb-1">Challenge Video</label>
       <MediaUpload id="challengeVideo" 
         media="video"
+        path={c.id}
         url={c.challengeVideo}
         required={props.requireAll} 
         handleUpload={props.handleUpload}
@@ -549,6 +556,8 @@ const SaveButton = (props)=> {
 
 
 const SubmitChallengeButtons = (props)=> {
+  if(_.isNil(props.challenge.id) || !props.challenge.id)
+    return <NextStepButton {...props} />;
  
   return (
 
@@ -567,6 +576,25 @@ const SubmitChallengeButtons = (props)=> {
     </div>
   )
 }
+
+const NextStepButton = (props)=> {
+ 
+  return (
+
+    <div className="d-flex justify-content-end mt-2">
+      <SaveButton 
+        label="continue" 
+        save={props.submit}
+        saving={props.saving}
+        uploading={props.uploading}
+      />
+    </div>
+  )
+}
+
+
+
+
 
 const FormHeader = (props)=>
 {

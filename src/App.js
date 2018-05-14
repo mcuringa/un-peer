@@ -4,6 +4,7 @@ import _ from "lodash";
 import {
   BrowserRouter as Router,
   Route,
+  Link,
   NavLink,
   Switch,
 } from "react-router-dom";
@@ -11,6 +12,8 @@ import {
 import FBUtil from './FBUtil.js';
 import Home from './Home.js';
 import LoadingModal from './LoadingModal.js';
+import notifications from "./Notifications"
+
 
 import {ChallengeListScreen} from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
@@ -21,6 +24,7 @@ import ResponseRatings from './challenges/ResponseRatings.js';
 import ChallengeReviewScreen from './challenges/ChallengeReviewScreen.js';
 import ProfessorResponseForm from './challenges/ProfessorResponseForm.js';
 import ManageChallengesScreen from './challenges/ManageChallenges.js';
+import ManageResponsesScreen from './challenges/ManageResponses.js';
 
 
 import AdminScreen from './admin/AdminScreen';
@@ -50,12 +54,14 @@ export default class App extends Component {
     };
     this.userListener = this.userListener.bind(this);
     this.updateAppUser = this.updateAppUser.bind(this);
+    this.loadNotifications = this.loadNotifications.bind(this);
+
   }
 
   updateAppUser(u) {
     this.setState({user: u});
   }
-
+  
   userListener(authUser) {
 
     const loadChallenges = ()=> {
@@ -76,28 +82,49 @@ export default class App extends Component {
 
     let loaduser = ()=>{
       db.get("/users", authUser.uid).then((u)=>{
-        console.log("user loaded");
         this.setState({user: u, loading: false, userLoaded: true, loadingMsg: "Loading assets..."});
         loadChallenges();
-        loadBookmarks();
-        
+        loadBookmarks();       
       });
     }
 
     loaduser = _.once(loaduser);
+    const alertListener = (e)=> {
+      let alerts = this.state.alerts;
+      if(e.action === "add")
+        alerts[e.data.id] = e.data;
+      else if(e.action === "update")
+        alerts[e.data.id] = e.data;
+      else if(e.action === "delete")
+        delete alerts[e.data.id];
+      else
+        return;
+      console.log("alert listener called", e);
+      this.setState({alerts: alerts});
+    }
     if(authUser && authUser.email) {
       console.log("authUser.email");
       console.log(authUser.email);
       loaduser();
+      FBUtil.enableMessaging();
+      notifications.addListener(alertListener);
     }
     else {
       this.setState({user: {}, loading: false, userLoaded: true});
     }
   }
 
+
+
   componentWillMount() {
     FBUtil.getAuthUser(this.userListener);
+    this.loadNotifications();
+  }
 
+  loadNotifications() {
+    const hasAlerts = (alerts)=>{ this.setState({alerts: _.keyBy(alerts,"id")}) };
+    const noAlerts = (alerts)=>{ this.setState({alerts: {}}) };
+    notifications.all().then(hasAlerts, noAlerts);
   }
 
   render() {
@@ -116,7 +143,7 @@ export default class App extends Component {
       return (
         <Router>
           <div className={`App container`}>
-            <Header user={this.state.user} />
+            <Header user={this.state.user} alerts={_.values(this.state.alerts)} />
             <section id="main" className="">
               <LoadingModal show={true} status={this.state.loadingMsg} />
             </section>
@@ -132,7 +159,8 @@ export default class App extends Component {
       <Router>
         <SecureScreens 
           user={this.state.user}
-          updateAppUser={this.updateAppUser} />
+          updateAppUser={this.updateAppUser}
+          alerts={_.values(this.state.alerts)}  />
       </Router>
     );
   }
@@ -142,7 +170,7 @@ const AppContainer = (props)=> {
   return (
     <div id={props.id} className={`App container`}>
       <StarGradient />
-      <Header user={props.user} />
+      <Header user={props.user} alerts={props.alerts} />
       <section id="main">{props.children}</section>
       <Footer user={props.user} />
     </div>
@@ -160,14 +188,14 @@ const Header = (props)=>{
           </NavLink>
         </div>
         <div className="App-title">UN Peer Challenge</div>
-        <MainMenu user={props.user} />
+        <MainMenu user={props.user} alerts={props.alerts} />
       </div>
     </header>
   );
 }
 
 
-const SecureScreens = (props)=>{
+const SecureScreens = (props)=> {
   return (
       <Switch>
         <ScreenRoute  id="Home" {...props} exact path="/" component={Home} />
@@ -176,8 +204,10 @@ const SecureScreens = (props)=>{
         <ScreenRoute  id="BookmarkDetailScreen" {...props} path="/bookmarks/:id"  component={BookmarkDetailScreen} />
         <ScreenRoute  id="BookmarkScreen" {...props} path="/bookmarks"  component={BookmarkScreen} />
         <ScreenRoute  id="NewChallengeScreen" {...props} exact path="/challenge/new" component={NewChallengeScreen} />
+        <ScreenRoute  id="ManageResponsesScreen" {...props} path="/challenge/:id/edit/responses" component={ManageResponsesScreen} />
         <ScreenRoute  id="ChallengeEditScreen" {...props} path="/challenge/:id/edit"  component={NewChallengeScreen} />
         <ScreenRoute  id="CloseChallengeScreen" {...props} path="/challenge/:id/close"  component={CloseChallengeScreen} />
+        <ScreenRoute  id="ChallengeResponseForm" {...props} path="/admin/response/:id/:rid" component={ChallengeResponseForm}/>
         <ScreenRoute  id="ChallengeResponseForm" {...props} path="/challenge/:id/respond" component={ChallengeResponseForm}/>
         <ScreenRoute  id="ProfessorResponseForm" {...props} path="/challenge/:id/prof" component={ProfessorResponseForm} />
         <ScreenRoute  id="ResponseRatings" {...props} path="/challenge/:id/rate" component={ResponseRatings} />
@@ -185,6 +215,7 @@ const SecureScreens = (props)=>{
         <ScreenRoute  id="ChallengeDetailScreen" {...props} path="/challenge/:id" component={ChallengeDetailScreen} />
         
         <ScreenRoute  id="ProfileScreen" {...props} exact path="/profile"  component={ProfileScreen} />
+        <ScreenRoute  id="ConfirmPassReset" {...props} exact path="/confirm-reset"  component={ConfirmPassReset} />
         <ScreenRoute  id="MyChallengesScreen" {...props} exact path="/my/challenges"  component={MyChallengesScreen} />
         <ScreenRoute  id="MyResponsesScreen" {...props} exact path="/my/responses"  component={MyResponsesScreen} />
         
@@ -193,10 +224,29 @@ const SecureScreens = (props)=>{
         <ScreenRoute  id="ManageUsersScreen" {...props} path="/admin/users" component={ManageUsersScreen} />
         <ScreenRoute  id="ManageChallengesScreen" {...props} path="/admin/challenges" component={ManageChallengesScreen} />
         <ScreenRoute  id="AdminScreen" {...props} path="/admin" component={AdminScreen} />
-        
-
       </Switch>
   );
+}
+
+const ConfirmPassReset = (props)=> {
+
+
+  const firebase = FBUtil.init();
+
+  firebase.auth().sendPasswordResetEmail(props.user.email)
+  .catch((error)=> {    console.log(error);  });
+
+
+  return (
+    <div className="ConfirmPassReset screen">
+      <div className="alert alert-secondary" role="alert">
+        <h5 class="alert-heading">Password reset</h5>
+        <p>Please check your email <tt>&lt;{props.user.email}&gt;</tt> for instructions on how to reset your password.</p>
+        <hr />
+        <Link className="btn btn-secondary" to="/">Go Home</Link>
+      </div>
+    </div>
+  )
 }
 
 const renderMergedProps = (component, ...rest) => {
@@ -207,9 +257,9 @@ const renderMergedProps = (component, ...rest) => {
 }
 
 const ScreenRoute = ({ component, ...rest }) => {
-
+  // console.log("rest.setMainModal", rest.setMainModal);
   return (
-    <AppContainer id={rest.id} user={rest.user}>
+    <AppContainer id={rest.id} user={rest.user} alerts={rest.alerts}>
       <Route {...rest} render={routeProps => {
         return renderMergedProps(component, routeProps, rest);
       }}/>

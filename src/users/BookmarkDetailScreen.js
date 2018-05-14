@@ -21,12 +21,13 @@ class BookmarkDetailScreen extends React.Component {
       bookmarks: [],
     };
 
+    this.removeBookmark = _.bind(this.removeBookmark, this);
     this.snack = _.bind(snack, this);
     this.Snackbar = _.bind(SnackMaker, this);
-    this.removeBookmark = _.bind(this.removeBookmark, this);
   }
 
   componentWillMount() {
+    console.log("mounting bookmark detail");
     const setBookmarks = (bookmarks)=> {
       bookmarks = _.filter(bookmarks, b=>b.challengeId===this.challengeId);
 
@@ -46,7 +47,6 @@ class BookmarkDetailScreen extends React.Component {
     const id = bookmark.id;
     const uid = this.props.user.uid;
     let bookmarks = this.state.bookmarks;
-    const oldBookmark = bookmark;
 
     const updateUser = ()=> {
       let u = this.props.user;
@@ -54,29 +54,22 @@ class BookmarkDetailScreen extends React.Component {
       this.props.updateAppUser(u);
     }
 
-
-    const undo = ()=> {
-      console.log("restore called");
-      bookmarks.push(oldBookmark);
-      this.setState(bookmarks: bookmarks);
-      this.snack("bookmark restored");
-      updateUser();
-    }
-
     const deleteBookmark = ()=> {
       const path = `/users/${uid}/bookmarks`;
       const delMsg = ()=>{this.snack("bookmark deleted")};
       db.delete(path, id).then(delMsg);
+      updateUser();
     };
 
     bookmarks = _.filter(bookmarks, b=>b.id !== id);
+    deleteBookmark();
     this.setState({bookmarks: bookmarks});
-    updateUser();
 
-    this.snack("deleting bookmark", true).then(deleteBookmark, undo);
+    this.snack("deleting bookmark", false);
   }
 
   render() {
+    console.log("rendering bookmarks", this.state.bookmarks);
 
     const makeChallenge = (t)=>{
       const first = (t[0].challengeOwner)?t[0].challengeOwner.firstName : "";
@@ -98,8 +91,22 @@ class BookmarkDetailScreen extends React.Component {
     if(this.state.loading)
       return  (<LoadingModal status="Loading favourites..." show={true} />)
 
+    
+    const EmptyMsg = () => {
+      return (
+        <div className="alert alert-secondary m-3">
+          No bookmarks found. <hr />
+          <button onClick={this.props.history.goBack} className="btn btn-secondary">Back to my favourites.</button>
+        </div>
+      )
+    }
+
+    if(this.state.bookmarks.length === 0)
+      return <EmptyMsg />
+
+
     const challenge = makeChallenge(this.state.bookmarks);
-    let bookmarks = _.sortBy(challenge.bookmarks, "created");
+    let bookmarks = _.sortBy(this.state.bookmarks, "created");
     const blist = _.map(bookmarks, (b,i)=>{
       const delB = ()=>{this.removeBookmark(b)};
       return (

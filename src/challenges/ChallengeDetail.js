@@ -1,6 +1,8 @@
 import React from 'react';
 import _ from "lodash";
 import {NavLink} from 'react-router-dom';
+import { ChevronLeftIcon } from "react-octicons";
+
 
 import {Video} from "../FormUtil.js"
 import {User, ChallengeDB} from "./Challenge.js"
@@ -22,6 +24,7 @@ class ChallengeDetailScreen extends React.Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
+    this.fromArchives = this.props.location.state && this.props.location.state.fromArchives
 
     ChallengeDB.get(id).then((c)=>{
       this.setState({
@@ -39,6 +42,7 @@ class ChallengeDetailScreen extends React.Component {
   render() {
     return (
       <div className="ChallengeDetail screen">
+        <BackToArchives fromArchives={this.fromArchives} history={this.props.history} />
         <ChallengeHeader id={this.state.challenge.id} 
           challenge={this.state.challenge} 
           owner={this.state.owner} 
@@ -53,6 +57,19 @@ class ChallengeDetailScreen extends React.Component {
     );
   }
 }
+
+const BackToArchives = (props)=> {
+  if(!props.fromArchives)
+    return null;
+
+  return (
+    <div className="d-flex align-items-center clickable bg-light mb-2 no-Screen-padding border-bottom" onClick={props.history.goBack}>
+      <ChevronLeftIcon className="m-2" />
+      <div className="text-dark">Back to all past challenges</div>
+    </div>
+  )
+}
+
 
 const ChallengeButton = (props) => {
   const c = props.challenge;

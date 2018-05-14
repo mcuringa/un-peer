@@ -2,7 +2,8 @@
 // import localforage from "localforage";
 import {ChallengeDB} from "./challenges/Challenge.js";
 import fireBaseConfig from "./firebase.config.json";
-// import db from "./DBTools";
+import db from "./DBTools";
+import notifications from "./Notifications";
 
 
 const FBUtil =
@@ -23,11 +24,61 @@ const FBUtil =
     require("firebase/auth");
     require("firebase/firestore");
     require("firebase/storage");
+    require("firebase/messaging");
+
 
     FBUtil._firebase.initializeApp(config);
     require("firebase/functions");
 
+
     return FBUtil._firebase;
+  },
+
+  enableMessaging() {
+
+    // console.log("enabling messaging with key", fireBaseConfig.vapidPublicKey);
+
+
+    const messaging = FBUtil._firebase.messaging();  
+    messaging.usePublicVapidKey(fireBaseConfig.vapidPublicKey);
+    let user = FBUtil._firebase.auth().currentUser;
+
+    const sendTokenToServer = (token)=>{db.update("/users",user.uid, {pushToken: token});};
+    const handleToken = (currentToken)=> {
+      try {
+        if (currentToken) {
+          sendTokenToServer(currentToken);
+          console.log("token", currentToken);
+        } else {
+          console.log('No Instance ID token available. Request permission to generate one.');
+        }
+      }
+      catch(err) {
+        console.log('An error occurred while retrieving token. ', err);
+      }
+    }
+
+    const updateToken = ()=>{ messaging.getToken().then(handleToken); };
+    const pushMessage =(msg)=> {
+      console.log('Message received. ', msg);
+      notifications.add(msg);
+    }
+
+    let chan = new MessageChannel();
+    chan.port1.onmessage = pushMessage;
+    chan.port1.addEventListener('message', pushMessage);
+
+    messaging.onTokenRefresh(updateToken);
+    messaging.requestPermission().then(()=>{
+      console.log('Notification permission granted.');
+      updateToken();
+    }).catch((err)=>{
+      console.log('Unable to get permission to notify.', err);
+    });
+    
+    messaging.onMessage(pushMessage);
+
+  
   },
 
   sendPasswordResetEmail: (email)=> {

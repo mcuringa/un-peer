@@ -18,6 +18,7 @@ class Modal  extends React.Component {
 
 
   propsWillChange(nextProps) {
+    console.log("modal props changing");
     if(this.props.closeHandler && !nextProps.show && this.props.show) {
       this.props.closeHandler();
     }

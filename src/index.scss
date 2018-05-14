@@ -95,6 +95,10 @@ img {
   color: theme-color("info");
   fill: theme-color("info");
 }
+.icon-dark svg, svg.icon-dark{
+  fill: $text-dark !important;
+}
+
 // ======================================== badge status colors
 
 .badge-archive {
@@ -265,6 +269,35 @@ svg.icon-lg {
     font-variant: small-caps;
   }
 
+}
+
+.MainMenu {
+  z-index: $zindex-dropdown;
+
+}
+
+#MainMenuInner {
+  position: fixed;
+  top: $top-header-height;
+  padding-bottom: $bottom-footer-height;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: white;
+
+}
+
+.MainMenuItems {
+
+  height: 100%;
+}
+
+
+.NotificationBadge {
+  font-size: .75rem;
+  padding-left: .4em;
+  padding-right: .4em;
+  margin-right: -17px;
 }
 
 .App-footer-toolbar {
@@ -792,7 +825,7 @@ label:hover.VideoUploadButton
 /*======================================= upload progress */
 .UploadProgress {
     background-color: black;
-  color: white;
+  // color: white;
   position: relative;
   height: 22px;
   font-size: 14px;
@@ -800,7 +833,7 @@ label:hover.VideoUploadButton
 }
 
 .UploadProgress .ProgressBar {
-  background-color: $gray-800;
+  // background-color: $gray-800;
   height: 100%;
 }
 

@@ -190,7 +190,8 @@ class ChallengeReviewScreen extends React.Component {
       );
 
     const makeToggleFunction = (r)=> {
-      const f = ()=> {
+      const f = (e)=> {
+        e.preventDefault();
         this.toggleBookmark(r);
       };
       return f;

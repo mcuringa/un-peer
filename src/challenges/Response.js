@@ -1,9 +1,10 @@
 import React from 'react';
 import _ from "lodash";
 
-import { ChevronDownIcon, ChevronUpIcon, BookmarkIcon, PersonIcon} from 'react-octicons';
+import { ChevronDownIcon, ChevronUpIcon, PersonIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import { StarRatings } from "../StarRatings";
+import MoreText from "../MoreText";
 
 
 class Response  extends React.Component {
@@ -18,7 +19,7 @@ class Response  extends React.Component {
       return null;
 
 
-    const featureStyle = {width: "150px", height: "36px"};
+    const featureStyle = {width: "170px", height: "36px"};
     const ProfFeature = ()=> {
       if(!this.props.profChoice)
         return null;
@@ -65,7 +66,7 @@ class Response  extends React.Component {
 
 
     const AuthorInfo = ()=> {
-      if(!this.props.profChoice && !this.props.ownerChoice && !r.topRated)
+      if(!this.props.profChoice && !this.props.ownerChoice && !r.topRated &&!this.props.showAuthorInfo)
         return null;
       return (
         <p><small>Submitted by: {r.user.firstName} {r.user.lastName}</small></p>
@@ -100,10 +101,22 @@ class Response  extends React.Component {
       )
     };
 
+    const Menu = ()=> {
+      return this.props.contextMenu || null;
+    }
+
     const targetCss = (this.props.targetResponseId === r.id)?"highlight":"";
     const collapseCss = (this.props.open)?"":"collapsed";
     const showCss = (this.props.open)?"show":"";
     const toggleId = _.uniqueId("resp_");
+
+    const titleLen = 30;
+    const More = ()=>{
+      if(r.title.length < titleLen)
+        return null;
+      return <div><small className="font-weight-bold">{r.title}</small></div>
+
+    }
 
     return (
       <div id={r.id} className={`Response border-bottom border-light mt-2 pt-2 pb-2 text-gray ${targetCss}`}>
@@ -120,7 +133,7 @@ class Response  extends React.Component {
                 <ChevronUpIcon />
                 <ChevronDownIcon />
               </div>
-              <h5 className="ResponseTitle text-gray">{r.title}</h5>
+              <h6 className="ResponseTitle text-gray"><MoreText text={r.title} chars={titleLen} /></h6>
             </div>
             <AuthorInfo />
           </div>
@@ -128,6 +141,7 @@ class Response  extends React.Component {
             <div className={`d-flex justify-content-end align-items-start`}>
               <StarRatings rating={r.avgRating} />
               <Bookmark {...this.props} />
+              <Menu />
             </div>
             <OwnerFeature />
             <ProfFeature />
@@ -140,6 +154,7 @@ class Response  extends React.Component {
             <SetOwnerChoice />
             <SetProfChoice />
           </div>
+          <More />
           <Video video={r.video} />
           {r.text}      
         </div>
@@ -160,6 +175,13 @@ const Bookmark = (props) => {
       <BookmarkIcon className="icon-lg" />
     </div>
   );
+}
+
+const BookmarkIcon = (props)=> {
+
+  return (
+    <svg height="32" className="octicon octicon-bookmark" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fillRule="evenodd" d="M9 0H1C.27 0 0 .27 0 1v15l5-3.09L10 16V1c0-.73-.27-1-1-1zm-.78 4.25L6.36 5.61l.72 2.16c.06.22-.02.28-.2.17L5 6.6 3.12 7.94c-.19.11-.25.05-.2-.17l.72-2.16-1.86-1.36c-.17-.16-.14-.23.09-.23l2.3-.03.7-2.16h.25l.7 2.16 2.3.03c.23 0 .27.08.09.23h.01z"></path></svg>
+  )
 }
 
 const CircleStarIcon = (props)=> {
