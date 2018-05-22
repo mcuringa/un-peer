@@ -13,7 +13,7 @@ class MainMenu extends React.Component {
   }
 
   signout() {
-    const firebase = FBUtil.init();
+    const firebase = FBUtil.getFB();
     firebase.auth().signOut().then(()=> {
       console.log('Signed Out');
     }, (error)=> {

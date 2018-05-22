@@ -6,7 +6,7 @@
     "bootstrap": "^4.1.1",
     "dateformat": "^3.0.3",
     "firebase": "^4.13.1",
-    "firebase-admin": "^5.12.0",
+    "firebase-admin": "^5.12.1",
     "firebase-functions": "^1.0.2",
     "firebase-tools": "^3.18.4",
     "jquery": "^3.3.1",
@@ -17,7 +17,7 @@
     "popper.js": "^1.14.3",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
-    "react-accessible-accordion": "^2.3.1",
+    "react-accessible-accordion": "^2.4.0",
     "react-calendar": "^2.14.0",
     "react-dom": "^16.3.2",
     "react-modal": "^3.4.4",
@@ -43,6 +43,6 @@
     "postcss-loader": "^2.1.5",
     "react-test-renderer": "^16.3.2",
     "sass-loader": "^6.0.7",
-    "webpack": "^3.11.0"
+    "webpack": "^3.12.0"
   }
 }

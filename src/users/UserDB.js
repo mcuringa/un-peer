@@ -36,23 +36,6 @@ userKeys: [
   "su"
 ],
 
-get(uid) {
-
-  let store = FBUtil.connect();
-  let p = new Promise((resolve, reject)=>{
-    store.collection("users").doc(uid).get()
-      .then( (doc)=>{
-        console.log('doc', doc);
-        if(doc.exists)
-          resolve(doc.data());
-        else
-          reject();
-      });
-    });
-
-  return p;
-
-},
 
 addBookmark(uid, response, challenge) {
   
@@ -129,20 +112,8 @@ create(user) {
       .then(done)
       .catch(err);
   });
-},
+}
 
-save(u) {
-  u.modified = new Date();
-
-  let store = FBUtil.connect();
-  let ref = store.collection("users").doc(u.uid);
-
-  return new Promise((resolve, reject) => {
-    ref.set(u).then(()=>{
-      resolve(u);
-    });
-  });
-},
 
 }
 

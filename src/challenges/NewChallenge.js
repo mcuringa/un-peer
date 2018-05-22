@@ -8,6 +8,7 @@ import {
   TextGroup,
   TextAreaGroup,
   DatePicker,
+  TimePicker,
   StatusIndicator
 } from "../FormUtil"
 import df from "../DateUtil";
@@ -28,7 +29,7 @@ class NewChallengeScreen extends React.Component {
 
     this.handleChange = _.bind(this.handleChange, this);
     this.handleStartDateChange = _.bind(this.handleStartDateChange, this);
-    this.handleDateChange = _.bind(this.handleDateChange, this);
+    this.handleDateTime = _.bind(this.handleDateTime, this);
     this.handleUpload = _.bind(this.handleUpload, this);
     this.submit = _.bind(this.submit, this);
     this.clearField = _.bind(this.clearField, this);
@@ -118,23 +119,29 @@ class NewChallengeScreen extends React.Component {
     this.setState({ challenge: c, dirty: true });
   }
 
-  handleDateChange(e) {
+  handleDateTime(dateId, timeId) {
     let c = this.state.challenge;
-    const date = ChallengeDB.parseDateControlToUTC(e.target.value);
-    c[e.target.id] = date;
+    const day = document.getElementById(dateId).value;
+    const time = document.getElementById(timeId).value;
+    const date = new Date(day + " " + time);
+    c[dateId] = date;
+    // console.log(day);
+    // console.log(time);
 
-    if(date > c.end)
-      c.end = date;
-
-    this.setState({ challenge: c, dirty: true });
+    if(dateId === "start")
+      this.handleStartDateChange(date)
+    else {
+      if(date > c.end)
+        c.end = date;
+      this.setState({ challenge: c, dirty: true });
+    }
   }
 
-  handleStartDateChange(e) {
+
+  handleStartDateChange(date) {
     let c = this.state.challenge;
     const dayInMillis = 1000 * 60 * 60 * 24;
-    const date = ChallengeDB.parseDateControlToUTC(e.target.value);
 
-    c.start = date;
     c.responseDue = new Date(date.getTime() + dayInMillis * 5);
     c.ratingDue = new Date(date.getTime() + dayInMillis * 7);
     c.end = new Date(date.getTime() + dayInMillis * 8);
@@ -320,22 +327,37 @@ class NewChallengeScreen extends React.Component {
             <DatePicker id="start"
               value={c.start}
               label="challenge start"
-              onChange={this.handleStartDateChange} />
+              onChange={_.partial(this.handleDateTime, "start", "startTime")} />
+            <TimePicker id="startTime"
+              value={c.start}
+              onChange={_.partial(this.handleDateTime, "start", "startTime")} />
 
             <DatePicker id="responseDue"
               value={c.responseDue}
               label="response due"
-              onChange={this.handleDateChange} />
+              onChange={_.partial(this.handleDateTime, "responseDue", "responseDueTime")} />
+            <TimePicker id="responseDueTime"
+              value={c.responseDue}
+              onChange={_.partial(this.handleDateTime, "responseDue", "responseDueTime")} />
+
 
             <DatePicker id="ratingDue"
               value={c.ratingDue}
               label="rating due"
-              onChange={this.handleDateChange} />
-            
+              onChange={_.partial(this.handleDateTime, "ratingDue", "ratingDueTime")} />
+            <TimePicker id="ratingDueTime"
+              value={c.ratingDue}
+              onChange={_.partial(this.handleDateTime, "ratingDue", "ratingDueTime")} />
+
             <DatePicker id="end"
               value={c.end}
               label="challenge end"
-                onChange={this.handleDateChange} />
+              onChange={_.partial(this.handleDateTime, "end", "endTime")} />
+
+            <TimePicker id="endTime"
+              value={c.end}
+              onChange={_.partial(this.handleDateTime, "end", "endTime")} />
+
           </If>
 
           <If p={admin}>

@@ -4,15 +4,16 @@ import {ChallengeDB} from "./challenges/Challenge.js";
 import fireBaseConfig from "./firebase.config.json";
 import db from "./DBTools";
 import notifications from "./Notifications";
-
+import _ from "lodash"
 
 const FBUtil =
 {
   db: null,
   testMode: false,
   _firebase: null,
+  dbLock: false,
 
-  init: ()=> {
+  init: async ()=> {
     const config = fireBaseConfig;
 
     if(FBUtil._firebase)
@@ -26,18 +27,18 @@ const FBUtil =
     require("firebase/storage");
     require("firebase/messaging");
 
-
     FBUtil._firebase.initializeApp(config);
     require("firebase/functions");
-
+    FBUtil.db = await FBUtil.initDB();
 
     return FBUtil._firebase;
   },
 
+  getFB: ()=> {
+    return FBUtil._firebase;
+  },
+
   enableMessaging() {
-
-    // console.log("enabling messaging with key", fireBaseConfig.vapidPublicKey);
-
 
     const messaging = FBUtil._firebase.messaging();  
     messaging.usePublicVapidKey(fireBaseConfig.vapidPublicKey);
@@ -48,7 +49,6 @@ const FBUtil =
       try {
         if (currentToken) {
           sendTokenToServer(currentToken);
-          console.log("token", currentToken);
         } else {
           console.log('No Instance ID token available. Request permission to generate one.');
         }
@@ -90,7 +90,8 @@ const FBUtil =
     let firebase = FBUtil.init();
     let storageRef = firebase.storage().ref();
     const name = ChallengeDB.slug(file.name);
-    path = `${path}/${name}`;
+    const uuid = db.uuid();
+    path = `${path}/${uuid}/${name}`;
 
     let ref = storageRef.child(path);
 
@@ -116,17 +117,32 @@ const FBUtil =
     return new Promise(auth);
   },
 
-  connect: ()=> {
-    // console.log("connecting");
-    // console.log("db: " + db);
-    if(FBUtil.db) {
+  initDB: async ()=>{
+    let db = FBUtil._firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    db.settings(settings);
+    await db.enablePersistence();
+    FBUtil.db = db;
+
+    return FBUtil.db;
+
+  },
+
+  connect: async (timeout)=> {
+    // return the maldito database fron initDB
+    if(!_.isNil(FBUtil.db)) {
       return FBUtil.db;
     }
 
-    FBUtil.init();
-
-    FBUtil.db = FBUtil._firebase.firestore();
-    return FBUtil.db;
+    const wait = async (t)=>{ 
+      return new Promise(resolve => {
+        setTimeout(resolve, t);
+      });
+    }
+    timeout = (timeout)?timeout * timeout: 50;
+    await wait(timeout);
+    return FBUtil.connect(timeout);
+    
   },
 
   getCloudFunction: (f)=> {

@@ -3,6 +3,7 @@ import _ from "lodash";
 import dateFormat from 'dateformat';
 import {XIcon, PrimitiveDotIcon, DeviceCameraIcon } from 'react-octicons';
 import {UploadProgress} from "./MediaManager";  
+import df from "./DateUtil";
 
 const LoadingSpinner = (props)=> {
   return (
@@ -68,10 +69,9 @@ const TextGroup = (props)=> {
 
   return (
     <div className="form-group">
-      <Label id={props.id} label={props.label}/>
+      <Label id={props.id} label={props.label} />
       <TextInput type={props.type||'text'}
         value={props.value}
-        className="form-control"
         id={props.id}
         placeholder={props.placeholder}
         onChange={props.onChange}
@@ -110,12 +110,13 @@ const TextInput = (props)=> {
 
   const pt = (props.plaintext && props.readOnly)?"-plaintext":"";
   const validationCss = props.validationCss || "";
+  const css = props.className || "";
 
   return (
 
     <input type={props.type||'text'}
            value={props.value}
-           className={`form-control${pt} ${props.className} ${validationCss}`}
+           className={`form-control${pt} ${css} ${validationCss}`}
            id={props.id}
            placeholder={props.placeholder}
            onChange={props.onChange}
@@ -329,6 +330,37 @@ const DatePicker = (props)=> {
   );
 };
 
+const TimePicker = (props)=> {
+
+  if(props.hide)
+    return null;
+
+  const holder = props.placeholder || "";
+
+
+
+  return (
+    <div className="TimePicker form-group">
+      <Label id={props.id} label={props.label}/>
+      <div className="input-group mb-3">
+        <div className="input-group-prepend">
+          <span className="input-group-text">{df.time(props.value)}</span>
+        </div>
+        <TextInput
+          id={props.id}
+          type="time"
+          value={df.time(props.value)}
+          placeholder={holder}
+          onChange={props.onChange}
+          readOnly={props.readonly}
+          required={props.required}
+          plaintext={props.plaintext} />
+      </div>
+    </div>
+
+  );
+};
+
 const TextAreaGroup = (props)=> {
   if(props.hide)
     return null;
@@ -409,6 +441,7 @@ export {
   TextGroup,
   TextInput,
   DatePicker,
+  TimePicker,
   TextAreaGroup,
   StatusIndicator,
   LoadingSpinner,

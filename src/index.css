@@ -8366,7 +8366,9 @@ label {
   font-weight: bold; }
 
 .DatePicker .input-group-text,
-.DatePicker input {
+.DatePicker input,
+.TimePicker .input-group-text,
+.TimePicker input {
   font-size: 12px;
   line-height: auto; }
 

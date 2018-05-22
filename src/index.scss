@@ -20,6 +20,9 @@ $cal-green: #60d600;
 $cal-blue: #2b91e9;
 $cal-purple: #ae1963;
 
+
+// * {border: 1px solid red !important;}
+
 .border-light {
   border-color: #e3e3e3 !important;
 }
@@ -606,11 +609,14 @@ label
 }
 
 .DatePicker .input-group-text,
-.DatePicker input
+.DatePicker input, 
+.TimePicker .input-group-text,
+.TimePicker input
 {
   font-size: 12px;
   line-height: auto;
 }
+
 
 .was-validated .MediaUploader.is-invalid label {
   border: 1px solid $red;

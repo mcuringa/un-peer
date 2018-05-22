@@ -11,7 +11,7 @@ const StarGradient = (props)=> {
     y2:"50%"
   }
   return (
-    <div style={{height: 0}}>
+    <div style={{height: 0, zIndex: -999, position: "absolute", left: -1600}}>
     <svg>
       <pattern id="UnratedHash" patternUnits="userSpaceOnUse" width="4" height="4">
         <path d="M-1,1 l2,-2

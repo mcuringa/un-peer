@@ -82,7 +82,7 @@ export default class Login extends Component {
     let email = this.state.email.trim();
     let pw = this.state.password;
 
-    const firebase = FBUtil.init();
+    const firebase = FBUtil.getFB();
 
     const success = (auth)=> {
       this.setState({loading: false, loadingStatus: false});
@@ -104,7 +104,7 @@ export default class Login extends Component {
   }
 
   reset() {
-    const firebase = FBUtil.init();
+    const firebase = FBUtil.getFB();
     this.setState({forgotPass: false});
 
     firebase.auth().sendPasswordResetEmail(this.state.email)

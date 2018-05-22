@@ -38,7 +38,7 @@ class ProfileScreen extends React.Component {
   }
 
   componentWillMount() {
-    const firebase = FBUtil.init();
+    const firebase = FBUtil.getFB();
     let fbu = firebase.auth().currentUser;
     this.setState({lastLogin:fbu.metadata.lastSignInTime});
 

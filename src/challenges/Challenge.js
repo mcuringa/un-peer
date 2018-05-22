@@ -20,6 +20,11 @@ const ChallengeStatus = Object.freeze({
 
 const dayInMillis = 1000 * 60 * 60 * 24;
 function Challenge() {
+  let now = new Date();
+  now.setHours(12);
+  now.setMinutes(0);
+  now.setSeconds(0);
+  const ts = now.getTime();
 
   return {
     id:"",
@@ -28,9 +33,9 @@ function Challenge() {
     prompt:"",
     status: ChallengeStatus.DRAFT,
     start: new Date(),
-    responseDue: new Date(_.now() + dayInMillis * 3),
-    ratingDue: new Date(_.now() + dayInMillis * 5),
-    end: new Date(_.now() + dayInMillis * 7),
+    responseDue: new Date(ts + dayInMillis * 3),
+    ratingDue: new Date(ts + dayInMillis * 5),
+    end: new Date(ts + dayInMillis * 7),
     created: new Date(),
     modified: new Date()
   }
@@ -168,6 +173,8 @@ const ChallengeDB = {
     if(now < c.end)
       return "review";
 
+    console.log("unknown");
+    console.log(c);
     return "unknown stage";
   },
 
@@ -186,13 +193,14 @@ const ChallengeDB = {
   findAllSecure() {
     const now = new Date();
 
-    const loadChallenges = (u)=> {
-      let db = FBUtil.connect();
+    const loadChallenges = async (u)=> {
+      let firestore = await FBUtil.connect();
       let promises = [];
       let challenges = [];
 
       const prep = (c)=>{
         const status = Number.parseInt(c.status, 10);
+        c = db.prep(c);
         c.status = status;
         const stage = ChallengeDB.getStage(c);
         return _.merge(c, {stage: stage, status: status})
@@ -208,21 +216,21 @@ const ChallengeDB = {
       };
 
       const mine = ()=> {
-        return db.collection("challenges")
+        return firestore.collection("challenges")
           .where("owner.uid", "==", u.uid)
           .get()
           .then(addChallenges);
       }
 
       const prof = ()=> {
-        return db.collection("challenges")
+        return firestore.collection("challenges")
           .where("professor.uid", "==", u.uid)
           .get()
           .then(addChallenges);
       }
 
       const adminAll  = ()=> {
-        return db.collection("challenges")
+        return firestore.collection("challenges")
           .where("status", ">", ChallengeStatus.DRAFT)
           .get()
           .then(addChallenges);
@@ -231,7 +239,7 @@ const ChallengeDB = {
 
 
       const published = ()=> {
-        return db.collection("challenges")
+        return firestore.collection("challenges")
           .where("status", "==", ChallengeStatus.PUBLISHED)
           .where("start", "<", now)
           .get()
@@ -285,10 +293,11 @@ const ChallengeDB = {
     let challenges = [];
     let ids = [];
     
-    if(ChallengeDB.isCacheLoaded()) {
-      challenges = _.values(ChallengeDB.cache);
-      // console.log("challenges from cache");
-    }
+    // use firebase offline data instead of cache
+    // if(ChallengeDB.isCacheLoaded()) {
+    //   challenges = _.values(ChallengeDB.cache);
+    //   // console.log("challenges from cache");
+    // }
 
     return new Promise(
       (resolve, reject)=>{
@@ -313,7 +322,7 @@ const ChallengeDB = {
     });
   },
 
-  get(id) {
+  async get(id) {
     
     let challenge = ChallengeDB.cache[id];
     if(challenge)
@@ -324,11 +333,10 @@ const ChallengeDB = {
           challenge.status = Number.parseInt(challenge.status, 10);
           resolve(challenge);
         });
-
     }
     challenge = {};
 
-    let db = FBUtil.connect();
+    let db = await FBUtil.connect();
     return new Promise(
       (resolve, reject)=>{
         db.collection("challenges").doc(id)
@@ -338,6 +346,7 @@ const ChallengeDB = {
             challenge.stage = ChallengeDB.getStage(challenge);
             challenge.status = Number.parseInt(challenge.status, 10);
             challenge.id = id;
+            challenge = db.prep(challenge);
             if(challenge) //don't cache nulls
               ChallengeDB.cache[id] = challenge;
             resolve(challenge);
@@ -359,19 +368,20 @@ const ChallengeDB = {
   parseDateControlToUTC(d) {
    if(d.getTime)
       return d;
+    console.log("converting date");
     const t = _.split(d, "-");
     return new Date(Date.UTC(t[0], t[1]-1, t[2], new Date().getTimezoneOffset()/60, 0, 0));
   },
 
-  set(c) {
-    c.modified = ChallengeDB.parseDateControlToUTC(new Date());
-    c.start = ChallengeDB.parseDateControlToUTC(c.start);
-    c.end = ChallengeDB.parseDateControlToUTC(c.end);
-    c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
-    c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
+  async set(c) {
+    // c.modified = ChallengeDB.parseDateControlToUTC(new Date());
+    // c.start = ChallengeDB.parseDateControlToUTC(c.start);
+    // c.end = ChallengeDB.parseDateControlToUTC(c.end);
+    // c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
+    // c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
 
 
-    let db = FBUtil.connect();
+    let db = await FBUtil.connect();
     let ref = db.collection("challenges").doc(c.id);
 
     return new Promise((resolve, reject) => {
@@ -455,7 +465,7 @@ const ChallengeDB = {
 
       c.assignments = t;
 
-      let db = FBUtil.connect();
+      let db = await FBUtil.connect();
       let ref = db.collection("challenges").doc(c.id);
       await ref.update({assignments: t});
 
@@ -486,13 +496,14 @@ const ChallengeDB = {
     return db.get(`challenges/${challengeId}/responses`, uid);
   },
 
-  addResponse(challengeId, response) {
+  async addResponse(challengeId, response) {
     if(!response.created)
       response.created = new Date();
-    response.created = ChallengeDB.parseDateControlToUTC(response.created);
-    response.modified = ChallengeDB.parseDateControlToUTC(new Date());
+    // response.created = ChallengeDB.parseDateControlToUTC(response.created);
+    // response.modified = ChallengeDB.parseDateControlToUTC(new Date());
+    response.modified = new Date();
     
-    let db = FBUtil.connect();
+    let db = await FBUtil.connect();
     let ref = db.collection("challenges").doc(challengeId).collection("responses").doc(response.user.uid);
     return new Promise((resolve, reject)=>{
       ref.set(response).then(()=>{
@@ -507,8 +518,8 @@ const ChallengeDB = {
     });
   },
 
-  uniqueId: (testId)=> {
-    let db = FBUtil.connect();
+  uniqueId: async (testId)=> {
+    let db = await FBUtil.connect();
     let count = 0;
     const incId = (id, count)=> {
       return `${testId}_${count}`;
@@ -542,8 +553,9 @@ const ChallengeDB = {
     });
 
   },
-  delete(id) {
-    let db = FBUtil.connect();
+  
+  async delete(id) {
+    let db = await FBUtil.connect();
     db.collection("challenges").doc(id).delete();
   }
 

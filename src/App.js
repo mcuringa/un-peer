@@ -231,7 +231,7 @@ const SecureScreens = (props)=> {
 const ConfirmPassReset = (props)=> {
 
 
-  const firebase = FBUtil.init();
+  const firebase = FBUtil.getFB();
 
   firebase.auth().sendPasswordResetEmail(props.user.email)
   .catch((error)=> {    console.log(error);  });

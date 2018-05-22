@@ -16,13 +16,15 @@ class CalendarScreen extends React.Component {
     this.now = new Date();
     this.tileWidth = 50;
 
+  }
+
+  componentWillMount() {
+    
     if (this.props.challenges) {
       this.state.currentChallenge = df.getChallengeForDate(
         this.props.challenges, this.now);
     }
-  }
 
-  componentWillMount() {
     const me = this;
 
     if (!this.state.challenges) {
@@ -123,6 +125,9 @@ class CalendarScreen extends React.Component {
       );
     }
 
+    if(!this.state.currentChallenge)
+      return <NoChallenge />
+
     return (
       <div className="calendar-view">
           <Calendar
@@ -171,6 +176,19 @@ class CalendarScreen extends React.Component {
       </div>
     );
   }
+}
+
+const NoChallenge = (props) => {
+  return (
+    <div id="NoCalendarChallenge" className="card border-dark mt-3">
+      <div className="card-header"><h4>No Active Challenge</h4></div>
+      <div className="card-body">
+        <p className="card-text">
+          Nothing is due right now. Check back for active challenges.
+        </p>
+      </div>
+    </div>
+  )
 }
 
 CalendarScreen.propTypes = {
