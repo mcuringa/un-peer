@@ -5,10 +5,12 @@ import df from "../DateUtil.js";
 import db from "../DBTools.js";
 
 import {ChevronDownIcon, ChevronUpIcon, ChevronLeftIcon} from 'react-octicons';
+import { CalendarIcon, HeartIcon } from "../UNIcons";
 import { Video } from "../FormUtil";
 import LoadingModal from "../LoadingModal";
 import {snack, SnackMaker} from "../Snackbar";
 import {StarRatings} from "../StarRatings";
+
 
 class BookmarkDetailScreen extends React.Component {
   constructor(props) {
@@ -134,16 +136,16 @@ const Challenge =(props)=> {
   return (
     <div className="StaticChallengeItem">
       <div className="ChallengeItemHeader">
-        <div>
-          <button className="btn btn-link" onClick={props.back}>
+        <div className="d-flex align-items-center">
+          <button className="btn btn-link p-0" onClick={props.back}>
             <ChevronLeftIcon />
           </button>
-          <img src="/img/calendar.png" className="mr-2" alt="calendar" />
-          {df.range(c.start, c.end)}
+          <div className="mr-2 ml-2"><CalendarIcon /></div>
+          <div className="single-space">{df.range(c.start, c.end)}</div>
         </div>
-        <div className="">
-          <img className="pr-1" src="/img/footer/Bookmarks_unclicked_btn.png" alt="heart" />
-          {c.bookmarks.length} responses
+        <div className="d-flex align-items-start">
+          <HeartIcon />
+          <div className="single-space pl-1">{c.bookmarks.length} responses</div>
         </div>
       </div>
       <div className="ChallengeItemBody">

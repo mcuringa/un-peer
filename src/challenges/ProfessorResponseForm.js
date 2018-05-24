@@ -176,7 +176,6 @@ class ProfessorResponseForm extends React.Component {
 
           <VideoUploadImproved id="video" 
            video={this.state.video}
-           poster="/img/poster.png"
            onChange={this.handleUpload} 
            progressBar={progress}
            />

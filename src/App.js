@@ -14,6 +14,7 @@ import Home from './Home.js';
 import LoadingModal from './LoadingModal.js';
 import notifications from "./Notifications"
 
+import { CalendarIcon, HeartIcon, ProfileIcon, ArchiveIcon } from "./UNIcons";
 
 import {ChallengeListScreen} from './challenges/ChallengeList.js';
 import ChallengeDetailScreen from './challenges/ChallengeDetail.js';
@@ -184,7 +185,7 @@ const Header = (props)=>{
       <div className="d-flex justify-content-between pr-0">
         <div className="App-home">
           <NavLink to="/" exact={true} activeclass="active">
-            <img src="/img/home.png" alt="logo" />
+            <img src="data:image/png;base64,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" alt="logo" />
           </NavLink>
         </div>
         <div className="App-title">UN Peer Challenge</div>
@@ -280,9 +281,7 @@ const Footer = (props)=>{
                 to="/calendar"
                 className={`btn btn-btn-light calendar-icon btn-block${disabled}`}>
                 <div className="icon-box">
-                    <img src="/img/footer/Calendar_unclicked_btn.png"
-                         width="21" height="22"
-                         alt="Calendar icon" />
+                  <CalendarIcon />
                 </div>
 
                 <div className="icon-box">
@@ -292,38 +291,20 @@ const Footer = (props)=>{
             <NavLink
                 to="/archive"
                 className={`btn btn-btn-light archives-icon btn-block${disabled}`}>
-                <div className="icon-box">
-                    <img src="/img/footer/Archive_unclicked_btn.png"
-                         width="18" height="18"
-                         alt="Archives icon" />
-                </div>
-                <div className="icon-box">
-                    Archives
-                </div>
+                <div className="icon-box"><ArchiveIcon /></div>
+                <div className="icon-box">Archives</div>
             </NavLink>
             <NavLink
                 to="/bookmarks"
                 className={`btn btn-btn-light bookmarks-icon btn-block${disabled}`}>
-                <div className="icon-box">
-                    <img src="/img/footer/Bookmarks_unclicked_btn.png"
-                         width="20" height="18"
-                         alt="Bookmarks icon" />
-                </div>
-                <div className="icon-box">
-                    Favourites
-                </div>
+                <div className="icon-box"><HeartIcon /></div>
+                <div className="icon-box">Favourites</div>
             </NavLink>
             <NavLink
                 to="/profile"
                 className={`btn btn-btn-light profile-icon btn-block${disabled}`}>
-                <div className="icon-box">
-                    <img src="/img/footer/Profile_unclicked_btn.png"
-                         width="17" height="17"
-                         alt="Profile icon" />
-                </div>
-                <div className="icon-box">
-                    Profile
-                </div>
+                <div className="icon-box"><ProfileIcon /></div>
+                <div className="icon-box">Profile</div>
             </NavLink>
         </div>
       </div>

@@ -8,10 +8,42 @@ import df from "./DateUtil";
 const LoadingSpinner = (props)=> {
   return (
     <span className="LoadingSpinner">
-      <img className={`${(props.loading)?"":"d-none"}`}
-           alt="Loading"
-           style={{maxHeight: "16px"}}
-           src="/img/puff.svg" />
+        <svg className={`${(props.loading)?"":"d-none"}`} width="16" height="16" viewBox="0 0 16 16" stroke="blue">
+            <g fill="none" fillRule="evenodd" strokeWidth="4">
+                <circle cx="22" cy="8" r="8" fill="#6A82AD">
+                    <animate attributeName="r"
+                        begin="0s" dur="1.8s"
+                        values="1; 20"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.165, 0.84, 0.44, 1"
+                        repeatCount="indefinite" />
+                    <animate attributeName="stroke-opacity"
+                        begin="0s" dur="1.8s"
+                        values="1; 0"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.3, 0.61, 0.355, 1"
+                        repeatCount="indefinite" />
+                </circle>
+                <circle cx="8" cy="8" r="1">
+                    <animate attributeName="r"
+                        begin="-0.9s" dur="1.8s"
+                        values="1; 20"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.165, 0.84, 0.44, 1"
+                        repeatCount="indefinite" />
+                    <animate attributeName="stroke-opacity"
+                        begin="-0.9s" dur="1.8s"
+                        values="1; 0"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.3, 0.61, 0.355, 1"
+                        repeatCount="indefinite" />
+                </circle>
+            </g>
+        </svg>
     </span>
     );
 }
@@ -444,7 +476,6 @@ export {
   TimePicker,
   TextAreaGroup,
   StatusIndicator,
-  LoadingSpinner,
   Video,
   Label,
   VideoUploadImproved,

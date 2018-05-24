@@ -11,6 +11,18 @@ firebase.initializeApp(config);
 
 require("firebase/functions")
 
+it.only("make sure tests are running",()=>{
+  console.log("it tests");
+});
+
+// it.only("gets a connection from FBUtil",async ()=>{
+//   FBUtil.init();
+//   let db = await FBUtil.connect();
+//   console.log(db);
+//   expect(db).toBeDefined();
+
+// });
+
 it("inits messaging",()=>{
   
   const messaging = firebase.messaging();  
@@ -26,40 +38,38 @@ it("inits messaging",()=>{
   }).catch((err)=>{
     console.log('Unable to get permission to notify.', err);
   });
-
-  
-
-
 });
 
 
 
-// it("initializes a database connection",()=>{
-//     console.log("initializing");
-//   let db = firebase.firestore();
-//   expect(db).toBeDefined();
-// })
+it("initializes a database connection",()=>{
+    console.log("initializing");
+  let db = firebase.firestore();
+  expect(db).toBeDefined();
+})
 
-// it.skip("can load functions",()=>{
-//   let functions = firebase.functions();
-//   expect(functions).toBeDefined();
 
-// })
 
-// it.skip("calls the hello function",()=>{
-//   let functions = firebase.functions();
-//   const hello = functions.httpsCallable("hello");
-//   expect(hello).toBeDefined();
-// })
+it.skip("can load functions",()=>{
+  let functions = firebase.functions();
+  expect(functions).toBeDefined();
 
-// it.skip("authenticates with test email",()=>{
+})
 
-//   const email = "foo@example.com";
-//   const pw = "foobar";
-//   return firebase.auth().signInWithEmailAndPassword(email, pw)
-//     .then(()=>{
-//       console.log("signed in");
-//     }).catch((e)=>{
-//       console.log(e);
-//     });
-// })
+it.skip("calls the hello function",()=>{
+  let functions = firebase.functions();
+  const hello = functions.httpsCallable("hello");
+  expect(hello).toBeDefined();
+})
+
+it.skip("authenticates with test email",()=>{
+
+  const email = "foo@example.com";
+  const pw = "foobar";
+  return firebase.auth().signInWithEmailAndPassword(email, pw)
+    .then(()=>{
+      console.log("signed in");
+    }).catch((e)=>{
+      console.log(e);
+    });
+})

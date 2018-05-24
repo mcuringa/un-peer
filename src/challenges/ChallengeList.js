@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import _ from "lodash";
 import {ChevronRightIcon} from 'react-octicons';
+import { CalendarIcon } from "../UNIcons";
+
 import df from "../DateUtil";
 
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
@@ -49,9 +51,9 @@ const ChallengeListItem = (props) => {
   return (
     <Link to={detailPath} className="ChallengeItem">
       <div className="ChallengeItemHeader">
-        <div>
-          <img src="/img/calendar.png" className="mr-2" alt="calendar" />
-          {df.range(c.start, c.end)}
+        <div className="d-flex align-items-start">
+          <CalendarIcon />
+          <div className="single-space pl-1">{df.range(c.start, c.end)}</div>
         </div>
       </div>
       <div className="ChallengeItemBody">

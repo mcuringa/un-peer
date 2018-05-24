@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import df from "../DateUtil";
 import {PencilIcon, ChevronLeftIcon} from "react-octicons";
+import { CalendarIcon } from "../UNIcons";
 
 const EditLink = (props) => {
   if(!props.user.admin)
@@ -27,10 +28,10 @@ const ChallengeHeader = (props) => {
 
   return (
     <div className="ChallengeDetailHeader">
-      <div className="StartDate d-flex align-items-center">
+      <div className="StartDate d-flex align-items-start">
         <BackButton hideBack={props.hideBack} challenge={props.challenge} />
-        <img src="/img/calendar.png" className="mr-2" alt="calendar icon" />
-        {stageMsg}
+        <CalendarIcon />
+        <div className="single-space pl-1">{stageMsg}</div>
       </div>
       <h4>{props.challenge.title}
       <small><EditLink user={props.user} challenge={props.challenge} /></small></h4>

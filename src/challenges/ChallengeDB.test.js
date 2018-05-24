@@ -92,7 +92,7 @@ it("it should create a safe slug from unsafe text", ()=> {
   expect(slug).toBe(ex)
 });
 
-it("should find a new unique id", ()=>{
+it.skip("should find a new unique id", ()=>{
     ChallengeDB.cache = {};
 
     const id = "test-id-foo";
@@ -104,7 +104,7 @@ it("should find a new unique id", ()=>{
       });
 }, longTimeout);
 
-it("should add a new challenge", ()=>{
+it.skip("should add a new challenge", ()=>{
   ChallengeDB.cache = {};
 
   let c = Challenge;
@@ -122,7 +122,7 @@ it("should add a new challenge", ()=>{
   });
 }, longTimeout);
 
-it("should update a challenge", ()=>{
+it.skip("should update a challenge", ()=>{
   let c = Challenge;
   c.id = "test-id-foo";
   c.owner = {
@@ -139,7 +139,7 @@ it("should update a challenge", ()=>{
   });
 });
 
-it("should add a response to test-id-foo",()=>{
+it.skip("should add a response to test-id-foo",()=>{
   const cId = "policy-changes-break-everything";
   let r = Response;
   r.text = "I think...";
@@ -158,7 +158,7 @@ it("should get all responses in a challenge",()=>{
 });
 
 
-it.only("should delete all pf the records starting with jest-unit-test or marked for delete", ()=>{
+it("should delete all of the records starting with jest-unit-test or marked for delete", ()=>{
   
   return ChallengeDB.findAll().then((t)=> {
     t.forEach((c)=>{

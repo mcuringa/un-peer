@@ -6,6 +6,8 @@ import df from "../DateUtil.js";
 import db from "../DBTools.js";
 
 import {ChevronRightIcon} from 'react-octicons';
+import { CalendarIcon, HeartIcon } from "../UNIcons";
+
 import LoadingModal from "../LoadingModal";
 import {snack, SnackMaker} from "../Snackbar";
 
@@ -107,13 +109,13 @@ const Challenge =(props)=> {
   return (
     <Link to={`/bookmarks/${c.id}`} className="ChallengeItem">
       <div className="ChallengeItemHeader">
-        <div>
-          <img src="/img/calendar.png" className="mr-2" alt="calendar" />
-          {df.range(c.start, c.end)}
+        <div className="d-flex align-items-start">
+          <div className="mr-2"><CalendarIcon /></div>
+          <div className="single-space">{df.range(c.start, c.end)}</div>
         </div>
-        <div className="">
-          <img className="pr-1" src="/img/footer/Bookmarks_unclicked_btn.png" alt="heart" />
-          {c.bookmarks.length} responses
+        <div className="d-flex align-items-start">
+          <HeartIcon />
+          <div className="single-space pl-1">{c.bookmarks.length} responses</div>
         </div>
       </div>
       <div className="ChallengeItemBody">

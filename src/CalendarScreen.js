@@ -21,8 +21,8 @@ class CalendarScreen extends React.Component {
   componentWillMount() {
     
     if (this.props.challenges) {
-      this.state.currentChallenge = df.getChallengeForDate(
-        this.props.challenges, this.now);
+      const currentChallenge = df.getChallengeForDate(this.props.challenges, this.now);
+      this.setState({currentChallenge: currentChallenge});
     }
 
     const me = this;

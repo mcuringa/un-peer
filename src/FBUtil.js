@@ -2,7 +2,7 @@
 // import localforage from "localforage";
 import {ChallengeDB} from "./challenges/Challenge.js";
 import fireBaseConfig from "./firebase.config.json";
-import db from "./DBTools";
+import db, {uuid} from "./DBTools";
 import notifications from "./Notifications";
 import _ from "lodash"
 
@@ -87,11 +87,12 @@ const FBUtil =
   },
 
   uploadMedia: (file, path, progress, succ, err)=> {
-    let firebase = FBUtil.init();
+    let firebase = FBUtil.getFB();
+    console.log("firebase", firebase);
     let storageRef = firebase.storage().ref();
     const name = ChallengeDB.slug(file.name);
-    const uuid = db.uuid();
-    path = `${path}/${uuid}/${name}`;
+    const id = uuid();
+    path = `${path}/${id}/${name}`;
 
     let ref = storageRef.child(path);
 
@@ -121,10 +122,29 @@ const FBUtil =
     let db = FBUtil._firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     db.settings(settings);
-    await db.enablePersistence();
+    // const offlineSupported = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+
+    // if(offlineSupported) {
+    //   console.log("enabling offline data");
+    //   await db.enablePersistence();
+    // }
+    
     FBUtil.db = db;
 
     return FBUtil.db;
+
+  },
+
+  _initDB: async ()=>{
+    let db = FBUtil._firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    db.settings(settings);
+    const init = (resolve, reject)=> {
+      const f = ()=> {resolve(db);}
+      db.enablePersistence().then(f,f)
+    }
+
+    return new Promise(init);
 
   },
 

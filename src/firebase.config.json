@@ -1,0 +1,9 @@
+{
+  "apiKey": "AIzaSyBvgDJ2EyxDaZervfY7yImDrvXE8R8Vzpo",
+  "authDomain": "un-peer-challenges.firebaseapp.com",
+  "databaseURL": "https://un-peer-challenges.firebaseio.com",
+  "projectId": "un-peer-challenges",
+  "storageBucket": "un-peer-challenges.appspot.com",
+  "messagingSenderId": "789085021989",
+  "vapidPublicKey": "BMBK8L6j3Gw3VBtWaAk7i2QG9PHX4eRTO0gz1g5PSYGikWPRd7R5ez1s6zS5JMgJBIl7xNIRB_9V1xYM1iLE-Bk"
+}
