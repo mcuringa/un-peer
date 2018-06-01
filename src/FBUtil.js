@@ -88,7 +88,6 @@ const FBUtil =
 
   uploadMedia: (file, path, progress, succ, err)=> {
     let firebase = FBUtil.getFB();
-    console.log("firebase", firebase);
     let storageRef = firebase.storage().ref();
     const name = ChallengeDB.slug(file.name);
     const id = uuid();

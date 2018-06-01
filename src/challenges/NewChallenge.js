@@ -180,7 +180,6 @@ class NewChallengeScreen extends React.Component {
     }
 
     this.setState({ confirmReview: true });
-    console.log("show modal");
   }
 
   submitReview() {
@@ -188,12 +187,12 @@ class NewChallengeScreen extends React.Component {
     let challenge = this.state.challenge;
     challenge.status = ChallengeStatus.REVIEW;
 
+    // const data =  Object.freeze(challenge);
+
     this.setState({saving: true});
     const isNew = !challenge.id;
     ChallengeDB.save(challenge).then((c)=> {
-      this.snack("Challenge saved");
       this.setState({isValidated: false, challenge:c, saving: false, dirty: false, underReview: true});
-      
       if(isNew)
         this.setState({id: c.id, goToEdit: true, underReview: true});
     });
@@ -201,7 +200,6 @@ class NewChallengeScreen extends React.Component {
 
   cancelReview() {
     let challenge = this.state.challenge;
-    challenge.status = ChallengeStatus.DRAFT;
     this.setState({ challenge:challenge, confirmReview: false });
   }
 
@@ -590,11 +588,13 @@ const SubmitChallengeButtons = (props)=> {
         saving={props.saving}
         uploading={props.uploading}
       />
-      <button type="button" 
-        onClick={props.review} 
-        className="btn btn-secondary">
-        Submit for review
-      </button>
+
+      <SaveButton 
+        label="submit for review" 
+        save={props.review} 
+        saving={props.saving}
+        uploading={props.uploading}
+      />
     </div>
   )
 }

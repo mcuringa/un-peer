@@ -325,21 +325,22 @@ const ChallengeDB = {
   async get(id) {
     
     let challenge = ChallengeDB.cache[id];
-    if(challenge)
-    {
-      return new Promise(
-        (resolve, reject)=>{
-          challenge.stage = ChallengeDB.getStage(challenge);
-          challenge.status = Number.parseInt(challenge.status, 10);
-          resolve(challenge);
-        });
-    }
+    // challenge = null;
+    // if(challenge)
+    // {
+    //   return new Promise(
+    //     (resolve, reject)=>{
+    //       challenge.stage = ChallengeDB.getStage(challenge);
+    //       challenge.status = Number.parseInt(challenge.status, 10);
+    //       resolve(challenge);
+    //     });
+    // }
     challenge = {};
 
-    let db = await FBUtil.connect();
+    let fire = await FBUtil.connect();
     return new Promise(
       (resolve, reject)=>{
-        db.collection("challenges").doc(id)
+        fire.collection("challenges").doc(id)
           .get()
           .then( (doc)=>{
             challenge = doc.data();
@@ -358,6 +359,7 @@ const ChallengeDB = {
 
   save(c){
 
+
     if(_.isNil(c.id) || _.isEmpty(c.id))
       return ChallengeDB.add(c);
     else
@@ -374,19 +376,27 @@ const ChallengeDB = {
   },
 
   async set(c) {
-    // c.modified = ChallengeDB.parseDateControlToUTC(new Date());
+    c.modified = new Date();
     // c.start = ChallengeDB.parseDateControlToUTC(c.start);
     // c.end = ChallengeDB.parseDateControlToUTC(c.end);
     // c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
     // c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
 
+    console.log("setting challenge", c);
+    console.log("status", c.status);
+
 
     let db = await FBUtil.connect();
     let ref = db.collection("challenges").doc(c.id);
 
+    console.log("after get ref");
+    console.log("status", c.status);
+
     return new Promise((resolve, reject) => {
       ref.set(c).then(()=>{
         c.id = ref.id;
+        console.log("challenge save complete");
+        console.log("status", c.status);
         ChallengeDB.cache[c.id] = c;
         resolve(c);
       });
