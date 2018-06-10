@@ -48,7 +48,8 @@ import {ChallengeDB} from "./challenges/Challenge";
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {user: {}, 
+    this.state = {
+      user: {}, 
       loading: true,
       userLoaded: false,
       loadingMsg: "Signing in..."
@@ -56,6 +57,7 @@ export default class App extends Component {
     this.userListener = this.userListener.bind(this);
     this.updateAppUser = this.updateAppUser.bind(this);
     this.loadNotifications = this.loadNotifications.bind(this);
+    this.watchNotifications = this.watchNotifications.bind(this);
 
   }
 
@@ -90,25 +92,14 @@ export default class App extends Component {
     }
 
     loaduser = _.once(loaduser);
-    const alertListener = (e)=> {
-      let alerts = this.state.alerts;
-      if(e.action === "add")
-        alerts[e.data.id] = e.data;
-      else if(e.action === "update")
-        alerts[e.data.id] = e.data;
-      else if(e.action === "delete")
-        delete alerts[e.data.id];
-      else
-        return;
-      console.log("alert listener called", e);
-      this.setState({alerts: alerts});
-    }
+
     if(authUser && authUser.email) {
       console.log("authUser.email");
       console.log(authUser.email);
       loaduser();
       FBUtil.enableMessaging();
-      notifications.addListener(alertListener);
+      notifications.addListener(this.loadNotifications);
+      this.watchNotifications();
     }
     else {
       this.setState({user: {}, loading: false, userLoaded: true});
@@ -125,8 +116,15 @@ export default class App extends Component {
   loadNotifications() {
     const hasAlerts = (alerts)=>{ this.setState({alerts: _.keyBy(alerts,"id")}) };
     const noAlerts = (alerts)=>{ this.setState({alerts: {}}) };
-    notifications.all().then(hasAlerts, noAlerts);
+    notifications.all(this.state.user).then(hasAlerts, noAlerts).catch(()=>{console.log("error in App load notifications");});
   }
+
+
+  watchNotifications() {
+    this.loadNotifications();
+    setTimeout(this.watchNotifications, 1000 * 60);
+  }
+
 
   render() {
 

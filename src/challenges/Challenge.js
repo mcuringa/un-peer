@@ -173,7 +173,7 @@ const ChallengeDB = {
     if(now < c.end)
       return "review";
 
-    console.log("unknown");
+    console.log("<---------------------- warning: unknown stage ------------------>");
     console.log(c);
     return "unknown stage";
   },
@@ -325,16 +325,16 @@ const ChallengeDB = {
   async get(id) {
     
     let challenge = ChallengeDB.cache[id];
-    // challenge = null;
-    // if(challenge)
-    // {
-    //   return new Promise(
-    //     (resolve, reject)=>{
-    //       challenge.stage = ChallengeDB.getStage(challenge);
-    //       challenge.status = Number.parseInt(challenge.status, 10);
-    //       resolve(challenge);
-    //     });
-    // }
+    const cacheEnabled = false;
+    if(cacheEnabled && challenge)
+    {
+      return new Promise(
+        (resolve, reject)=>{
+          challenge.stage = ChallengeDB.getStage(challenge);
+          challenge.status = Number.parseInt(challenge.status, 10);
+          resolve(challenge);
+        });
+    }
     challenge = {};
 
     let fire = await FBUtil.connect();
@@ -344,14 +344,12 @@ const ChallengeDB = {
           .get()
           .then( (doc)=>{
             challenge = doc.data();
-            challenge.stage = ChallengeDB.getStage(challenge);
-            challenge.status = Number.parseInt(challenge.status, 10);
             challenge.id = id;
+            challenge.status = Number.parseInt(challenge.status, 10);
             challenge = db.prep(challenge);
-            if(challenge) //don't cache nulls
-              ChallengeDB.cache[id] = challenge;
+            challenge.stage = ChallengeDB.getStage(challenge);
+            ChallengeDB.cache[id] = challenge;
             resolve(challenge);
-
           });
       });
 
@@ -377,26 +375,12 @@ const ChallengeDB = {
 
   async set(c) {
     c.modified = new Date();
-    // c.start = ChallengeDB.parseDateControlToUTC(c.start);
-    // c.end = ChallengeDB.parseDateControlToUTC(c.end);
-    // c.responseDue = ChallengeDB.parseDateControlToUTC(c.responseDue);
-    // c.ratingDue = ChallengeDB.parseDateControlToUTC(c.ratingDue);
-
-    console.log("setting challenge", c);
-    console.log("status", c.status);
-
-
     let db = await FBUtil.connect();
     let ref = db.collection("challenges").doc(c.id);
-
-    console.log("after get ref");
-    console.log("status", c.status);
 
     return new Promise((resolve, reject) => {
       ref.set(c).then(()=>{
         c.id = ref.id;
-        console.log("challenge save complete");
-        console.log("status", c.status);
         ChallengeDB.cache[c.id] = c;
         resolve(c);
       });

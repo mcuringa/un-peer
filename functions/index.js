@@ -20,6 +20,10 @@ const sendUserNotification = (user, msg)=> {
   console.log("sending", msg);
   console.log("user", user);
   console.log("token", user.pushToken);
+  if(user.pushToken == null) { // eslint-disable-line
+    console.log("skipping user", user.email, " token is undefined.");
+    return false;
+  }
   msg.token = user.pushToken;
   return admin.messaging().send(msg).then((response) => { return response;}).catch(logErr);
 }
@@ -67,7 +71,7 @@ const statusChange = (before, after)=> {
         "title": "Challenge Accepted",
         "body": `Your challenge was chosen as a challenge of the week.`
     }
-    data.clickAction = `https://un-peer-challenges.firebaseapp.com/challenge/${data.challengeId}`;
+    data.clickAction = `https://un-peer-challenges.firebaseapp.com/challenge/${after.id}`;
 
     const msg = { "notification": notification, "data": data}
     const send = (u)=> {
@@ -92,26 +96,34 @@ const statusChange = (before, after)=> {
 }
 
 const saveMsg = (user, msg, batch)=> {
-  let db = batch || getDB();
+  console.log("saving batch message", batch);
+  let db = getDB();
   const path = `/users/${user.uid}/messages`
   let ref = db.collection(path).doc();
   const note = {
     title: msg.notification.title,
     body: msg.notification.body,
-    link: msg.data.clickAction || "",
-    data: data,
+    clickAction: msg.data.clickAction || "",
+    sent: msg.data.sent || new Date(),
+    data: msg.data,
     expires: msg.data.expires || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   }
+
+  if(batch)
+    return batch.set(ref, note);
+  
   return ref.set(note);
 }
 
 
 const notifyAll = (snapshot, msg)=> {
+  console.log("notifying all from a query", snapshot);
   let db = getDB();
   const batch = db.batch();
 
   const notify = (doc) => {
     let user = doc.data();
+    console.log("notifying a user", user);
     user.id = doc.id;
     saveMsg(user, msg, batch);
     sendUserNotification(user, msg);
@@ -126,21 +138,22 @@ const notifyAll = (snapshot, msg)=> {
 
 const findAdmins = ()=> {
   let db = getDB();
-  return db.collection("/users").where("admin", "==", true);
+  return db.collection("/users").where("admin", "==", true).get();
 }
 
 const notifyAdminPending = (challenge)=> {
+  console.log("notifying admins of a new pending challenge", challenge);
 
   let data = {
     "challengeId": challenge.id,
     "challengeTitle": challenge.title,
     "sent": new Date().toISOString(),
     "icon": 'https://un-peer-challenges.firebaseapp.com/img/home.png',
-    "clickAction": `https://un-peer-challenges.firebaseapp.com/challenge/${challenge.challengeId}`
+    "clickAction": `https://un-peer-challenges.firebaseapp.com/challenge/${challenge.id}/edit`
   }
   const notification = {
       "title": "Challenge Submitted for Review",
-      "body": `There is a new pending challenge..`
+      "body": `There is a new pending challenge.`
   }
 
   const msg = { "notification": notification, "data": data}

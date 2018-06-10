@@ -1,5 +1,6 @@
 import React from 'react';
 import {GearIcon, TriangleDownIcon, ThreeBarsIcon} from "react-octicons";
+import _ from "lodash";
 
 const MoreMenu = (props)=> {
   const MenuIcon = ()=> {
@@ -23,10 +24,11 @@ const MoreMenu = (props)=> {
 
   const dir = props.direction || "dropleft";
   const css = props.className || "";
+  const id = _.uniqueId("MoreMenu_");
 
   return (
     <div className={`MoreMenu dropdown ${dir} ${css}`}>
-      <button type="button" className="MoreIcon btn btn-link m-0 p-0 bg-none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button id={id} type="button" className="MoreIcon btn btn-link m-0 p-0 bg-none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <MenuLabel /><MenuIcon />
       </button>
       <div className="dropdown-menu mt-0 pt-0 dropdown-menu-right">

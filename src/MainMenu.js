@@ -75,24 +75,29 @@ const Alert = (props)=> {
 
   const a = props.alert;
   const Action = (props)=> {
+    const css = "AlertMessage dropdown-item text-left";
+    const style = {whiteSpace: "normal", lineHeight: "1.1em"};
     if(a.clickAction) {
+      const path = new URL(a.clickAction).pathname;
+      // console.log("alert action path", path);
       return (
-        <Link className={`dropdown-item`} to={a.clickAction}>{props.children}</Link>
+        <Link className={`d-block ${css}`} style={style} to={path}>{props.children}</Link>
       )
     }
-    return <div className={`dropdown-item`}>{props.children}</div>;
+    return <div className={`${css} disabled`} style={style} >{props.children}</div>;
   }
 
   const del = (e)=> {
+    console.log("deleting a msg");
     console.log(e);
     e.stopPropagation();
     notifications.delete(a);
   }
 
   return (
-    <div className="NotificationAlert d-flex justify-content-between align-items-top" key={alert.id}>
+    <div className="NotificationAlert d-flex justify-content-between align-items-start mt-2" key={alert.id}>
       <Action>
-        <div>{a.title}</div>
+        <small className="font-weight-bold d-block">{a.title}</small>
         <small>{a.body}</small>
       </Action>
       <button className="btn btn-link pl-3 pt-0 pb-0 pr-2 icon-dark" onClick={del}><XIcon /></button>

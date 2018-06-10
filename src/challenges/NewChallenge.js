@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import 'react-datepicker/dist/react-datepicker.css';
 import _ from "lodash";
 import { TrashcanIcon, ChevronLeftIcon } from "react-octicons";
 
@@ -7,8 +10,6 @@ import {Challenge, ChallengeDB, ChallengeStatus} from "./Challenge";
 import {
   TextGroup,
   TextAreaGroup,
-  DatePicker,
-  TimePicker,
   StatusIndicator
 } from "../FormUtil"
 import df from "../DateUtil";
@@ -58,8 +59,6 @@ class NewChallengeScreen extends React.Component {
     let challenge = new Challenge();
     challenge.owner = owner;
     challenge.id = null;
-    console.log("challenge.title");
-    console.log(challenge.title);
       this.setState({
         challenge: challenge,
         loading: false,
@@ -70,8 +69,9 @@ class NewChallengeScreen extends React.Component {
   mountExistingChallenge(id) {
     console.log("mounting existing challenge");
     ChallengeDB.get(id).then((c)=> {
-      if(c.status === ChallengeStatus.REJECT && c.owner && this.props.user.uid === c.owner.uid)
+      if(c.status === ChallengeStatus.REJECT && c.owner && this.props.user.uid === c.owner.uid && !this.props.user.admin) {
         c.status = ChallengeStatus.DRAFT;
+      }
 
       const underReview = c.status !== ChallengeStatus.DRAFT && !this.props.user.admin;
       this.setState({
@@ -119,16 +119,15 @@ class NewChallengeScreen extends React.Component {
     this.setState({ challenge: c, dirty: true });
   }
 
-  handleDateTime(dateId, timeId) {
+  handleDateTime(id, moment) {
+    console.log("id", id);
+    console.log("moment", moment);
+    const date = moment.toDate();
+    console.log("date", date);
     let c = this.state.challenge;
-    const day = document.getElementById(dateId).value;
-    const time = document.getElementById(timeId).value;
-    const date = new Date(day + " " + time);
-    c[dateId] = date;
-    // console.log(day);
-    // console.log(time);
+    c[id] = date;
 
-    if(dateId === "start")
+    if(id === "start")
       this.handleStartDateChange(date)
     else {
       if(date > c.end)
@@ -183,7 +182,6 @@ class NewChallengeScreen extends React.Component {
   }
 
   submitReview() {
-    console.log("submitting review");
     let challenge = this.state.challenge;
     challenge.status = ChallengeStatus.REVIEW;
 
@@ -322,39 +320,53 @@ class NewChallengeScreen extends React.Component {
               handleChange={this.handleChange}
             />
             <hr />
-            <DatePicker id="start"
-              value={c.start}
-              label="challenge start"
-              onChange={_.partial(this.handleDateTime, "start", "startTime")} />
-            <TimePicker id="startTime"
-              value={c.start}
-              onChange={_.partial(this.handleDateTime, "start", "startTime")} />
-
-            <DatePicker id="responseDue"
-              value={c.responseDue}
-              label="response due"
-              onChange={_.partial(this.handleDateTime, "responseDue", "responseDueTime")} />
-            <TimePicker id="responseDueTime"
-              value={c.responseDue}
-              onChange={_.partial(this.handleDateTime, "responseDue", "responseDueTime")} />
 
 
-            <DatePicker id="ratingDue"
-              value={c.ratingDue}
-              label="rating due"
-              onChange={_.partial(this.handleDateTime, "ratingDue", "ratingDueTime")} />
-            <TimePicker id="ratingDueTime"
-              value={c.ratingDue}
-              onChange={_.partial(this.handleDateTime, "ratingDue", "ratingDueTime")} />
 
-            <DatePicker id="end"
-              value={c.end}
-              label="challenge end"
-              onChange={_.partial(this.handleDateTime, "end", "endTime")} />
+            <label>Start</label>
+            <DatePicker
+                selected={moment(c.start)}
+                onChange={_.partial(this.handleDateTime, "start")}
+                showTimeSelect
+                dateFormat="ddd MMM DD YYYY HH:mm"
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="time"
+            />
 
-            <TimePicker id="endTime"
-              value={c.end}
-              onChange={_.partial(this.handleDateTime, "end", "endTime")} />
+            <label>Response due</label>
+            <DatePicker
+                selected={moment(c.responseDue)}
+                onChange={_.partial(this.handleDateTime, "responseDue")}
+                showTimeSelect
+                dateFormat="ddd MMM DD YYYY HH:mm"
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="time"
+            />
+
+            <label>Rating due</label>
+            <DatePicker
+                selected={moment(c.ratingDue)}
+                onChange={_.partial(this.handleDateTime, "ratingDue")}
+                showTimeSelect
+                dateFormat="ddd MMM DD YYYY HH:mm"
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="time"
+            />
+
+            <label>End</label>
+            <DatePicker
+                selected={moment(c.end)}
+                onChange={_.partial(this.handleDateTime, "end")}
+                showTimeSelect
+                dateFormat="ddd MMM DD YYYY HH:mm"
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="time"
+            />
+
 
           </If>
 

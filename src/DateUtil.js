@@ -4,7 +4,9 @@ import _ from "lodash";
 const df = {
   day: (d)=> dateFormat(d, "ddd mmm dd"),
   fullDay: (d)=> dateFormat(d, "dddd, mmmm dd"),
+  fullDayTime: (d)=> dateFormat(d, "ddd, mmmm dd HH:MM"),
   cal: (d)=> dateFormat(d, "yyyy-mm-dd"),
+  pickerDate: (d)=> dateFormat(d, "mm/dd/yyyy"),
   df: (d)=> dateFormat(d, "dd mmm yyyy"),
   ts: (d)=> dateFormat(d,"yyyy-mm-dd HH:MM:ss"),
   time:(d)=> dateFormat(d,"HH:MM:ss"),

@@ -61,7 +61,7 @@ const FBUtil =
     const updateToken = ()=>{ messaging.getToken().then(handleToken); };
     const pushMessage =(msg)=> {
       console.log('Message received. ', msg);
-      notifications.add(msg);
+      notifications.notify();
     }
 
     let chan = new MessageChannel();
@@ -105,8 +105,7 @@ const FBUtil =
   getAuthUser: (listener)=>
   {
     const auth = (resolve,reject)=> {
-      FBUtil.init();
-      
+   
       let user = FBUtil._firebase.auth().currentUser;
       FBUtil._firebase.auth().onAuthStateChanged(listener);
 

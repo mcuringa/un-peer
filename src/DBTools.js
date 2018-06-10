@@ -96,8 +96,40 @@ const db = {
     }
 
     return new Promise(promiseToSave);
-
   },
+
+  deleteAll(path, t, id) {
+
+    const promiseToDelete = async (resolve, reject) => {
+      // identify function or obj.id
+      const f = (obj)=>{return obj.id};
+      id = id || f;
+
+      const db = await FBUtil.connect();
+      const batch = db.batch();
+
+      const err = (e)=>{
+        console.log(e);
+        reject(e);
+      }
+
+      const deleteObj = (o)=> {
+        let ref = db.collection(path).doc(id(o));
+        batch.delete(ref);
+      }
+
+      _.each(t, deleteObj);
+
+
+      batch.commit().then(()=>{
+        resolve(t)
+      }).catch(err);
+
+    }
+
+    return new Promise(promiseToDelete);
+  },
+
 
 
   async save(path, id, data) {
@@ -145,8 +177,12 @@ const db = {
     console.log(path);
     console.log(id);
     let ref = db.collection(path).doc(id);
+    const err = (e)=>{
+      console.log("error deleting record");
+      console.log(e);
+    }
 
-    return new Promise((resolve, reject)=>{ref.delete().then(resolve);});
+    return new Promise((resolve, reject)=>{ref.delete().then(resolve).catch(err);});
   }
 };
 
