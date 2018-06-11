@@ -325,6 +325,7 @@ class NewChallengeScreen extends React.Component {
 
             <label>Start</label>
             <DatePicker
+                className="form-control"
                 selected={moment(c.start)}
                 onChange={_.partial(this.handleDateTime, "start")}
                 showTimeSelect
@@ -336,6 +337,7 @@ class NewChallengeScreen extends React.Component {
 
             <label>Response due</label>
             <DatePicker
+                className="form-control"
                 selected={moment(c.responseDue)}
                 onChange={_.partial(this.handleDateTime, "responseDue")}
                 showTimeSelect
@@ -347,6 +349,7 @@ class NewChallengeScreen extends React.Component {
 
             <label>Rating due</label>
             <DatePicker
+                className="form-control"
                 selected={moment(c.ratingDue)}
                 onChange={_.partial(this.handleDateTime, "ratingDue")}
                 showTimeSelect
@@ -358,6 +361,7 @@ class NewChallengeScreen extends React.Component {
 
             <label>End</label>
             <DatePicker
+                className="form-control"
                 selected={moment(c.end)}
                 onChange={_.partial(this.handleDateTime, "end")}
                 showTimeSelect
@@ -366,8 +370,6 @@ class NewChallengeScreen extends React.Component {
                 timeIntervals={15}
                 timeCaption="time"
             />
-
-
           </If>
 
           <If p={admin}>
