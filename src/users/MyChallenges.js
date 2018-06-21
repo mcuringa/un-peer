@@ -151,7 +151,7 @@ const MyChallenges = (props)=>{
             <div className={`rounded-0 badge badge-${c.stage} mr-1`}>
               {c.stage}
             </div>
-            <h6 className="p-0"><Link to={`/challenge/${c.id}/edit`}>{c.title}</Link></h6>
+            <h6 className="p-0"><Link to={`/challenge/${c.id}`}>{c.title}</Link></h6>
           </div>
           <div className="ChallengeItemMenu">
             <ChallengeMenu challenge={c} {...props} />

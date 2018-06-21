@@ -5,11 +5,16 @@ import {XIcon, ThreeBarsIcon} from "react-octicons";
 
 import FBUtil from "./FBUtil";
 import notifications from "./Notifications";
+import moment from "moment";
+
 
 class MainMenu extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
+    this.signout = _.bind(this.signout, this);
+    this.markAllRead = _.bind(this.markAllRead, this);
+    this.open = false;
   }
 
   signout() {
@@ -19,6 +24,21 @@ class MainMenu extends React.Component {
     }, (error)=> {
       console.error('Sign Out Error', error);
     });
+  }
+
+  markAllRead() {
+    this.open = !this.open;
+    const t = 3 * 1000;
+    const updateDB = ()=> {
+      if(this.open) {
+        console.log("long enough...updating as read");
+        notifications.markAllRead();
+      }
+      else
+        console.log("closed before commit");
+    }
+    console.log("marking read");
+    _.delay(updateDB, t);
   }
 
   render() {
@@ -36,17 +56,17 @@ class MainMenu extends React.Component {
 
 
       <div className="MainMenu icon-lg d-flex justify-content-end">
-        <button id="MainMenuIcon" type="button" className="MainMenuIcon btn btn-link m-0 p-0 bg-none" data-toggle="collapse" data-target="#MainMenuInner" aria-expanded="false">
+        <button id="MainMenuIcon" type="button" className="MainMenuIcon btn btn-link m-0 p-0 bg-none" onClick={this.markAllRead} data-toggle="collapse" data-target="#MainMenuInner" aria-expanded="false">
           <NotificationBadge alerts={this.props.alerts} /><ThreeBarsIcon />
         </button>
         <div id="MainMenuInner"className="collapse no-Screen-padding">
           <div className="MainMenuItems container" onClick={hide}>
-            <Alerts alerts={this.props.alerts} user={this.props.user} />
             <button type="button" onClick={this.signout} className="btn dropdown-item">Sign Out</button>
             <Link to="/confirm-reset" className="btn dropdown-item">Reset Password</Link>
             <button type="button" className="btn dropdown-item disabled">Help</button>
             <button type="button" className="btn dropdown-item disabled">About</button>
             <AdminMenu user={this.props.user} />
+            <Alerts alerts={this.props.alerts} user={this.props.user} />
           </div>
         </div>
       </div>
@@ -94,11 +114,16 @@ const Alert = (props)=> {
     notifications.delete(a);
   }
 
+  const read = (a.read === true)?"read":"unread";
+
   return (
-    <div className="NotificationAlert d-flex justify-content-between align-items-start mt-2" key={alert.id}>
+    <div className={`NotificationAlert d-flex justify-content-between align-items-start mt-2 ${read}`} key={alert.id}>
       <Action>
-        <small className="font-weight-bold d-block">{a.title}</small>
-        <small>{a.body}</small>
+        <h6 className="NotificationTitle mb-0">
+          {a.title}
+          <small className="NotificationSent text-muted pl-1">{moment(a.sent).fromNow()}</small>
+        </h6>
+        <small className="NotificationBody text-muted">{a.body}</small>
       </Action>
       <button className="btn btn-link pl-3 pt-0 pb-0 pr-2 icon-dark" onClick={del}><XIcon /></button>
     </div>
@@ -110,8 +135,8 @@ const Alerts = (props)=> {
   const alerts = _.map(props.alerts, f);
   return (
     <div>
-      {alerts}
       <div className="dropdown-divider"></div>
+      {alerts}
     </div>
   )
 }
@@ -119,10 +144,18 @@ const Alerts = (props)=> {
 
 
 const NotificationBadge = (props)=> {
-  if(props.alerts.length === 0)
+  let unread = 0;
+  const f = (a)=>{
+    if(a.read !== true)
+      unread++;
+  }
+  _.each(props.alerts, f);
+
+  if(unread === 0)
     return null;
+
   return (
-    <span className="NotificationBadge badge badge-secondary badge-pill">{props.alerts.length}</span>
+    <span className="NotificationBadge badge badge-secondary badge-pill">{unread}</span>
   )
 }
 

@@ -48,11 +48,23 @@ class MyResponsesScreen extends React.Component {
           My Responses
         </h4>
         {ResponseList}
+        <NoResponsesMsg show={this.state.responses.length === 0} />
         <this.Snackbar />
 
       </div>
     );
   }
+}
+
+const NoResponsesMsg = (props)=> {
+  if(!props.show)
+    return null;
+  return (
+    <div className="alert alert-secondary m-2">
+      <h4 className="alert-heading">No Responses Found</h4>
+      <p>Once you submit responses to challenges, you will be able to view them here.</p>
+    </div>
+  )
 }
 
 const Response = (r)=> {

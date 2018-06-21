@@ -5,9 +5,10 @@ import {PencilIcon, ChevronLeftIcon} from "react-octicons";
 import { CalendarIcon } from "../UNIcons";
 
 const EditLink = (props) => {
-  if(!props.user.admin)
-    return null;
-  return <Link to={`/challenge/${props.challenge.id}/edit`}><PencilIcon className="ml-2" /></Link>
+  const isOwner = props.challenge.owner && props.user.uid === props.challenge.owner.uid;
+  if(props.user.admin || isOwner)
+    return <Link to={`/challenge/${props.challenge.id}/edit`}><PencilIcon className="ml-2" /></Link>
+  return null;
 }
 
 

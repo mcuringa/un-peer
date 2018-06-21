@@ -14,7 +14,6 @@ const initFirebase = async ()=> {
 
 initFirebase();
 
-
 ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();
 

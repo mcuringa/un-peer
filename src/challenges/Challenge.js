@@ -19,6 +19,7 @@ const ChallengeStatus = Object.freeze({
 
 
 const dayInMillis = 1000 * 60 * 60 * 24;
+
 function Challenge() {
   let now = new Date();
   now.setHours(12);
@@ -32,7 +33,7 @@ function Challenge() {
     tags:"",
     prompt:"",
     status: ChallengeStatus.DRAFT,
-    start: new Date(),
+    start: now,
     responseDue: new Date(ts + dayInMillis * 3),
     ratingDue: new Date(ts + dayInMillis * 5),
     end: new Date(ts + dayInMillis * 7),
@@ -161,6 +162,12 @@ const ChallengeDB = {
     if(c.status === ChallengeStatus.REJECT)
       return "rejected";
 
+    // console.log("STAGE FOR ACTIVE CHALLENGE");
+    // console.log(`---------------------- ${c.id} ------------------------`);
+    // console.log("now", now.toLocaleString());
+    // console.log("start", c.start.toLocaleString());
+
+
     // now figure out the published stage
     if(now < c.start)
       return "future";
@@ -173,8 +180,8 @@ const ChallengeDB = {
     if(now < c.end)
       return "review";
 
-    console.log("<---------------------- warning: unknown stage ------------------>");
-    console.log(c);
+    // console.log("<---------------------- warning: unknown stage ------------------>");
+    // console.log(c);
     return "unknown stage";
   },
 

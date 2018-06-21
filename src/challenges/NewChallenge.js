@@ -120,10 +120,8 @@ class NewChallengeScreen extends React.Component {
   }
 
   handleDateTime(id, moment) {
-    console.log("id", id);
-    console.log("moment", moment);
-    const date = moment.toDate();
-    console.log("date", date);
+    let date = moment.toDate();
+    date.setSeconds(0);
     let c = this.state.challenge;
     c[id] = date;
 
@@ -149,8 +147,7 @@ class NewChallengeScreen extends React.Component {
   }
 
   validate(challenge) {
-    // console.log("status");
-    // console.log(this.state.challenge.status);
+
     let form = document.getElementById("ChallengeForm");
     form.checkValidity();
 
@@ -222,6 +219,7 @@ class NewChallengeScreen extends React.Component {
 
     this.setState({saving: true});
     const isNew = !challenge.id;
+
     ChallengeDB.save(challenge).then((c)=> {
       this.snack("Challenge saved");
       this.setState({isValidated: false, saving: false, dirty: false});
@@ -229,6 +227,18 @@ class NewChallengeScreen extends React.Component {
       if(isNew)
         this.setState({id: c.id, goToEdit: true});
     });
+
+
+
+    if(!navigator.onLine) {
+      const afterSave = ()=> {
+        this.snack("Challenge saved offline");
+        this.setState({isValidated: false, saving: false, dirty: false});
+      }      
+      _.delay(afterSave, 500);
+    }
+
+
   }
 
   render() {

@@ -9,6 +9,18 @@ if(!admin){
   });
 }
 
+const Status = Object.freeze({
+  DRAFT: 1,
+  REVIEW: 2,
+  PUBLISHED: 3,
+  DELETE: 4,
+  REJECT: 5
+});
+
+const POLLING_FREQUENCY = 15;
+const DOMAIN = "https://un-peer-challenges.firebaseapp.com"
+const ALERT_ICON = DOMAIN + "/img/icon.png";
+
 const getDB = ()=> {
   return db = db || admin.firestore();
 }
@@ -17,16 +29,18 @@ const getDB = ()=> {
 const logErr = (e)=>{ console.log(e); }
 
 const sendUserNotification = (user, msg)=> {
-  console.log("sending", msg);
-  console.log("user", user);
-  console.log("token", user.pushToken);
+  // console.log("sending", msg);
+  // console.log("user", user);
+  // console.log("token", user.pushToken);
   if(user.pushToken == null) { // eslint-disable-line
-    console.log("skipping user", user.email, " token is undefined.");
+    // console.log("skipping user", user.email, " token is undefined.");
     return false;
   }
   msg.token = user.pushToken;
+  // msg.notification.body = `${msg.notification.body} (${user.uid})`;
   return admin.messaging().send(msg).then((response) => { return response;}).catch(logErr);
 }
+
 
 
 const statusChange = (before, after)=> {
@@ -40,24 +54,21 @@ const statusChange = (before, after)=> {
     "challengeId": after.id,
     "challengeTitle": after.title,
     "sent": new Date().toISOString(),
-    "icon": 'https://un-peer-challenges.firebaseapp.com/img/home.png',
+    "icon": ALERT_ICON,
   }
   before.status = parseInt(before.status);
   after.status = parseInt(after.status);
 
   if(before.status === REVIEW && after.status === REJECT) {
-    console.log("reject");
-    console.log("notifying uid:", before.owner.uid);
     const notification = {
         "title": "Challenge Rejected",
         "body": `The challenge you submitted was not chosen as a challenge of the week.`
     }
-    data.clickAction = "https://un-peer-challenges.firebaseapp.com/my/challenges";
+    data.clickAction = DOMAIN + "/my/challenges";
     const msg = { "notification": notification, "data": data}
     const send = (u)=> {
       let user = u.data();
       user.id = u.id;
-      console.log("sending to ", user);
       saveMsg(user, msg);
       sendUserNotification(user, msg);
     }
@@ -96,13 +107,19 @@ const statusChange = (before, after)=> {
 }
 
 const saveMsg = (user, msg, batch)=> {
-  console.log("saving batch message", batch);
+  console.log("saving notification message");
+
   let db = getDB();
-  const path = `/users/${user.uid}/messages`
-  let ref = db.collection(path).doc();
+  const path = `/users/${user.uid}/messages`;
+  let ref;
+  if(msg.data.id)
+    ref = db.collection(path).doc(id);
+  else
+    ref = db.collection(path).doc();
   const note = {
     title: msg.notification.title,
     body: msg.notification.body,
+    read: false,
     clickAction: msg.data.clickAction || "",
     sent: msg.data.sent || new Date(),
     data: msg.data,
@@ -148,8 +165,8 @@ const notifyAdminPending = (challenge)=> {
     "challengeId": challenge.id,
     "challengeTitle": challenge.title,
     "sent": new Date().toISOString(),
-    "icon": 'https://un-peer-challenges.firebaseapp.com/img/home.png',
-    "clickAction": `https://un-peer-challenges.firebaseapp.com/challenge/${challenge.id}/edit`
+    "icon": ALERT_ICON,
+    "clickAction": `${DOMAIN}/challenge/${challenge.id}/edit`
   }
   const notification = {
       "title": "Challenge Submitted for Review",
@@ -164,14 +181,280 @@ const notifyAdminPending = (challenge)=> {
 }
 
 
+const makeNotification = (title, body, clickAction, id)=> {
+    let data = {
+      "id": id || "",
+      "sent": new Date().toISOString(),
+      "icon": ALERT_ICON,
+      "clickAction": clickAction
+    }
+    let notification = {
+      "title": title,
+      "body": body
+    }
+
+    return { "notification": notification, "data": data}
+
+}
+
+exports.challengeNotifications = functions.https.onRequest((req, res) => {
+  console.log("calling challengeNotifications");
+
+
+  let db = getDB();
+  const now = new Date();
+  const rangeEnd = new Date(now.getTime() + 1000 * 60 * POLLING_FREQUENCY);
+
+  const getActiveChallenges = ()=> {
+    console.log("getting active challenges");
+    
+    return db.collection("challenges")
+    .where("status", "==", Status.PUBLISHED)
+    .where("end", ">", now)
+    .get();  
+  }
+
+  const sendStart = (c)=> {
+    // console.log("active challenge found for alerts", c);
+    // console.log("now", now);
+    // console.log("start", c.start);
+    if(c.start < now || c.start > rangeEnd)
+      return false;
+
+    console.log("sending start message");
+    const title = "New Challenge";
+    const body = c.title;
+    const click = `${DOMAIN}/challenge/${c.id}`;
+    const id = `START_${c.id}`;
+    const msg = makeNotification(title, body, click, id);
+    const notify = (snapshot)=>{ notifyAll(snapshot, msg) };
+
+    db.collection("/users").get().then(notify).catch(logErr);
+    return true;
+
+  }
+
+
+  const sendResponseDue = (c)=> {
+    console.log("calling sendResponseDue");
+    const dayBefore = new Date(c.responseDue.getTime() - 1000 * 60 * 60 * 24);
+    const timesRunningOut = new Date(c.responseDue.getTime() - 1000 * 60 * 60 * 3);
+    const timing = "\n" 
+    + "Now: " + now + "\n"
+    + "Start: " + c.start + "\n"
+    + "Respones: " + c.responseDue + "\n"
+    + "24 hours before response: " + dayBefore + "\n"
+    + "3 hours before response: " + timesRunningOut + "\n"
+    + "Ratings: " + c.ratingsDue + "\n"
+    + "End: " + c.end + "\n"
+    + "Range End" + rangeEnd + "\n";
+
+    // console.log(timing);
+
+    let id;
+    let body;
+    if(dayBefore >= now && dayBefore <= rangeEnd) {
+      id = `RESPOND_${c.id}`;
+      body = "Response due tomorrow."
+    }
+    else if(timesRunningOut >= now && timesRunningOut <= rangeEnd) {
+      id = `RESPOND2_${c.id}`;
+      body = "3 hours remaining to respond."
+    }
+    else {
+      console.log("no upcoming response in time range");
+      return false;
+    }
+
+    console.log("sending response message");
+    const title = c.title;
+    const click = `${DOMAIN}/challenge/${c.id}/respond`;
+    const msg = makeNotification(title, body, click, id);
+    
+    const notify = (snapshot)=>{ notifyAll(snapshot, msg) };
+
+    const findUnResponded = ()=> {
+      
+      const findResponses = ()=> {
+
+        const makeMap = (responses)=> { 
+          let responseMap = {};
+          const mapResponse = (doc)=> { responseMap[doc.id] = true; }
+          responses.forEach(mapResponse); 
+          return new Promise((resolve, reject)=>{
+            resolve(responses);
+          });
+        }
+        
+        const responseP = (resolve, reject)=> {
+          db.collection(`/challenges/${c.id}/responses`).get(makeMap).then(resolve).catch(logErr);
+        }
+
+        return new Promise(responseP);
+      }
+
+      const findUsers = (responses)=> {
+        
+        const filter = (allUsers)=> {
+          let noResponse = [];
+
+          const f = (doc)=> {
+            if(!responses[doc.id])
+              noResponse.push(doc);
+          }
+
+          allUsers.forEach(f);
+          return new Promise((resolve, reject)=> { resolve(noResponse); });
+        }
+
+        const userP = (resolve, reject)=> {
+          db.collection("/users").get().then(filter).then(resolve).catch(logErr);
+        };
+
+        return new Promise(userP);
+      }
+
+      return new Promise((resolve, reject)=> {
+        findResponses().then(findUsers).then(resolve).catch(logErr);
+      });
+
+    }
+
+    return findUnResponded().then(notify);
+  }
+
+
+  const sendRatingDue = (c)=> {
+    console.log("calling sendRatingDue");
+    const timesRunningOut = new Date(c.ratingDue.getTime() - 1000 * 60 * 60 * 3);
+
+    let id;
+    let body;
+    if(c.ratingDue >= now && c.ratingDue <= rangeEnd) {
+      id = `RATING_${c.id}`;
+      body = "Rating assignments now available."
+    }
+    else if(timesRunningOut >= now && timesRunningOut <= rangeEnd) {
+      id = `RATING2_${c.id}`;
+      body = "3 hours remaining to finalize ratings."
+    }
+    else {
+      console.log("no upcoming rating in time range");
+      return false;
+    }
+
+    console.log("sending rating message");
+    const title = c.title;
+    const click = `${DOMAIN}/challenge/${c.id}/rate`;
+    const msg = makeNotification(title, body, click, id);
+    
+    const notify = (snapshot)=>{ notifyAll(snapshot, msg) };
+
+    const findParticipants = ()=> {
+      
+      const findAssignments = ()=> {
+
+        const makeMap = (responses)=> { 
+          let responseMap = {};
+          const mapResponse = (doc)=> { responseMap[doc.id] = true; }
+          responses.forEach(mapResponse); 
+          return new Promise((resolve, reject)=>{
+            resolve(responses);
+          });
+        }
+        
+        const assignmentsPromise = (resolve, reject)=> {
+          db.collection(`/challenges/${c.id}/assignments`).get(makeMap).then(resolve).catch(logErr);
+        }
+
+        return new Promise(assignmentsPromise);
+      }
+
+      const findUsers = (usersWithAssignments)=> {
+        
+        const filter = (allUsers)=> {
+          let participants = [];
+
+          const f = (doc)=> {
+            if(!usersWithAssignments[doc.id])
+              participants.push(doc);
+          }
+
+          allUsers.forEach(f);
+          return new Promise((resolve, reject)=> { resolve(participants); });
+        }
+
+        const userP = (resolve, reject)=> {
+          db.collection("/users").get().then(filter).then(resolve).catch(logErr);
+        };
+
+        return new Promise(userP);
+      }
+
+      return new Promise((resolve, reject)=> {
+        findAssignments().then(findUsers).then(resolve).catch(logErr);
+      });
+
+    }
+
+    return findUnResponded().then(notify);
+  }
+
+  const sendReview = (c)=> {
+    // console.log("active challenge found for alerts", c);
+    // console.log("now", now);
+    // console.log("start", c.start);
+    if(c.ratingDue < now || c.ratingDue > rangeEnd)
+      return false;
+
+    console.log("sending review message");
+    const title = c.title;
+    const body = "Results are published.";
+    const click = `${DOMAIN}/challenge/${c.id}/review`;
+    const id = `REVIEW_${c.id}`;
+    const msg = makeNotification(title, body, click, id);
+    const notify = (snapshot)=>{ notifyAll(snapshot, msg) };
+
+    db.collection("/users").get().then(notify).catch(logErr);
+    return true;
+
+  }
+
+  const sendChallengeNotifications = (doc)=> {
+    console.log("sending challenges for", doc.id);
+    let challenge = doc.data();
+    challenge.id = doc.id;
+    sendStart(challenge);
+    sendResponseDue(challenge);
+    sendRatingDue(challenge);
+    sendReview(challenge);
+    return true;
+  }
+
+
+  const iterateChallenges = (snapshot)=> {
+    console.log("iterating active challenges for notifications::2");
+    // console.log("num challenges:", snapshot.docs);
+    snapshot.forEach(sendChallengeNotifications);
+  }
+
+  getActiveChallenges().then(iterateChallenges).catch(logErr);
+
+
+  res.status(200).send("OK Notify New Challenge");
+
+});
+
+
+
 exports.challengeUpdate = functions.firestore.document("challenges/{id}").onUpdate((change, b, c, d)=> {
 
   const after = change.after.data();
   const before = change.before.data();
-
   return statusChange(before, after);
 
 });
+
 
 
 exports.deleteAuthUser = functions.firestore.document('users/{userID}').onDelete((event) => {

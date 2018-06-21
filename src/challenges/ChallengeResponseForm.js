@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import _ from "lodash";
 
 import { ChallengeDB, User } from "./Challenge.js"
@@ -321,10 +321,10 @@ const SaveButtons = (props)=> {
           className={`btn btn-secondary mt-2`}>
           Update my response
         </button>
-        <button type="button" 
+        <Link to="/"
           className={`btn btn-secondary mt-2 ml-2`}>
-          Go home
-        </button>
+          Home
+        </Link>
       </div>
     )
   }

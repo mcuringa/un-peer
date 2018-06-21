@@ -1,10 +1,8 @@
-// import _ from "lodash";
-// import localforage from "localforage";
+import _ from "lodash"
 import {ChallengeDB} from "./challenges/Challenge.js";
 import fireBaseConfig from "./firebase.config.json";
 import db, {uuid} from "./DBTools";
 import notifications from "./Notifications";
-import _ from "lodash"
 
 const FBUtil =
 {
@@ -116,7 +114,7 @@ const FBUtil =
     return new Promise(auth);
   },
 
-  initDB: async ()=>{
+  _initDB: async ()=>{
     let db = FBUtil._firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     db.settings(settings);
@@ -133,13 +131,21 @@ const FBUtil =
 
   },
 
-  _initDB: async ()=>{
+  initDB: async ()=> {
     let db = FBUtil._firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     db.settings(settings);
     const init = (resolve, reject)=> {
-      const f = ()=> {resolve(db);}
-      db.enablePersistence().then(f,f)
+      const enabled = ()=> {
+        console.log("enabled persistence");
+        resolve(db);
+      }
+      const notEnabled = ()=> {
+        console.log("failed to enable persistence");
+        resolve(db);
+      }
+
+      db.enablePersistence().then(enabled, notEnabled);
     }
 
     return new Promise(init);
