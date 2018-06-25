@@ -108,11 +108,12 @@ class MyChallengesScreen extends React.Component {
           <button className="btn btn-link mr-2 p-0" onClick={this.props.history.goBack}><ChevronLeftIcon /></button>
           My Challenges
         </h4>
+
         <MyChallenges 
           user={this.props.user}
           deleteChallenge={this.confirmDelete}
           challenges={this.state.challenges}  />
-        
+
         <ConfirmDeleteModal
           challenge={this.state.delChallenge}
           onConfirm={this.deleteChallenge}
