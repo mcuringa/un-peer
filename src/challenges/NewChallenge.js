@@ -342,6 +342,8 @@ class NewChallengeScreen extends React.Component {
                 dateFormat="ddd MMM DD YYYY HH:mm"
                 timeFormat="HH:mm"
                 timeIntervals={15}
+                disabledKeyboardNavigation
+                withPortal
                 timeCaption="time"
             />
 
@@ -354,6 +356,8 @@ class NewChallengeScreen extends React.Component {
                 dateFormat="ddd MMM DD YYYY HH:mm"
                 timeFormat="HH:mm"
                 timeIntervals={15}
+                disabledKeyboardNavigation
+                withPortal
                 timeCaption="time"
             />
 
@@ -366,6 +370,8 @@ class NewChallengeScreen extends React.Component {
                 dateFormat="ddd MMM DD YYYY HH:mm"
                 timeFormat="HH:mm"
                 timeIntervals={15}
+                disabledKeyboardNavigation
+                withPortal
                 timeCaption="time"
             />
 
@@ -378,6 +384,8 @@ class NewChallengeScreen extends React.Component {
                 dateFormat="ddd MMM DD YYYY HH:mm"
                 timeFormat="HH:mm"
                 timeIntervals={15}
+                disabledKeyboardNavigation
+                withPortal
                 timeCaption="time"
             />
           </If>
