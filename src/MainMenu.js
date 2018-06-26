@@ -127,6 +127,7 @@ const Alert = (props)=> {
   const del = (e)=> {
     console.log("deleting a msg");
     console.log(e);
+    e.target.classList.add("d-none");
     e.stopPropagation();
     notifications.delete(a);
   }

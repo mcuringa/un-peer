@@ -7,22 +7,28 @@ import { CalendarIcon } from "../UNIcons";
 import df from "../DateUtil";
 
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
+import LoadingModal from "../LoadingModal";
+
+
 
 class ChallengeListScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {challenges: []};
+    this.state = {challenges: [], loading: true};
   }
   componentWillMount() {
     ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
       const now = new Date();
       let t = _.filter(challenges, c=> c.end < now);
       t = _.sortBy(challenges, "start");
-      this.setState({challenges: t});
+      this.setState({challenges: t, loading: false});
     });
   }
 
   render() {
+    if(this.state.loading)
+      return <LoadingModal show={true} />
+
     let t = this.state.challenges;
     t = t.map((challenge) => {
       return (
