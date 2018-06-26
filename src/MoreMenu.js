@@ -53,7 +53,5 @@ const KebabVerticalIcon = ()=> {
   )
 }
 
-      // <path fill-rule="evenodd" d="M0 2.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm0 5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"></path>
-
 export default MoreMenu;
 export {KebabVerticalIcon}

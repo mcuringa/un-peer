@@ -26,6 +26,20 @@ class MainMenu extends React.Component {
     });
   }
 
+
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.closeMainMenu) {
+      console.log("trigger menu close");
+      const menu = document.getElementById("MainMenuInner");
+      if(menu)
+        menu.classList.remove("show");
+    }
+  }
+
+
+
   markAllRead() {
     this.open = !this.open;
     const t = 3 * 1000;
@@ -54,9 +68,12 @@ class MainMenu extends React.Component {
 
     return (
 
-
       <div className="MainMenu icon-lg d-flex justify-content-end">
-        <button id="MainMenuIcon" type="button" className="MainMenuIcon btn btn-link m-0 p-0 bg-none" onClick={this.markAllRead} data-toggle="collapse" data-target="#MainMenuInner" aria-expanded="false">
+        <button id="MainMenuIcon" type="button" 
+          className="MainMenuIcon btn btn-link m-0 p-0 bg-none" 
+          onClick={this.markAllRead} 
+          data-toggle="collapse" 
+          data-target="#MainMenuInner" aria-expanded="false">
           <NotificationBadge alerts={this.props.alerts} /><ThreeBarsIcon />
         </button>
         <div id="MainMenuInner"className="collapse no-Screen-padding">
