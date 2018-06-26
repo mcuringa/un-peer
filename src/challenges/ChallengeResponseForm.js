@@ -175,6 +175,7 @@ class ChallengeResponseForm extends React.Component {
     return (
       <div className="ChallengeResponseForm screen">
         <ChallengeHeader id={this.state.challenge.id} 
+          history={this.props.history}
           challenge={this.state.challenge} 
           owner={this.props.user}
           user={this.props.user} />

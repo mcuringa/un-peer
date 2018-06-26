@@ -126,6 +126,7 @@ class ManageResponsesScreen extends React.Component {
         <ChallengeHeader id={this.state.challenge.id} 
           challenge={this.state.challenge} 
           owner={this.state.owner} 
+          history={this.props.history}
           user={this.props.user}
           hideBack={false} />
         {ResponseList}

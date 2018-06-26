@@ -181,7 +181,9 @@ class ChallengeReviewScreen extends React.Component {
     if(new Date() < this.state.challenge.ratingDue && !(this.state.isOwner || this.state.isProfessor ||this.props.user.su))
       return (
         <div className="ResponseReviewScreen screen">
-          <ChallengeHeader challenge={this.state.challenge} 
+          <ChallengeHeader 
+            challenge={this.state.challenge} 
+            history={this.props.history}
             screenTitle="Challenge Review"
             owner={this.state.challenge.owner} 
             user={this.props.user} />
@@ -290,6 +292,7 @@ class ChallengeReviewScreen extends React.Component {
       <div className="ResponseReviewScreen screen">
 
         <ChallengeHeader challenge={this.state.challenge} 
+          history={this.props.history}
           screenTitle="Challenge Review"
           owner={this.state.challenge.owner} 
           user={this.props.user} />

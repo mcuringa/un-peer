@@ -168,6 +168,7 @@ class ResponseRatings extends React.Component {
 
       <div className="ResponseList screen">
         <ChallengeHeader challenge={this.state.challenge} 
+          history={this.props.history}
           owner={this.state.challenge.owner} 
           user={this.props.user} />
        

@@ -30,7 +30,7 @@ const ChallengeHeader = (props) => {
   return (
     <div className="ChallengeDetailHeader">
       <div className="StartDate d-flex align-items-start">
-        <BackButton hideBack={props.hideBack} challenge={props.challenge} />
+        <BackButton hideBack={props.hideBack} challenge={props.challenge} history={props.history} />
         <CalendarIcon />
         <div className="single-space pl-1">{stageMsg}</div>
       </div>
@@ -45,6 +45,15 @@ const ChallengeHeader = (props) => {
 const BackButton = (props)=>{
   if(props.hideBack)
     return null;
+
+  if(props.history) {
+    return (
+      <button className="icon-lg btn btn-link p-0" onClick={props.history.goBack}>
+        <ChevronLeftIcon className="icon-secondary pt-1 mr-3" />
+      </button>
+    )
+  }
+
   return (
     <Link className="icon-lg" to={`/challenge/${props.challenge.id}`}>
       <ChevronLeftIcon className="icon-secondary pt-1 mr-3" />

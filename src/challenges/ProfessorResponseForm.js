@@ -168,6 +168,7 @@ class ProfessorResponseForm extends React.Component {
       <div className="ProfResponseForm screen">
         <ChallengeHeader
           id={this.state.challenge.id} 
+          history={this.props.history}
           screenTitle="Professor Response"
           challenge={this.state.challenge} 
           user={this.props.user} />
