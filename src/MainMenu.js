@@ -111,6 +111,7 @@ const AdminMenu = (props)=> {
 const Alert = (props)=> {
 
   const a = props.alert;
+  const alertElId = `Alert_${a.id}`;
   const Action = (props)=> {
     const css = "AlertMessage dropdown-item text-left";
     const style = {whiteSpace: "normal", lineHeight: "1.1em"};
@@ -126,8 +127,8 @@ const Alert = (props)=> {
 
   const del = (e)=> {
     console.log("deleting a msg");
-    console.log(e);
-    e.target.classList.add("d-none");
+    document.getElementById(alertElId).classList.remove("d-flex");
+    document.getElementById(alertElId).classList.add("d-none");
     e.stopPropagation();
     notifications.delete(a);
   }
@@ -135,7 +136,7 @@ const Alert = (props)=> {
   const read = (a.read === true)?"read":"unread";
 
   return (
-    <div className={`NotificationAlert d-flex justify-content-between align-items-start mt-2 ${read}`} key={alert.id}>
+    <div id={alertElId} className={`NotificationAlert d-flex justify-content-between align-items-start mt-2 ${read}`} key={alert.id}>
       <Action>
         <h6 className="NotificationTitle mb-0">
           {a.title}
