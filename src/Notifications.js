@@ -57,11 +57,18 @@ const notifications = {
             old.push(a);
         });
 
+        // alerts = _.sortBy(alerts, "expires");
+        // console.log("reversing");
+        // alerts = _.reverse(alerts);
+
+        // alerts.sort((a,b)=>{return a.expires.getTime() - b.expires.getTime();});
+
       };
 
       const resolveAlerts = ()=>{
         if(alerts.length > 0) {
           alerts = _.sortBy(alerts, "sent");
+          alerts = _.reverse(alerts);
           resolve(alerts);
         }
         else
