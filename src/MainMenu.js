@@ -78,16 +78,15 @@ class MainMenu extends React.Component {
         </button>
         <div id="MainMenuInner"className="collapse no-Screen-padding">
           <div className="MainMenuItems container" onClick={hide}>
+            <button type="button" className="btn dropdown-item disabled">About</button>
+            <button type="button" className="btn dropdown-item disabled">Help</button>
             <button type="button" onClick={this.signout} className="btn dropdown-item">Sign Out</button>
             <Link to="/confirm-reset" className="btn dropdown-item">Reset Password</Link>
-            <button type="button" className="btn dropdown-item disabled">Help</button>
-            <button type="button" className="btn dropdown-item disabled">About</button>
             <AdminMenu user={this.props.user} />
             <Alerts alerts={this.props.alerts} user={this.props.user} />
           </div>
         </div>
       </div>
-
     );
   }
 }
@@ -111,6 +110,7 @@ const AdminMenu = (props)=> {
 const Alert = (props)=> {
 
   const a = props.alert;
+  const alertElId = `Alert_${a.id}`;
   const Action = (props)=> {
     const css = "AlertMessage dropdown-item text-left";
     const style = {whiteSpace: "normal", lineHeight: "1.1em"};
@@ -126,8 +126,8 @@ const Alert = (props)=> {
 
   const del = (e)=> {
     console.log("deleting a msg");
-    console.log(e);
-    e.target.classList.add("d-none");
+    document.getElementById(alertElId).classList.remove("d-flex");
+    document.getElementById(alertElId).classList.add("d-none");
     e.stopPropagation();
     notifications.delete(a);
   }
@@ -135,7 +135,7 @@ const Alert = (props)=> {
   const read = (a.read === true)?"read":"unread";
 
   return (
-    <div className={`NotificationAlert d-flex justify-content-between align-items-start mt-2 ${read}`} key={alert.id}>
+    <div id={alertElId} className={`NotificationAlert d-flex justify-content-between align-items-start mt-2 ${read}`} key={alert.id}>
       <Action>
         <h6 className="NotificationTitle mb-0">
           {a.title}
