@@ -56,13 +56,6 @@ const notifications = {
           else
             old.push(a);
         });
-
-        // alerts = _.sortBy(alerts, "expires");
-        // console.log("reversing");
-        // alerts = _.reverse(alerts);
-
-        // alerts.sort((a,b)=>{return a.expires.getTime() - b.expires.getTime();});
-
       };
 
       const resolveAlerts = ()=>{
