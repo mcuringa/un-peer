@@ -146,10 +146,18 @@ class ChallengeResponseForm extends React.Component {
   render() {
 
     const isNewResponse = !this.responseId;
-    const isOwner = isNewResponse || this.responseId !== this.props.user.uid;
+    // console.log("is new", isNewResponse);
+    // console.log("responseId", responseId);
+    // console.log("is new", isNewResponse);
+    const isOwner = isNewResponse || this.responseId === this.props.user.uid;
 
     if(!this.props.user.admin && !isOwner)
-      return null;
+      return (
+        <div className="alert alert-secondary m-2" role="alert">
+          <h4 class="alert-heading">Access Denied</h4>
+          <p>You do not have permission to edit this response.</p>
+        </div>
+      );
 
     if(this.state.goHome)
       return <Redirect push to="/" />
