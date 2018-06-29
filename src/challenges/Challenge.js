@@ -237,6 +237,7 @@ const ChallengeDB = {
       }
 
       const adminAll  = ()=> {
+        console.log("running admin all");
         return firestore.collection("challenges")
           .where("status", ">", ChallengeStatus.DRAFT)
           .get()
@@ -364,7 +365,7 @@ const ChallengeDB = {
 
   save(c){
 
-
+    c.status = Number.parseInt(c.status, 10);
     if(_.isNil(c.id) || _.isEmpty(c.id))
       return ChallengeDB.add(c);
     else

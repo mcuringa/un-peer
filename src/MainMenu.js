@@ -31,7 +31,6 @@ class MainMenu extends React.Component {
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.closeMainMenu) {
-      console.log("trigger menu close");
       const menu = document.getElementById("MainMenuInner");
       if(menu)
         menu.classList.remove("show");
@@ -45,13 +44,9 @@ class MainMenu extends React.Component {
     const t = 3 * 1000;
     const updateDB = ()=> {
       if(this.open) {
-        console.log("long enough...updating as read");
         notifications.markAllRead();
       }
-      else
-        console.log("closed before commit");
     }
-    console.log("marking read");
     _.delay(updateDB, t);
   }
 

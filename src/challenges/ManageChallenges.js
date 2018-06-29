@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import _ from "lodash";
 import df from "../DateUtil";
+import db from "../DBTools";
 import MoreMenu from "../MoreMenu";
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import {snack, SnackMaker} from "../Snackbar";
@@ -64,13 +65,12 @@ class ManageChallengesScreen extends React.Component {
     return (
       <div className="ChallengeListScreen screen">
         <h5 className="">CHALLENGES</h5>
-        <ChallengeList challenges={this.state.challenges} setStatus={this.setStatus} loading={this.state.loading} />
+        <ChallengeList user={this.props.user} challenges={this.state.challenges} setStatus={this.setStatus} loading={this.state.loading} />
         <this.Snackbar />
       </div>
     )
   }
 }
-
 
 const ChallengeList = (props)=> {
   if(props.loading)
@@ -83,6 +83,7 @@ const ChallengeList = (props)=> {
     return (
       <ChallengeRow 
         key={challenge.id} 
+        user={props.user}
         challenge={challenge}
         setStatus={props.setStatus} />
     )
@@ -169,6 +170,18 @@ const StatusMenu = (props)=> {
   const reject = ()=> { props.setStatus(props.challenge, ChallengeStatus.REJECT); }
   const publish = ()=> { props.setStatus(props.challenge, ChallengeStatus.PUBLISHED); }
   const del = ()=> { props.setStatus(props.challenge, ChallengeStatus.DELETE); }
+  const purge = ()=> { 
+    db.delete("/challenges", props.challenge.id);
+  }
+
+
+  const PurgeButton = ()=> {
+
+    if(!props.user.su)
+      return null;
+
+    return <button className={`dropdown-item`} type="button" onClick={purge}>Purge</button>
+  }
 
   return (
     <div>
@@ -176,6 +189,7 @@ const StatusMenu = (props)=> {
       <button className={`dropdown-item ${status.publish}`} type="button" onClick={publish}>Publish</button>
       <button className={`dropdown-item ${status.reject}`} type="button" onClick={reject}>Reject</button>
       <button className={`dropdown-item ${status.delete}`} type="button" onClick={del}>Delete</button>
+      <PurgeButton />
     </div>
   )
 }

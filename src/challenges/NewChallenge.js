@@ -115,7 +115,11 @@ class NewChallengeScreen extends React.Component {
   handleChange(e) {
 
     let c = this.state.challenge;
-    c[e.target.id] = e.target.value;
+    const n = Number.parseInt(e.target.value, 10);
+    if(!_.isNaN(n))
+      c[e.target.id] = n;
+    else
+      c[e.target.id] = e.target.value;
     this.setState({ challenge: c, dirty: true });
   }
 
@@ -237,8 +241,6 @@ class NewChallengeScreen extends React.Component {
       }      
       _.delay(afterSave, 500);
     }
-
-
   }
 
   render() {
