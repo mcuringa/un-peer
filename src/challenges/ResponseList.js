@@ -3,11 +3,15 @@ import _ from "lodash";
 import {ChallengeDB} from "./Challenge.js";
 import {StarIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
+import LoadingModal from "../LoadingModal";
+import LoadingModal from "../LoadingModal";
+
+
 
 class ResponseList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {responses: []};
+    this.state = {responses: [], loading: true};
     this.toggle = this.toggle.bind(this);
   }
   
@@ -15,7 +19,7 @@ class ResponseList extends React.Component {
     ChallengeDB.getResponses(this.props.challenge.id).then(
       (responses)=>{
         let t = _.map(responses,(r)=>{r.open = false; return r;});
-        this.setState({responses: t})
+        this.setState({responses: t, loading: false});
       }
     );
   }
@@ -30,6 +34,11 @@ class ResponseList extends React.Component {
   }
 
   render() {
+
+  if(this.state.loading)
+    return <LoadingModal show={true} msg="loading responses" />
+
+
     let keyCount = 0;
     let responseItems = this.state.responses.map((r)=>{
       keyCount++;
