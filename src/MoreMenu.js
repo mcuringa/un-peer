@@ -1,7 +1,6 @@
 import React from 'react';
 import {GearIcon, TriangleDownIcon, ThreeBarsIcon} from "react-octicons";
 import _ from "lodash";
-import { Manager, Reference, Popper } from 'react-popper';
 
 class MoreMenu extends React.Component {
   constructor(props) {
@@ -9,42 +8,31 @@ class MoreMenu extends React.Component {
     this.id = _.uniqueId("MoreMenu_");
     console.log("constructor more id", this.id);
     this.state = {open: false};
-    this.popper = {};
+
     
   }
 
 
 
-  // componentDidMount() {
+  componentDidMount() {
 
-  //   const container = document.getElementById("main");
-  //   const menu = document.querySelector(`#${this.id} .MoreMenuPopper`);
-  //   const trigger = document.querySelector(`#${this.id} .MoreIcon`);
-  //   let rect = trigger.getBoundingClientRect();
-  //   console.log("trigger rect", rect);
+    const container = document.getElementById("main");
+    const menu = document.querySelector(`#${this.id} .MoreMenuPopper`);
+    const trigger = document.querySelector(`#${this.id} .MoreIcon`);
 
-  //   const closeListener = (e)=> {
-  //     if(menu.contains(e.target) || trigger.contains(e.target))
-  //       return;
-  //     // console.log("closeListener", e);
-  //     if(this.state.open)
-  //       this.setState({open: false}); 
-  //   }
-  //   document.addEventListener('click', closeListener);
-  //   // console.log("trigger", trigger);
-  //   // console.log("menu", menu);
 
-  //   // this.popper = new Popper(trigger, menu, {
-  //   //   placement: 'left-start',
-  //   //   flip: {
-  //   //       behavior: ['left', 'bottom', 'top']
-  //   //   },
-  //   //   // preventOverflow: {
-  //   //   //   boundariesElement: container,
-  //   //   // },
-  //   // });
+    const closeListener = (e)=> {
+      if(menu.contains(e.target) || trigger.contains(e.target))
+        return;
+      // console.log("closeListener", e);
+      if(this.state.open)
+        this.setState({open: false}); 
+    }
+    document.addEventListener('click', closeListener);
 
-  // }
+
+
+  }
 
 
   render() {
@@ -68,18 +56,27 @@ class MoreMenu extends React.Component {
       return (<span className="mr-1">{this.props.label}</span>)
     }
 
+
+    const positionMenu = ()=> {
+      const menu = document.querySelector(`#${this.id} .MoreMenuPopper`);
+      const menuRect = menu.getBoundingClientRect();
+      const trigger = document.querySelector(`#${this.id} .MoreIcon`);
+      const triggerRect = trigger.getBoundingClientRect();
+      console.log("trigger rect", triggerRect);
+      menu.style.y = triggerRect.y;
+      menu.style.x = (triggerRect.right - menuRect.width) + "px";
+    }
+
+
     const css = this.props.className || "";
     const viz = (this.state.open)?"d-block":"d-none";
     const toggle = ()=> {
       this.setState({open: !this.state.open}); 
-      this.popper.update();
+      positionMenu();
     }
 
-
-
-
-
     return (
+
       <div id={this.id} className={`${css}`}>
         <button
           type="button" 
@@ -87,13 +84,17 @@ class MoreMenu extends React.Component {
           className="MoreIcon btn btn-link">
           <MenuLabel /><MenuIcon />
         </button>
-        <div className={`MoreMenuPopper ${viz}`}>
+        <div className={`MoreMenuPopper position-absolute ${viz}`}>
           {this.props.children}
         </div>
       </div>
+
     )
   }
 }
+
+
+
 
 
 const KebabVerticalIcon = ()=> {
