@@ -15,7 +15,10 @@ const notifications = {
   },
 
   markAllRead() {
-    const user = FBUtil.getFB().auth().currentUser;   
+    const user = FBUtil.getFB().auth().currentUser;
+    if(_.isNil(user.uid))
+      return;
+
     const path = `/users/${user.uid}/messages`;
     const markRead = (t)=> {
       const mark = (n) => {

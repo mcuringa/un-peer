@@ -64,7 +64,6 @@ export default class App extends Component {
   }
 
   topLevelNavListener() {
-    console.log("top level navigation");
     this.setState({closeMainMenu: true});
   }
 
@@ -101,8 +100,7 @@ export default class App extends Component {
     loaduser = _.once(loaduser);
 
     if(authUser && authUser.email) {
-      console.log("authUser.email");
-      console.log(authUser.email);
+      console.log("logged in", authUser.email);
       loaduser();
       FBUtil.enableMessaging();
       notifications.addListener(this.loadNotifications);

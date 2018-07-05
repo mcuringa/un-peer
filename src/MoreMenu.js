@@ -14,27 +14,34 @@ class MoreMenu extends React.Component {
   positionMenu(e) {
 
     const header = document.querySelector(".App-header");
-    const topOffset = header.getBoundingClientRect().height;
-
     const footer = document.querySelector(".App-footer");
-    const bottom = footer.getBoundingClientRect().y;
-
     const container = document.getElementById("main");
-    const containerRect = container.getBoundingClientRect();
-
     const menu = document.querySelector(`#${this.id} .MoreMenuPopper`);
-    const menuRect = menu.getBoundingClientRect();
-    
     const trigger = document.querySelector(`#${this.id} .MoreIcon`);
+
+
+    const topOffset = header.getBoundingClientRect().height;
+    const bottom = footer.getBoundingClientRect().y;
+    const containerRect = container.getBoundingClientRect();
     const triggerRect = trigger.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+
 
     let menuTop = triggerRect.y - containerRect.y + topOffset;
     let menuBottom = triggerRect.y + menuRect.height;
     if(menuBottom > bottom) {
       menuTop = bottom - menuRect.height - containerRect.y + topOffset - 4;
     }
-    menu.style.left = (triggerRect.right - menuRect.width - 20) + "px";
+
     menu.style.top = menuTop + "px";
+
+    console.log("trigger rect", triggerRect);
+    menu.style.left = (triggerRect.right - menuRect.width) + "px";
+    menu.style.right = "auto";
+
+
+    
+
 
   }
 
@@ -70,8 +77,8 @@ class MoreMenu extends React.Component {
     // const viz = (this.state.open)?"d-block":"d-none";
     const viz = (this.state.open)?"visible":"invisible";
     const toggle = (e)=> {
-      this.setState({open: !this.state.open}); 
       this.positionMenu(e);
+      this.setState({open: !this.state.open}); 
     }
 
     return (

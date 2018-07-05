@@ -186,7 +186,7 @@ const StatusMenu = (props)=> {
       <button className={`dropdown-item btn-link ${status.publish}`} type="button" onClick={publish}>Publish</button>
       <button className={`dropdown-item btn-link ${status.reject}`} type="button" onClick={reject}>Reject</button>
       <button className={`dropdown-item btn-link ${status.delete}`} type="button" onClick={del}>Delete</button>
-
+      <PurgeButton />
     </div>
   )
 }
