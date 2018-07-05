@@ -20,7 +20,7 @@
     "react-calendar": "^2.16.0",
     "react-datepicker": "^1.5.0",
     "react-dom": "^16.4.1",
-    "react-modal": "^3.4.5",
+    "react-modal": "^3.5.1",
     "react-octicons": "^0.2.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
@@ -39,7 +39,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.1",
     "postcss-loader": "^2.1.5",
     "react-test-renderer": "^16.4.1",
     "sass-loader": "^6.0.7",
