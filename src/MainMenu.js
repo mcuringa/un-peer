@@ -31,7 +31,6 @@ class MainMenu extends React.Component {
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.closeMainMenu) {
-      console.log("trigger menu close");
       const menu = document.getElementById("MainMenuInner");
       if(menu)
         menu.classList.remove("show");
