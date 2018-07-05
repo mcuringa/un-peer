@@ -6,34 +6,37 @@ class MoreMenu extends React.Component {
   constructor(props) {
     super(props);
     this.id = _.uniqueId("MoreMenu_");
-    console.log("constructor more id", this.id);
     this.state = {open: false};
-
+    this.positionMenu = _.bind(this.positionMenu, this);
     
   }
 
+  positionMenu(e) {
 
+    const header = document.querySelector(".App-header");
+    const topOffset = header.getBoundingClientRect().height;
 
-  componentDidMount() {
+    const footer = document.querySelector(".App-footer");
+    const bottom = footer.getBoundingClientRect().y;
 
     const container = document.getElementById("main");
+    const containerRect = container.getBoundingClientRect();
+
     const menu = document.querySelector(`#${this.id} .MoreMenuPopper`);
+    const menuRect = menu.getBoundingClientRect();
+    
     const trigger = document.querySelector(`#${this.id} .MoreIcon`);
+    const triggerRect = trigger.getBoundingClientRect();
 
-
-    const closeListener = (e)=> {
-      if(menu.contains(e.target) || trigger.contains(e.target))
-        return;
-      // console.log("closeListener", e);
-      if(this.state.open)
-        this.setState({open: false}); 
+    let menuTop = triggerRect.y - containerRect.y + topOffset;
+    let menuBottom = triggerRect.y + menuRect.height;
+    if(menuBottom > bottom) {
+      menuTop = bottom - menuRect.height - containerRect.y + topOffset - 4;
     }
-    document.addEventListener('click', closeListener);
-
-
+    menu.style.left = (triggerRect.right - menuRect.width - 20) + "px";
+    menu.style.top = menuTop + "px";
 
   }
-
 
   render() {
 
@@ -56,46 +59,40 @@ class MoreMenu extends React.Component {
       return (<span className="mr-1">{this.props.label}</span>)
     }
 
-
-    const positionMenu = ()=> {
-      const menu = document.querySelector(`#${this.id} .MoreMenuPopper`);
-      const menuRect = menu.getBoundingClientRect();
-      const trigger = document.querySelector(`#${this.id} .MoreIcon`);
-      const triggerRect = trigger.getBoundingClientRect();
-      console.log("trigger rect", triggerRect);
-      menu.style.y = triggerRect.y;
-      menu.style.x = (triggerRect.right - menuRect.width) + "px";
+    const close = ()=> { this.setState({open: false});};
+    const Cover = ()=> {
+      if(!this.state.open)
+        return null;
+      return <div onClick={close} className="MoreMenuCover" />
     }
 
-
     const css = this.props.className || "";
-    const viz = (this.state.open)?"d-block":"d-none";
-    const toggle = ()=> {
+    // const viz = (this.state.open)?"d-block":"d-none";
+    const viz = (this.state.open)?"visible":"invisible";
+    const toggle = (e)=> {
       this.setState({open: !this.state.open}); 
-      positionMenu();
+      this.positionMenu(e);
     }
 
     return (
-
-      <div id={this.id} className={`${css}`}>
-        <button
-          type="button" 
-          onClick={toggle}
-          className="MoreIcon btn btn-link">
-          <MenuLabel /><MenuIcon />
-        </button>
-        <div className={`MoreMenuPopper position-absolute ${viz}`}>
-          {this.props.children}
+      <div>
+        <Cover />
+        <div id={this.id} className={`MoreMenu ${css}`}>
+          <button
+            type="button" 
+            onClick={toggle}
+            className="MoreIcon btn btn-link">
+            <MenuLabel /><MenuIcon />
+          </button>
+          <div className={`MoreMenuPopper bg-light border shadow-sm position-absolute ${viz}`}>
+            {this.props.children}
+          </div>
         </div>
       </div>
 
     )
   }
 }
-
-
-
-
 
 const KebabVerticalIcon = ()=> {
 

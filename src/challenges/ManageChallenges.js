@@ -77,9 +77,8 @@ const ChallengeList = (props)=> {
     return <LoadingModal show={true} />
 
   let t = props.challenges;
-  
 
-  t = t.map((challenge) => {
+  t = _.map(t, (challenge) => {
     return (
       <ChallengeRow 
         key={challenge.id} 
@@ -99,8 +98,9 @@ const ChallengeRow = (props) => {
     return (<em className="text-muted">professor not set</em>)
   }
 
+
   return (
-    <div className="border-bottom border-light pb-1 mb-3">
+    <div className={`border-bottom border-light pb-1 mb-3`}>
       <div className="d-flex align-items-start justify-content-between" style={{lineHeight: "1.1em"}}>
         <div className="d-flex align-items-start">
           <div className={`rounded-0 badge badge-${challenge.stage}`}>
@@ -173,9 +173,9 @@ const StatusMenu = (props)=> {
   return (
     <div>
       <h6 className="dropdown-header">CHANGE STATUS</h6>
-      <button className={`dropdown-item ${status.publish}`} type="button" onClick={publish}>Publish</button>
-      <button className={`dropdown-item ${status.reject}`} type="button" onClick={reject}>Reject</button>
-      <button className={`dropdown-item ${status.delete}`} type="button" onClick={del}>Delete</button>
+      <button className={`dropdown-item btn-link ${status.publish}`} type="button" onClick={publish}>Publish</button>
+      <button className={`dropdown-item btn-link ${status.reject}`} type="button" onClick={reject}>Reject</button>
+      <button className={`dropdown-item btn-link ${status.delete}`} type="button" onClick={del}>Delete</button>
     </div>
   )
 }
