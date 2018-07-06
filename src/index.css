@@ -6755,6 +6755,10 @@ label {
   font-size: 80%;
   color: #dc3545; }
 
+.filesize-error {
+  font-size: 80%;
+  color: #dc3545; }
+
 .was-validated .error-msg {
   display: none; }
 

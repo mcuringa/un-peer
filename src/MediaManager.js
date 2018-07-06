@@ -7,6 +7,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon
 } from 'react-octicons';
+
 import FBUtil from "./FBUtil";
 import {
   Label,
@@ -39,21 +40,84 @@ const formatFileSize = (bytes, si)=>{
   return bytes.toFixed(1)+' '+units[u];
 }
 
-const UploadProgress = (props)=> {
 
-  let pct = props.pct;
-  if((!pct || _.isNaN(pct)) && !props.show)
-    return null;
+class UploadProgress extends React.Component {
 
-  pct = props.pct || 0;
+  constructor(props) {
+    super(props);
+    this.state = { paused: false };
+  }
 
-  return (
-    <div className="progress w-100">
-      <div className="progress-bar bg-warning progress-bar-striped progress-bar-animated text-dark" 
-           role="progressbar" style={{width: `${pct}%`, minWidth: "2em"}} 
-           aria-valuenow={pct} aria-valuemin="0" aria-valuemax="100">{_.round(pct)}%</div>
-    </div>
-  );
+
+  render() {
+    let pct = this.props.pct;
+    if((!pct || _.isNaN(pct)) && !this.props.show)
+      return null;
+
+    pct = this.props.pct || 0;
+
+    const pause = ()=>{
+      try {
+        this.props.task.pause();
+        this.setState({pasued: true});
+      }
+      catch(e) {
+        console.log(e);
+      }
+    }
+
+    const resume = ()=>{
+      try {
+        this.props.task.resume();
+        this.setState({pasued: false});
+      }
+      catch(e) {
+        console.log(e);
+      }
+    }
+    const cancel = ()=>{
+      try {
+        this.props.task.cancel();
+      }
+      catch(e) {
+        console.log(e);
+      }
+    }
+
+    const MediaControls = ()=>{
+
+      if(!this.props.task)
+        return null;
+
+      const disPause = (this.state.paused)?"":"";
+      const disPlay = (!this.state.paused)?"":"";
+      return (
+        <div className="MediaControls btn-group d-flex" data-toggle="buttons">
+          <button type="button" className={`flex-fill btn btn-secondary btn-sm${disPause}`} onClick={pause}>
+            ▌▌ Pause
+          </button>
+          <button type="button" className={`flex-fill btn btn-secondary btn-sm${disPlay}`} onClick={resume}>
+            ▶ Resume
+          </button>
+          <button type="button" className="flex-fill btn btn-secondary btn-sm" onClick={cancel}>
+            ■ Cancel
+          </button>
+        </div>
+      )
+    }
+
+
+    return (
+      <div>
+        <div className="progress w-100">
+          <div className="progress-bar bg-warning progress-bar-striped progress-bar-animated text-dark" 
+               role="progressbar" style={{width: `${pct}%`, minWidth: "2em"}} 
+               aria-valuenow={pct} aria-valuemin="0" aria-valuemax="100">{_.round(pct)}%</div>
+        </div>
+        <MediaControls />
+      </div>
+    );
+  }
 }
 
 
@@ -66,6 +130,8 @@ class MediaUpload extends React.Component {
       msg: 0,
       uploading: false
     };
+    this.uploadTask = null;
+
     this.handleUpload = _.bind(this.handleUpload, this);
     this.reportValidity = _.bind(this.reportValidity, this);
     this.getErrorMsg = _.bind(this.getErrorMsg, this);
@@ -75,15 +141,15 @@ class MediaUpload extends React.Component {
   }
 
   reportValidity() {
-    // console.log("checking media validity");
-    // console.log("required: ");
-    // console.log(this.props.required);
     const url = this.props.url || "";
     const empty = (this.props.required && url.trim().length === 0)
     if(empty)
       return false;
-    if(this.state.fileSizeExceeded || this.state.uploading)
+    if(this.state.uploading)
       return false;
+    if(this.state.fileSizeExceeded) {
+      return false;
+    }
 
     return true;
 
@@ -107,16 +173,25 @@ class MediaUpload extends React.Component {
     return null;
   }
 
+  componentWillUnmount() {
+    if(this.state.uploading && this.handleUpload) {
+      this.handleUpload.cancel();
+    }
+  }
+
   componentDidUpdate() {
     const id = `${this.props.id}`;
     let field = document.getElementById(id);
-    if(field && !this.reportValidity())
+    if(field && !this.reportValidity()) {
       field.setCustomValidity(this.getErrorMsg());
+    }
   }
 
   handleUpload(e) {
 
+
     let file = e.target.files[0];
+    // console.log("file mime type", file.type);
     const size = file.size;
     if(this.props.maxFileSize && this.props.maxFileSize < size) {
       this.setState({fileSizeExceeded: true});
@@ -152,11 +227,22 @@ class MediaUpload extends React.Component {
       });
     }
 
-    const err = (e)=>{
-      console.log(e);
+    const err = (e)=> {
+      if(e.code === 'storage/canceled') {
+        this.setState({
+          pct: 0,
+          msg: "",
+          uploading: false
+        });
+      }
+      else {
+        console.log("error uploading media");
+        console.log(e);       
+      }
+
     }
 
-    FBUtil.uploadMedia(file, this.props.path, watch, succ, err);
+    this.uploadTask = FBUtil.uploadMedia(file, this.props.path, watch, succ, err);
   }
 
   render() {
@@ -189,6 +275,7 @@ class MediaUpload extends React.Component {
 
       return (
         <VideoUpload {...params} 
+          task={this.uploadTask}
           handleUpload={this.handleUpload} 
           pct={this.state.pct}
           msg={this.state.msg}
@@ -210,14 +297,15 @@ class MediaUpload extends React.Component {
 }
 
 const FileSizeError = (props)=>{
-  if(props.error)
-    return <div className="error-msg">{props.msg}</div>
+  if(props.error) {
+    return <div className="filesize-error">{props.msg}</div>
+  }
   return null;
 }
 
 const UploadFileInput = (props)=>{
   return (
-    <input id={props.id} type="file" className="d-none"
+    <input type="file" id={props.id} className="d-none"
       accept={props.accept}  onChange={props.handleUpload} />
   )
 }
@@ -229,7 +317,7 @@ const VideoUpload = (props) => {
   
       <Video src={props.url} />
       <VideoLabel {...props} />
-      <UploadProgress pct={props.pct} msg={props.msg}  show={props.uploading} />
+      <UploadProgress pct={props.pct} msg={props.msg} task={props.task} show={props.uploading} />
     </div>
   )
 }
@@ -244,7 +332,7 @@ const VideoLabel = (props)=> {
       <div className="d-flex justify-content-between">
         {fileName(props.url)}
         <div className="d-flex justify-content-end">
-          <UploadFileInput id={props.id} handleUpload={props.handleUpload} accept="video/*" />
+          <UploadFileInput id={props.id} handleUpload={props.handleUpload} />
           <label className="text-primary p-0 m-0" htmlFor={props.id}>
             <div className="btn btn-link p-0 m-0 icon-secondary">
               <DeviceCameraVideoIcon />
@@ -259,7 +347,7 @@ const VideoLabel = (props)=> {
   }
   return (
      <div className="VideoUploader">
-      <UploadFileInput id={props.id} handleUpload={props.handleUpload} accept="video/*" />
+      <UploadFileInput id={props.id} handleUpload={props.handleUpload} accept="video/mp4, video/quicktime" />
       <label className="VideoUploadButton d-block p-3 m-0" htmlFor={props.id}>
         Click to <br />
         Upload Video

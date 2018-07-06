@@ -85,19 +85,27 @@ const FBUtil =
   },
 
   uploadMedia: (file, path, progress, succ, err)=> {
+    console.log("begin file upload");
     let firebase = FBUtil.getFB();
     let storageRef = firebase.storage().ref();
     const name = ChallengeDB.slug(file.name);
+    console.log("file", name);
     const id = uuid();
     path = `${path}/${id}/${name}`;
+    console.log("full path", path);
 
     let ref = storageRef.child(path);
 
-    return new Promise(async (resolve, reject) => {
-      let uploadTask = ref.put(file);
-      const done = ()=>{succ(uploadTask)}
-      uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, progress, err, done );
-    });
+    // return new Promise(async (resolve, reject) => {
+    //   let uploadTask = ref.put(file);
+    //   const done = ()=>{succ(uploadTask)}
+    //   uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, progress, err, done );
+    // });
+
+    let uploadTask = ref.put(file);
+    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, progress, err, succ );
+    return uploadTask;
+
   },
 
   getAuthUser: (listener)=>

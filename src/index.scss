@@ -633,6 +633,11 @@ label
   color: $red;
 }
 
+.filesize-error {
+  font-size: 80%;
+  color: $red;
+}
+
 .was-validated .error-msg {
   display: none;
 }
