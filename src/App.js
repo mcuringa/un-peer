@@ -24,6 +24,7 @@ import ChallengeResponseForm from './challenges/ChallengeResponseForm.js';
 import ResponseRatings from './challenges/ResponseRatings.js';
 import ChallengeReviewScreen from './challenges/ChallengeReviewScreen.js';
 import ProfessorResponseForm from './challenges/ProfessorResponseForm.js';
+import ChallengeReportScreen from './challenges/ChallengeReportScreen.js';
 import ManageChallengesScreen from './challenges/ManageChallenges.js';
 import ManageResponsesScreen from './challenges/ManageResponses.js';
 
@@ -217,6 +218,7 @@ const SecureScreens = (props)=> {
       <ScreenRoute  id="ChallengeResponseForm" {...props} path="/challenge/:id/respond" component={ChallengeResponseForm}/>
       <ScreenRoute  id="ProfessorResponseForm" {...props} path="/challenge/:id/prof" component={ProfessorResponseForm} />
       <ScreenRoute  id="ResponseRatings" {...props} path="/challenge/:id/rate" component={ResponseRatings} />
+      <ScreenRoute  id="ChallengeReportScreen" {...props} path="/challenge/:id/report" component={ChallengeReportScreen} />
       <ScreenRoute  id="ChallengeReviewScreen" {...props} path="/challenge/:id/review" component={ChallengeReviewScreen} />
       <ScreenRoute  id="ChallengeDetailScreen" {...props} path="/challenge/:id" component={ChallengeDetailScreen} />
       

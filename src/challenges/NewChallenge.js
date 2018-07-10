@@ -48,7 +48,6 @@ class NewChallengeScreen extends React.Component {
 
 
   mountNewChallenge() {
-    console.log("mounting new challenge");
     const owner = {
       uid: this.props.user.uid,
       firstName: this.props.user.firstName,
@@ -67,7 +66,6 @@ class NewChallengeScreen extends React.Component {
   }
 
   mountExistingChallenge(id) {
-    console.log("mounting existing challenge");
     ChallengeDB.get(id).then((c)=> {
       if(c.status === ChallengeStatus.REJECT && c.owner && this.props.user.uid === c.owner.uid && !this.props.user.admin) {
         c.status = ChallengeStatus.DRAFT;

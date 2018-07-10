@@ -109,12 +109,12 @@ class UploadProgress extends React.Component {
 
     return (
       <div>
+        <MediaControls />
         <div className="progress w-100">
           <div className="progress-bar bg-warning progress-bar-striped progress-bar-animated text-dark" 
                role="progressbar" style={{width: `${pct}%`, minWidth: "2em"}} 
                aria-valuenow={pct} aria-valuemin="0" aria-valuemax="100">{_.round(pct)}%</div>
         </div>
-        <MediaControls />
       </div>
     );
   }

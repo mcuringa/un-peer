@@ -131,12 +131,14 @@ const ChallengeRow = (props) => {
 
 const ChallengeMenu = (props)=> {
   const c = props.challenge;
+  let reportCss = (c.status !== ChallengeStatus.PUBLISHED)?"disabled":"";
 
   return (
     <MoreMenu>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}`}>View Challenge</Link>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit`}>Edit Challenge</Link>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/close`}>Close Challenge</Link>
+      <Link className={`dropdown-item btn-link ${reportCss}`} to={`/challenge/${c.id}/report`}>Status Report</Link>
       <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit/responses`}>Edit Responses</Link>
       <div className="dropdown-divider"></div>
       <StatusMenu {...props} />
