@@ -58,13 +58,9 @@ class MyChallengesScreen extends React.Component {
     }
 
     const filterMine = (c)=> {
-      const now = new Date();
       const uid = this.props.user.uid;
       if(c.status === ChallengeStatus.DELETE)
         return false;
-
-      // if(c.status === ChallengeStatus.PUBLISHED && c.start < now && c.end > now)
-      //   return true;
       
       if(c.owner.uid === uid || (c.professor && c.professor.uid === uid))
         return true;
