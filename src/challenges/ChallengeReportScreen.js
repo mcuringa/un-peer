@@ -107,7 +107,7 @@ class ChallengeReportScreen extends React.Component {
     if(this.state.loading)
       return <LoadingModal status="Loading challenge status" show={true} />
 
-    if(!this.state.challenge.assignemnts) {
+    if(!this.state.challenge.assignments) {
       return (
         <div className="alert alert-secondary m-2" role="alert">
           <h4 className="alert-heading">Incomplete Report</h4>
