@@ -123,6 +123,7 @@ const ChallengeDB = {
     const getOwnerResponses = (c)=> {
       const prepResponse = (r)=>{
         r.challengeId = c.id;
+        r.challenge = c;
         r.challengeTitle = c.title;
         return r;
       };

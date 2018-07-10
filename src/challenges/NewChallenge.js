@@ -687,7 +687,7 @@ const UnderReview = (props)=> {
       </div>
       <div className="card-footer">
         <Link className="btn btn-secondary"
-          to="/">Go Home</Link>
+          to="/">Home</Link>
       </div>
     </div>
   );

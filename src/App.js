@@ -251,7 +251,7 @@ const ConfirmPassReset = (props)=> {
         <h5 class="alert-heading">Password reset</h5>
         <p>Please check your email <tt>&lt;{props.user.email}&gt;</tt> for instructions on how to reset your password.</p>
         <hr />
-        <Link className="btn btn-secondary" to="/">Go Home</Link>
+        <Link className="btn btn-secondary" to="/">Home</Link>
       </div>
     </div>
   )

@@ -3,7 +3,7 @@ import _ from "lodash";
 import {NavLink} from 'react-router-dom';
 import { ChevronLeftIcon } from "react-octicons";
 
-
+import df from "../DateUtil"
 import {Video} from "../FormUtil.js"
 import {User, ChallengeDB} from "./Challenge.js"
 
@@ -44,10 +44,10 @@ class ChallengeDetailScreen extends React.Component {
       <div className="ChallengeDetail screen">
         <BackToArchives fromArchives={this.fromArchives} history={this.props.history} />
         <ChallengeHeader id={this.state.challenge.id} 
+          history={this.props.history}
           challenge={this.state.challenge} 
           owner={this.state.owner} 
-          user={this.props.user}
-          hideBack={true} />
+          user={this.props.user} />
         <ChallengeInfo id={this.state.challenge.id} 
           challenge={this.state.challenge} 
           owner={this.state.owner} 
@@ -92,11 +92,20 @@ const ChallengeButton = (props) => {
 
 
   if(c.owner && c.owner.uid === props.user.uid) {
+
     return (
-      <NavLink 
-        className={`btn btn-block bt-lg btn-secondary mb-2`} 
-        activeClassName="active" 
-        to={`/challenge/${props.id}/review`}>Review responses and select the best</NavLink>
+      <div className="alert alert-secondary" role="alert">
+        <h6 className="alert-heading">Owner's Report</h6>
+        <p>
+          All responses to this challenge will be completed 
+          by {df.fullDayTime(c.responseDue)}, please mark your choice by {df.fullDayTime(c.responseDue)}.
+        </p>
+        <NavLink 
+          className={`btn btn-secondary mb-2`} 
+          activeClassName="active" 
+          to={`/challenge/${props.id}/review`}>View responses</NavLink>
+      </div>
+
     )
   }
 

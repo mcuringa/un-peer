@@ -42,7 +42,7 @@ const ChallengeHeader = (props) => {
   );
 }
 
-const BackButton = (props)=>{
+const BackButton = (props)=> {
   if(props.hideBack)
     return null;
 

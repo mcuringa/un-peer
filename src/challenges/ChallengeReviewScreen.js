@@ -395,7 +395,7 @@ const TooEarly = (props)=> {
         <Link className="btn btn-secondary mr-2"
           to={`/challenge/${props.challenge.id}`}>View Challenge</Link>
         <Link className="btn btn-secondary"
-          to="/">Go Home</Link>
+          to="/">Home</Link>
       </div>
     </div>
   );

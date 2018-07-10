@@ -1,10 +1,9 @@
 import React from 'react';
 import _ from "lodash";
 import {Link} from "react-router-dom";
-import { ChevronLeftIcon } from "react-octicons";
+import {PencilIcon, ChevronLeftIcon } from "react-octicons";
 
 import LoadingModal from "../LoadingModal"
-
 import df from "../DateUtil";
 
 import {ChallengeDB} from "../challenges/Challenge";
@@ -67,11 +66,30 @@ const NoResponsesMsg = (props)=> {
   )
 }
 
+const EditLink = (props)=> {
+  const now = new Date();
+  const c = props.response.challenge;
+  if(c.responseDue < now)
+    return null;
+
+  return (
+    <Link className="d-block" to={`/challenge/${c.id}/respond`}>
+      <PencilIcon className="icon-dark ml-2" />
+    </Link>
+  )
+
+
+}
+
+
 const Response = (r)=> {
   return (
     <div className="border-bottom border-light pb-1 mb-3" key={_.uniqueId("response_")}>
       <div className="font-weight-bold d-flex align-items-baseline justify-content-between">
-        <Link className="d-block" to={`/challenge/${r.challengeId}/review#${r.id}`}>{r.challengeTitle}</Link>
+        <div className="d-flex justify-content start">
+          <Link className="d-block" to={`/challenge/${r.challengeId}/review#${r.id}`}>{r.challengeTitle}</Link>
+          <EditLink response={r} />
+        </div>
         <small className="d-block">{df.df(r.created)}</small>
       </div>
       <div className="d-flex align-content-start">
