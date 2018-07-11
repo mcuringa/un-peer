@@ -23,6 +23,8 @@ class ManageUsersScreen extends React.Component {
 			focusNewUser: true,
 			userExists: false,
 			newUser: "",
+			sortOrder: "firstName",
+			reverseOrder: false,
 			newUserError: "",
 		};
 
@@ -42,6 +44,9 @@ class ManageUsersScreen extends React.Component {
 
 	componentWillMount() {
 		db.findAll("/users").then((t)=>{
+		 _.each(t, (u)=> {
+		 		u.admin = (u.admin)? true:false;
+			});
 			this.setState({users: _.keyBy(t, u=>u.id)});
 		});
 
@@ -222,7 +227,8 @@ class ManageUsersScreen extends React.Component {
 		let delUserName = "";
 		if(this.state.deleteUser)
 			delUserName = `${this.state.deleteUser.firstName} ${this.state.deleteUser.lastName}`
-		
+
+	
 		return (
 			<div className="ManageUsersScreen screen" style={{marginBottom: "60px"}}>
 				<div className="d-flex justify-content-between align-items-center">
@@ -241,6 +247,7 @@ class ManageUsersScreen extends React.Component {
 				<UserList
 					onChange={this.handleChange}
 					users={this.state.users}
+					sortOrder={this.state.sortOrder}
 					sendReset={this.sendReset}
 					deleteUser={this.confirmDeleteUser} />
 
@@ -282,53 +289,80 @@ const NewUserForm = (props)=> {
 	);
 }
 
+class UserList extends React.Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      sortOrder: "firstName",
+      reversed: false
+    };
+  }
 
-const UserList = (props) => {
+  render() {
+		const onChange = (uid)=> {
+			const f = (e)=>{this.props.onChange(e, uid);};
+			return f;    
+		}
+
+		const row=(u)=> { return (
+
+			<div className="row m-auto" key={`uid_${u.uid}`}>
+				<div className="col-2">
+					<TextInput  id="firstName" onChange={onChange(u.uid)} value={u.firstName || ""} />
+				</div>
+				<div className="col-3">
+					<TextInput id="lastName" onChange={onChange(u.uid)}  value={u.lastName || ""} />
+				</div>
+				<div className="col-5">
+					<TextInput id="email" onChange={onChange(u.uid)}  value={u.email} />
+				</div>
+
+				<div className="col-1 text-center">
+					{(u.admin)?"✓":""}
+				</div>
+
+				<div className="col-1 text-center d-flex justify-content-center align-items-baseline icon-secondary">
+					<UserMenu {...this.props} user={u} />
+				</div>
+
+			</div>
+		)}
+
+		let users = _.sortBy(this.props.users, this.state.sortOrder);
+		if(this.state.reverse)
+			users = _.reverse(users);
+
+		const rows = _.map(users, row);
+		const sorter = (key)=> {
+			let rev = false;
+			if(key === this.state.sortOrder)
+				rev = !this.state.reverse;
+			return ()=>{this.setState({sortOrder: key, reverse: rev})};
+		}
+
+		const SortIcon = (key)=> {
+			if(key !== this.state.sortOrder)
+				return "";
+			if(this.state.reverse)
+				return " ▾";
+			return " ▴";
+		}
+
+		return (
+			<form className="CurrentUserList" onSubmit={(e)=>{e.preventDefault();}}>
+				<div className="row text-center bg-dark text-light m-auto">
+					<div className="col-2 text-strong clickable" onClick={sorter("firstName")}>First{SortIcon("firstName")}</div>
+					<div className="col-3 text-strong clickable" onClick={sorter("lastName")}>Last{SortIcon("lastName")}</div>
+					<div className="col-5 text-strong clickable" onClick={sorter("email")}>Email{SortIcon("email")}</div>
+					<div className="col-2 text-strong clickable" onClick={sorter("admin")}>Admin{SortIcon("admin")}</div>
+				</div>
+				{rows}
+			</form>
+		);	
+  }
 		
-	const onChange = (uid)=> {
-		const f = (e)=>{props.onChange(e, uid);};
-		return f;    
-	}
-
-	const row=(u)=> { return (
-
-		<div className="row m-auto" key={`uid_${u.uid}`}>
-			<div className="col-2">
-				<TextInput  id="firstName" onChange={onChange(u.uid)} value={u.firstName || ""} />
-			</div>
-			<div className="col-3">
-				<TextInput id="lastName" onChange={onChange(u.uid)}  value={u.lastName || ""} />
-			</div>
-			<div className="col-5">
-				<TextInput id="email" onChange={onChange(u.uid)}  value={u.email} />
-			</div>
-
-			<div className="col-1 text-center">
-				{(u.admin)?"✓":""}
-			</div>
-
-			<div className="col-1 text-center d-flex justify-content-center align-items-baseline icon-secondary">
-				<UserMenu {...props} user={u} />
-			</div>
-
-		</div>
-	)}
-
-
-	const rows = _.map(props.users, row);
-
-	return (
-		<form className="CurrentUserList" onSubmit={(e)=>{e.preventDefault();}}>
-			<div className="row text-center bg-dark text-light m-auto">
-				<div className="col-2 text-strong">First</div>
-				<div className="col-3 text-strong">Last</div>
-				<div className="col-5 text-strong">Email</div>
-				<div className="col-2 text-strong">Admin</div>
-			</div>
-			{rows}
-		</form>
-	);
+	
 
 }
 
