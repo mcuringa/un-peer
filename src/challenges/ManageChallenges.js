@@ -109,9 +109,7 @@ const ChallengeRow = (props) => {
           </div>
           <h6 className="pt-0 pb-0 pl-2"><Link to={`/challenge/${challenge.id}/edit`}>{challenge.title}</Link></h6>
         </div>
-        <div className="ChallengeItemMenu">
-          <ChallengeMenu {...props}/>
-        </div>
+        <ChallengeMenu {...props}/>
       </div>
       <div className="d-flex">
         <div className="mr-2"><strong>Owner: </strong>{challenge.owner.firstName} {challenge.owner.lastName}</div>
@@ -134,15 +132,19 @@ const ChallengeMenu = (props)=> {
   let reportCss = (c.status !== ChallengeStatus.PUBLISHED)?"disabled":"";
 
   return (
-    <MoreMenu>
-      <Link className="dropdown-item btn-link" to={`/challenge/${c.id}`}>View Challenge</Link>
-      <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit`}>Edit Challenge</Link>
-      <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/close`}>Close Challenge</Link>
-      <Link className={`dropdown-item btn-link ${reportCss}`} to={`/challenge/${c.id}/report`}>Status Report</Link>
-      <Link className="dropdown-item btn-link" to={`/challenge/${c.id}/edit/responses`}>Edit Responses</Link>
-      <div className="dropdown-divider"></div>
-      <StatusMenu {...props} />
-    </MoreMenu>
+    <div className="btn-group" role="group">
+      <button id={`ChallengeMenu_${c.id}`} type="button" className="btn btn-sm btn-secondary-outline dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Options
+      </button>
+      <div className="dropdown-menu dropdown-menu-right" aria-labelledby={`ChallengeMenu_${c.id}`}>
+        <Link  className="dropdown-item btn-link" to={`/challenge/${c.id}`}>View</Link>
+        <Link  className="dropdown-item btn-link" to={`/challenge/${c.id}/edit`}>Edit</Link>
+        <Link  className="dropdown-item btn-link" to={`/challenge/${c.id}/close`}>Close</Link>
+        <Link className={`dropdown-item btn-link ${reportCss}`} to={`/challenge/${c.id}/report`}>Report</Link>
+        <Link  className="dropdown-item btn-link" to={`/challenge/${c.id}/edit/responses`}>Responses</Link>
+        <StatusMenu {...props} />
+      </div>
+    </div>
   )
 }
 
@@ -184,7 +186,8 @@ const StatusMenu = (props)=> {
 
   return (
     <div>
-      <h6 className="dropdown-header">CHANGE STATUS</h6>
+      <div class="dropdown-divider"></div>
+      <h6 className="dropdown-header">SET STATUS</h6>
       <button className={`dropdown-item btn-link ${status.publish}`} type="button" onClick={publish}>Publish</button>
       <button className={`dropdown-item btn-link ${status.reject}`} type="button" onClick={reject}>Reject</button>
       <button className={`dropdown-item btn-link ${status.delete}`} type="button" onClick={del}>Delete</button>
