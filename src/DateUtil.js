@@ -1,10 +1,11 @@
 import dateFormat from 'dateformat';
+import moment from "moment";
 import _ from "lodash";
 
 const df = {
   day: (d)=> dateFormat(d, "ddd mmm dd"),
   fullDay: (d)=> dateFormat(d, "dddd, mmmm dd"),
-  fullDayTime: (d)=> dateFormat(d, "ddd, mmmm dd HH:MM"),
+  fullDayTime: (d)=> moment(d, "llll"),
   cal: (d)=> dateFormat(d, "yyyy-mm-dd"),
   pickerDate: (d)=> dateFormat(d, "mm/dd/yyyy"),
   df: (d)=> dateFormat(d, "dd mmm yyyy"),

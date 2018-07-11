@@ -458,6 +458,7 @@ const ChallengeDB = {
       }
 
       if(c.assignments && _.size(c.assignments)>0) {
+        console.log("ratings already assigned");
         resolve(c);
         return;
       }

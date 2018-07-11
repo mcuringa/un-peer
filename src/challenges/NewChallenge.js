@@ -339,7 +339,7 @@ class NewChallengeScreen extends React.Component {
                 selected={moment(c.start)}
                 onChange={_.partial(this.handleDateTime, "start")}
                 showTimeSelect
-                dateFormat="ddd MMM DD YYYY HH:mm"
+                dateFormat="LLLL"
                 timeFormat="HH:mm"
                 timeIntervals={15}
                 disabledKeyboardNavigation
@@ -353,7 +353,7 @@ class NewChallengeScreen extends React.Component {
                 selected={moment(c.responseDue)}
                 onChange={_.partial(this.handleDateTime, "responseDue")}
                 showTimeSelect
-                dateFormat="ddd MMM DD YYYY HH:mm"
+                dateFormat="LLLL"
                 timeFormat="HH:mm"
                 timeIntervals={15}
                 disabledKeyboardNavigation
@@ -367,7 +367,7 @@ class NewChallengeScreen extends React.Component {
                 selected={moment(c.ratingDue)}
                 onChange={_.partial(this.handleDateTime, "ratingDue")}
                 showTimeSelect
-                dateFormat="ddd MMM DD YYYY HH:mm"
+                dateFormat="LLLL"
                 timeFormat="HH:mm"
                 timeIntervals={15}
                 disabledKeyboardNavigation
@@ -381,7 +381,7 @@ class NewChallengeScreen extends React.Component {
                 selected={moment(c.end)}
                 onChange={_.partial(this.handleDateTime, "end")}
                 showTimeSelect
-                dateFormat="ddd MMM DD YYYY HH:mm"
+                dateFormat="LLLL"
                 timeFormat="HH:mm"
                 timeIntervals={15}
                 disabledKeyboardNavigation

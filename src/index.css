@@ -6531,6 +6531,17 @@ svg.icon-lg {
 .collapsed .toggle-icons .octicon-chevron-down {
   display: none; }
 
+.toggle-bar {
+  background-color: #e9ecef;
+  color: #697078;
+  line-height: 1.1em; }
+
+.collapsed .toggle-expand, .toggle-close {
+  display: block; }
+
+.collapsed .toggle-close, .toggle-expand {
+  display: none; }
+
 /*============================ App.js styles*/
 .container {
   max-width: 512px;
@@ -7174,3 +7185,6 @@ label:hover.VideoUploadButton {
 
 ul.react-datepicker__time-list {
   padding: 0; }
+
+.react-datepicker__input-container {
+  display: block !important; }

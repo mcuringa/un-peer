@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import _ from "lodash";
 import df from "../DateUtil";
 import db from "../DBTools";
-import MoreMenu from "../MoreMenu";
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import {snack, SnackMaker} from "../Snackbar";
 import LoadingModal from "../LoadingModal";
@@ -186,7 +185,7 @@ const StatusMenu = (props)=> {
 
   return (
     <div>
-      <div class="dropdown-divider"></div>
+      <div className="dropdown-divider"></div>
       <h6 className="dropdown-header">SET STATUS</h6>
       <button className={`dropdown-item btn-link ${status.publish}`} type="button" onClick={publish}>Publish</button>
       <button className={`dropdown-item btn-link ${status.reject}`} type="button" onClick={reject}>Reject</button>

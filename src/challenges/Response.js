@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 
-import { ChevronDownIcon, ChevronUpIcon, PersonIcon} from 'react-octicons';
+import { PersonIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import { StarRatings } from "../StarRatings";
 import MoreText from "../MoreText";
@@ -121,20 +121,8 @@ class Response  extends React.Component {
     return (
       <div id={r.id} className={`Response border-bottom border-light mt-2 pt-2 pb-2 text-gray ${targetCss}`}>
         <div className="ResponseTitle d-flex justify-content-between align-items-start">
-          <div className={`clickable d-flex flex-column ${collapseCss}`}
-            data-toggle="collapse" 
-            data-target={`#${toggleId}`}
-            aria-controls={toggleId}
-            aria-expanded={this.props.open}
-            aria-label="toggle response"
-            >
-            <div className="d-flex align-items-start">
-              <div className="toggle-icons icon-secondary">
-                <ChevronUpIcon />
-                <ChevronDownIcon />
-              </div>
-              <h6 className="ResponseTitle text-gray"><MoreText text={r.title} chars={titleLen} /></h6>
-            </div>
+          <div>
+            <h6 className="ResponseTitle text-gray"><MoreText text={r.title} chars={titleLen} /></h6>
             <AuthorInfo />
           </div>
           <div>
@@ -148,6 +136,16 @@ class Response  extends React.Component {
             <TopRated />
           </div>
         </div>
+        <div className={`clickable toggle-bar ${collapseCss}`}
+          data-toggle="collapse" 
+          data-target={`#${toggleId}`}
+          aria-controls={toggleId}
+          aria-expanded={this.props.open}
+          aria-label="toggle response"
+          >
+          <div className="toggle-expand text-center"><small>▾ ▾ more ▾ ▾</small></div>
+          <div className="toggle-close text-center"><small>▴ ▴ close ▴ ▴</small></div>
+        </div>
 
         <div id={toggleId} className={`collapse pt-2 ${showCss}`}>
           <div className="d-flex justify-content-end">
@@ -156,8 +154,9 @@ class Response  extends React.Component {
           </div>
           <More />
           <Video video={r.video} />
-          {r.text}      
+          {r.text}
         </div>
+
       </div>
     )
   }

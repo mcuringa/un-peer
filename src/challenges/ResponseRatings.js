@@ -68,7 +68,9 @@ class ResponseRatings extends React.Component {
   }
   componentWillMount() {
 
-    const setRatings = (c)=>{ this.setState({challenge: c, loadingChallenge: false}); };
+    const setRatings = (c)=>{ 
+      this.setState({challenge: c, loadingChallenge: false}); 
+    };
     const noAssignments = ()=>{console.log("no assignments");};
     const noResponses = ()=>{console.log("no responses");};
     
@@ -163,7 +165,7 @@ class ResponseRatings extends React.Component {
           rateFunction={rateF} />
       );
     });
-
+    console.log("ratings due", this.state.challenge.ratingsDue);
     return (
 
       <div className="ResponseList screen">
@@ -175,8 +177,14 @@ class ResponseRatings extends React.Component {
         <Modal id="ratingsDone"
           show={this.state.showThankYou && !this.state.thankYouShown}
           closeHandler={()=>{this.setState({thankYouShown: true})}}
-          title="★★Congratulations★★"
-          body={`You have submitted all of your ratings. You are done! If you choose to, you can update your ratings while the rating period is still open. Ratings close on ${df.day(this.state.challenge.ratingsDue)}.`} />
+          title="★★Congratulations★★">
+
+            You have submitted all of your ratings. 
+            You are done! If you choose to, you can update 
+            your ratings while the rating period is still open. 
+            Ratings close on {df.fullDay(this.state.challenge.ratingDue)} at {df.time(this.state.challenge.ratingDue)}.
+
+          </Modal>
 
         <div className="d-flex m-2 justify-content-end">
           <div className="badge badge-pill badge-secondary">

@@ -98,7 +98,8 @@ const ChallengeButton = (props) => {
         <h6 className="alert-heading">Owner's Report</h6>
         <p>
           All responses to this challenge will be completed 
-          by {df.fullDayTime(c.responseDue)}, please mark your choice by {df.fullDayTime(c.responseDue)}.
+          by {df.time(c.responseDue)} on {df.fullDay(c.responseDue)}, 
+          please mark your choice before  {df.time(c.end)} on {df.fullDay(c.end)}.
         </p>
         <NavLink 
           className={`btn btn-secondary mb-2`} 
