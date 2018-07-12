@@ -400,6 +400,57 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
     return findUnResponded().then(notify);
   }
 
+
+  const sendChoiceNotification = (c)=> {
+    if(c.responseDue < now || c.responseDue > rangeEnd)
+      return false;
+
+    console.log("sending owner and instructor messages");
+    const title = c.title;
+    const body = "Responses are in. Make your choice.";
+    const owner = `REVIEW_${c.id}`;
+    
+    const click = `${DOMAIN}/challenge/${c.id}/review`;
+
+    const hour = 1000 * 60 * 60;
+    const day = hour * 24;
+    const hoursLeft = Math.floor(timeLeft / hour);
+    const daysLeft = Math.floor(timeLeft / day);
+    let dueMsg = "";
+    if(hoursLeft >24) {
+      const s = (daysLeft !== 1)?"s": "";
+      dueMsg = `${daysLeft} day{s}`;
+    }
+    else {
+      const s = (hoursLeft !== 1)?"s": "";
+      dueMsg = `${hoursLeft} hour{s}`;
+    }
+
+    const ownerMsg = makeNotification(`Onwer of ${c.title}`, `Responses are ready. Your "owner's choice" is due in ${dueMsg}.`, click, `OWNER_${c.id}`);
+    const instructorMsg = makeNotification(`Instructor for ${c.title}`, `Responses are ready. Your wrap-up video and the "expert's choice. are due in ${dueMsg}"`, click, `INSTRUCTOR_${c.id}`);
+    const timeLeft = c.ratingDue.getTime() - new Date().getTime();
+
+    const sendOwner = (u)=> {
+      let user = u.data();
+      user.id = u.id;
+      saveMsg(user, ownerMsg);
+      sendUserNotification(user, ownerMsg);
+    }
+    const sendInstructor = (u)=> {
+      let user = u.data();
+      user.id = u.id;
+      saveMsg(user, ownerMsg);
+      sendUserNotification(user, ownerMsg);
+    }
+    let db = getDB();
+    db.collection("/users").doc(c.owner.uid).get().then(sendOwner).catch(logErr); 
+    db.collection("/users").doc(c.professor.uid).get().then(sendOwner).catch(logErr); 
+
+    return true;
+
+  }
+
+
   const sendReview = (c)=> {
     // console.log("active challenge found for alerts", c);
     // console.log("now", now);
