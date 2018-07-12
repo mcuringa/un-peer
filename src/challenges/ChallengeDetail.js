@@ -99,7 +99,7 @@ const ChallengeButton = (props) => {
         <p>
           All responses to this challenge will be completed 
           by {df.time(c.responseDue)} on {df.fullDay(c.responseDue)}, 
-          please mark your choice before  {df.time(c.end)} on {df.fullDay(c.end)}.
+          please mark your choice before {df.time(c.end)} on {df.fullDay(c.end)}.
         </p>
         <NavLink 
           className={`btn btn-secondary mb-2`} 
