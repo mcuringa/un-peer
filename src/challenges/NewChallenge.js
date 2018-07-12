@@ -96,6 +96,9 @@ class NewChallengeScreen extends React.Component {
   }
 
   handleUpload(src, key) {
+    // console.log("handling upload");
+    // console.log("src", src);
+    // console.log("key", key);
 
     let c = this.state.challenge;
     c[key] = src;
@@ -506,6 +509,7 @@ const ChallengeVideoFields = (props)=> {
       <MediaUpload id="challengeVideo" 
         media="video"
         path={c.id}
+        poster={c.challengeVideoPoster}
         url={c.challengeVideo}
         required={props.requireAll} 
         handleUpload={props.handleUpload}

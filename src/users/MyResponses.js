@@ -93,7 +93,7 @@ const Response = (r)=> {
         <small className="d-block">{df.df(r.created)}</small>
       </div>
       <div className="d-flex align-content-start">
-        <StarRatings className="pt-1 pr-2" rating={r.avgRating} />
+        <StarRatings className="pt-1 pr-2" rating={r.avgRating} total={_.values(r.ratings).length} />
         {r.title}
       </div>
     </div>

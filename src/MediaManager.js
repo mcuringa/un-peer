@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 import _ from "lodash";
 import {
   TrashcanIcon,
@@ -45,7 +46,7 @@ class UploadProgress extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { paused: false };
+    this.state = {paused: false};
   }
 
 
@@ -59,7 +60,7 @@ class UploadProgress extends React.Component {
     const pause = ()=>{
       try {
         this.props.task.pause();
-        this.setState({pasued: true});
+        this.setState({paused: true});
       }
       catch(e) {
         console.log(e);
@@ -69,7 +70,7 @@ class UploadProgress extends React.Component {
     const resume = ()=>{
       try {
         this.props.task.resume();
-        this.setState({pasued: false});
+        this.setState({paused: false});
       }
       catch(e) {
         console.log(e);
@@ -77,7 +78,10 @@ class UploadProgress extends React.Component {
     }
     const cancel = ()=>{
       try {
-        this.props.task.cancel();
+        if(this.state.paused)
+          this.props.task.resume().then(this.props.task.cancel);
+        else
+          this.props.task.cancel();
       }
       catch(e) {
         console.log(e);
@@ -89,14 +93,14 @@ class UploadProgress extends React.Component {
       if(!this.props.task)
         return null;
 
-      const disPause = (this.state.paused)?"":"";
-      const disPlay = (!this.state.paused)?"":"";
+      // const disActive = (this.state.paused)?" active disabled":"";
+      // const playActive = (this.state.paused)?"":" active disabled";
       return (
         <div className="MediaControls btn-group d-flex" data-toggle="buttons">
-          <button type="button" className={`flex-fill btn btn-secondary btn-sm${disPause}`} onClick={pause}>
-            ▌▌ Pause
+          <button type="button" className={`flex-fill btn btn-secondary btn-sm`} onClick={pause}>
+            Ⅱ Pause
           </button>
-          <button type="button" className={`flex-fill btn btn-secondary btn-sm${disPlay}`} onClick={resume}>
+          <button type="button" className={`flex-fill btn btn-secondary btn-sm`} onClick={resume}>
             ▶ Resume
           </button>
           <button type="button" className="flex-fill btn btn-secondary btn-sm" onClick={cancel}>
@@ -105,6 +109,7 @@ class UploadProgress extends React.Component {
         </div>
       )
     }
+
 
 
     return (
@@ -174,7 +179,7 @@ class MediaUpload extends React.Component {
   }
 
   componentWillUnmount() {
-    if(this.state.uploading && this.handleUpload) {
+    if(this.state.uploading && this.handleUpload && this.handleUpload.cancel) {
       this.handleUpload.cancel();
     }
   }
@@ -191,12 +196,16 @@ class MediaUpload extends React.Component {
 
 
     let file = e.target.files[0];
+    // console.log("uploading new file", file);
+    // console.log("file name", file.name);
     // console.log("file mime type", file.type);
+    this.setState({mimeType: file.type});
     const size = file.size;
     if(this.props.maxFileSize && this.props.maxFileSize < size) {
       this.setState({fileSizeExceeded: true});
       return;
     }
+
     const key = e.target.id;
 
     this.setState({
@@ -206,14 +215,15 @@ class MediaUpload extends React.Component {
         uploading: true});
 
     
-    const succ = (task)=> {
+    const succ = ()=> {
       this.setState({
         pct: 0,
         msg: "",
-        uploading: false
+        uploading: false,
+        mimeType: null
       });
 
-      this.props.handleUpload(task.snapshot.downloadURL, key);
+      this.props.handleUpload(this.uploadTask.snapshot.downloadURL, key);
     }
 
     const watch = (snapshot)=> {
@@ -232,7 +242,8 @@ class MediaUpload extends React.Component {
         this.setState({
           pct: 0,
           msg: "",
-          uploading: false
+          uploading: false,
+          mimeType: null
         });
       }
       else {
@@ -287,6 +298,7 @@ class MediaUpload extends React.Component {
 
       <div className={`MediaUploader ${this.props.className||""} ${validCss}`}>
         <Uploader />
+        <FileTypeWarning  mimeType={this.state.mimeType} media={this.props.media} />
         <FileSizeError error={this.state.fileSizeExceeded} msg={this.getFileSizeErrorMsg()} />
         <InvalidMsg msg={this.getErrorMsg()} />
         <ValidMsg msg={this.props.validationPassedMsg} />
@@ -294,6 +306,24 @@ class MediaUpload extends React.Component {
 
     )
   }
+}
+
+const FileTypeWarning = (props)=>{
+
+  if(props.media === "img" || !props.mimeType)
+    return null;
+  if(props.mimeType === "video/mp4" || props.mimeType === "video/quicktime")
+    return true;
+
+  return (
+    <div className="alert alert-warning single-space" role="alert">
+      <small>
+        You are uploading a <strong>«{props.mimeType}»</strong> video. This might not play
+        for all users. For more information on 
+        video uploads <Link to="/page/help" className="alert-link">see the video section of our documentation</Link>.
+      </small>
+    </div>
+  );
 }
 
 const FileSizeError = (props)=>{
@@ -311,11 +341,11 @@ const UploadFileInput = (props)=>{
 }
 
 const VideoUpload = (props) => {
-  
+ 
   return (
     <div className="VideoUpload">
   
-      <Video src={props.url} />
+      <Video src={props.url} poster={props.poster} />
       <VideoLabel {...props} />
       <UploadProgress pct={props.pct} msg={props.msg} task={props.task} show={props.uploading} />
     </div>
@@ -347,7 +377,7 @@ const VideoLabel = (props)=> {
   }
   return (
      <div className="VideoUploader">
-      <UploadFileInput id={props.id} handleUpload={props.handleUpload} accept="video/mp4, video/quicktime" />
+      <UploadFileInput id={props.id} handleUpload={props.handleUpload} accept="video/*" />
       <label className="VideoUploadButton d-block p-3 m-0" htmlFor={props.id}>
         Click to <br />
         Upload Video

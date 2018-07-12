@@ -71,8 +71,6 @@ class BookmarkDetailScreen extends React.Component {
   }
 
   render() {
-    console.log("rendering bookmarks", this.state.bookmarks);
-
     const makeChallenge = (t)=>{
       const first = (t[0].challengeOwner)?t[0].challengeOwner.firstName : "";
       const last = (t[0].challengeOwner)?t[0].challengeOwner.lastName : "";
@@ -199,7 +197,7 @@ class Bookmark  extends React.Component {
               <div className="clickable mr-2 pl-2" data-toggle="collapse" 
                 onClick={setToggle}
                 data-target={`#body_${this.props.keyIndex}`}>
-                <StarRatings rating={b.avgRating} />
+                <StarRatings rating={b.avgRating}  hideTotal={true}/>
               </div>
               <div className="clickable mr-2" data-toggle="collapse"
                 onClick={setToggle} 

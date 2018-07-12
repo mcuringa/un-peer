@@ -397,12 +397,14 @@ const ChallengeDB = {
   },
 
   calcAvgRating(r) {
-    if(!r.ratings || !_.size(r.ratings)) {
+    if(!r.ratings)
       return -1;
-    }
-    const sum = _.reduce(r.ratings, (sum,i)=>sum+i );
-    const size = _.size(r.ratings);
-    return sum / size;
+
+
+    const t = _.values(r.ratings);
+    if(t.length === 0)
+      return -1;
+    return _.sum(t)/t.length;
   },
 
 
@@ -483,8 +485,8 @@ const ChallengeDB = {
   getResponses(challengeId) {
 
     const calcAverages = (r)=> {
-      r.ratings = r.ratings || {};
       r.avgRating = ChallengeDB.calcAvgRating(r);
+      r.ratings = r.ratings || {};
       return r;
     }
 

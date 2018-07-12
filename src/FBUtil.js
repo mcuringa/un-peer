@@ -95,13 +95,6 @@ const FBUtil =
     console.log("full path", path);
 
     let ref = storageRef.child(path);
-
-    // return new Promise(async (resolve, reject) => {
-    //   let uploadTask = ref.put(file);
-    //   const done = ()=>{succ(uploadTask)}
-    //   uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, progress, err, done );
-    // });
-
     let uploadTask = ref.put(file);
     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, progress, err, succ );
     return uploadTask;

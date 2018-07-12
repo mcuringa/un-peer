@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 
-import { PersonIcon} from 'react-octicons';
+import { ChevronRightIcon, ChevronDownIcon, PersonIcon} from 'react-octicons';
 import { Video } from "../FormUtil";
 import { StarRatings } from "../StarRatings";
 import MoreText from "../MoreText";
@@ -18,6 +18,10 @@ class Response  extends React.Component {
     if(!r)
       return null;
 
+    if(r.ratings) {
+      const t = _.values(r.ratings)
+      r.avgRating = _.sum(t)/t.length;
+    }
 
     const featureStyle = {width: "170px", height: "36px"};
     const ProfFeature = ()=> {
@@ -121,13 +125,31 @@ class Response  extends React.Component {
     return (
       <div id={r.id} className={`Response border-bottom border-light mt-2 pt-2 pb-2 text-gray ${targetCss}`}>
         <div className="ResponseTitle d-flex justify-content-between align-items-start">
-          <div>
-            <h6 className="ResponseTitle text-gray"><MoreText text={r.title} chars={titleLen} /></h6>
+          <div className={`d-flex clickable ${collapseCss}`} data-toggle="collapse"  data-target={`#${toggleId}`} aria-controls={toggleId}
+             aria-expanded={this.props.open}
+             aria-label="toggle response">
+          <ChevronRightIcon className="toggle-expand icon-menu" />
+          <ChevronDownIcon className="toggle-close icon-menu" />
+          <div className="pl-2">
+            <h6 className="ResponseTitle text-gray pb-0"><MoreText text={r.title} chars={titleLen} /></h6>
             <AuthorInfo />
+            <button className={`btn btn-link ${collapseCss} toggle-expand p-0`}
+              data-toggle="collapse" 
+              data-target={`#${toggleId}`}
+              aria-controls={toggleId}
+              aria-expanded={this.props.open}
+              aria-label="toggle response"><small>more</small></button>
+            <button className={`btn btn-link ${collapseCss} toggle-close p-0`}
+              data-toggle="collapse" 
+              data-target={`#${toggleId}`}
+              aria-controls={toggleId}
+              aria-expanded={this.props.open}
+              aria-label="toggle response"><small>less</small></button>
+            </div>
           </div>
           <div>
             <div className={`d-flex justify-content-end align-items-start`}>
-              <StarRatings rating={r.avgRating} />
+              <StarRatings rating={r.avgRating} total={_.values(r.ratings).length} />
               <Bookmark {...this.props} />
               <Menu />
             </div>
@@ -136,16 +158,7 @@ class Response  extends React.Component {
             <TopRated />
           </div>
         </div>
-        <div className={`clickable toggle-bar ${collapseCss}`}
-          data-toggle="collapse" 
-          data-target={`#${toggleId}`}
-          aria-controls={toggleId}
-          aria-expanded={this.props.open}
-          aria-label="toggle response"
-          >
-          <div className="toggle-expand text-center"><small>▾ ▾ more ▾ ▾</small></div>
-          <div className="toggle-close text-center"><small>▴ ▴ close ▴ ▴</small></div>
-        </div>
+
 
         <div id={toggleId} className={`collapse pt-2 ${showCss}`}>
           <div className="d-flex justify-content-end">

@@ -48,11 +48,22 @@ const StarRatings = (props)=>{
   });
 
   return (
-    <div className="d-flex justify-content-between">
-      {stars}
+    <div>
+      <div className="d-flex justify-content-between">{stars}</div>
+      <Total total={props.total} hide={props.hideTotal} />
     </div>
   );
 
+}
+
+const Total = (props)=> {
+  if(props.hide)
+    return true;
+
+  const total = (!props.total || props.total ===0)? "no" : props.total;
+  const s = (props.total === 1)?"":"s";
+
+  return <div className="TotalRatings"><small className="text-muted">{total} rating{s}</small></div>
 }
 
 const Star = (props)=> {

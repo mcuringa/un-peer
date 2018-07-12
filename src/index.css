@@ -6410,7 +6410,7 @@ a.text-dark:hover, a.text-dark:focus {
     border-color: #dee2e6; } }
 
 .single-space {
-  line-height: 1rem !important; }
+  line-height: 1em !important; }
 
 .border-light, .ChallengeItem, .StaticChallengeItem, .ProfileMenuItem, .RatedResponse {
   border-color: #e3e3e3 !important; }
