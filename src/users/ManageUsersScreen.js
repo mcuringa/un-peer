@@ -178,19 +178,17 @@ class ManageUsersScreen extends React.Component {
 	}
 
 	setAdmin(u, isAdmin) {
-		const mk = ()=> {
-			u.admin = isAdmin;
-			db.save("/users", u.uid, u).then((newYou)=>{
-				console.log("admin status saved", newYou);
-			});
-			let all = this.state.users;
-			all[u.uid] = u;
-			this.setState({users: all});
-		}
+
+		u.admin = isAdmin;
+		db.save("/users", u.uid, u)
+
+		let all = this.state.users;
+		all[u.uid] = u;
+		this.setState({users: all});
 		if(isAdmin)
-			this.snack(`${u.firstName} ${u.lastName} is an administrator`, true).then(mk);
+			this.snack(`${u.firstName} ${u.lastName} is an administrator`);
 		else
-			this.snack(`${u.firstName} ${u.lastName} admin rights revoked`, true).then(mk);
+			this.snack(`${u.firstName} ${u.lastName} admin rights revoked`);
 	}
 
 	confirmDeleteUser(u) {

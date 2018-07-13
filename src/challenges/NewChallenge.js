@@ -96,9 +96,9 @@ class NewChallengeScreen extends React.Component {
   }
 
   handleUpload(src, key) {
-    // console.log("handling upload");
-    // console.log("src", src);
-    // console.log("key", key);
+    console.log("handling upload");
+    console.log("src", src);
+    console.log("key", key);
 
     let c = this.state.challenge;
     c[key] = src;
@@ -222,31 +222,45 @@ class NewChallengeScreen extends React.Component {
       return;
     }
 
-    this.setState({saving: true});
+    
     const isNew = !challenge.id;
+    if(isNew)
+      this.setState({saving: true, loading: true, goToEdit: true});
+    else
+      this.setState({saving: true});
 
     ChallengeDB.save(challenge).then((c)=> {
-      this.snack("Challenge saved");
-      this.setState({isValidated: false, saving: false, dirty: false});
-      
-      if(isNew)
-        this.setState({id: c.id, goToEdit: true});
+      if(isNew) {
+        let st = {
+          loading: false,
+          isValidated: false, 
+          saving: false, 
+          dirty: false,
+          id: c.id, 
+          goToEdit: true 
+        }
+        this.setState(st);
+      }
+      else {
+        this.snack("Challenge saved");
+        this.setState({isValidated: false, saving: false, dirty: false});
+      }
     });
-
-
 
     if(!navigator.onLine) {
       const afterSave = ()=> {
         this.snack("Challenge saved offline");
         this.setState({isValidated: false, saving: false, dirty: false});
-      }      
+      }
       _.delay(afterSave, 500);
     }
   }
 
   render() {
-    if(this.state.loading)
-      return <LoadingModal show={true} />
+    if(this.state.loading) {
+      const status = (this.state.goToEdit)?"creating challenge":"";
+      return <LoadingModal show={true} status={status} />
+    }
 
     if(this.state.goToEdit) {
       this.setState({goToEdit: false})
@@ -394,7 +408,7 @@ class NewChallengeScreen extends React.Component {
           </If>
 
           <If p={admin}>
-            <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end mt-1">
               <SaveButton 
                 saving={this.state.saving} 
                 uploading={this.state.uploading} 

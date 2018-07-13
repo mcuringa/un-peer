@@ -166,12 +166,21 @@ class ChallengeReviewScreen extends React.Component {
 
   componentDidUpdate() {
     const hash = window.decodeURIComponent(window.location.hash);
-    if(!hash || !hash.length>0)
-      return;
+    try {
+      if(!hash || !hash.length>0)
+        return;
+      const id = hash.substr(1);
+      // console.log(id);
+      const target = document.getElementById(id);
 
-    const target = document.querySelector(`${hash}`);
-    if(target)
-      target.scrollIntoView();
+      if(target)
+        target.scrollIntoView();
+    }
+    catch(e) {
+      console.log("error finding targer response with id", hash);
+      console.log(e);
+    }
+
   }
 
   render() {
