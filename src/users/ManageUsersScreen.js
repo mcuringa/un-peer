@@ -195,17 +195,40 @@ class ManageUsersScreen extends React.Component {
 		this.setState({deleteUser: u});
 	}
 
+	// deleteUser() {
+	// 	this.snack("Deleting user.");
+	// 	const id = this.state.deleteUser.uid;
+	// 	db.delete("/users", id).then(()=>{
+	// 		console.log("delete complete");
+	// 		this.snack("User deleted");
+	// 		let all = this.state.users;
+	// 		delete all[id];
+	// 		this.setState({users: all, deleteUser: null});
+	// 	});
+	// }
+
+
 	deleteUser() {
 		this.snack("Deleting user.");
 		const id = this.state.deleteUser.uid;
-		db.delete("/users", id).then(()=>{
-			console.log("delete complete");
-			this.snack("User deleted");
-			let all = this.state.users;
+		let all = this.state.users;
+		let user = all[id];
+		all[id].deleted = true;
+		this.setState({users: all});
+
+		const delUser = FBUtil.getCloudFunction("deleteUser");
+		const afterDelete = (msg)=>{
+			console.log("del user function returned for ", user.email);
+			console.log(msg);
 			delete all[id];
-			this.setState({users: all, deleteUser: null});
-		});
+			this.setState({users: all});
+		}
+
+		delUser(user).then(afterDelete);
+
 	}
+
+
 
 
 	save() {
@@ -314,29 +337,46 @@ class UserList extends React.Component {
 			return f;    
 		}
 
-		const row=(u)=> { return (
 
-			<div className="row m-auto" key={`uid_${u.uid}`}>
-				<div className="col-2">
-					<TextInput  id="firstName" onChange={onChange(u.uid)} value={u.firstName || ""} />
+		const deletedUserRow = (u)=> {
+			return (
+				<div className="row m-auto" key={`uid_${u.uid}`}>
+					<div className="col-2 text-strike text-danger">{u.firstName || ""}</div>
+					<div className="col-3 text-strike text-danger">{u.lastName || ""}</div>
+					<div className="col-5 text-strike text-danger">{u.email}</div>
+					<div className="col-1 text-strike text-danger text-center">{(u.admin)?"✓":""}</div>
+					<div className="col-1 text-strike text-danger text-center">-</div>
 				</div>
-				<div className="col-3">
-					<TextInput id="lastName" onChange={onChange(u.uid)}  value={u.lastName || ""} />
-				</div>
-				<div className="col-5">
-					<TextInput id="email" onChange={onChange(u.uid)}  value={u.email} />
-				</div>
+			)
+		}
 
-				<div className="col-1 text-center">
-					{(u.admin)?"✓":""}
-				</div>
+		const row=(u)=> { 
+			if(u.deleted) {
+				return deletedUserRow(u);
+			}
 
-				<div className="col-1 text-center d-flex justify-content-center align-items-baseline icon-secondary">
-					<UserMenu {...this.props} user={u} />
-				</div>
+			return (
+				<div className="row m-auto" key={`uid_${u.uid}`}>
+					<div className="col-2">
+						<TextInput  id="firstName" onChange={onChange(u.uid)} value={u.firstName || ""} />
+					</div>
+					<div className="col-3">
+						<TextInput id="lastName" onChange={onChange(u.uid)}  value={u.lastName || ""} />
+					</div>
+					<div className="col-5">
+						<TextInput id="email" onChange={onChange(u.uid)}  value={u.email} />
+					</div>
 
-			</div>
-		)}
+					<div className="col-1 text-center">
+						{(u.admin)?"✓":""}
+					</div>
+
+					<div className="col-1 text-center d-flex justify-content-center align-items-baseline icon-secondary">
+						<UserMenu {...this.props} user={u} />
+					</div>
+				</div>
+			)
+		}
 
 		const sort = (u)=> {
 			const v = u[this.state.sortOrder];

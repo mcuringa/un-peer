@@ -56,7 +56,7 @@ $colors: (
   "gray-dark": $gray-800
 ) !default;
 
-
+.text-strike { text-decoration: line-through; }
 .text-white {
   fill: white;
 }
@@ -990,6 +990,16 @@ label:hover.VideoUploadButton
       .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
       .react-calendar__month-view__days__day--neighboringMonth {
         color: lighten($text-dark, 25%);
+      }
+
+      .todays-date time {
+        font-weight: bold;
+        color: white;
+        background-color: #0071bb;
+        border-radius: 16px;
+        text-align: center;
+        padding: 7px;
+        margin: -7px;
       }
 
       .react-calendar__tile {

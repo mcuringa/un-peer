@@ -19,6 +19,13 @@ const df = {
     return `${start} - ${end}`;
   },
 
+  isToday: (d)=> {
+    const now = new Date();
+    console.log("checking if today", d);
+    console.log("is it today?", moment(now).isSame(d, "day"));
+    return moment(now).isSame(d, "day");
+  },
+
   shortRange: (a,b)=> {
 
     const start = dateFormat(a, "d/m");

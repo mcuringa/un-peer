@@ -27,7 +27,7 @@ import ProfessorResponseForm from './challenges/ProfessorResponseForm.js';
 import ChallengeReportScreen from './challenges/ChallengeReportScreen.js';
 import ManageChallengesScreen from './challenges/ManageChallenges.js';
 import ManageResponsesScreen from './challenges/ManageResponses.js';
-
+import PageScreen from "./pages/PageScreen.js";
 
 import AdminScreen from './admin/AdminScreen';
 import MainMenu from './MainMenu';
@@ -226,6 +226,8 @@ const SecureScreens = (props)=> {
       <ScreenRoute  id="ConfirmPassReset" {...props} exact path="/confirm-reset"  component={ConfirmPassReset} />
       <ScreenRoute  id="MyChallengesScreen" {...props} exact path="/my/challenges"  component={MyChallengesScreen} />
       <ScreenRoute  id="MyResponsesScreen" {...props} exact path="/my/responses"  component={MyResponsesScreen} />
+      
+      <ScreenRoute  id="PageScreen" {...props} path="/pages/:page"  component={PageScreen} />
       
       <ScreenRoute  id="Login" {...props} path="/login" component={Login} />
       <ScreenRoute  id="Login" {...props} path="/signout" component={Login} />

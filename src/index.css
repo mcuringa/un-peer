@@ -6422,6 +6422,9 @@ body {
   background-color: #0071bb;
   border-color: #0071bb; }
 
+.text-strike {
+  text-decoration: line-through; }
+
 .text-white {
   fill: white; }
 
@@ -7004,6 +7007,14 @@ label:hover.VideoUploadButton {
       .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend,
       .App .calendar-view .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
         color: #6d7a86; }
+      .App .calendar-view .react-calendar .todays-date time {
+        font-weight: bold;
+        color: white;
+        background-color: #0071bb;
+        border-radius: 16px;
+        text-align: center;
+        padding: 7px;
+        margin: -7px; }
       .App .calendar-view .react-calendar .react-calendar__tile {
         padding: 0;
         height: 50px;

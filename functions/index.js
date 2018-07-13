@@ -38,7 +38,11 @@ const sendUserNotification = (user, msg)=> {
   }
   msg.token = user.pushToken;
   // msg.notification.body = `${msg.notification.body} (${user.uid})`;
-  return admin.messaging().send(msg).then((response) => { return response;}).catch(logErr);
+  const logNotError = (e)=> {
+    let s = `Error sending message to user ${user.email} \n: error code: ${e.code} \nmsg: ${e.message}`;
+    console.log(s);
+  }
+  return admin.messaging().send(msg).then((response) => { return response;}).catch(logNotError);
 }
 
 
@@ -107,13 +111,14 @@ const statusChange = (before, after)=> {
 }
 
 const saveMsg = (user, msg, batch)=> {
-  console.log("saving notification message");
+  console.log("saving notification message with id:", msg.data.id);
 
   let db = getDB();
   const path = `/users/${user.uid}/messages`;
   let ref;
-  if(msg.data.id)
-    ref = db.collection(path).doc(id);
+  if(msg.data.id) {
+    ref = db.collection(path).doc(msg.data.id);
+  }
   else
     ref = db.collection(path).doc();
   const note = {
@@ -183,7 +188,7 @@ const notifyAdminPending = (challenge)=> {
 
 const makeNotification = (title, body, clickAction, id)=> {
     let data = {
-      "id": id || "",
+      "id": id || null,
       "sent": new Date().toISOString(),
       "icon": ALERT_ICON,
       "clickAction": clickAction
@@ -202,23 +207,23 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
 
 
   let db = getDB();
-  const now = new Date();
-  const rangeEnd = new Date(now.getTime() + 1000 * 60 * POLLING_FREQUENCY);
+  const rangeStart = new Date();
+  const rangeEnd = new Date(rangeStart.getTime() + 1000 * 60 * POLLING_FREQUENCY);
 
   const getActiveChallenges = ()=> {
-    console.log("getting active challenges");
+    console.log("getting active challenges ending after", rangeStart);
     
     return db.collection("challenges")
     .where("status", "==", Status.PUBLISHED)
-    .where("end", ">", now)
+    .where("end", ">", rangeStart)
     .get();  
   }
 
   const sendStart = (c)=> {
     // console.log("active challenge found for alerts", c);
-    // console.log("now", now);
+    // console.log("rangeStart", rangeStart);
     // console.log("start", c.start);
-    if(c.start < now || c.start > rangeEnd)
+    if(c.start < rangeStart || c.start > rangeEnd)
       return false;
 
     console.log("sending start message");
@@ -240,7 +245,7 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
     const dayBefore = new Date(c.responseDue.getTime() - 1000 * 60 * 60 * 24);
     const timesRunningOut = new Date(c.responseDue.getTime() - 1000 * 60 * 60 * 3);
     const timing = "\n" 
-    + "Now: " + now + "\n"
+    + "rangeStart: " + rangeStart + "\n"
     + "Start: " + c.start + "\n"
     + "Respones: " + c.responseDue + "\n"
     + "24 hours before response: " + dayBefore + "\n"
@@ -253,11 +258,11 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
 
     let id;
     let body;
-    if(dayBefore >= now && dayBefore <= rangeEnd) {
+    if(dayBefore >= rangeStart && dayBefore <= rangeEnd) {
       id = `RESPOND_${c.id}`;
       body = "Response due tomorrow."
     }
-    else if(timesRunningOut >= now && timesRunningOut <= rangeEnd) {
+    else if(timesRunningOut >= rangeStart && timesRunningOut <= rangeEnd) {
       id = `RESPOND2_${c.id}`;
       body = "3 hours remaining to respond."
     }
@@ -330,11 +335,11 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
 
     let id;
     let body;
-    if(c.ratingDue >= now && c.ratingDue <= rangeEnd) {
+    if(c.ratingDue >= rangeStart && c.ratingDue <= rangeEnd) {
       id = `RATING_${c.id}`;
       body = "Rating assignments now available."
     }
-    else if(timesRunningOut >= now && timesRunningOut <= rangeEnd) {
+    else if(timesRunningOut >= rangeStart && timesRunningOut <= rangeEnd) {
       id = `RATING2_${c.id}`;
       body = "3 hours remaining to finalize ratings."
     }
@@ -402,7 +407,8 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
 
 
   const sendChoiceNotification = (c)=> {
-    if(c.responseDue < now || c.responseDue > rangeEnd)
+    console.log("checking choice notifications");
+    if(c.responseDue < rangeStart || c.responseDue > rangeEnd)
       return false;
 
     console.log("sending owner and instructor messages");
@@ -412,6 +418,8 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
     
     const click = `${DOMAIN}/challenge/${c.id}/review`;
 
+
+    const timeLeft = c.ratingDue.getTime() - new Date().getTime();
     const hour = 1000 * 60 * 60;
     const day = hour * 24;
     const hoursLeft = Math.floor(timeLeft / hour);
@@ -419,16 +427,15 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
     let dueMsg = "";
     if(hoursLeft >24) {
       const s = (daysLeft !== 1)?"s": "";
-      dueMsg = `${daysLeft} day{s}`;
+      dueMsg = `${daysLeft} day${s}`;
     }
     else {
       const s = (hoursLeft !== 1)?"s": "";
-      dueMsg = `${hoursLeft} hour{s}`;
+      dueMsg = `${hoursLeft} hour${s}`;
     }
 
-    const ownerMsg = makeNotification(`Onwer of ${c.title}`, `Responses are ready. Your "owner's choice" is due in ${dueMsg}.`, click, `OWNER_${c.id}`);
-    const instructorMsg = makeNotification(`Instructor for ${c.title}`, `Responses are ready. Your wrap-up video and the "expert's choice. are due in ${dueMsg}"`, click, `INSTRUCTOR_${c.id}`);
-    const timeLeft = c.ratingDue.getTime() - new Date().getTime();
+    const ownerMsg = makeNotification(`[Owner] ${c.title}`, `Responses are ready. Your "owner's choice" selection is due in ${dueMsg}.`, click, `OWNER_${c.id}`);
+    const instructorMsg = makeNotification(`[Instructor] ${c.title}`, `Responses are ready. Your wrap-up video and the "expert's choice" selection are due in ${dueMsg}"`, click, `INSTRUCTOR_${c.id}`);
 
     const sendOwner = (u)=> {
       let user = u.data();
@@ -439,12 +446,12 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
     const sendInstructor = (u)=> {
       let user = u.data();
       user.id = u.id;
-      saveMsg(user, ownerMsg);
-      sendUserNotification(user, ownerMsg);
+      saveMsg(user, instructorMsg);
+      sendUserNotification(user, instructorMsg);
     }
     let db = getDB();
     db.collection("/users").doc(c.owner.uid).get().then(sendOwner).catch(logErr); 
-    db.collection("/users").doc(c.professor.uid).get().then(sendOwner).catch(logErr); 
+    db.collection("/users").doc(c.professor.uid).get().then(sendInstructor).catch(logErr); 
 
     return true;
 
@@ -452,10 +459,8 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
 
 
   const sendReview = (c)=> {
-    // console.log("active challenge found for alerts", c);
-    // console.log("now", now);
-    // console.log("start", c.start);
-    if(c.ratingDue < now || c.ratingDue > rangeEnd)
+    console.log("checking for review notification for ", c);
+    if(c.ratingDue < rangeStart || c.ratingDue > rangeEnd)
       return false;
 
     console.log("sending review message");
@@ -479,13 +484,14 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
     sendResponseDue(challenge);
     sendRatingDue(challenge);
     sendReview(challenge);
+    sendChoiceNotification(challenge);
     return true;
   }
 
 
   const iterateChallenges = (snapshot)=> {
-    console.log("iterating active challenges for notifications::2");
-    // console.log("num challenges:", snapshot.docs);
+    console.log("iterating active challenges for notifications");
+    console.log("num challenges:", snapshot.docs);
     snapshot.forEach(sendChallengeNotifications);
   }
 
@@ -508,6 +514,28 @@ exports.challengeUpdate = functions.firestore.document("challenges/{id}").onUpda
 
 
 
+exports.deleteUser = functions.https.onCall((user, context) => {
+
+  let db = getDB();
+  let ref = db.collection("/users").doc(user.uid);
+
+  let delAuth = admin.auth().deleteUser(user.uid);
+  let delDB = ref.delete();
+  Promise.all([delAuth, delDB]).then(()=>{
+    console.log("deleted user", user.uid);
+    return {
+      "msg": "User deleted",
+      "uid": user.uid
+    }
+  }).catch((e)=>{
+    console.log("failed to delete user", user.uid);
+    console.log(e);
+  });
+
+});
+
+
+
 exports.deleteAuthUser = functions.firestore.document('users/{userID}').onDelete((event) => {
 
   const data = event.data.previous.data();
@@ -518,7 +546,7 @@ exports.deleteAuthUser = functions.firestore.document('users/{userID}').onDelete
         msg: "user deleted",
         user: data
       }
-    })
+    });
 });
 
 /**

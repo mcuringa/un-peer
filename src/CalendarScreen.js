@@ -50,6 +50,8 @@ class CalendarScreen extends React.Component {
 
   getTileClass(date, view) {
     let s = '';
+    if(df.isToday(date.date))
+      s += " todays-date ";
 
     const challenge = this.state.currentChallenge;
 
