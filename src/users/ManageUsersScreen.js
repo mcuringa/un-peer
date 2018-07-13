@@ -12,8 +12,6 @@ import {snack, SnackMaker} from "../Snackbar";
 class ManageUsersScreen extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log("manage users");
-
 		let users = {};
 
 		this.state = {
@@ -37,6 +35,7 @@ class ManageUsersScreen extends React.Component {
 		this.confirmDeleteUser = _.bind(this.confirmDeleteUser, this);
 		this.deleteUser = _.bind(this.deleteUser, this);
 		this.sendReset = _.bind(this.sendReset, this);
+		this.setAdmin = _.bind(this.setAdmin, this);
 
 		this.snack = _.bind(snack, this);
 		this.Snackbar = _.bind(SnackMaker, this);
@@ -167,10 +166,6 @@ class ManageUsersScreen extends React.Component {
 
 	handleChange(e, uid) {
 		e.preventDefault();
-		console.log("handle change");
-		console.log(uid);
-
-
 		let user = this.state.users[uid];
 		user[e.target.id] = e.target.value;
 		user.changed = true;
@@ -180,6 +175,22 @@ class ManageUsersScreen extends React.Component {
 		this.setState({users: users, focusNewUser: false});
 		this.save();
 
+	}
+
+	setAdmin(u, isAdmin) {
+		const mk = ()=> {
+			u.admin = isAdmin;
+			db.save("/users", u.uid, u).then((newYou)=>{
+				console.log("admin status saved", newYou);
+			});
+			let all = this.state.users;
+			all[u.uid] = u;
+			this.setState({users: all});
+		}
+		if(isAdmin)
+			this.snack(`${u.firstName} ${u.lastName} is an administrator`, true).then(mk);
+		else
+			this.snack(`${u.firstName} ${u.lastName} admin rights revoked`, true).then(mk);
 	}
 
 	confirmDeleteUser(u) {
@@ -193,9 +204,7 @@ class ManageUsersScreen extends React.Component {
 			console.log("delete complete");
 			this.snack("User deleted");
 			let all = this.state.users;
-			console.log(id);
 			delete all[id];
-			console.log(all[id]);
 			this.setState({users: all, deleteUser: null});
 		});
 	}
@@ -249,7 +258,9 @@ class ManageUsersScreen extends React.Component {
 					users={this.state.users}
 					sortOrder={this.state.sortOrder}
 					sendReset={this.sendReset}
-					deleteUser={this.confirmDeleteUser} />
+					deleteUser={this.confirmDeleteUser}
+					setAdmin={this.setAdmin}
+					authUser={this.props.user} />
 
 				<Modal id="confirmDeleteUser" 
 					title="Delete User" 
@@ -329,7 +340,13 @@ class UserList extends React.Component {
 			</div>
 		)}
 
-		let users = _.sortBy(this.props.users, this.state.sortOrder);
+		const sort = (u)=> {
+			const v = u[this.state.sortOrder];
+			if(_.isNil(v) || !v.toLowerCase)
+				return v;
+			return v.toLowerCase();
+		}
+		let users = _.sortBy(this.props.users, sort);
 		if(this.state.reverse)
 			users = _.reverse(users);
 
@@ -370,6 +387,12 @@ const UserMenu = (props)=> {
 	const u = props.user;
 	const reset = ()=> { props.sendReset(u); }
 	const del = ()=> { props.deleteUser(u); }
+	const mkAdmin = ()=> { props.setAdmin(u, true); }
+	const revokeAdmin = ()=> { props.setAdmin(u, false); }
+	const isSelf = props.authUser.uid === u.uid;
+	const enableDel = (isSelf)?"disabled":"";
+	const enableMk = (u.admin || isSelf)?"disabled":"";
+	const enableRevoke = (!u.admin || isSelf)?"disabled":"";
 
 	return (
 		<div className="border-0 bg-light">
@@ -378,7 +401,9 @@ const UserMenu = (props)=> {
 			</button>
 			<div className="dropdown-menu dropdown-menu-right">
 				<button className="dropdown-item" type="button" onClick={reset}>Send Password Reset</button>
-				<button className="dropdown-item" type="button" onClick={del}>Delete User</button>
+				<button className={`dropdown-item ${enableDel}`}  type="button" onClick={del}>Delete User</button>
+				<button className={`dropdown-item ${enableMk}`} type="button" onClick={mkAdmin}>Make Admin</button>
+				<button className={`dropdown-item ${enableRevoke}`} type="button" onClick={revokeAdmin}>Revoke Admin</button>
 			</div>
 		</div>
 	)
