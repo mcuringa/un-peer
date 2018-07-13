@@ -7031,6 +7031,8 @@ label:hover.VideoUploadButton {
           .App .calendar-view .react-calendar .react-calendar__tile .d-flex .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .left, .App .calendar-view .react-calendar .react-calendar__tile .ProfileMenuItem .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .left, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .left, .App .calendar-view .react-calendar .react-calendar__tile .d-flex .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .StaticChallengeItem .right, .App .calendar-view .react-calendar .react-calendar__tile .ProfileMenuItem .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemHeader .right, .App .calendar-view .react-calendar .react-calendar__tile .ChallengeItemBody .right, .App .calendar-view .react-calendar .react-calendar__tile .RatedResponseHeader .right {
             height: 50px;
             width: 25px; }
+        .App .calendar-view .react-calendar .react-calendar__tile.challenge-day {
+          border-right: 1px solid #dee2e6; }
         .App .calendar-view .react-calendar .react-calendar__tile .dayDisplay {
           height: 50px;
           padding-top: 16px;
@@ -7043,7 +7045,10 @@ label:hover.VideoUploadButton {
         .App .calendar-view .react-calendar .react-calendar__tile.response-start.future:not(.active) {
           border-top: 2px solid #b0ff70;
           border-bottom: 2px solid #b0ff70; }
-        .App .calendar-view .react-calendar .react-calendar__tile.rating-start.active, .App .calendar-view .react-calendar .react-calendar__tile.rating-cont.active {
+        .App .calendar-view .react-calendar .react-calendar__tile.rating-cont.active {
+          border-top: 2px solid #ae1963;
+          border-bottom: 2px solid #ae1963; }
+        .App .calendar-view .react-calendar .react-calendar__tile.rating-start.active {
           border-top: 2px solid #2b91e9;
           border-bottom: 2px solid #2b91e9; }
         .App .calendar-view .react-calendar .react-calendar__tile.rating-start.future:not(.active) {
@@ -7062,11 +7067,19 @@ label:hover.VideoUploadButton {
         background-color: #dee2e6;
         border-top: 2px solid #60d600;
         border-bottom: 2px solid #60d600; }
+      .App .calendar-view .react-calendar .react-calendar__tile.start:not(.cont) .left {
+        background-color: #dee2e6; }
       .App .calendar-view .react-calendar .react-calendar__tile.start:not(.cont) .dayDisplay {
         border: 2px solid #60d600;
         border-radius: 25px; }
       .App .calendar-view .react-calendar .react-calendar__tile.end:not(.cont) .left {
-        background-color: #dee2e6; }
+        background-color: #dee2e6;
+        border-top: 2px solid #ae1963;
+        border-bottom: 2px solid #ae1963; }
+      .App .calendar-view .react-calendar .react-calendar__tile.end:not(.cont) .right {
+        background-color: #dee2e6;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white; }
       .App .calendar-view .react-calendar .react-calendar__tile.end:not(.cont) .dayDisplay {
         border: 2px solid #ae1963;
         border-radius: 25px; }
@@ -7079,16 +7092,18 @@ label:hover.VideoUploadButton {
         border-top: 2px solid #2b91e9;
         border-bottom: 2px solid #2b91e9; }
       .App .calendar-view .react-calendar .react-calendar__tile.response-due .dayDisplay {
-        border: 2px solid #60d600;
+        border: 2px solid #2b91e9;
         border-radius: 25px; }
       .App .calendar-view .react-calendar .react-calendar__tile.rating-due .left {
         background-color: #dee2e6;
         border-top: 2px solid #2b91e9;
         border-bottom: 2px solid #2b91e9; }
       .App .calendar-view .react-calendar .react-calendar__tile.rating-due .right {
-        background-color: #dee2e6; }
+        background-color: #dee2e6;
+        border-top: 2px solid #ae1963;
+        border-bottom: 2px solid #ae1963; }
       .App .calendar-view .react-calendar .react-calendar__tile.rating-due .dayDisplay {
-        border: 2px solid #2b91e9;
+        border: 2px solid #ae1963;
         border-radius: 25px; }
       .App .calendar-view .react-calendar .react-calendar__tile.future:not(.active) .dayDisplay {
         background-color: #fefefe; }

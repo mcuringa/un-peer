@@ -1008,6 +1008,7 @@ label:hover.VideoUploadButton
         border-bottom: 1px solid white;
         border-right: 1px solid white;
 
+
         /* Tiles aren't clickable. */
         &:hover,
         &.react-calendar__tile--active {
@@ -1025,6 +1026,9 @@ label:hover.VideoUploadButton
           }
         }
 
+        &.challenge-day {
+          border-right: 1px solid $gray-300;
+        }
         .dayDisplay {
           height: 50px;
           padding-top: 16px;
@@ -1045,8 +1049,12 @@ label:hover.VideoUploadButton
           border-bottom: 2px solid lighten($cal-green, 30%);
         }
 
-        &.rating-start.active,
         &.rating-cont.active {
+          border-top: 2px solid $cal-purple;
+          border-bottom: 2px solid $cal-purple;
+        }
+
+        &.rating-start.active {
           border-top: 2px solid $cal-blue;
           border-bottom: 2px solid $cal-blue;
         }
@@ -1075,6 +1083,9 @@ label:hover.VideoUploadButton
           border-top: 2px solid $cal-green;
           border-bottom: 2px solid $cal-green;
         }
+        .left {
+          background-color: $gray-300;
+        }
 
         .dayDisplay {
           border: 2px solid $cal-green;
@@ -1084,6 +1095,13 @@ label:hover.VideoUploadButton
       .react-calendar__tile.end:not(.cont) {
         .left {
           background-color: $gray-300;
+          border-top: 2px solid $cal-purple;
+          border-bottom: 2px solid $cal-purple;
+        }
+        .right {
+          background-color: $gray-300; 
+          border-bottom: 1px solid white;
+          border-right: 1px solid white;
         }
 
         .dayDisplay {
@@ -1104,10 +1122,16 @@ label:hover.VideoUploadButton
           border-bottom: 2px solid $cal-blue;
         }
         .dayDisplay {
-          border: 2px solid $cal-green;
+          border: 2px solid $cal-blue;
           border-radius: 25px;
         }
       }
+
+      // .react-calendar__tile.rating.cont {
+      //   border-top: 2px solid $cal-purple;
+      //   border-bottom: 2px solid $cal-purple;
+      // }
+
 
       .react-calendar__tile.rating-due {
         .left {
@@ -1117,9 +1141,11 @@ label:hover.VideoUploadButton
         }
         .right {
           background-color: $gray-300;
+          border-top: 2px solid $cal-purple;
+          border-bottom: 2px solid $cal-purple;
         }
         .dayDisplay {
-          border: 2px solid $cal-blue;
+          border: 2px solid $cal-purple;
           border-radius: 25px;
         }
       }

@@ -67,6 +67,7 @@ class CalendarScreen extends React.Component {
 
     // ------------------------------------------- challenge dates only
 
+    css.push("challenge-day");
 
     if(d.isSame(challenge.start, "day")) {
       console.log("found start date");
@@ -107,11 +108,7 @@ class CalendarScreen extends React.Component {
         !df.isSameDay(date.date, challenge.start)
     ) {
       css.push("response-cont")
-    } else if (
-      date.date < challenge.ratingDue &&
-        !df.isSameDay(date.date, challenge.start) &&
-        !df.isSameDay(date.date, challenge.end)
-    ) {
+    } else if (d.isBetween(challenge.ratingDue, challenge.end, "day", "()")) {
       css.push("rating-cont")
     }
 
