@@ -169,7 +169,7 @@ class ProfessorResponseForm extends React.Component {
         <ChallengeHeader
           id={this.state.challenge.id} 
           history={this.props.history}
-          screenTitle="Professor Response"
+          screenTitle="Instructor Response"
           challenge={this.state.challenge} 
           user={this.props.user} />
 

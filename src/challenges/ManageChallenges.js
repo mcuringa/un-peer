@@ -95,7 +95,7 @@ const ChallengeRow = (props) => {
   const ProfName = ()=> {
     if(challenge.professor)
       return (<span>{challenge.professor.firstName} {challenge.professor.lastName}</span>)
-    return (<em className="text-muted">professor not set</em>)
+    return (<em className="text-muted">instructor not set</em>)
   }
 
 
@@ -112,7 +112,7 @@ const ChallengeRow = (props) => {
       </div>
       <div className="d-flex">
         <div className="mr-2"><strong>Owner: </strong>{challenge.owner.firstName} {challenge.owner.lastName}</div>
-        <div><strong>Professor: </strong><ProfName /></div>
+        <div><strong>Instructor: </strong><ProfName /></div>
       </div>
       <div className="d-flex">
         <div className="mr-2"><strong>Start: </strong>{df.day(challenge.start)}</div>

@@ -103,7 +103,7 @@ class CloseChallengeScreen extends React.Component {
         </h4>
 
         <form className="mt-2" onSubmit={(e)=>{e.preventDefault();}}>
-          <label>Professor Video</label>
+          <label>Instructor Video</label>
           
           <MediaUpload id="professorVideo" 
             media="video"
@@ -123,7 +123,7 @@ class CloseChallengeScreen extends React.Component {
             textOnly
             url={c.profVideoPoster}
             handleUpload={this.handleUpload}
-            placeholder="upload a professor video thumbnail image"
+            placeholder="upload an instructor video thumbnail image"
             pct={this.state.profVideoPosterPct} 
             msg={this.state.profVideoPosterStatus}
             clearMedia={this.clearField}

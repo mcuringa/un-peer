@@ -341,9 +341,9 @@ const WelcomeProfessor = (props) => {
 
   return (
     <div className="alert alert-secondary alert-dismissible fade show" role="alert">
-      <strong>Welcome Professor</strong>
+      <strong>Welcome Intructor</strong>
       <p>
-        As the professor for this challenge, please review the responses as
+        As the instructor for this challenge, please review the responses as
         they become available. After you have chosen the response you would like to feature,
         click the <span className="badge badge-sm badge-secondary">
           Make expert's choice
@@ -396,7 +396,7 @@ const TooEarly = (props)=> {
       <div className="card-body">
         <p className="card-text">
           Responses are not available yet for this challenge.
-          The professor video and responses will be available
+          The instructor video and responses will be available
           on <strong>{df.day(props.challenge.ratingsDue)}</strong>.
         </p>
       </div>

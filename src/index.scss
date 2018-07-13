@@ -1027,7 +1027,8 @@ label:hover.VideoUploadButton
         }
 
         &.challenge-day {
-          border-right: 1px solid $gray-300;
+          border-right: 1px solid $gray-200;
+          background-color: $gray-200;
         }
         .dayDisplay {
           height: 50px;
@@ -1043,6 +1044,7 @@ label:hover.VideoUploadButton
         &.response-cont.active {
           border-top: 2px solid $cal-green;
           border-bottom: 2px solid $cal-green;
+          background-color: $gray-200;
         }
         &.response-start.future:not(.active) {
           border-top: 2px solid lighten($cal-green, 30%);
@@ -1052,11 +1054,13 @@ label:hover.VideoUploadButton
         &.rating-cont.active {
           border-top: 2px solid $cal-purple;
           border-bottom: 2px solid $cal-purple;
+          background-color: $gray-200;
         }
 
         &.rating-start.active {
           border-top: 2px solid $cal-blue;
           border-bottom: 2px solid $cal-blue;
+          background-color: $gray-200;
         }
         &.rating-start.future:not(.active) {
           border-top: 2px solid lighten($cal-blue, 30%);
@@ -1073,33 +1077,35 @@ label:hover.VideoUploadButton
       }
 
       .react-calendar__tile.active .dayDisplay {
-        background-color: $gray-300;
+        background-color: $gray-200;
         z-index: 7;
       }
 
+
       .react-calendar__tile.start:not(.cont) {
         .right {
-          background-color: $gray-300;
+          background-color: $gray-200;
           border-top: 2px solid $cal-green;
           border-bottom: 2px solid $cal-green;
         }
         .left {
-          background-color: $gray-300;
+          background-color: $gray-200;
         }
 
         .dayDisplay {
           border: 2px solid $cal-green;
           border-radius: 25px;
+          background-color: $gray-200; 
         }
       }
       .react-calendar__tile.end:not(.cont) {
         .left {
-          background-color: $gray-300;
+          background-color: $gray-200;
           border-top: 2px solid $cal-purple;
           border-bottom: 2px solid $cal-purple;
         }
         .right {
-          background-color: $gray-300; 
+          background-color: $gray-200; 
           border-bottom: 1px solid white;
           border-right: 1px solid white;
         }
@@ -1107,23 +1113,25 @@ label:hover.VideoUploadButton
         .dayDisplay {
           border: 2px solid $cal-purple;
           border-radius: 25px;
+          background-color: $gray-200; 
         }
       }
 
       .react-calendar__tile.response-due {
         .left {
-          background-color: $gray-300;
+          background-color: $gray-200;
           border-top: 2px solid $cal-green;
           border-bottom: 2px solid $cal-green;
         }
         .right {
-          background-color: $gray-300;
+          background-color: $gray-200;
           border-top: 2px solid $cal-blue;
           border-bottom: 2px solid $cal-blue;
         }
         .dayDisplay {
           border: 2px solid $cal-blue;
           border-radius: 25px;
+          background-color: $gray-200; 
         }
       }
 
@@ -1135,23 +1143,24 @@ label:hover.VideoUploadButton
 
       .react-calendar__tile.rating-due {
         .left {
-          background-color: $gray-300;
+          background-color: $gray-200;
           border-top: 2px solid $cal-blue;
           border-bottom: 2px solid $cal-blue;
         }
         .right {
-          background-color: $gray-300;
+          background-color: $gray-200;
           border-top: 2px solid $cal-purple;
           border-bottom: 2px solid $cal-purple;
         }
         .dayDisplay {
           border: 2px solid $cal-purple;
           border-radius: 25px;
+          background-color: $gray-200; 
         }
       }
 
       .react-calendar__tile.future:not(.active) .dayDisplay {
-        background-color: lighten($gray-300, 11%);
+        background-color: lighten($gray-200, 11%);
       }
     }
   }

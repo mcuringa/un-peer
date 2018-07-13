@@ -587,13 +587,13 @@ const ChooseProf = (props)=> {
     ):
     (
       <div>
-        <ChooseUser label="Choose professor" selectUser={choose} placeholder="search for professor" />
-        <small className="text-muted">Choose the professor who will submit a video response to this challenge.</small>
+        <ChooseUser label="Choose instructor" selectUser={choose} placeholder="search for instructor" />
+        <small className="text-muted">Choose the instructor who will submit a video response to this challenge.</small>
       </div>
     );
   return (
     <div className="form-group">
-      <label>Professor</label>
+      <label>Instructor</label>
       {Prof}
       
     </div>

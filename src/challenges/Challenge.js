@@ -211,9 +211,9 @@ const ChallengeDB = {
         c = db.prep(c);
         c.status = status;
         const stage = ChallengeDB.getStage(c);
-        if(!c.challengeVideoPoster || c.challengeVideoPoster.length == 0)
+        if(!c.challengeVideoPoster || c.challengeVideoPoster.length === 0)
           c.challengeVideoPoster = "/img/challenge-poster.svg";
-        if(!c.profVideoPoster || c.profVideoPoster.length == 0)
+        if(!c.profVideoPoster || c.profVideoPoster.length === 0)
           c.profVideoPoster = "/img/professor-poster.svg";
         return _.merge(c, {stage: stage, status: status})
       }
