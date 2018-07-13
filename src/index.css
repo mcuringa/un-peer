@@ -7018,6 +7018,8 @@ label:hover.VideoUploadButton {
       .App .calendar-view .react-calendar .react-calendar__tile {
         padding: 0;
         height: 50px;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
         /* Tiles aren't clickable. */ }
         .App .calendar-view .react-calendar .react-calendar__tile:hover, .App .calendar-view .react-calendar .react-calendar__tile.react-calendar__tile--active {
           cursor: default;

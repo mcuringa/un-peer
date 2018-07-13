@@ -21,8 +21,6 @@ const df = {
 
   isToday: (d)=> {
     const now = new Date();
-    console.log("checking if today", d);
-    console.log("is it today?", moment(now).isSame(d, "day"));
     return moment(now).isSame(d, "day");
   },
 
@@ -40,13 +38,11 @@ const df = {
   },
 
   isDateWithin: (d, start, end)=> {
-    return d.getTime() >= start.getTime() &&
-      d.getTime() <= end.getTime();
+    return moment(d).isBetween(start, end, null, '[]');
   },
 
   isDayWithin: (d, start, end)=> {
-    return df.isSameDay(d, start) || df.isSameDay(d, end) ||
-      df.isDateWithin(d, start, end);
+    return moment(d).isBetween(start, end, "day", '[]');
   },
 
   getChallengeForDate: (challenges, d)=> {

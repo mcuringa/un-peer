@@ -1005,6 +1005,8 @@ label:hover.VideoUploadButton
       .react-calendar__tile {
         padding: 0;
         height: 50px;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
 
         /* Tiles aren't clickable. */
         &:hover,

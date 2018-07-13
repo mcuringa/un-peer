@@ -166,7 +166,7 @@ class Response  extends React.Component {
             <SetProfChoice />
           </div>
           <More />
-          <Video video={r.video} />
+          <Video video={r.video} poster="/img/response-poster.svg" />
           {r.text}
         </div>
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Calendar from "react-calendar";
 import {ChallengeDB, ChallengeStatus} from "./challenges/Challenge.js";
 import df from "./DateUtil";
+import moment from "moment";
 
 class CalendarScreen extends React.Component {
   constructor(props) {
@@ -49,58 +50,74 @@ class CalendarScreen extends React.Component {
   }
 
   getTileClass(date, view) {
-    let s = '';
+    let css = [];
+    let today = moment(new Date());
+    let d = moment(date.date);
+
     if(df.isToday(date.date))
-      s += " todays-date ";
+      css.push("todays-date");
+
+    if(today.isSame(date.date, "month"))
+      css.push("active");
 
     const challenge = this.state.currentChallenge;
 
-    if (df.isDayWithin(date.date, challenge.start, challenge.end)) {
-      if (df.isSameDay(date.date, challenge.start)) {
-        s += ` start response-start active ${challenge.stage} `;
-      } else if (df.isSameDay(date.date, challenge.end)) {
-        s += ` end published active ${challenge.stage} `;
-      } else if (s === '') {
-        s = ` cont active ${challenge.stage} `;
-      }
+    if(!d.isBetween(challenge.start, challenge.end, "day", "[]"))
+      return css.join(" ");
 
-      let yesterday = new Date(date.date);
-      yesterday.setDate(yesterday.getDate() - 1);
-      let tomorrow = new Date(date.date);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+    // ------------------------------------------- challenge dates only
 
-      if (
-        df.isSameDay(date.date, challenge.ratingDue) &&
-          !df.isSameDay(date.date, challenge.end)
-      ) {
-        s += ' rating-due ';
-      } else if (df.isSameDay(yesterday, challenge.responseDue)) {
-        if (df.isSameDay(tomorrow, challenge.end)) {
-          // If the challenge end date is tomorrow, just hide the
-          // connecting line, because there is only one day for
-          // rating the challenge.
-          s += ' rating-start hideline';
-        } else {
-          s += ' rating-start ';
-        }
-      } else if (df.isSameDay(date.date, challenge.responseDue)) {
-        s += ' response-due ';
-      } else if (
-        date.date < challenge.responseDue &&
-          !df.isSameDay(date.date, challenge.start)
-      ) {
-        s += ' response-cont ';
-      } else if (
-        date.date < challenge.ratingDue &&
-          !df.isSameDay(date.date, challenge.start) &&
-          !df.isSameDay(date.date, challenge.end)
-      ) {
-        s += ' rating-cont ';
-      }
 
+    if(d.isSame(challenge.start, "day")) {
+      console.log("found start date");
+      css = css.concat(["start", "response-start", challenge.stage]);
     }
 
-    return s;
+    if(d.isSame(challenge.end, "day")) {
+      css = css.concat(["end", "published", challenge.stage]);
+    }
+
+    
+    if (!df.isSameDay(date.date, challenge.start) && !df.isSameDay(date.date, challenge.end))
+      css = css.concat(["cont", challenge.stage]);
+
+    let yesterday = new Date(date.date);
+    yesterday.setDate(yesterday.getDate() - 1);
+    let tomorrow = new Date(date.date);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (
+      df.isSameDay(date.date, challenge.ratingDue) &&
+        !df.isSameDay(date.date, challenge.end)
+    ) {
+      css.push("rating-due")
+    } else if (df.isSameDay(yesterday, challenge.responseDue)) {
+      if (df.isSameDay(tomorrow, challenge.end)) {
+        // If the challenge end date is tomorrow, just hide the
+        // connecting line, because there is only one day for
+        // rating the challenge.
+        css = css.concat(["rating-start", "hideline"]);
+      } else {
+        css.push("rating-start")
+      }
+    } else if (df.isSameDay(date.date, challenge.responseDue)) {
+      css.push("response-due")
+    } else if (
+      date.date < challenge.responseDue &&
+        !df.isSameDay(date.date, challenge.start)
+    ) {
+      css.push("response-cont")
+    } else if (
+      date.date < challenge.ratingDue &&
+        !df.isSameDay(date.date, challenge.start) &&
+        !df.isSameDay(date.date, challenge.end)
+    ) {
+      css.push("rating-cont")
+    }
+
+    // console.log("cal classes", css.join(" "));
+
+    return css.join(" ");
   }
 
   getTileContent(date, view) {
@@ -140,7 +157,7 @@ class CalendarScreen extends React.Component {
               tileClassName={this.getTileClass.bind(this)}
               tileContent={this.getTileContent.bind(this)}
               />
-          <div className="container challenge-area">
+          <div className="container challenge-area mt-2">
               <div className="d-flex flex-row">
                   <div className="p-2">
                       <div className="challenge-dot respond">
@@ -149,7 +166,7 @@ class CalendarScreen extends React.Component {
                       </div>
                   </div>
                   <div className="p-2 dot-text">
-                      Respond to the challenges
+                      Responding to the Challenge
                   </div>
               </div>
               <div className="d-flex flex-row">
@@ -160,7 +177,7 @@ class CalendarScreen extends React.Component {
                       </div>
                   </div>
                   <div className="p-2 dot-text">
-                      Rate the responses
+                      Rating responses from peers
                   </div>
               </div>
               <div className="d-flex flex-row">
@@ -171,7 +188,7 @@ class CalendarScreen extends React.Component {
                       </div>
                   </div>
                   <div className="p-2 dot-text">
-                      Results published
+                      End of rating / results published
                   </div>
               </div>
           </div>

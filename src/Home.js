@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import {ChallengeDB} from "./challenges/Challenge.js"
 import { PrimitiveDotIcon } from 'react-octicons';
-import LoadingModal from "./LoadingModal";
 
 class Home  extends React.Component {
   constructor(props) {
@@ -19,7 +18,10 @@ class Home  extends React.Component {
       this.active = true; 
       this.setState({challenge: c, loading: false}); 
     };
-    const noActiveChallenge = ()=>{ console.log("no active challenge"); };
+    const noActiveChallenge = ()=>{ 
+      console.log("no active challenge"); 
+      this.setState({ loading: false }); 
+    };
     ChallengeDB.getActive().then(activate, noActiveChallenge);
 
   }
@@ -41,10 +43,12 @@ class Home  extends React.Component {
 const ActiveChallenge = (props) => {
   const challenge = props.challenge;
 
-  if(props.loading) {
+  if(!props.challenge.id) {
     return (
       <div className="ActiveChallenge">
-        <LoadingModal show={props.loading} />
+        <h4 className="text-right pt-4 pr-2">Challenge of the week</h4>
+        <h5 className="text-right pb-4 pr-2">&nbsp;</h5>
+        <h5 className="text-center pt-4 mt-4">No active challenge</h5>
       </div>
     )
 
