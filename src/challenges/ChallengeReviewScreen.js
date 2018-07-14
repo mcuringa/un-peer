@@ -119,7 +119,7 @@ class ChallengeReviewScreen extends React.Component {
 
   setProfChoice(response) {
     let c = this.state.challenge;
-    const msg = "Expert's Choice saved";
+    const msg = "Instructor's Choice saved";
     c.professorChoice = response;
     ChallengeDB.save(c).then(()=>{
       this.setState({challenge: c});
@@ -346,7 +346,7 @@ const WelcomeProfessor = (props) => {
         As the instructor for this challenge, please review the responses as
         they become available. After you have chosen the response you would like to feature,
         click the <span className="badge badge-sm badge-secondary">
-          Make expert's choice
+          Make instructor's choice
         </span> button
         for that response.
       </p>

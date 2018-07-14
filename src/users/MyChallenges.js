@@ -220,7 +220,7 @@ const ChallengeMsg = (props) => {
     if(props.challenge.professor.uid === props.user.uid) {
       return (
         <Link to={`/challenges/${props.challenge.id}/review`}>
-          Review responses and pick expert's choice.
+          Review responses and pick instructor's choice.
         </Link>
       )
     }

@@ -51,7 +51,7 @@ class ManageResponsesScreen extends React.Component {
 
   setProfChoice(response) {
     let c = this.state.challenge;
-    const msg = "Expert's Choice saved";
+    const msg = "Instructor's Choice saved";
     c.professorChoice = response;
     ChallengeDB.save(c).then(()=>{
       this.setState({challenge: c});
@@ -154,7 +154,7 @@ const ResponseMenu = (props)=> {
       <Link to={`/admin/response/${props.challenge.id}/${props.response.id}`} className="dropdown-item btn-link">Edit Response</Link>
       <button className="dropdown-item btn-link" onClick={props.deleteResponse}>Delete Response</button>
       <button className="dropdown-item btn-link" onClick={props.makeOwner}>Make owner's choice</button>
-      <button className="dropdown-item btn-link" onClick={props.makeExpert}>Make expert's choice</button>
+      <button className="dropdown-item btn-link" onClick={props.makeExpert}>Make instructor's choice</button>
     </MoreMenu>
   )
 }

@@ -23,7 +23,7 @@ class Response  extends React.Component {
       r.avgRating = _.sum(t)/t.length;
     }
 
-    const featureStyle = {width: "170px", height: "36px"};
+    const featureStyle = {width: "180px", height: "36px", fontSize: ".9em"};
     const ProfFeature = ()=> {
       if(!this.props.profChoice)
         return null;
@@ -31,7 +31,7 @@ class Response  extends React.Component {
       return (
         <div className="d-flex align-items-center justify-content-between badge-primary pl-1 pr-2 rounded mb-1" style={featureStyle}>
           <div className="icon-light"><FlagIcon /></div>
-          <div>Expert's Choice</div>
+          <div>Instructor's Choice</div>
         </div>
       )
     }
@@ -100,7 +100,7 @@ class Response  extends React.Component {
           className="btn btn-sm btn-secondary mb-2 ml-2" 
           type="button"
           onClick={()=>{this.props.setProfChoice(r)}}>
-          Make expert's choice
+          Make instructor's choice
         </button>
       )
     };
