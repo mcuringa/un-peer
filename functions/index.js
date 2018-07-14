@@ -435,7 +435,7 @@ exports.challengeNotifications = functions.https.onRequest((req, res) => {
     }
 
     const ownerMsg = makeNotification(`[Owner] ${c.title}`, `Responses are ready. Your "owner's choice" selection is due in ${dueMsg}.`, click, `OWNER_${c.id}`);
-    const instructorMsg = makeNotification(`[Instructor] ${c.title}`, `Responses are ready. Your wrap-up video and the "expert's choice" selection are due in ${dueMsg}.`, click, `INSTRUCTOR_${c.id}`);
+    const instructorMsg = makeNotification(`[Instructor] ${c.title}`, `Responses are ready. Your wrap-up video and the "instructor's choice" selection are due in ${dueMsg}.`, click, `INSTRUCTOR_${c.id}`);
 
     const sendOwner = (u)=> {
       let user = u.data();
