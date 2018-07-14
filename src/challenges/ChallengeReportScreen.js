@@ -195,7 +195,7 @@ class ChallengeReportScreen extends React.Component {
       const id=_.uniqueId("UserRow_");
       return (
         <div key={u.id} className={`ChallengeStatusUser border-bottom border-light mt-2 pt-2 pb-2 text-gray`}>
-          <div className={`d-flex justify-content-between clickable`} data-toggle="collapse" data-target={`#${id}`} aria-controls={id}
+          <div className={`d-flex justify-content-between clickable collapsed`} data-toggle="collapse" data-target={`#${id}`} aria-controls={id}
              aria-expanded={this.props.open}
              aria-label="toggle user report">
             <h5><UserName user={u} /></h5>
