@@ -1,10 +1,11 @@
 import React from 'react';
 import _ from "lodash";
-import { ChevronRightIcon, ChevronDownIcon} from 'react-octicons';
+import { ChevronRightIcon, ChevronDownIcon, DeviceCameraVideoIcon } from 'react-octicons';
 import {ChallengeDB} from "./Challenge.js";
 import LoadingModal from "../LoadingModal";
 import db from "../DBTools";
 import ChallengeHeader from "./ChallengeHeader.js";
+import { StarRatings } from "../StarRatings";
 
 class ChallengeReportScreen extends React.Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class ChallengeReportScreen extends React.Component {
     this.state = {
       loading: true,
       msg: "loading challenge",
-      sortBy: "firstName"
+      sortOrder: "firstName"
     };
     this.challengeId = this.props.match.params.id;
   }
@@ -44,8 +45,6 @@ class ChallengeReportScreen extends React.Component {
         return;
       }
 
-
-
       const fillEmptyRatings = (user) => {
         const mapAssignmentToRating = (response)=> {
           if(!response.ratings[user.uid])
@@ -53,15 +52,18 @@ class ChallengeReportScreen extends React.Component {
         }
         _.each(user.assignments, mapAssignmentToRating);
       }
-      const mapAssignments = (user)=> {
+
+      const mergeUser = (user)=> {
         const responseIds = assignments[user.uid];
         const lookupResponse = id=>responseMap[id];
         user.assignments = _.map(responseIds, lookupResponse);
         fillEmptyRatings(user);
+        user.response = responseMap[user.id];
+        user.responded = _.has(responseMap, user.id);
       };
 
 
-      _.each(users, mapAssignments);
+      _.each(users, mergeUser);
 
       this.setState({loading: false, users: userMap, responses: responseMap });
     }
@@ -144,6 +146,7 @@ class ChallengeReportScreen extends React.Component {
             <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("firstName")}>First Name {SortIcon("firstName")}</button></div>
             <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("lastName")}>Last Name {SortIcon("lastName")}</button></div>
             <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("email")}>Email {SortIcon("email")}</button></div>
+            <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("responded")}>Responded {SortIcon("responded")}</button></div>
           </div>
         </div>
       )
@@ -157,16 +160,18 @@ class ChallengeReportScreen extends React.Component {
 
       const Rating = (key)=> {
         let rating = r.ratings[key];
-        let css = ""
+        let css = "";
+        let count = 1;
         if(rating === -1) {
-          rating = "-";
-          css = " text-danger";
+          // rating = "-";
+          css = "text-mute";
+          count = 0;
         }
         const rater = this.state.users[key];
         return (
-          <div className={`d-flex justify-content-start pl-2${css}`} key={`rate_${r.id}_${key}`}>
-            <div className="text-right pr-1" style={{width: "2em"}}><small>{rating}</small></div>
-            <div><small><UserName user={rater} /></small></div>
+          <div className={`d-flex justify-content-start pl-2 ${css}`} key={`rate_${r.id}_${key}`}>
+            <StarRatings rating={rating} total={count} />
+            <div><UserName user={rater} /></div>
           </div>
         )
       }
@@ -175,9 +180,8 @@ class ChallengeReportScreen extends React.Component {
       let ratings = _.map(keys, Rating);
       return (
         <div>
-          <div>Response:</div>
-          <div className="pl-2"><em>{r.title}</em> (avg: {r.avgRating})</div>
-          {ratings}
+          <div className="pl-2"><strong>{r.title}</strong> (avg: {r.avgRating})</div>
+          <div className="pl-1">{ratings}</div>
         </div>
       )
     }
@@ -193,21 +197,25 @@ class ChallengeReportScreen extends React.Component {
     const UserStatus = (u)=> {
       const assignments = _.map(u.assignments, Assignment);
       const id=_.uniqueId("UserRow_");
+      const respondedCss = (u.responded)?"icon-success":"icon-secondary";
       return (
         <div key={u.id} className={`ChallengeStatusUser border-bottom border-light mt-2 pt-2 pb-2 text-gray`}>
           <div className={`d-flex justify-content-between clickable collapsed`} data-toggle="collapse" data-target={`#${id}`} aria-controls={id}
              aria-expanded={this.props.open}
              aria-label="toggle user report">
             <h5><UserName user={u} /></h5>
-            <ChevronRightIcon className="toggle-expand icon-menu" />
-            <ChevronDownIcon className="toggle-close icon-menu" />
+            <div className="d-flex justify-content-end">
+              <DeviceCameraVideoIcon className={respondedCss} />
+              <ChevronRightIcon className="ml-2 toggle-expand icon-menu" />
+              <ChevronDownIcon className="ml-2 toggle-close icon-menu" />
+            </div>
           </div>
           <div id={id} className="collapse">
             <div className="pl-2">
               <Response response={this.state.responses[u.uid]} />
             </div>
             <div className="pl-2">
-              <div>Assigned to rate:</div>
+              <div className="font-weight-bold">Assigned to rate:</div>
               {assignments}
             </div>
           </div>
@@ -217,6 +225,8 @@ class ChallengeReportScreen extends React.Component {
 
     const sort = (u)=> {
       const v = u[this.state.sortOrder];
+      if(this.state.sortOrder === "responded")
+        return !v;
       if(_.isNil(v) || !v.toLowerCase)
         return v;
       return v.toLowerCase();
@@ -246,14 +256,15 @@ class ChallengeReportScreen extends React.Component {
 }
 
 const UserName = (props)=> {
-  // const empty = (str)=> {
-  //   if(_.isNil(str) || str.length === 0)
-  //     return false;
-  //   return true;
-  // }
+  const empty = (str)=> {
+    return !str.length;
+  }
 
   const u = props.user;
-  return `${u.firstName} ${u.lastName} <${u.email}>`;
+  const name = `${u.firstName} ${u.lastName}`;
+  if(empty(name))
+    return  u.email;
+  return name;
 }
 
 export default ChallengeReportScreen;
