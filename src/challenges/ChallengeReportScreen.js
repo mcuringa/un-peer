@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from "lodash";
+import { ChevronRightIcon, ChevronDownIcon} from 'react-octicons';
 import {ChallengeDB} from "./Challenge.js";
 import LoadingModal from "../LoadingModal";
 import db from "../DBTools";
@@ -11,6 +12,7 @@ class ChallengeReportScreen extends React.Component {
     this.state = {
       loading: true,
       msg: "loading challenge",
+      sortBy: "firstName"
     };
     this.challengeId = this.props.match.params.id;
   }
@@ -117,6 +119,35 @@ class ChallengeReportScreen extends React.Component {
     }
 
 
+    const SortMenu = ()=> {
+      const sorter = (key)=> {
+        let rev = false;
+        if(key === this.state.sortOrder)
+          rev = !this.state.reverse;
+        return ()=>{this.setState({sortOrder: key, reverse: rev})};
+      }
+
+      const SortIcon = (key)=> {
+        if(key !== this.state.sortOrder)
+          return "";
+        if(this.state.reverse)
+          return " ▾";
+        return " ▴";
+      }
+
+      return (
+        <div className="dropdown">
+          <button id="SortMenu" className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort Order
+          </button>
+          <div className="dropdown-menu" aria-labelledby="SortMenubutton">
+            <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("firstName")}>First Name {SortIcon("firstName")}</button></div>
+            <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("lastName")}>Last Name {SortIcon("lastName")}</button></div>
+            <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("email")}>Email {SortIcon("email")}</button></div>
+          </div>
+        </div>
+      )
+    }
 
     const Response = (props)=> {
       const r = props.response;
@@ -161,21 +192,39 @@ class ChallengeReportScreen extends React.Component {
 
     const UserStatus = (u)=> {
       const assignments = _.map(u.assignments, Assignment);
+      const id=_.uniqueId("UserRow_");
       return (
         <div key={u.id} className={`ChallengeStatusUser border-bottom border-light mt-2 pt-2 pb-2 text-gray`}>
-          <h6><UserName user={u} /></h6>
-          <div className="pl-2">
-            <Response response={this.state.responses[u.uid]} />
+          <div className={`d-flex justify-content-between clickable`} data-toggle="collapse" data-target={`#${id}`} aria-controls={id}
+             aria-expanded={this.props.open}
+             aria-label="toggle user report">
+            <h5><UserName user={u} /></h5>
+            <ChevronRightIcon className="toggle-expand icon-menu" />
+            <ChevronDownIcon className="toggle-close icon-menu" />
           </div>
-          <div className="pl-2">
-            <div>Assigned to rate:</div>
-            {assignments}
+          <div id={id} className="collapse">
+            <div className="pl-2">
+              <Response response={this.state.responses[u.uid]} />
+            </div>
+            <div className="pl-2">
+              <div>Assigned to rate:</div>
+              {assignments}
+            </div>
           </div>
         </div>
       )
     }
 
-    const UserList = _.map(this.state.users, UserStatus);
+    const sort = (u)=> {
+      const v = u[this.state.sortOrder];
+      if(_.isNil(v) || !v.toLowerCase)
+        return v;
+      return v.toLowerCase();
+    }
+    let users = _.sortBy(this.state.users, sort);
+    if(this.state.reverse)
+      users = _.reverse(users);
+    const UserList = _.map(users, UserStatus);
 
     return (
       <div className="ChallengeStatus screen">
@@ -185,6 +234,7 @@ class ChallengeReportScreen extends React.Component {
           screenTitle="Challenge Status"
           owner={this.state.challenge.owner} 
           user={this.props.user} />
+          <SortMenu />
 
           {UserList}
 
