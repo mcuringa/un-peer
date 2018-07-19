@@ -165,6 +165,7 @@ const Video = (props)=> {
   const dclass = (props.className)?props.className:"";
   const poster = props.poster;
 
+
   return (
     <div className={`${extracss} ${dclass} embed-responsive embed-responsive-16by9`}>
       <video controls="true" poster={poster} src={props.video} />
