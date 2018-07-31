@@ -67,14 +67,19 @@ class CalendarScreen extends React.Component {
 
     // ------------------------------------------- challenge dates only
 
-    css.push("challenge-day");
+    // css.concat(["challenge-day", "active"]);
+    css.concat(["challenge-day"]);
 
     if(d.isSame(challenge.start, "day")) {
-      console.log("found start date");
       css = css.concat(["start", "response-start", challenge.stage]);
     }
 
     if(d.isSame(challenge.end, "day")) {
+      if(moment(challenge.ratingDue).isSame(challenge.end, "day")) {
+        css = css.concat(["end", "published", challenge.stage]);
+
+      }
+
       css = css.concat(["end", "published", challenge.stage]);
     }
 
@@ -188,6 +193,18 @@ class CalendarScreen extends React.Component {
                       End of rating / results published
                   </div>
               </div>
+              <div className="d-flex flex-row">
+                  <div className="p-2">
+                      <div className="challenge-dot">
+                          <img src="/img/calendar_archive.png"
+                               alt="Archive" />
+                      </div>
+                  </div>
+                  <div className="p-2 dot-text">
+                      Challenge ends / archived
+                  </div>
+              </div>
+
           </div>
       </div>
     );

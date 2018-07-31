@@ -7113,7 +7113,7 @@ label:hover.VideoUploadButton {
         border-bottom: 1px solid white;
         border-right: 1px solid white; }
       .App .calendar-view .react-calendar .react-calendar__tile.end:not(.cont) .dayDisplay {
-        border: 2px solid #ae1963;
+        border: 2px solid #343a40;
         border-radius: 25px;
         background-color: #e9ecef; }
       .App .calendar-view .react-calendar .react-calendar__tile.response-due .left {

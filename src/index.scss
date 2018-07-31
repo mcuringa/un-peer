@@ -1111,7 +1111,7 @@ label:hover.VideoUploadButton
         }
 
         .dayDisplay {
-          border: 2px solid $cal-purple;
+          border: 2px solid $gray-800;
           border-radius: 25px;
           background-color: $gray-200; 
         }
@@ -1134,11 +1134,6 @@ label:hover.VideoUploadButton
           background-color: $gray-200; 
         }
       }
-
-      // .react-calendar__tile.rating.cont {
-      //   border-top: 2px solid $cal-purple;
-      //   border-bottom: 2px solid $cal-purple;
-      // }
 
 
       .react-calendar__tile.rating-due {
