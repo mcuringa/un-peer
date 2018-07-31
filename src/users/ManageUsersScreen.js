@@ -100,6 +100,8 @@ class ManageUsersScreen extends React.Component {
 		if(_.size(user) === 0)
 			return;
 
+		this.setState({ newUserError: null });
+
 		this.snack("Creating user for " + user.email);
 
 		const addToFirestore = (u)=>{ 
@@ -143,20 +145,20 @@ class ManageUsersScreen extends React.Component {
 			console.log("failed to create user");
 			console.log(e);
 			// this.setState({userExists: true});
+			let msg = "";
 			this.setState({loading: false});
 			if(e.code === "auth/email-already-in-use") {
-				const msg = `User could not be created because an account for ${user.email} already exists.`;
+				msg = `User could not be created because an account for ${user.email} already exists.`;
 				this.setState({newUserError: msg});
 			}
 			else if(e.code === "auth/invalid-email") {
-				const msg = `Could not create account. Please enter a valid email address.`;
+				msg = `Could not create account. Please enter a valid email address.`;
 				this.setState({newUserError: msg});
 			}
 			else {
-				const msg = `Failed to add user: ${e.message}`;
+				msg = `Failed to add user: ${e.message}`;
 				this.setState({newUserError: msg});
 			}
-
 		}
 
 		const createUser = FBUtil.getCloudFunction("createUser");
@@ -209,7 +211,7 @@ class ManageUsersScreen extends React.Component {
 
 
 	deleteUser() {
-		this.snack("Deleting user.");
+		this.snack("Deleting user");
 		const id = this.state.deleteUser.uid;
 		let all = this.state.users;
 		let user = all[id];
@@ -273,6 +275,7 @@ class ManageUsersScreen extends React.Component {
 					submit={this.addUser}
 					newUser={this.state.newUser}
 					onChange={this.handleNewUserChange} />
+				<NewUserError msg={this.state.newUserError} />
 
 				<UserList
 					onChange={this.handleChange}
@@ -300,6 +303,13 @@ class ManageUsersScreen extends React.Component {
 	}
 }
 
+const NewUserError = (props)=> {
+	if(!props.msg)
+		return null;
+	return (
+		<div className="text-danger">{props.msg}</div>
+	)
+}
 
 const NewUserForm = (props)=> {
 	return (

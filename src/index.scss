@@ -482,7 +482,16 @@ svg.icon-lg {
   color: $gray-600;
 }
 
-.ChallengeItem svg, .StaticChallengeItem svg, .ProfileMenuItem svg {
+.ChallengeItem svg {
+  fill: $gray-500;
+  stroke: $gray-500;
+}
+
+.ChallengeItem svg.icon-active  {
+  fill: theme-color("success") !important;
+  stroke: theme-color("success") !important;
+}
+.StaticChallengeItem svg, .ProfileMenuItem svg {
   fill: $gray-500 !important;
   stroke: $gray-500 !important;
 }

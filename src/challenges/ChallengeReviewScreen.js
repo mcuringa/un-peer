@@ -316,6 +316,7 @@ class ChallengeReviewScreen extends React.Component {
           user={this.props.user} />
 
         <Video 
+          type="instructor"
           video={this.state.challenge.professorVideo}
           poster={this.state.challenge.professorPoster} />
         

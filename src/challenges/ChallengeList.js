@@ -5,9 +5,9 @@ import {ChevronRightIcon} from 'react-octicons';
 import { CalendarIcon } from "../UNIcons";
 
 import df from "../DateUtil";
-
 import {ChallengeDB, ChallengeStatus} from "./Challenge.js"
 import LoadingModal from "../LoadingModal";
+import moment from "moment";
 
 
 
@@ -16,11 +16,16 @@ class ChallengeListScreen extends React.Component {
     super(props);
     this.state = {challenges: [], loading: true};
   }
+
   componentWillMount() {
     ChallengeDB.findByStatus(ChallengeStatus.PUBLISHED).then((challenges)=>{
       const now = new Date();
-      let t = _.filter(challenges, c=> c.end < now);
-      t = _.sortBy(challenges, "start");
+      const f = (c)=> {
+        return moment(c.start).isBefore(now);
+      }
+      let t = _.filter(challenges, f);
+      t = _.sortBy(t, "start");
+      t = _.reverse(t);
       this.setState({challenges: t, loading: false});
     });
   }
@@ -54,12 +59,18 @@ const ChallengeListItem = (props) => {
     state: { fromArchives: true }
   }
 
+  const ActiveIndicator = ()=> {
+    if(c.end < new Date)
+      return null;
+    return <span className="ActiveIndicator icon-active pr-1">●</span>
+  }
+
   return (
     <Link to={detailPath} className="ChallengeItem">
       <div className="ChallengeItemHeader">
         <div className="d-flex align-items-start">
-          <CalendarIcon />
-          <div className="single-space pl-1">{df.range(c.start, c.end)}</div>
+          <CalendarIcon  />
+          <div className="single-space pl-1"><ActiveIndicator />{df.range(c.start, c.end)}</div>
         </div>
       </div>
       <div className="ChallengeItemBody">

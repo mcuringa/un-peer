@@ -393,9 +393,17 @@ const Video = (props)=> {
   if(!props.src)
     return null;
 
+  let poster = props.poster || "";
+  if(props.type === "challenge" && poster.length === 0 )
+    poster = "/img/challenge-poster.png";
+  else if(props.type === "instructor" && poster.length === 0 )
+    poster = "/img/professor-poster.png";
+  else if(props.type === "response" && poster.length === 0 )
+    poster = "/img/response-poster.png";
+
   return (
     <div className="embed-responsive embed-responsive-16by9">
-      <video controls="true" poster={props.poster} src={props.src} />
+      <video controls="true" poster={poster} src={props.src} />
     </div>
   );
 }

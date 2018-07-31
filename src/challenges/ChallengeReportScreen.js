@@ -6,6 +6,7 @@ import LoadingModal from "../LoadingModal";
 import db from "../DBTools";
 import ChallengeHeader from "./ChallengeHeader.js";
 import { StarRatings } from "../StarRatings";
+import {StarIcon} from "react-octicons";
 
 class ChallengeReportScreen extends React.Component {
   constructor(props) {
@@ -29,9 +30,6 @@ class ChallengeReportScreen extends React.Component {
 
       const c = this.state.challenge;
       const assignments = c.assignments;
-      console.log("assignments", assignments);
-
-
       
       let users = this.state.users;
 
@@ -40,7 +38,6 @@ class ChallengeReportScreen extends React.Component {
       let userMap = _.keyBy(users, "uid");
 
       if(!assignments || assignments.length === 0) {
-        console.log("no assignments found", assignments);
         this.setState({loading: false, users: userMap, responses: responseMap });
         return;
       }
@@ -57,9 +54,18 @@ class ChallengeReportScreen extends React.Component {
         const responseIds = assignments[user.uid];
         const lookupResponse = id=>responseMap[id];
         user.assignments = _.map(responseIds, lookupResponse);
+
+        let ratingCount = 0;
+        const countRatings = (response)=> {
+          if(response.ratings[user.uid])
+            ratingCount++;
+        }
+        _.each(user.assignments, countRatings);
+        // console.log("assignments for " +user.email, user.assignments);
         fillEmptyRatings(user);
         user.response = responseMap[user.id];
         user.responded = _.has(responseMap, user.id);
+        user.submittedRatings = ratingCount === 3;
       };
 
 
@@ -87,13 +93,8 @@ class ChallengeReportScreen extends React.Component {
     const userP = db.findAll("users").then(afterUser);
     const challengeP = ChallengeDB.get(this.challengeId).then(afterChallenge);
     const responseP = ChallengeDB.getResponses(this.challengeId).then(afterResponse);
-
-    // const userP = db.findAll("users").then(addToState("users"));
-    // const challengeP = ChallengeDB.get(this.challengeId).then(addToState("challenge"));
-    // const responseP = ChallengeDB.getResponses(this.challengeId).then(addToState("responses"));
     
     Promise.all([userP,challengeP,responseP]).then(mergeAll);
-
 
   }
 
@@ -170,7 +171,7 @@ class ChallengeReportScreen extends React.Component {
         const rater = this.state.users[key];
         return (
           <div className={`d-flex justify-content-start pl-2 ${css}`} key={`rate_${r.id}_${key}`}>
-            <StarRatings rating={rating} total={count} />
+            <StarRatings rating={rating}  hideTotal={true} />
             <div><UserName user={rater} /></div>
           </div>
         )
@@ -186,18 +187,32 @@ class ChallengeReportScreen extends React.Component {
       )
     }
 
-    const Assignment = (response)=> {
-      return (
-        <div className="pl-2" key={_.uniqueId("assigned")}>
-          <small><UserName user={response.user} /></small>
-        </div>
-      )
-    }
 
     const UserStatus = (u)=> {
+
+      const AssignmentRatings = (props)=> {
+
+        return (
+          <div className={`d-flex justify-content-start pl-2`}>
+            <StarRatings rating={props.rating} hideTotal={true} />
+            <div><UserName user={props.user} /></div>
+          </div>
+        )
+      }
+
+
+      const Assignment = (response)=> {
+        const rating = response.ratings[u.uid] || -1;
+
+        return (
+          <AssignmentRatings user={response.user} rating={rating} key={_.uniqueId("assigned")} />
+        )
+      }
+
       const assignments = _.map(u.assignments, Assignment);
       const id=_.uniqueId("UserRow_");
       const respondedCss = (u.responded)?"icon-success":"icon-secondary";
+      const ratedCss = (u.submittedRatings)?"icon-success":"icon-secondary";
       return (
         <div key={u.id} className={`ChallengeStatusUser border-bottom border-light mt-2 pt-2 pb-2 text-gray`}>
           <div className={`d-flex justify-content-between clickable collapsed`} data-toggle="collapse" data-target={`#${id}`} aria-controls={id}
@@ -205,6 +220,7 @@ class ChallengeReportScreen extends React.Component {
              aria-label="toggle user report">
             <h5><UserName user={u} /></h5>
             <div className="d-flex justify-content-end">
+              <StarIcon className={`${ratedCss} mr-2`} />
               <DeviceCameraVideoIcon className={respondedCss} />
               <ChevronRightIcon className="ml-2 toggle-expand icon-menu" />
               <ChevronDownIcon className="ml-2 toggle-close icon-menu" />
@@ -215,7 +231,7 @@ class ChallengeReportScreen extends React.Component {
               <Response response={this.state.responses[u.uid]} />
             </div>
             <div className="pl-2">
-              <div className="font-weight-bold">Assigned to rate:</div>
+              <div className="font-weight-bold">{u.lastName} ratings:</div>
               {assignments}
             </div>
           </div>

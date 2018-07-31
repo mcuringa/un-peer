@@ -250,7 +250,7 @@ class ResponseRater extends React.Component {
         </div>
         <div id={`body_${this.props.keyIndex}`} className="collapse" data-parent="#ResponseList">
           <div className="card-body">
-            <Video video={r.video} />
+            <Video video={r.video} type="response" />
             {r.text}
           </div>
         </div>

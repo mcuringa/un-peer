@@ -208,7 +208,7 @@ class Bookmark  extends React.Component {
         </div>
         <div id={`body_${this.props.keyIndex}`} className={`RatedResponseBody ${toggleCss}`} data-parent="#ResponseList">
           <BookmarkButton removeBookmark={this.props.removeBookmark} />
-          <Video video={b.video} />
+          <Video video={b.video} type="response" />
           {b.text}
         </div>
       </div>
