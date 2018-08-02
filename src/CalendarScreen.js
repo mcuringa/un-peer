@@ -67,7 +67,7 @@ class CalendarScreen extends React.Component {
 
     // ------------------------------------------- challenge dates only
 
-    css.push("challenge-day");
+    css.push("challenge-day active");
 
     if(d.isSame(challenge.start, "day")) {
       console.log("found start date");
