@@ -60,7 +60,7 @@ const ChallengeListItem = (props) => {
   }
 
   const ActiveIndicator = ()=> {
-    if(c.end < new Date)
+    if(c.end < new Date())
       return null;
     return <span className="ActiveIndicator icon-active pr-1">●</span>
   }

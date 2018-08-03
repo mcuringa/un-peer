@@ -302,7 +302,7 @@ class NewChallengeScreen extends React.Component {
             history={this.props.history}
           />
         </If>
-
+        <Deleted challenge={this.state.challenge} />
 
         <form id="ChallengeForm" className={validationClass} noValidate onSubmit={this.submit}>
           
@@ -462,7 +462,7 @@ const StatusSelect = (props)=> {
           <option value={ChallengeStatus.REVIEW}>review</option>
           <option value={ChallengeStatus.REJECT}>rejected</option>
           <option value={ChallengeStatus.PUBLISHED}>published</option>
-          <option value={ChallengeStatus.ARCHIVED}>archive</option>
+          <option value={ChallengeStatus.DELETE}>delete</option>
         </select>
       </div>
     </div>
@@ -690,6 +690,25 @@ const FormHeader = (props)=>
       </div>
     </div> );
 }
+
+
+const Deleted = (props)=> {
+  if(!props.challenge.status === ChallengeStatus.DELETED)
+    return null;
+
+  return (
+    <div id="Deleted" className="card border-dark mt-3 mb-2">
+      <div className="card-header text-danger"><h6>Deleted Challenge</h6></div>
+      <div className="card-body">
+        <p className="card-text">
+          This challenge has been deleted and is not visible to other users without this URL.
+          If you wish to un-delete this card, change its status and <em>save</em>.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 
 
 const UnderReview = (props)=> {
