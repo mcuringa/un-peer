@@ -69,14 +69,18 @@ class CalendarScreen extends React.Component {
 
     css.concat("[challenge-day", "active");
 
+    // console.log(`date, ${challenge.end}: rating due--${challenge.ratingDue}--rating due--${challenge.end}`);
+
+
+
     if(d.isSame(challenge.start, "day")) {
       console.log("found start date");
       css = css.concat(["start", "response-start", challenge.stage]);
     }
 
-    if(d.isSame(challenge.end, "day")) {
-      css = css.concat(["end", "published", challenge.stage]);
-    }
+    // if(d.isSame(challenge.end, "day")) {
+    //   css = css.concat(["end", "published", challenge.stage]);
+    // }
 
     
     if (!df.isSameDay(date.date, challenge.start) && !df.isSameDay(date.date, challenge.end))
@@ -107,12 +111,13 @@ class CalendarScreen extends React.Component {
     ) {
 
       css.push("response-cont")
-    } else if (d.isBetween(challenge.ratingDue, challenge.end, "day", "()")) {
+    } 
+    else if (d.isBetween(challenge.responseDue, challenge.end, "day", "")) {
       console.log("rating cont day", d);
-      css.push("rating-cont")
+      css.push("rating-cont");
     }
 
-    // console.log("cal classes", css.join(" "));
+    console.log(d.format(), css.join(" "));
 
     return css.join(" ");
   }
