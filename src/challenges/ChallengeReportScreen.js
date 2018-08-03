@@ -1,10 +1,12 @@
 import React from 'react';
 import _ from "lodash";
-import { ChevronRightIcon, ChevronDownIcon} from 'react-octicons';
+import { ChevronRightIcon, ChevronDownIcon, DeviceCameraVideoIcon } from 'react-octicons';
 import {ChallengeDB} from "./Challenge.js";
 import LoadingModal from "../LoadingModal";
 import db from "../DBTools";
 import ChallengeHeader from "./ChallengeHeader.js";
+import { StarRatings } from "../StarRatings";
+import {StarIcon} from "react-octicons";
 
 class ChallengeReportScreen extends React.Component {
   constructor(props) {
@@ -12,7 +14,7 @@ class ChallengeReportScreen extends React.Component {
     this.state = {
       loading: true,
       msg: "loading challenge",
-      sortBy: "firstName"
+      sortOrder: "firstName"
     };
     this.challengeId = this.props.match.params.id;
   }
@@ -28,9 +30,6 @@ class ChallengeReportScreen extends React.Component {
 
       const c = this.state.challenge;
       const assignments = c.assignments;
-      console.log("assignments", assignments);
-
-
       
       let users = this.state.users;
 
@@ -39,12 +38,9 @@ class ChallengeReportScreen extends React.Component {
       let userMap = _.keyBy(users, "uid");
 
       if(!assignments || assignments.length === 0) {
-        console.log("no assignments found", assignments);
         this.setState({loading: false, users: userMap, responses: responseMap });
         return;
       }
-
-
 
       const fillEmptyRatings = (user) => {
         const mapAssignmentToRating = (response)=> {
@@ -53,15 +49,27 @@ class ChallengeReportScreen extends React.Component {
         }
         _.each(user.assignments, mapAssignmentToRating);
       }
-      const mapAssignments = (user)=> {
+
+      const mergeUser = (user)=> {
         const responseIds = assignments[user.uid];
         const lookupResponse = id=>responseMap[id];
         user.assignments = _.map(responseIds, lookupResponse);
+
+        let ratingCount = 0;
+        const countRatings = (response)=> {
+          if(response.ratings[user.uid])
+            ratingCount++;
+        }
+        _.each(user.assignments, countRatings);
+        // console.log("assignments for " +user.email, user.assignments);
         fillEmptyRatings(user);
+        user.response = responseMap[user.id];
+        user.responded = _.has(responseMap, user.id);
+        user.submittedRatings = ratingCount === 3;
       };
 
 
-      _.each(users, mapAssignments);
+      _.each(users, mergeUser);
 
       this.setState({loading: false, users: userMap, responses: responseMap });
     }
@@ -85,13 +93,8 @@ class ChallengeReportScreen extends React.Component {
     const userP = db.findAll("users").then(afterUser);
     const challengeP = ChallengeDB.get(this.challengeId).then(afterChallenge);
     const responseP = ChallengeDB.getResponses(this.challengeId).then(afterResponse);
-
-    // const userP = db.findAll("users").then(addToState("users"));
-    // const challengeP = ChallengeDB.get(this.challengeId).then(addToState("challenge"));
-    // const responseP = ChallengeDB.getResponses(this.challengeId).then(addToState("responses"));
     
     Promise.all([userP,challengeP,responseP]).then(mergeAll);
-
 
   }
 
@@ -144,6 +147,7 @@ class ChallengeReportScreen extends React.Component {
             <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("firstName")}>First Name {SortIcon("firstName")}</button></div>
             <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("lastName")}>Last Name {SortIcon("lastName")}</button></div>
             <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("email")}>Email {SortIcon("email")}</button></div>
+            <div className="dropdown-itme"><button className="btn btn-link" onClick={sorter("responded")}>Responded {SortIcon("responded")}</button></div>
           </div>
         </div>
       )
@@ -157,16 +161,18 @@ class ChallengeReportScreen extends React.Component {
 
       const Rating = (key)=> {
         let rating = r.ratings[key];
-        let css = ""
+        let css = "";
+        let count = 1;
         if(rating === -1) {
-          rating = "-";
-          css = " text-danger";
+          // rating = "-";
+          css = "text-mute";
+          count = 0;
         }
         const rater = this.state.users[key];
         return (
-          <div className={`d-flex justify-content-start pl-2${css}`} key={`rate_${r.id}_${key}`}>
-            <div className="text-right pr-1" style={{width: "2em"}}><small>{rating}</small></div>
-            <div><small><UserName user={rater} /></small></div>
+          <div className={`d-flex justify-content-start pl-2 ${css}`} key={`rate_${r.id}_${key}`}>
+            <StarRatings rating={rating}  hideTotal={true} />
+            <div><UserName user={rater} /></div>
           </div>
         )
       }
@@ -175,39 +181,57 @@ class ChallengeReportScreen extends React.Component {
       let ratings = _.map(keys, Rating);
       return (
         <div>
-          <div>Response:</div>
-          <div className="pl-2"><em>{r.title}</em> (avg: {r.avgRating})</div>
-          {ratings}
+          <div className="pl-2"><strong>{r.title}</strong> (avg: {r.avgRating})</div>
+          <div className="pl-1">{ratings}</div>
         </div>
       )
     }
 
-    const Assignment = (response)=> {
-      return (
-        <div className="pl-2" key={_.uniqueId("assigned")}>
-          <small><UserName user={response.user} /></small>
-        </div>
-      )
-    }
 
     const UserStatus = (u)=> {
+
+      const AssignmentRatings = (props)=> {
+
+        return (
+          <div className={`d-flex justify-content-start pl-2`}>
+            <StarRatings rating={props.rating} hideTotal={true} />
+            <div><UserName user={props.user} /></div>
+          </div>
+        )
+      }
+
+
+      const Assignment = (response)=> {
+        const rating = response.ratings[u.uid] || -1;
+
+        return (
+          <AssignmentRatings user={response.user} rating={rating} key={_.uniqueId("assigned")} />
+        )
+      }
+
       const assignments = _.map(u.assignments, Assignment);
       const id=_.uniqueId("UserRow_");
+      const respondedCss = (u.responded)?"icon-success":"icon-secondary";
+      const ratedCss = (u.submittedRatings)?"icon-success":"icon-secondary";
       return (
         <div key={u.id} className={`ChallengeStatusUser border-bottom border-light mt-2 pt-2 pb-2 text-gray`}>
-          <div className={`d-flex justify-content-between clickable`} data-toggle="collapse" data-target={`#${id}`} aria-controls={id}
+          <div className={`d-flex justify-content-between clickable collapsed`} data-toggle="collapse" data-target={`#${id}`} aria-controls={id}
              aria-expanded={this.props.open}
              aria-label="toggle user report">
             <h5><UserName user={u} /></h5>
-            <ChevronRightIcon className="toggle-expand icon-menu" />
-            <ChevronDownIcon className="toggle-close icon-menu" />
+            <div className="d-flex justify-content-end">
+              <StarIcon className={`${ratedCss} mr-2`} />
+              <DeviceCameraVideoIcon className={respondedCss} />
+              <ChevronRightIcon className="ml-2 toggle-expand icon-menu" />
+              <ChevronDownIcon className="ml-2 toggle-close icon-menu" />
+            </div>
           </div>
           <div id={id} className="collapse">
             <div className="pl-2">
               <Response response={this.state.responses[u.uid]} />
             </div>
             <div className="pl-2">
-              <div>Assigned to rate:</div>
+              <div className="font-weight-bold">{u.lastName} ratings:</div>
               {assignments}
             </div>
           </div>
@@ -217,6 +241,8 @@ class ChallengeReportScreen extends React.Component {
 
     const sort = (u)=> {
       const v = u[this.state.sortOrder];
+      if(this.state.sortOrder === "responded")
+        return !v;
       if(_.isNil(v) || !v.toLowerCase)
         return v;
       return v.toLowerCase();
@@ -246,14 +272,15 @@ class ChallengeReportScreen extends React.Component {
 }
 
 const UserName = (props)=> {
-  // const empty = (str)=> {
-  //   if(_.isNil(str) || str.length === 0)
-  //     return false;
-  //   return true;
-  // }
+  const empty = (str)=> {
+    return !str.length;
+  }
 
   const u = props.user;
-  return `${u.firstName} ${u.lastName} <${u.email}>`;
+  const name = `${u.firstName} ${u.lastName}`;
+  if(empty(name))
+    return  u.email;
+  return name;
 }
 
 export default ChallengeReportScreen;

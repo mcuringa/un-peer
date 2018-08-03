@@ -57,8 +57,8 @@ class CalendarScreen extends React.Component {
     if(df.isToday(date.date))
       css.push("todays-date");
 
-    if(today.isSame(date.date, "month"))
-      css.push("active");
+    if(!today.isSame(date.date, "month"))
+      css.push("not-current-month");
 
     const challenge = this.state.currentChallenge;
 
@@ -67,7 +67,7 @@ class CalendarScreen extends React.Component {
 
     // ------------------------------------------- challenge dates only
 
-    css.push("challenge-day");
+    css.concat("[challenge-day", "active");
 
     if(d.isSame(challenge.start, "day")) {
       console.log("found start date");
@@ -87,12 +87,11 @@ class CalendarScreen extends React.Component {
     let tomorrow = new Date(date.date);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    if (
-      df.isSameDay(date.date, challenge.ratingDue) &&
-        !df.isSameDay(date.date, challenge.end)
-    ) {
+
+    if(df.isSameDay(date.date, challenge.ratingDue) && !df.isSameDay(date.date, challenge.end)) {
       css.push("rating-due")
-    } else if (df.isSameDay(yesterday, challenge.responseDue)) {
+    } 
+    else if (df.isSameDay(yesterday, challenge.responseDue)) {
       if (df.isSameDay(tomorrow, challenge.end)) {
         // If the challenge end date is tomorrow, just hide the
         // connecting line, because there is only one day for
@@ -103,12 +102,13 @@ class CalendarScreen extends React.Component {
       }
     } else if (df.isSameDay(date.date, challenge.responseDue)) {
       css.push("response-due")
-    } else if (
-      date.date < challenge.responseDue &&
+    } else if (date.date < challenge.responseDue &&
         !df.isSameDay(date.date, challenge.start)
     ) {
+
       css.push("response-cont")
     } else if (d.isBetween(challenge.ratingDue, challenge.end, "day", "()")) {
+      console.log("rating cont day", d);
       css.push("rating-cont")
     }
 

@@ -147,7 +147,7 @@ const ChallengeButton = (props) => {
 const ChallengeInfo = (props) => {
   return (
     <div className="ChallengeDescription">
-      <Video className="ChallengeVideo" video={props.challenge.challengeVideo} poster={props.challenge.videoPoster} />
+      <Video className="ChallengeVideo" type="challenge" video={props.challenge.challengeVideo} poster={props.challenge.challengeVideoPoster} />
       <p>{props.challenge.prompt}</p>
       <ChallengeButton id={props.id} 
         challenge={props.challenge}

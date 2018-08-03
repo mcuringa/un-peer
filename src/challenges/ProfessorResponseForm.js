@@ -3,6 +3,7 @@ import _ from "lodash";
 import { ChallengeDB } from "./Challenge.js"
 import db from "../DBTools"
 import FBUtil from "../FBUtil.js";
+import {MediaUpload} from "../MediaManager"
 import {UploadProgress, formatFileSize} from "../MediaManager";
 import {
   TextAreaGroup,
@@ -10,6 +11,7 @@ import {
 } from "../FormUtil";
 import Snackbar from "../Snackbar";
 import ChallengeHeader from "./ChallengeHeader";
+import {snack, SnackMaker} from "../Snackbar";
 
 
 require("firebase/storage");
@@ -31,44 +33,11 @@ class ProfessorResponseForm extends React.Component {
     this.handleUpload = this.handleUpload.bind(this);
     this.save = this.save.bind(this);
     this.clearVideo = this.clearVideo.bind(this);
-    this.snack = _.bind(this.snack, this);
-    this.snack = _.throttle(this.snack, this.snackTime);
+    this.snack = _.bind(snack, this);
+    this.Snackbar = _.bind(SnackMaker, this);
 
   }
 
-  snack(msg, showUndo) {
-
-    const p = (resolve, reject)=>
-    {
-      const clear = ()=> {
-        this.setState({
-          showSnack: false,
-          snackMsg: "",
-          snackUndo: null
-        });
-      }
-      const over = ()=> {
-        clear();
-        resolve();
-      }
-
-      const undo = ()=> {
-        clear();
-        reject();
-      }
-
-      this.setState({
-        showSnack: true,
-        snackMsg: msg,
-        showUndo: showUndo,
-        snackUndo: undo,
-        snackOver: over
-      });      
-    }
-
-    return new Promise(p);
-
-  }
 
   componentDidMount() {
     ChallengeDB.get(this.challengeId).then((c)=>{
@@ -80,44 +49,10 @@ class ProfessorResponseForm extends React.Component {
     });
   }
 
-  handleUpload(e) {
+  handleUpload(src, key) {
+    this.setState({video: src});
+    this.snack("Video upload complete");
 
-    const challengeId = this.challengeId;
-
-    let file = e.target.files[0];
-    const path = `${challengeId}/professorVideo`;
-    this.snack("uploading video");
-
-    const succ = (task)=> {
-      const filePath = task.snapshot.downloadURL;
-
-      this.setState({
-        video: filePath,
-        uploadStatus: "",
-        uploadPct: 0
-      });
-    }
-
-    const watch = (snapshot)=> {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      const xfer = formatFileSize(snapshot.bytesTransferred, true);
-      const total = formatFileSize(snapshot.totalBytes, true);
-
-      this.setState( {
-        uploadPct: progress, 
-        uploadStatus: `${xfer} of ${total}`
-      });
-    }
-
-    const err = (e)=>{
-      console.log(e);
-      this.snack("video upload failed");
-      this.setState({
-        uploadStatus: "Upload failed: " + e
-      });
-    }
-
-    FBUtil.uploadMedia(file, path, watch, succ, err);
   }
 
   save() {
@@ -174,12 +109,15 @@ class ProfessorResponseForm extends React.Component {
           user={this.props.user} />
 
         <form onSubmit={(e)=>{e.preventDefault();}}>
-
-          <VideoUploadImproved id="video" 
-           video={this.state.video}
-           onChange={this.handleUpload} 
-           progressBar={progress}
-           />
+          
+          <MediaUpload id="professorVideo" 
+            media="video"
+            path={this.state.challenge.id}
+            url={this.state.video}
+            poster={this.state.challenge.profVideoPoster}
+            handleUpload={this.handleUpload}
+            clearMedia={this.clearVideo}
+          />
 
           <ClearButton />
 
@@ -193,11 +131,7 @@ class ProfessorResponseForm extends React.Component {
             disabled={disabled}
             onSubmit={this.save} />
         </form>
-        <Snackbar show={this.state.showSnack} 
-          msg={this.state.snackMsg}
-          showUndo={this.state.showUndo}
-          undo={this.state.snackUndo}
-          onClose={this.state.snackOver} />
+        <this.Snackbar />
       </div>
     )
   }

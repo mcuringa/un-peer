@@ -163,7 +163,13 @@ const Video = (props)=> {
 
   const extracss = (props.video)?"":"d-none";
   const dclass = (props.className)?props.className:"";
-  const poster = props.poster;
+  let poster = props.poster || "";
+  if(props.type === "challenge" && poster.length === 0 )
+    poster = "/img/challenge-poster.png";
+  else if(props.type === "instructor" && poster.length === 0 )
+    poster = "/img/professor-poster.png";
+  else if(props.type === "response" && poster.length === 0 )
+    poster = "/img/response-poster.png";
 
   return (
     <div className={`${extracss} ${dclass} embed-responsive embed-responsive-16by9`}>

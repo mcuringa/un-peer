@@ -6719,7 +6719,15 @@ svg.icon-lg {
 .ProfileMenuItem {
   color: #6c757d; }
 
-.ChallengeItem svg, .StaticChallengeItem svg, .ProfileMenuItem svg {
+.ChallengeItem svg {
+  fill: #adb5bd;
+  stroke: #adb5bd; }
+
+.ChallengeItem svg.icon-active {
+  fill: #28a745 !important;
+  stroke: #28a745 !important; }
+
+.StaticChallengeItem svg, .ProfileMenuItem svg {
   fill: #adb5bd !important;
   stroke: #adb5bd !important; }
 
@@ -7036,6 +7044,8 @@ label:hover.VideoUploadButton {
       border: none;
       margin: 0 auto;
       color: #343a40; }
+      .App .calendar-view .react-calendar .not-current-month button {
+        color: #e9ecef; }
       .App .calendar-view .react-calendar .react-calendar__navigation__prev2-button,
       .App .calendar-view .react-calendar .react-calendar__navigation__next2-button {
         display: none; }

@@ -521,7 +521,7 @@ exports.deleteUser = functions.https.onCall((user, context) => {
 
   let delAuth = admin.auth().deleteUser(user.uid);
   let delDB = ref.delete();
-  Promise.all([delAuth, delDB]).then(()=>{
+  return Promise.all([delAuth, delDB]).then(()=>{
     console.log("deleted user", user.uid);
     return {
       "msg": "User deleted",

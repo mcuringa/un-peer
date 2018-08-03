@@ -197,6 +197,14 @@ const ChallengeDB = {
   },
 
 
+  prep(c) {
+    const status = Number.parseInt(c.status, 10);
+    c = db.prep(c);
+    c.status = status;
+    const stage = ChallengeDB.getStage(c);
+    return _.merge(c, {stage: stage, status: status })
+  },
+
 
   findAllSecure() {
     const now = new Date();
@@ -206,23 +214,12 @@ const ChallengeDB = {
       let promises = [];
       let challenges = [];
 
-      const prep = (c)=>{
-        const status = Number.parseInt(c.status, 10);
-        c = db.prep(c);
-        c.status = status;
-        const stage = ChallengeDB.getStage(c);
-        if(!c.challengeVideoPoster || c.challengeVideoPoster.length === 0)
-          c.challengeVideoPoster = "/img/challenge-poster.svg";
-        if(!c.profVideoPoster || c.profVideoPoster.length === 0)
-          c.profVideoPoster = "/img/professor-poster.svg";
-        return _.merge(c, {stage: stage, status: status})
-      }
-
       const addChallenges = (snapshot)=>{
         snapshot.forEach((doc)=>{
           let c = doc.data();
           c.id = doc.id;
-          challenges.push(prep(c));
+          c = ChallengeDB.prep(c);
+          challenges.push(c);
         });
         
       };
@@ -359,7 +356,7 @@ const ChallengeDB = {
             challenge = doc.data();
             challenge.id = id;
             challenge.status = Number.parseInt(challenge.status, 10);
-            challenge = db.prep(challenge);
+            challenge = ChallengeDB.prep(challenge);
             challenge.stage = ChallengeDB.getStage(challenge);
             ChallengeDB.cache[id] = challenge;
             resolve(challenge);
