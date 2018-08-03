@@ -979,9 +979,10 @@ label:hover.VideoUploadButton
       border: none;
       margin: 0 auto;
       color: $text-dark;
+      
       .not-current-month button {
         // background-color: $gray-600;
-        color: $gray-200;
+        color: blue;
       }
 
       .react-calendar__navigation__prev2-button,
@@ -1065,8 +1066,8 @@ label:hover.VideoUploadButton
         }
 
         &.rating-cont.active {
-          border-top: 2px solid $cal-purple;
-          border-bottom: 2px solid $cal-purple;
+          border-top: 2px solid $cal-blue !important;
+          border-bottom: 2px solid $cal-blue !important;
           background-color: $gray-200;
         }
 
@@ -1162,8 +1163,8 @@ label:hover.VideoUploadButton
         }
         .right {
           background-color: $gray-200;
-          border-top: 2px solid $cal-purple;
-          border-bottom: 2px solid $cal-purple;
+          // border-top: 2px solid $cal-purple;
+          // border-bottom: 2px solid $cal-purple;
         }
         .dayDisplay {
           border: 2px solid $cal-purple;
