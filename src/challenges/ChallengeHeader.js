@@ -19,11 +19,11 @@ const ChallengeHeader = (props) => {
     owner = c.owner;
   let stageMsg = "Challenge starts: " + df.day(c.start);
   if(c.stage === "active")
-    stageMsg = `Response time: ${df.range(c.start, c.ratingsDue)}`;
+    stageMsg = `Response time: ${df.range(c.start, c.responseDue)}`;
   else if(c.stage === "archive")
     stageMsg = `Archived: ${df.range(c.start, c.end)}`;
   else if(c.stage === "rating")
-    stageMsg = `Rating time: ${df.range(c.start, c.end)}`;
+    stageMsg = `Rating time: ${df.range(c.responseDue, c.ratingDue)}`;
   else if(c.stage === "review")
     stageMsg = `Review until: ${df.day(c.end)}`;
 
